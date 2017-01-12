@@ -51,11 +51,11 @@
  }
  *
  */
-
+'use strict';
 var gDesignResolutionWidth=736;
 var gDesignResolutionHeight=414;
-var gKlineScene;
-var gMainMenuScene;
+var gKlineScene=null;
+var gMainMenuScene=null;
 var gShareManager=null;
 var gSocketConn=null;
 var gPlayerName=null;			//用户名

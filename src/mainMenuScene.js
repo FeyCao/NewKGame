@@ -1,4 +1,5 @@
 //var gMainMenusSceneInst;
+'use strict';
 var MainMenuScene =SceneBase.extend(
 {
 	klineScene:null,
@@ -186,39 +187,16 @@ var MainMenuScene =SceneBase.extend(
         self.sumAILabel.setVisible(userInfo.operationType==1);
         self.sumMoreLabel.setVisible(userInfo.operationType==1);
 
-        // //设置对战信息时数据可能还没取到
-        //  this.setDataforInfo();
-
         this.setButtonInfo();
         userInfo.matchBeginFlag=false;
-        // this.thirdMode.setDisabled(userInfo.operationType!=1);//1为登录，2为快速登录
-        // this.thirdMode.setTextureByStatus(userInfo.operationType!=1);
-        // this.mode1Button.setTextureByStatus(userInfo.recordMode==0);
-
-        //this.backgroundLayer.setScale(0.8);
-		//this.firstMode.setChecked(true);
-        //this.firstMode.setDisabled(true)
-        // loadTime=new Date().getTime();
         if(this.onEnteredFunction!=null)
         {
             this.onEnteredFunction();
         }
-        if(SceneFlag!=null){
-            switch(SceneFlag){
-                case "THIEDMODE_SELECT":{
-                  this.thirdModeChanged();
-                    SceneFlag=null;
-                    break;
-                }
-                default:{
-                    cc.log("SCENEFLAG=="+SceneFlag);
-                    break;
-                }
-            }
 
-        }
 
-        loadTime=new Date().getTime();
+        this.openSceneType();
+        var loadTime=new Date().getTime();
         cc.log("MainMenuScene onEnter end");
 	},
 
@@ -229,7 +207,7 @@ var MainMenuScene =SceneBase.extend(
         if(gSocketConn!=null)
             gSocketConn.UnRegisterEvent("onmessage",this.messageCallBack);
         this.removeAllChildrenWithCleanup(true);
-        gMainMenuScene=false;
+        gMainMenuScene=null;
         //全部清除方法
         for(var each in pageTimer){
             clearTimeout(pageTimer[each]);
@@ -237,7 +215,23 @@ var MainMenuScene =SceneBase.extend(
         cc.log("MainMenuScene onExit end");
     },
 
-    
+    openSceneType:function () {
+        if(SCENE_NAME!=null){
+            switch(SCENE_NAME){
+                case "MAINSCENE_THIEDMODE":{
+                    this.thirdModeChanged();
+                    SCENE_NAME=null;
+                    break;
+                }
+                default:{
+                    cc.log("SCENE_NAME=="+SCENE_NAME);
+                    SCENE_NAME=null;
+                    break;
+                }
+            }
+        }
+    },
+
     moveTofirstMode:function()
     {
 
@@ -815,9 +809,9 @@ var MainMenuScene =SceneBase.extend(
             }
             case "5"://K线数据
             {
-                if(gKlineScene==null)
+                if(gKlineScene==null){
                     gKlineScene=new KLineScene();
-
+                }
                 //接收到了K线数据的消息
                 gSocketConn.UnRegisterEvent("onmessage",gMainMenuScene.messageCallBack);
                 gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);

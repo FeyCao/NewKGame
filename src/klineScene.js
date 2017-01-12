@@ -1,4 +1,4 @@
-
+'use strict';
 var pageTimer = {} ; //定义计算器全局变量
 // //赋值模拟
 // pageTimer["timer1"] = setInterval(function(){},2000);
@@ -40,7 +40,7 @@ var KLineScene = SceneBase.extend(
 	middleHorizontalLineCount:11,	//在中间的横线的个数
 	
 	currentCandleIndex:0,		//当前显示的是第几个蜡烛，从0开始
-	CANDAL_DRAW_INTERVAL:500,		//每个K线相隔的时间
+	CANDAL_DRAW_INTERVAL:100,		//每个K线相隔的时间
 	currentCandleDrawInterval:null,	//当前的K线绘画间隔
 	drawCandleStoped:false,			//是否绘画停止了
 	
@@ -79,16 +79,18 @@ var KLineScene = SceneBase.extend(
 	},
 	onExit:function()
 	{
+		cc.log("KLineScene onExit Begin");
 		this._super();
 
 		 //全部清除方法
 		for(var each in pageTimer){
 			clearTimeout(pageTimer[each]);
 		}
-
 		cc.eventManager.removeAllListeners();
-		if(gSocketConn!=null)
+		if(gSocketConn!=null){
 			gSocketConn.UnRegisterEvent("onmessage",this.messageCallBack);
+		}
+
 		if(this.playerInfoLayer!=null)
 		{
 			this.playerInfoLayer.onExit();
@@ -657,7 +659,7 @@ var KLineScene = SceneBase.extend(
 		this.matchEndInfoLayer.applyParamsFromContent(content);
 		//content的内容为:   总用户个数(假设为2)#用户名A#收益率A#得分A#用户名B#收益率B#得分B#品种名字#起始日期#终止日期
 		this.matchEndInfoLayer.againCallBackFunction=function(){self.matchEndInfoLayer_Again()};
-		this.matchEndInfoLayer.replayCallBackFunction=function(){self.matchEndInfoLayer_Replay()};
+		this.matchEndInfoLayer.replayCallBackFunction=function(){self.toHome()};
 		this.matchEndInfoLayer.shareCallBackFunction=function(){self.matchEndInfoLayer_Share()};
 		this.matchEndInfoLayer.showLayer();
 		this.pauseLowerLayer();
@@ -724,7 +726,7 @@ var KLineScene = SceneBase.extend(
 
 
 		if(userInfo.matchMode==1){
-			SceneFlag = "THIEDMODE_SELECT";
+			SCENE_NAME = "MAINSCENE_THIEDMODE";
 			this.toHome();
 
 		}else{
@@ -919,7 +921,7 @@ var KLineScene = SceneBase.extend(
 		cc.log("toSetklinedata mainDataDayCount="+mainDataDayCount+" prevDataDayCount="+prevDataDayCount);
 		var playerListData=data["playerList"];
 		userInfo.playerListData=[];
-		for(var i=0;playerListData!=undefined&&i<playerListData.length;i++)
+		for(let i=0;playerListData!=undefined&&i<playerListData.length;i++)
 		{
 			var playerData=playerListData[i];
 			cc.log("playerData.userName="+playerData["userName"]);
@@ -1584,28 +1586,33 @@ var KLineScene = SceneBase.extend(
 
     toHome:function()
     {
-
-        if(typeof(gMainMenuScene)=="undefined")
-        {
+		cc.log("toHome:function()");
+		if(typeof(gMainMenuScene)=="undefined")
+		{
 			window.location.href="http://analyse.kiiik.com/";
-        }
-        else if(gMainMenuScene!=null)
-        {
-            //window.close();
-
-			if(gMainMenuScene==false)
-				gMainMenuScene=new MainMenuScene();
+		}
+		else if(gMainMenuScene==null)
+		{
+			//window.close();
+			cc.log("toHome1:function()");
+			gMainMenuScene=new MainMenuScene();
 			if(this.matchRunFlag==true){
 				var errorInfo = "";
 				gSocketConn.SendEndErrorMessage(errorInfo);
 			}
-			
+
 			gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
 			gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
 			//cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
 			cc.director.runScene(gMainMenuScene);
-            //window.location.href="clear.html";
-        }
+			//window.location.href="clear.html";
+		}else{
+			// cc.log("toHome2:function()");
+			// gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
+			// gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
+			//cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
+			cc.director.runScene(gMainMenuScene);
+		}
         //this.matchInfoLayer.disableAllButtons();
     },
 

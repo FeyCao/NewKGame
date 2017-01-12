@@ -69,7 +69,7 @@ SceneBase = cc.Scene.extend(
 
 		this.messageBoxSprite.addChild(mu,3);
 		// closeBtn=new Button("res/close.png");
-		closeBtn = new cc.MenuItemImage("res/close.png", "res/close.png", self.closeMessageBox, this);
+		var closeBtn = new cc.MenuItemImage("res/close.png", "res/close.png", self.closeMessageBox, this);
 		closeBtn.setPosition(cc.p(bgSize.width-40,bgSize.height-40));
 		mu.addChild(closeBtn);
 		// closeBtn.setClickEvent(function(){
@@ -78,7 +78,7 @@ SceneBase = cc.Scene.extend(
 		// 	}
 		// });
 
-		loginBtn= new cc.MenuItemImage("res/btn_login.png", "res/btn_login.png", self.login, this);//new Button("res/btn_login.png");
+		var loginBtn= new cc.MenuItemImage("res/btn_login.png", "res/btn_login.png", self.login, this);//new Button("res/btn_login.png");
 		loginBtn.setPosition(cc.p(bgSize.width/2,150));
 		mu.addChild(loginBtn);
 		// loginBtn.setClickEvent(function(){
@@ -102,7 +102,7 @@ SceneBase = cc.Scene.extend(
 
 
 		this.errorLayer=new cc.LayerColor(cc.color(0,0,0,127),size.width,size.height);
-		errorSprite=cc.Sprite.create("res/bg_message.png");
+		var errorSprite=cc.Sprite.create("res/bg_message.png");
 		// this.messageBoxSprite=cc.Sprite.create("res/messagebox.png");
 		errorSprite.setPosition(size.width / 2, size.height / 2);
 		errorSprite.setScale(fXScale,fYScale);
@@ -120,7 +120,7 @@ SceneBase = cc.Scene.extend(
 
 		errorSprite.addChild(Errormu,3);
 		// closeBtn=new Button("res/close.png");
-		closeErrorBtn = new cc.MenuItemImage("res/close.png", "res/close.png", self.closeErrorBox, this);
+		var closeErrorBtn = new cc.MenuItemImage("res/close.png", "res/close.png", self.closeErrorBox, this);
 		closeErrorBtn.setPosition(cc.p(bgSize.width-40,bgSize.height-40));
 		Errormu.addChild(closeErrorBtn);
 		// closeErrorBtn=new Button("res/close.png");

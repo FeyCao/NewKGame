@@ -61,7 +61,7 @@ var WhiteColor=cc.color(189,240,255,255);//白色
 var BlueColor=cc.color(7,64,111,255);//蓝色
 var lightBlueColor=cc.color(22,95,146,100);//浅蓝色
 
-var SceneFlag=null;
+var SCENE_NAME=null;
 var userInfo ={
     //主界面数据
     userId:null,//

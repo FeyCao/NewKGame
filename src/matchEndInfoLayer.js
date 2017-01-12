@@ -185,34 +185,9 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		// this.meBtnStart.setPosition(cc.p(size.width/2,posY));
 		mu.addChild(this.btnReplay);
 
-		// this.btnReplay=new Button("res/btnEnd.png");
-		// this.btnReplay.setClickEvent(function(){
-		// 	self.replay();
-		// });
-
-		// this.btnAgain=new Button("res/meBtnAgain.png");
-		// this.btnAgain.setClickEvent(function(){
-		// 	self.again();
-		// });
-
-		// this.btnShare=new Button("res/meBtnShare.png");
-		// this.btnShare.setClickEvent(function(){
-		// 	cc.log("res/meBtnShare.png Click!!!");
-		// 	self.share();
-		// });
-
-
-		// this.width = 985*this.fXScale;
-		// this.height = 483*this.fYScale;
-		// this.btnReplay.setScale(this.fXScale,this.fYScale);
-		// this.btnShare.setScale(this.fXScale,this.fYScale);
-		// this.btnAgain.setScale(this.fXScale,this.fYScale);
 		this.btnReplay.setPosition(bgSize.width/4,posBtnY);
 		this.btnAgain.setPosition(bgSize.width/2,posBtnY);
 		this.btnShare.setPosition(3*bgSize.width/4,posBtnY);
-		// this.bgSprtie.addChild(this.btnReplay,2);
-		// this.bgSprtie.addChild(this.btnAgain,2);
-		// this.bgSprtie.addChild(this.btnShare,2);
 
 		this.bgSprtie.setPosition(this.width / 2, this.height / 2);
 		// this.bgSprtie.setScale(this.fXScale,this.fYScale);
@@ -411,27 +386,6 @@ var MatchEndInfoLayer= cc.Layer.extend({
 				this.tableView.reloadData();
 				// this.tableView.setVisible(true);
 			}
-				// 	var arrDemo = ;
-//
-// arrDemo[0] = 10;
-// arrDemo[1] = 50;
-// arrDemo[2] = 51;
-// arrDemo[3] = 100;
-//
-// arrDemo.sort(); //调用sort方法后，数组本身会被改变，即影响原数组
-//
-// alert(arrDemo);//10,100,50,51 默认情况下sort方法是按ascii字母顺序排序的，而非我们认为是按数字大小排序
-//
-// arrDemo.sort(function(a,b){return a>b?1:-1});//从小到大排序
-//
-// alert(arrDemo);//10,50,51,100
-//
-// arrDemo.sort(function(a,b){return a<b?1:-1});//从大到小排序
-//
-// alert(arrDemo);//100,51,50,10
-				//
-
-				// this.setPlayerEndInfo();
 
 				break;
 			}
@@ -537,13 +491,13 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 		{
 
 			var rankFlag = parseInt(userInfo.endInfoOfAllPlayers[idx]["ranking"]);
-			rankLabel = new cc.LabelTTF(rankFlag, "Arial", 35.0);
+			let rankLabel = new cc.LabelTTF(rankFlag, "Arial", 35.0);
 			rankLabel.setPosition(cc.p(20,40));
 			rankLabel.setAnchorPoint(0,0.5);
 			sprite.addChild(rankLabel);
 			//设置用户名
-			strNameText= userInfo.endInfoOfAllPlayers[idx]["nickName"];
-			textNameLabel = new cc.LabelTTF(cutstr(strNameText,11), "Arial", 25.0);
+			let strNameText= userInfo.endInfoOfAllPlayers[idx]["nickName"];
+			let textNameLabel = new cc.LabelTTF(cutstr(strNameText,11), "Arial", 25.0);
 			textNameLabel.setPosition(cc.p(200,40));
 			// textNameLabel.setAnchorPoint(0,0.5);
 			sprite.addChild(textNameLabel);
@@ -551,8 +505,8 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 			//strText= "名字:"+userInfo.MatchListData[idx]["uid"]+"  收益:"+userInfo.MatchListData[idx]["score"]+"  "+userInfo.MatchListData[idx]["matchTime"];
 
 			//设置收益
-			strScoreText= userInfo.endInfoOfAllPlayers[idx]["score"]+"%";
-			textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
+			let strScoreText= userInfo.endInfoOfAllPlayers[idx]["score"]+"%";
+			let textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
 			textScoreLabel.setPosition(cc.p(500,40));
 			textScoreLabel.setAnchorPoint(0.5,0.5);
 			if(userInfo.endInfoOfAllPlayers[idx]["score"]>0)
@@ -572,7 +526,7 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 
 			//设置查看交易记录按钮
 			//设置查看交易记录按钮
-			recordButton=new Button("res/btnRecord.png");
+			let recordButton=new Button("res/btnRecord.png");
 			recordButton.setAnchorPoint(0,0.5);
 			recordButton.setPosition(cc.p(800,40));
 			sprite.addChild(recordButton);

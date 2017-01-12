@@ -1,5 +1,4 @@
 // JavaScript Document
-var KlineLayerLogFlag = false;
 var KlineLayer= BaseGraphLayer.extend({
 	upArrowSprites:[],			//向上的箭头的图片
 	downArrowSprites:[],		//向下的箭头的图片
@@ -26,7 +25,6 @@ var KlineLayer= BaseGraphLayer.extend({
 	calculateMaxMinAtIndex:function(index)
 	{
 		var prevClose=this.getFirstPrevClose();
-		if(KlineLayerLogFlag!=false)
 		cc.log("calculateMaxMinAtIndex before index="+index+" this.maxValue="+this.maxValue+", this.minValue="+this.minValue);
 		if(prevClose==0)
 		{
@@ -48,7 +46,6 @@ var KlineLayer= BaseGraphLayer.extend({
 		{
 			this.minValue=thisI;
 		}
-		if(KlineLayerLogFlag!=false)
 		cc.log("calculateMaxMinAtIndex index="+index+" this.maxValue="+this.maxValue+", this.minValue="+this.minValue);
 	},
 	
@@ -60,7 +57,6 @@ var KlineLayer= BaseGraphLayer.extend({
 		if(start<0)
 		{
 			start=this.klineDataPrev.length+start;
-			if(KlineLayerLogFlag!=false)
 			cc.log("calculateMaxMinBetweenIndex 计算以前的 start="+start);
 			
 			this.minValue=this.klineDataPrev[start].c;

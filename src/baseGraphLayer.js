@@ -10,7 +10,9 @@ var BaseGraphLayer= cc.Layer.extend({
 	barvsgapratio:2,			//蜡烛宽度和蜡烛间距离的比值
 	
 	klineData:null,				//K线数据，一个数组，数组中存放的是开高低收量
-	klineDataPrev:null,			//前面日期的K线数据，
+	mainDataDayCount:0,
+	prevDataDayCount:120,		//历史数据天数，
+	// klineDataPrev:null,			//前面日期的K线数据，
 	
 	maxValue:null,				//这个图上的最大值
 	minValue:null,				//这个图上的最小值

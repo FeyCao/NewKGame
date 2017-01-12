@@ -1,4 +1,5 @@
 // JavaScript Document
+'use strict';
 var setLabelColor = function(gain){
     if(gain>0){
         return RedColor;
@@ -9,7 +10,7 @@ var setLabelColor = function(gain){
     }
 };
 
-var GetLength = function (str) {
+function GetLength(str) {
     ///<summary>获得字符串实际长度，中文2，英文1</summary>
     ///<param name="str">要获得长度的字符串</param>
     var realLength = 0, len = str.length, charCode = -1;
@@ -33,10 +34,10 @@ var GetLength = function (str) {
 function cutstr(str, len) {
     var str_length = 0;
     var str_len = 0;
-    str_cut = new String();
+    var str_cut = new String();
     str_len = str.length;
     for (var i = 0; i < str_len; i++) {
-        a = str.charAt(i);
+        let a = str.charAt(i);
         str_length++;
         if (escape(a).length > 4) {
             //中文字符的长度经编码之后大于4
