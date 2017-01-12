@@ -1701,6 +1701,7 @@ cc._initSys = function (config, CONFIG_KEY) {
         var shieldOs = [sys.OS_ANDROID];
         var shieldBrowser = [];
         var tmpCanvas = cc.newElement("canvas");
+        // var wsURL =  config[CONFIG_KEY.wsURL];
         cc._renderType = cc._RENDER_TYPE_CANVAS;
         cc._supportRender = false;
 
@@ -2111,6 +2112,7 @@ cc.game = /** @lends cc.game# */{
         showFPS: "showFPS",
         frameRate: "frameRate",
         id: "id",
+        wsURL:"wsURL",
         renderMode: "renderMode",
         jsList: "jsList",
         classReleaseMode: "classReleaseMode"

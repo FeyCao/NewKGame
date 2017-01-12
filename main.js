@@ -22,6 +22,11 @@
     "frameRate"     : 60,
     // "frameRate" set the wanted frame rate for your game, but the real fps depends on your game implementation and the running environment.
 
+    "noCache"       : false,
+    // "noCache" set whether your resources will be loaded with a timestamp suffix in the url.
+    // In this way, your resources will be force updated even if the browser holds a cache of it.
+    // It's very useful for mobile browser debuging.
+
     "id"            : "gameCanvas",
     // "gameCanvas" sets the id of your canvas element on the web page, it's useful only on web.
 
@@ -47,21 +52,45 @@
  *
  */
 
+var gDesignResolutionWidth=736;
+var gDesignResolutionHeight=414;
+var gKlineScene;
+var gMainMenuScene;
+var gShareManager=null;
+var gSocketConn=null;
+var gPlayerName=null;			//用户名
+var gPlayerAvatarSprite=null;	//头像
+
+var gLoginManager=null;
 cc.game.onStart = function(){
     if(!cc.sys.isNative && document.getElementById("cocosLoading")) //If referenced loading.js, please remove it
         document.body.removeChild(document.getElementById("cocosLoading"));
 
-    // Pass true to enable retina display, disabled by default to improve performance
-    cc.view.enableRetina(false);
+    // Pass true to enable retina display, on Android disabled by default to improve performance
+    // cc.view.enableRetina(cc.sys.os === cc.sys.OS_IOS ? true : false);
+    cc.view.enableRetina(true);
     // Adjust viewport meta
     cc.view.adjustViewPort(true);
+
+    // Uncomment the following line to set a fixed orientation for your game
+    // cc.view.setOrientation(cc.ORIENTATION_PORTRAIT);
+
     // Setup the resolution policy and design resolution size
-    cc.view.setDesignResolutionSize(800, 450, cc.ResolutionPolicy.SHOW_ALL);
+    cc.view.setDesignResolutionSize(gDesignResolutionWidth, gDesignResolutionHeight, cc.ResolutionPolicy.SHOW_ALL);
+
     // The game will be resized when browser size change
     cc.view.resizeWithBrowserSize(true);
+
     //load resources
     cc.LoaderScene.preload(g_resources, function () {
-        cc.director.runScene(new HelloWorldScene());
+        if(typeof(shareFlag)!="undefined"&&shareFlag==true){
+            cc.director.runScene(new ShareLoadScene());//分享
+        }else{
+            cc.director.runScene(new TempLoadScene());
+        }
+        //
+        // cc.director.runScene(new MainMenuScene());
+        // cc.director.runScene(new KLineScene());
     }, this);
 };
 cc.game.run();

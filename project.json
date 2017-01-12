@@ -1,17 +1,48 @@
 {
     "project_type": "javascript",
-
     "debugMode" : 1,
     "showFPS" : true,
-    "frameRate" : 60,
+    "frameRate" : 30,
+    "noCache" : false,
     "id" : "gameCanvas",
-    "renderMode" : 0,
+    "renderMode" : 1,
     "engineDir":"frameworks/cocos2d-html5",
 
-    "modules" : ["cocos2d"],
+    "modules" : ["cocos2d","gui","shape-nodes"],
 
     "jsList" : [
         "src/resource.js",
-        "src/app.js"
+        "src/app.js",
+        "src/sceneBase.js",
+        "src/baseGraphLayer.js",
+        "src/playerInfoLayer.js",
+        "src/klineLayer.js",
+        "src/volumnTechLayer.js",
+        "src/matchInfoLayer.js",
+        "src/klineScene.js",
+        "src/loginManager.js",
+        "src/tempLoadScene.js",
+        "src/mainMenuScene.js",
+        "src/loginScene.js",
+        "src/tais.js",
+        "src/taisMa.js",
+        "src/taisEma.js",
+        "src/taisMacd.js",
+        "src/matchEndInfoLayer.js",
+        "src/socketConn.js",
+        "src/util.js",
+        "src/packet.js",
+        "src/progressLayer.js",
+        "src/zhanjiView.js",
+        "src/rankView.js",
+        "src/controlView.js",
+        "src/helpView.js",
+        "src/dataManager.js",
+        "src/server.js",
+        "src/matchView.js",
+        "src/button.js",
+        "src/checkButton.js",
+        "src/shareManager.js",
+        "src/shareLoadScene.js"
     ]
 }
