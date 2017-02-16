@@ -491,13 +491,13 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 		{
 
 			var rankFlag = parseInt(userInfo.endInfoOfAllPlayers[idx]["ranking"]);
-			let rankLabel = new cc.LabelTTF(rankFlag, "Arial", 35.0);
+			var rankLabel = new cc.LabelTTF(rankFlag, "Arial", 35.0);
 			rankLabel.setPosition(cc.p(20,40));
 			rankLabel.setAnchorPoint(0,0.5);
 			sprite.addChild(rankLabel);
 			//设置用户名
-			let strNameText= userInfo.endInfoOfAllPlayers[idx]["nickName"];
-			let textNameLabel = new cc.LabelTTF(cutstr(strNameText,11), "Arial", 25.0);
+			var strNameText= userInfo.endInfoOfAllPlayers[idx]["nickName"];
+			var textNameLabel = new cc.LabelTTF(cutstr(strNameText,11), "Arial", 25.0);
 			textNameLabel.setPosition(cc.p(200,40));
 			// textNameLabel.setAnchorPoint(0,0.5);
 			sprite.addChild(textNameLabel);
@@ -505,8 +505,8 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 			//strText= "名字:"+userInfo.MatchListData[idx]["uid"]+"  收益:"+userInfo.MatchListData[idx]["score"]+"  "+userInfo.MatchListData[idx]["matchTime"];
 
 			//设置收益
-			let strScoreText= userInfo.endInfoOfAllPlayers[idx]["score"]+"%";
-			let textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
+			var strScoreText= userInfo.endInfoOfAllPlayers[idx]["score"]+"%";
+			var textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
 			textScoreLabel.setPosition(cc.p(500,40));
 			textScoreLabel.setAnchorPoint(0.5,0.5);
 			if(userInfo.endInfoOfAllPlayers[idx]["score"]>0)
@@ -526,7 +526,7 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 
 			//设置查看交易记录按钮
 			//设置查看交易记录按钮
-			let recordButton=new Button("res/btnRecord.png");
+			var recordButton=new Button("res/btnRecord.png");
 			recordButton.setAnchorPoint(0,0.5);
 			recordButton.setPosition(cc.p(800,40));
 			sprite.addChild(recordButton);

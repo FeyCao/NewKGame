@@ -330,7 +330,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 				}
 				cc.log("loadImg="+userInfo.headSprite); // self.addChild(logo);
 			});
-            for(let i=0;i<userInfo.playerListData.length;i++)
+            for(var i=0;i<userInfo.playerListData.length;i++)
             {
 
 				var InfoposX =60;

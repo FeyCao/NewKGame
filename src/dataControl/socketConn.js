@@ -22,6 +22,7 @@ SocketConn.prototype.Connect=function(url)
 	ws.onmessage = function (evt) {
 		for(var i=0;i<self.onmessageevent.length;i++)
 		{
+			cc.log("onmessage==="+evt.data);
 			self.onmessageevent[i](evt.data);
 		}
 		cc.log("onmessage");

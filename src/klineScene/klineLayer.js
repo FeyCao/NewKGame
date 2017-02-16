@@ -158,12 +158,10 @@ var KlineLayer= BaseGraphLayer.extend({
 		needleColor=frameColor;
 		
 		//cc.log("c="+this.klineData[candleIndex].c+" o="+this.klineData[candleIndex].o+" x="+this.klineData[candleIndex].x+" i="+this.klineData[candleIndex].i+" frameColor.r="+frameColor.r+" g="+frameColor.g+" b="+frameColor.b);
-
-		// var needleWidth = 120/this.klineDataPrev.length;
-		var needleWidth = 0.5;
-
-		this.graphArea.drawSegment(cc.p(posX_Needle,posY_O>posY_C?posY_O:posY_C),cc.p(posX_Needle,posY_X),needleWidth,needleColor);//上影线
-		this.graphArea.drawSegment(cc.p(posX_Needle,posY_I),cc.p(posX_Needle,posY_O<posY_C?posY_O:posY_C),needleWidth,needleColor);//下影线
+		
+		
+		this.graphArea.drawSegment(cc.p(posX_Needle,posY_O>posY_C?posY_O:posY_C),cc.p(posX_Needle,posY_X),0.4,needleColor);//上影线
+		this.graphArea.drawSegment(cc.p(posX_Needle,posY_I),cc.p(posX_Needle,posY_O<posY_C?posY_O:posY_C),0.4,needleColor);//下影线
 		this.graphArea.drawRect(origin,destination,innerColor,1,frameColor);		//实体
 	},
 	
@@ -186,7 +184,7 @@ var KlineLayer= BaseGraphLayer.extend({
 		 
 		 this.upArrowSprites.push(upArrowSprite);
  		 this.upArrowSpriteIndexs.push(index);
-		 cc.log("setUpArrowIndex...");
+		 
 		 this.moveUpArrowToItsPosition(this.upArrowSpriteIndexs.length-1);
 	},
 	
@@ -248,7 +246,6 @@ var KlineLayer= BaseGraphLayer.extend({
 		 this.downArrowSprites.push(downArrowSprite);
  		 this.downArrowSpriteIndexs.push(index);
 		 this.moveDownArrowToItsPosition(this.downArrowSpriteIndexs.length-1);
-		cc.log("setDownArrowIndex...");
 	},
 	
 	moveAllDownArrowToItsPosition:function()
@@ -303,15 +300,12 @@ var KlineLayer= BaseGraphLayer.extend({
 		{
 			this.downArrowSprites[i].removeFromParent(true);
 		}
-
 		this.downArrowSprites=[];
 		this.downArrowSprites.length=0;
 		this.upArrowSpriteIndexs=[];		//向上箭头的图片是在哪个index的位置
 		this.upArrowSpriteIndexs.length=0;
 		this.downArrowSpriteIndexs=[];		//向下箭头的图片是在哪个index的位置
 		this.downArrowSpriteIndexs.length=0;
-
 		cc.log("clearUpDownArrows");
 	},
-
 });

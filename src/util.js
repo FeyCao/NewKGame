@@ -1,5 +1,5 @@
 // JavaScript Document
-'use strict';
+// 'use strict';
 var setLabelColor = function(gain){
     if(gain>0){
         return RedColor;
@@ -8,7 +8,7 @@ var setLabelColor = function(gain){
     }else {
         return GreenColor;
     }
-};
+}
 
 function GetLength(str) {
     ///<summary>获得字符串实际长度，中文2，英文1</summary>
@@ -20,7 +20,7 @@ function GetLength(str) {
         else realLength += 2;
     }
     return realLength;
-};
+}
 
 //js截取字符串，中英文都能用
 //如果给定的字符串大于指定长度，截取指定长度返回，否者返回源字符串。
@@ -37,7 +37,7 @@ function cutstr(str, len) {
     var str_cut = new String();
     str_len = str.length;
     for (var i = 0; i < str_len; i++) {
-        let a = str.charAt(i);
+        var  a = str.charAt(i);
         str_length++;
         if (escape(a).length > 4) {
             //中文字符的长度经编码之后大于4

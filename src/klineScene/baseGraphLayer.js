@@ -7,12 +7,10 @@ var BaseGraphLayer= cc.Layer.extend({
 	lblTaisInfos:null,			//指标的数值的区域，还有颜色信息等
 	candleWidth:null,			//蜡烛宽度
 	candleGapWidth:null,		//蜡烛间距离
-	barvsgapratio:2,			//蜡烛宽度和蜡烛间距离的比值
+	barvsgapratio:1,			//蜡烛宽度和蜡烛间距离的比值
 	
 	klineData:null,				//K线数据，一个数组，数组中存放的是开高低收量
-	mainDataDayCount:0,
-	prevDataDayCount:120,		//历史数据天数，
-	// klineDataPrev:null,			//前面日期的K线数据，
+	klineDataPrev:null,			//前面日期的K线数据，
 	
 	maxValue:null,				//这个图上的最大值
 	minValue:null,				//这个图上的最小值
@@ -32,7 +30,7 @@ var BaseGraphLayer= cc.Layer.extend({
 		this.width=width;
 		this.height=height;
 		this.taisArray=[];
-		cc.log("this.width="+this.width+"this.height="+this.height);
+		cc.log("KLine this.width="+this.width+"this.height="+this.height);
 		//this.maxCandleCountPerPage=60;
 		//this.historyCandleCount=10;
 		//this.pageIndex=0;
@@ -44,7 +42,6 @@ var BaseGraphLayer= cc.Layer.extend({
 	onEnter:function () 
 	{
 		this._super();
-		// this.graphArea=new cc.DrawNode();//cc.DrawNodeCanvas
 		this.graphArea=new cc.DrawNodeCanvas();
 		//设置K线图的区域
 		this.graphArea.setPosition(cc.p(0,0));
@@ -140,7 +137,7 @@ var BaseGraphLayer= cc.Layer.extend({
 		else
 		{
 			this.klineDataPrev=null;
-			this.barvsgapratio=2;
+			this.barvsgapratio=1;
 		}
 
 		if(this.graphArea!=null)
@@ -164,6 +161,16 @@ var BaseGraphLayer= cc.Layer.extend({
 			//如果有指标，需要给指标设置数据
 			this.setKLineDataForTais();
 		}
+
+		var totalCandleCount=this.klineData.length;
+		cc.log("totalCandleCount=="+totalCandleCount);
+		if(totalCandleCount<240)
+		{
+			;
+		}else{
+			this.width *=totalCandleCount/240;
+		}
+
 	},
 	
 	clearKLineDataForTais:function()
@@ -207,23 +214,15 @@ var BaseGraphLayer= cc.Layer.extend({
 		{
 			if(this.klineDataPrev==null)
 			{
-				// var widthCount = (this.graphArea.width)/(1+this.klineData.length);
-				this.barvsgapratio = 120/this.klineData.length;
 				this.candleGapWidth=(this.graphArea.width)/(1+this.klineData.length*(this.barvsgapratio+1));
  				this.candleWidth=this.candleGapWidth*this.barvsgapratio;
 			}
 			else
 			{
-				// var widthCount = (this.graphArea.width)/(1+this.maxCandleCountPerPage);
-				this.barvsgapratio = 120/this.maxCandleCountPerPage;
 				this.candleGapWidth=(this.graphArea.width)/(1+this.maxCandleCountPerPage*(this.barvsgapratio+1));
 				this.candleWidth=this.candleGapWidth*this.barvsgapratio;
-				// this.candleGapWidth=widthCount*0.1;
-				// this.candleWidth=widthCount*0.9;
-
+				cc.log("this.candleGapWidth="+this.candleGapWidth+" this.candleWidth="+this.candleWidth);
 			}
-			cc.log("this.barvsgapratio="+this.barvsgapratio);
-			cc.log("this.candleGapWidth="+this.candleGapWidth+" this.candleWidth="+this.candleWidth);
 		}
 	},
 	
@@ -290,7 +289,9 @@ var BaseGraphLayer= cc.Layer.extend({
 	///画位于CurrentIndex的蜡烛线，如果大小变化了则需要重画
 	drawSingleCandleLineByCurrentIndex:function(currentIndex)
 	{
+
 		var totalCandleCount=this.klineData.length;
+		cc.log("totalCandleCount=="+totalCandleCount+"currentIndex=="+currentIndex);
 		if(currentIndex>=totalCandleCount)
 		{
 			//表示已经结束了
@@ -584,7 +585,9 @@ var BaseGraphLayer= cc.Layer.extend({
 	//清除所有的内容，包括画的线和指标信息表示
 	clearAllContents:function()
 	{
-		this.graphArea.clear();
+		if(this.graphArea!=null){
+			this.graphArea.clear();
+		}
 		for(var i=0;i<this.taisInfoLabelArray.length;i++)
 		{
 			this.taisInfoLabelArray[i].setVisible(false);

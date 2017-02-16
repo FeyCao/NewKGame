@@ -117,23 +117,17 @@ var MatchViewLayer = cc.Layer.extend({
             case 0:
             {
 
-                if(null!=gMainMenuScene)
-                {
-                    gSocketConn.BeginMatch(matchInfoMessage);
-                    userInfo.matchBeginFlag=true;
-                    cc.log("gMainMenuScene切换KGameScene场景调用完毕");
-                }else{
-                    var klineSceneNext=new KLineScene();
-                    klineSceneNext.onEnteredFunction=function(){
+                var klineSceneNext=new KLineScene();
+                klineSceneNext.onEnteredFunction=function(){
 
-                        // klineSceneNext.showProgress();
-                    };
-                    gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
-                    gSocketConn.BeginMatch(matchInfoMessage);
-                    //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
-                    cc.director.runScene(klineSceneNext);
-                    cc.log("klineSceneNext切换KGameScene场景调用完毕");
-                }
+                    // klineSceneNext.showProgress();
+                };
+                gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
+                gSocketConn.BeginMatch(matchInfoMessage);
+                userInfo.matchBeginFlag=true;
+                //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
+                cc.director.runScene(klineSceneNext);
+                cc.log("klineSceneNext切换KGameScene场景调用完毕");
 
                 break;
             }
@@ -164,24 +158,17 @@ var MatchViewLayer = cc.Layer.extend({
             }
             case 2:
             {
-                if(null!=gMainMenuScene)
-                {
-                    gSocketConn.BeginMatch(matchInfoMessage);
-                    userInfo.matchBeginFlag=true;
-                    cc.log("比赛开始请求。。。");
-                }else{
-                    var klineSceneNext=new KLineScene();
-                    klineSceneNext.onEnteredFunction=function(){
+                var klineSceneNext=new KLineScene();
+                klineSceneNext.onEnteredFunction=function(){
 
-                        // klineSceneNext.showProgress();
-                    };
-                    gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
-                    gSocketConn.BeginMatch(matchInfoMessage);
-                    //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
-                    cc.director.runScene(klineSceneNext);
-                    cc.log("klineSceneNext切换KGameScene场景调用完毕");
-                }
-
+                    // klineSceneNext.showProgress();
+                };
+                gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
+                gSocketConn.BeginMatch(matchInfoMessage);
+                userInfo.matchBeginFlag=true;
+                //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
+                cc.director.runScene(klineSceneNext);
+                cc.log("klineSceneNext切换KGameScene场景调用完毕");
                 break;
             }
             case 3:

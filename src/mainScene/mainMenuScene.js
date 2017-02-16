@@ -207,7 +207,7 @@ var MainMenuScene =SceneBase.extend(
         if(gSocketConn!=null)
             gSocketConn.UnRegisterEvent("onmessage",this.messageCallBack);
         this.removeAllChildrenWithCleanup(true);
-        gMainMenuScene=null;
+        gMainMenuScene=false;
         //全部清除方法
         for(var each in pageTimer){
             clearTimeout(pageTimer[each]);
@@ -256,8 +256,6 @@ var MainMenuScene =SceneBase.extend(
         // {
         //     gKlineScene=new KLineScene();
         // }
-
-
 
         userInfo.matchMode = 0;
         if(this.matchViewLayer==null){
@@ -829,6 +827,7 @@ var MainMenuScene =SceneBase.extend(
                     cc.log("get kline passed");
                 }
                 gKlineScene.getklinedata(packet.content);
+                gKlineScene.setDataForLlineLayer();
                 self.stopProgress();
                 break;
             }
