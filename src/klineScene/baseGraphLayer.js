@@ -214,7 +214,9 @@ var BaseGraphLayer= cc.Layer.extend({
 		{
 			if(this.klineDataPrev==null)
 			{
-				this.candleGapWidth=(this.graphArea.width)/(1+this.klineData.length*(this.barvsgapratio+1));
+				var length = this.klineData.length>180?240:this.klineData.length;
+				cc.log("var length=",length);
+				this.candleGapWidth=(this.graphArea.width)/(1+length*(this.barvsgapratio+1));
  				this.candleWidth=this.candleGapWidth*this.barvsgapratio;
 			}
 			else
@@ -241,7 +243,7 @@ var BaseGraphLayer= cc.Layer.extend({
 		{
 			pageCount=pageCount+1;
 		}
-		//cc.log("pageCount="+pageCount+" remaining="+remaining);
+		cc.log("pageCount="+pageCount+" remaining="+remaining);
 		if(this.pageIndex!=pageCount-1)
 		{
 			return this.historyCandleCount;
@@ -302,7 +304,7 @@ var BaseGraphLayer= cc.Layer.extend({
 		var lastmin=this.minValue;
 		if(lastmax==null && lastmin==null)
 		{
-			var startIndex=0;
+			var startIndex=0>currentIndex-120?0:currentIndex-120;
 			if(this.klineDataPrev!=null)
 			{
 				startIndex=this.getHistoryCandleIndexByPageIndex();

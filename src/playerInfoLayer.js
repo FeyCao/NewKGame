@@ -242,7 +242,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 				cc.log("PlayerInfoLayer setPlayerInfo userInfo.matchMode=",userInfo.matchMode);
 			}
 		}
-		this.refreshScoresByData();
+		// this.refreshScoresByData();
 	},
 	drawAreaBorder:function()
 	{
@@ -291,7 +291,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 	{
 
 		var self = this;
-
+		self.setPlayerInfo();
 		this.selfNameLabel.setString(cutstr(userInfo.nickName,11));
 		if(this.headSprite==null){
 			this.headSprite=cc.Sprite.create("res/bg_touxiang.png");
@@ -300,7 +300,6 @@ var PlayerInfoLayer= cc.Layer.extend({
 			self.headSprite.setScale(33/size.width,33/size.height);
 			this.addChild(this.headSprite,5);
 		}
-
 
 		var score=0;
 		var upColor=cc.color(252,0,1,0);
@@ -339,7 +338,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 					score=parseFloat(userInfo.playerListData[i]["score"]);
 					this.refreshScores(score);
 				}
-				if(i<self.playerInfo_bg.length)
+				if(i==0&&i<self.playerInfo_bg.length)
 				{
 					var url = userInfo.playerListData[i]["headPicture"];
 					cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
@@ -361,38 +360,38 @@ var PlayerInfoLayer= cc.Layer.extend({
 							var size = headSprite.getContentSize();
 							headSprite.setScale(90/size.width,90/size.height);
 							headSprite.setPosition(cc.p(60,190));
-							self.playerInfo_bg[i].addChild(headSprite,2);
+							self.playerInfo_bg[0].addChild(headSprite,2);
 						}
 						cc.log("loadImg"+userInfo.headSprite); // self.addChild(logo);
 					});
 				}
-				// if(i==1&&i<self.playerInfo_bg.length)
-				// {
-				// 	var url = userInfo.playerListData[i]["headPicture"];
-				// 	cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
-				// 		if(err){
-				// 			cc.log(err);
-				// 		}
-				// 		if(img){
-				// 			cc.log("img!=null"+img);
-				// 			var headSprite = new cc.Sprite();
-				// 			//     this.touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
-				// 			// cc.textureCache.addImage(imgUrl);
-				// 			var texture2d = new cc.Texture2D();
-				// 			texture2d.initWithElement(img);
-				// 			texture2d.handleLoadedTexture();
-				// 			headSprite.initWithTexture(texture2d);
-                //
-				// 			// this.touxiangSprite.setScale(fXScale,fYScale);
-                //
-				// 			var size = headSprite.getContentSize();
-				// 			headSprite.setScale(90/size.width,90/size.height);
-				// 			headSprite.setPosition(cc.p(60,190));
-				// 			self.playerInfo_bg[1].addChild(headSprite,2);
-				// 		}
-				// 		cc.log("loadImg"+userInfo.headSprite); // self.addChild(logo);
-				// 	});
-				// }
+				if(i==1&&i<self.playerInfo_bg.length)
+				{
+					var url = userInfo.playerListData[i]["headPicture"];
+					cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
+						if(err){
+							cc.log(err);
+						}
+						if(img){
+							cc.log("img!=null"+img);
+							var headSprite = new cc.Sprite();
+							//     this.touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
+							// cc.textureCache.addImage(imgUrl);
+							var texture2d = new cc.Texture2D();
+							texture2d.initWithElement(img);
+							texture2d.handleLoadedTexture();
+							headSprite.initWithTexture(texture2d);
+
+							// this.touxiangSprite.setScale(fXScale,fYScale);
+
+							var size = headSprite.getContentSize();
+							headSprite.setScale(90/size.width,90/size.height);
+							headSprite.setPosition(cc.p(60,190));
+							self.playerInfo_bg[1].addChild(headSprite,2);
+						}
+						cc.log("loadImg"+userInfo.headSprite); // self.addChild(logo);
+					});
+				}
 
 				// this.playerInfo_btn[i].setTexture
                 if(this.playerNameLabel[i]!=null && this.playerNameLabel[i]!=undefined)
