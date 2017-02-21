@@ -1091,11 +1091,18 @@ var KLineScene = SceneBase.extend(
 				this.refreshScores(this.currentCandleIndex);
 			}
 
-			if(this.currentCandleIndex==241||this.currentCandleIndex==301)
+			// if(this.currentCandleIndex==241||this.currentCandleIndex==301)
+			// {
+			// 	cc.log("drawAllCandlesOneByOne绘制120");
+			//  	this.moveByPos();
+			// }
+
+			if(this.currentCandleIndex>240)
 			{
 				cc.log("drawAllCandlesOneByOne绘制120");
-				this.moveByPos();
+				this.moveByOnePos();
 			}
+
 			//var curentIndex = this.currentCandleIndex+120;
 			var ended=this.klineLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
 			this.volumnTechLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
@@ -1401,6 +1408,17 @@ var KLineScene = SceneBase.extend(
 		// );
 
 	},
+	moveByOnePos:function () {
+
+
+		var posEnd0 = cc.p(-this.KlineWidth/120,0);
+		var moveLeft1  = cc.MoveBy.create(0.1,posEnd0);  // 左移
+		var moveLeft2  = cc.MoveBy.create(0.1,posEnd0);  // 左移
+		cc.log("posEnd1//比赛图 beginposEnd1=="+this.KlineWidth);
+		this.klineLayerMain.runAction(moveLeft1);
+		this.volumnTechLayerMain.runAction(moveLeft2);
+	},
+
 	moveByPos:function () {
 
 		// cc.MoveTo是“移动到这里"，而cc.MoveBy则是“相对于之前点再移动”，通俗一点就是说这里需要两个坐标pos1（x1，y1），pos2（x2，y2）。
