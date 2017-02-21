@@ -1012,11 +1012,6 @@ var KLineScene = SceneBase.extend(
 		this.phase2=true;
 		this.setPlayerInfo();
 		this.setDisableAllButtons();
-		if(this.matchInfoLayer!=null)
-		{
-			this.matchInfoLayer.disableAllButtons();
-			this.matchInfoLayer.setButtonsToNoPosition();
-		}
 
 		cc.log("setDataForLlineLayerTest:function()//比赛图 end");
 		this.mainLayerAnction();
@@ -1206,7 +1201,6 @@ var KLineScene = SceneBase.extend(
         // this.prevLayerAnction();
 
 		// this.mainLayerAnction();
-
 		this.matchRunFlag=true;
 		if(this.btnStart!=null)
 		{
@@ -1263,6 +1257,12 @@ var KLineScene = SceneBase.extend(
 		if(this.countBeginNumber==0 && this.countDownSprite!=null)
 		{
 			this.countBeginSprite.setVisible(false);
+			if(this.matchInfoLayer!=null)
+			{
+				this.matchInfoLayer.disableAllButtons();
+				this.matchInfoLayer.setButtonsToNoPosition();
+				this.matchInfoLayer.ableSpeedButtons();
+			}
 			//依次画后面的K线
 			this.drawAllCandlesOneByOne();
 			return;
