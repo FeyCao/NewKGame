@@ -44,7 +44,7 @@ var KLineScene = SceneBase.extend(
 	middleHorizontalLineCount:11,	//在中间的横线的个数
 	
 	currentCandleIndex:0,		//当前显示的是第几个蜡烛，从0开始
-	CANDAL_DRAW_INTERVAL:500,		//每个K线相隔的时间
+	CANDAL_DRAW_INTERVAL:100,		//每个K线相隔的时间
 	currentCandleDrawInterval:null,	//当前的K线绘画间隔
 	drawCandleStoped:false,			//是否绘画停止了
 	
@@ -1091,17 +1091,17 @@ var KLineScene = SceneBase.extend(
 				this.refreshScores(this.currentCandleIndex);
 			}
 
-			// if(this.currentCandleIndex==241||this.currentCandleIndex==301)
-			// {
-			// 	cc.log("drawAllCandlesOneByOne绘制120");
-			//  	this.moveByPos();
-			// }
-
-			if(this.currentCandleIndex>240)
+			if(this.currentCandleIndex==241||this.currentCandleIndex==301)
 			{
 				cc.log("drawAllCandlesOneByOne绘制120");
-				this.moveByOnePos();
+			 	this.moveByPos();
 			}
+
+			// if(this.currentCandleIndex>240)
+			// {
+			// 	cc.log("drawAllCandlesOneByOne绘制120");
+			// 	this.moveByOnePos();
+			// }
 
 			//var curentIndex = this.currentCandleIndex+120;
 			var ended=this.klineLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
@@ -1221,23 +1221,21 @@ var KLineScene = SceneBase.extend(
 		{
 			this.countDownSprite.setVisible(false);
 			this.setDataForLlineLayerTest();
-			this.countDownNumber=3;
 			// this.advanceToMainKLine_PhaseMatch();
 			return;
 		}
 		
 		if(this.countDownSprite==null)
 		{
-			this.countDownNumber=3;
+			this.countDownNumber=2;
 			//this.countDownSprite= cc.Sprite.create("res/cd_5.png");
-			this.countDownSprite= cc.LabelTTF.create(this.countDownNumber,"Arial",100);
+			this.countDownSprite= cc.LabelTTF.create("马上开始","Arial",50);
 			this.addChild(this.countDownSprite,8);
 		}
 		this.countDownSprite.setVisible(true);
-
 		this.countDownSprite.setPosition(this.size.width / 2, this.size.height / 2+25);
 		this.countDownSprite.setOpacity(255);
-		this.countDownSprite.setString(this.countDownNumber);
+		this.countDownSprite.setString("马上开始");
 
 		this.countDownNumber-=1;
 		var self=this;
@@ -1779,6 +1777,7 @@ var KLineScene = SceneBase.extend(
 		if(gKlineScene!=null)
 		{
 			gSocketConn.SendBeginMessage();
+            // gKlineScene.setDataForLlineLayerTest();
 			gKlineScene.setCountDownSprite();
 		}
 
