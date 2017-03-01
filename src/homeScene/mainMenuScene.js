@@ -32,6 +32,7 @@ var MainMenuScene =SceneBase.extend(
 	fourthMode:null,
     zhanjiInfoLayer:null,
     rankViewLayer:null,
+    loginViewLayer:null,
     controlViewLayer:null,
     helpViewLayer:null,
     matchViewLayer:null,
@@ -370,13 +371,21 @@ var MainMenuScene =SceneBase.extend(
 
 	zhanji:function()
 	{
-        cc.log("Waiting for zhanji...");
+        cc.log("Waiting for zhanji.userInfo.operationType=="+userInfo.operationType);
         //var userId=GetQueryString("userId");
         //userInfo.userId
-        this.showProgress();
-        if(userInfo.recordMode!=null)
-		gSocketConn.SendZhanjiMessage(userInfo.userId,0,userInfo.recordMode);
-        cc.log("zhanji...end");
+        if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
+            this.showLoginView();
+
+
+        }else{
+            this.showProgress();
+            if(userInfo.recordMode!=null){
+                gSocketConn.SendZhanjiMessage(userInfo.userId,0,userInfo.recordMode);
+            }
+            cc.log("zhanji...end");
+        }
+
 	},
 
     rank:function()
@@ -384,7 +393,9 @@ var MainMenuScene =SceneBase.extend(
 
         this.showProgress();
         if(userInfo.recordMode!=null)
+        {
             gSocketConn.SendRankMessage(userInfo.recordMode,userInfo.userId);
+        }
         cc.log("Rank...end");
     },
 
@@ -1034,6 +1045,26 @@ var MainMenuScene =SceneBase.extend(
     {
         //关闭战绩界面
         this.rankViewLayer.hideLayer();
+        this.resumeLowerLayer();
+    },
+
+    showLoginView:function()
+    {
+        cc.log("showLoginView begin");
+        var self=this;
+        if(this.loginViewLayer==null){
+            this.loginViewLayer=new LoginViewLayer();
+            this.loginViewLayer.setVisible(false);
+            this.loginViewLayer.setPosition(0,0);
+            this.otherMessageTipLayer.addChild(this.loginViewLayer, 1,this.loginViewLayer.getTag());
+            this.loginViewLayer.closeCallBackFunction=function(){self.LoginViewLayer_Close()};
+        }
+        this.loginViewLayer.showLayer();
+        this.pauseLowerLayer();
+    },
+    LoginViewLayer_Close:function () {
+        //关闭登录界面
+        this.loginViewLayer.hideLayer();
         this.resumeLowerLayer();
     },
     matchViewLayer_Close:function()

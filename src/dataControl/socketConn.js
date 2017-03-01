@@ -220,7 +220,6 @@ SocketConn.prototype.SendEHMessage=function(userId,matchId)//进入大厅的请�
 SocketConn.prototype.SendZhanjiMessage=function(userId,pageIdx,matchType)//战绩请求
 {
     var ehMsg="Z|"+userId+"#"+pageIdx+"#"+matchType+"|";
-	if(SocketConnLogFlag!=false)
     cc.log("send Z msg="+ehMsg);
     ws.send(ehMsg);
 }

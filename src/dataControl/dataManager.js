@@ -7,7 +7,8 @@ var Singleton = (function () {
         /*这里定义单例代码*/
         return {
             publicMethod: function () {
-                cc.log('hello world');
+                cc.log('hello world sys=='+sys.os);
+                cc.log("sys.OS_WINDOWS=="+sys.OS_WINDOWS+"sys.isMobile=="+sys.isMobile+"sys.isNative=="+sys.isNative);
             },
             publicProperty: 'test'
         };

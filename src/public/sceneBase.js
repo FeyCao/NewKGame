@@ -297,15 +297,21 @@ SceneBase = cc.Scene.extend(
 	login:function() {
 
 		this.closeMessageBox();
-		cc.log("login sceneBase");
+		cc.log("login sceneBase::sys.os=="+sys.os);
 
-		if(sys.os === sys.OS_IOS || sys.os === sys.OS_OSX){
-			var url = "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";
-			// cc.log(url);
+		// if(sys.os===sys.OS_WINDOWS||sys.os===sys.OS_OSX) {//浏览器模式
+        //
+		// }
+		if(sys.isMobile==false&&sys.isNative==false) {//浏览器模式
+
+			this.messageBoxLayer.setVisible(false);
+			this.resumeLowerLayer();
+
 		}else{
 			var url = "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";
+			window.open(url);
 			// cc.view.enableRetina(true);
 		}
-		window.open(url);
+
 	}
 });
