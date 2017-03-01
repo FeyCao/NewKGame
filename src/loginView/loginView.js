@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016-12-13.
  */
-var MatchViewLayer = cc.Layer.extend({
+var loginViewLayer = cc.Layer.extend({
 
     closeCallBackFunction:null,
 
@@ -91,11 +91,9 @@ var MatchViewLayer = cc.Layer.extend({
         beginButton.setClickEvent(function(){
             cc.log("soundBgButton ClickEvent");
 
-
         });
         // beginButton.setTextureByStatus(!userInfo.bgSoundFlag);
         this.backgroundSprite.addChild(beginButton,5);
-
         unmatchButton=new CheckButton("res/btn_unmatch.png","res/btn_unmatch.png");//new Button("res/btn_mode1d.png");
         unmatchButton.setPosition(cc.p(bgSize.width/2,posY));
         // soundButton.setScale(0.8);
@@ -117,8 +115,6 @@ var MatchViewLayer = cc.Layer.extend({
         }
     },
 
-
-
     showLayer:function()
     {
         this.setVisible(true);
@@ -133,10 +129,5 @@ var MatchViewLayer = cc.Layer.extend({
         this.scheduler.pauseTarget(this);
         this.actionManager && this.actionManager.pauseTarget(this);
         cc.eventManager.pauseTarget(this,true);
-    },
-    refreshMatchViewLayer:function()
-    {
-
-
     },
 });
