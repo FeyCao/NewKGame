@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016-12-13.
  */
-var loginViewLayer = cc.Layer.extend({
+var LoginViewLayer = cc.Layer.extend({
 
     closeCallBackFunction:null,
 
@@ -39,72 +39,27 @@ var loginViewLayer = cc.Layer.extend({
         var fXScale = size.width/1280;
         var fYScale = size.height/720;
 
-
-        this.backgroundSprite=cc.Sprite.create("res/bg_match.png");
+        console.log("res.LOGIN_BG_png=="+res.LOGIN_BG_png);
+        this.backgroundSprite=cc.Sprite.create(res.LOGIN_BG_png);
         this.backgroundSprite.setScale(fXScale,fYScale);
         this.backgroundSprite.setPosition(size.width/2,size.height/2);
         this.addChild(this.backgroundSprite);
 
         var bgSize = this.backgroundSprite.getContentSize();
 
-        cc.log("closeButton ClickEvent"+bgSize.width);
-        this.closeButton=new Button("res/close.png");
-        // this.closeButton.setScale(fXScale,fYScale);
-        //this.closeButton.setPosition(cc.p(size.width,size.height));
-        this.closeButton.setPosition(cc.p(bgSize.width-40,bgSize.height-40));
-        this.closeButton.setClickEvent(function(){
 
-            self.toMainScene();
-        });
-        this.backgroundSprite.addChild(this.closeButton);
-
-
-
-        // var fontSize = 40;
-        // // var posY = bgSize.height/2-20;
-        // // var posX = 100;
-        var posX = 100;
-        var posY = 100;
-        // var posX1 =50;
-        // // var posY1 =20;
-        // text1Label = new cc.LabelTTF( "音乐", "Arial", fontSize);
-        // text1Label.setPosition(cc.p(posX+posX1,posY+120));
-        // text1Label.setAnchorPoint(0,0.5);
-        // text1Label.setColor(WhiteColor);
-        // this.backgroundSprite.addChild(text1Label);
-        //
-        // text2Label = new cc.LabelTTF( "音效", "Arial", fontSize);
-        // text2Label.setPosition(cc.p(posX+posX1,posY));
-        // text2Label.setAnchorPoint(0,0.5);
-        // text2Label.setColor(WhiteColor);
-        // this.backgroundSprite.addChild(text2Label);
-        //
-        // text3Label = new cc.LabelTTF( "清晰度", "Arial", fontSize);
-        // text3Label.setPosition(cc.p(posX,posY-100));
-        // text3Label.setAnchorPoint(0,0.5);
-        // text3Label.setColor(WhiteColor);
-
-
-        beginButton=new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
-        beginButton.setPosition(cc.p(bgSize.width/2,posY));
-        // soundBgButton.setScale(0.8);
-        beginButton.setClickEvent(function(){
-            cc.log("soundBgButton ClickEvent");
-
-        });
-        // beginButton.setTextureByStatus(!userInfo.bgSoundFlag);
-        this.backgroundSprite.addChild(beginButton,5);
-        unmatchButton=new CheckButton("res/btn_unmatch.png","res/btn_unmatch.png");//new Button("res/btn_mode1d.png");
-        unmatchButton.setPosition(cc.p(bgSize.width/2,posY));
-        // soundButton.setScale(0.8);
-        unmatchButton.setClickEvent(function(){
-
-            // cc.audioEngine.stopMusic();
-        });
-        unmatchButton.setTextureByStatus(!userInfo.buttonSoundFlag);
-        this.backgroundSprite.addChild(unmatchButton,5);
-
-        this.refreshMatchViewLayer();
+        var mu = new cc.Menu();
+        mu.x = 0;
+        mu.y = 0;
+        this.backgroundSprite.addChild(mu,3);
+        // closeBtn=new Button("res/close.png");
+        var  closeBtn = new cc.MenuItemImage("res/close.png", "res/close.png", self.toMainScene, this);
+        closeBtn.setPosition(cc.p(bgSize.width-40,bgSize.height-40));
+        mu.addChild(closeBtn);
+        var  loginButton = new cc.MenuItemImage(res.LOGIN_BTN_png,res.LOGIN_BTN_png, self.login, this);
+        // knowBtn.setPosition(cc.p(bgSize.width/2,bgSize.height/7));
+        loginButton.setPosition(cc.p(bgSize.width/2,100));
+        mu.addChild(loginButton);
 
         return true;
     },
@@ -113,6 +68,30 @@ var loginViewLayer = cc.Layer.extend({
         if(this.closeCallBackFunction!=null){
             this.closeCallBackFunction();
         }
+    },
+
+    login:function()
+    {
+        //this.showMessageBox("用户名或密码错误");
+        //登录
+        var self=this;
+        var src="";
+        // if(src=="" && this.checkUsername()==false)
+        // {
+        //     self.showErrorBox("用户名只能包含英文和数字",function(){self.errorBoxClosed();});
+        //     return;
+        // }
+        // if(src=="" && this.checkPassword()==false)
+        // {
+        //     self.showErrorBox("密码只能包含英文和数字",function(){self.errorBoxClosed();});
+        //     return;
+        // }
+        //
+        // this.username=this.usernameInputEx.getString();
+        // this.password=this.pwdInputEx.getString();
+        //
+        // gLoginManager.Login(this.username,this.password,src,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+        // this.showProgress();
     },
 
     showLayer:function()
@@ -129,5 +108,28 @@ var loginViewLayer = cc.Layer.extend({
         this.scheduler.pauseTarget(this);
         this.actionManager && this.actionManager.pauseTarget(this);
         cc.eventManager.pauseTarget(this,true);
+    },
+    //检查用户名是否合法
+    checkUsername:function()
+    {
+        var regex = new RegExp("^[A-Za-z0-9]+$");
+        var username=this.usernameInputEx.getString();
+        if(regex.test(username)==false)
+        {
+            return false;
+        }
+        return true;
+    },
+
+    //检查密码是否合法
+    checkPassword:function()
+    {
+        var regex = new RegExp("^[A-Za-z0-9]+$");
+        var password=this.pwdInputEx.getString();
+        if(regex.test(password)==false)
+        {
+            return false;
+        }
+        return true;
     },
 });
