@@ -32,7 +32,7 @@ var MainMenuScene =SceneBase.extend(
 	fourthMode:null,
     zhanjiInfoLayer:null,
     rankViewLayer:null,
-    loginViewLayer:null,
+
     controlViewLayer:null,
     helpViewLayer:null,
     matchViewLayer:null,
@@ -217,16 +217,17 @@ var MainMenuScene =SceneBase.extend(
     },
 
     openSceneType:function () {
-        if(SCENE_NAME!=null){
-            switch(SCENE_NAME){
+        if(currentScene!=null){
+            cc.log("openSceneType currentScene=="+currentScene);
+            switch(currentScene){
                 case "MAINSCENE_THIEDMODE":{
                     this.thirdModeChanged();
-                    SCENE_NAME=null;
+                    currentScene=null;
                     break;
                 }
                 default:{
-                    cc.log("SCENE_NAME=="+SCENE_NAME);
-                    SCENE_NAME=null;
+                    cc.log("default currentScene=="+currentScene);
+                    currentScene=null;
                     break;
                 }
             }
@@ -374,18 +375,23 @@ var MainMenuScene =SceneBase.extend(
         cc.log("Waiting for zhanji.userInfo.operationType=="+userInfo.operationType);
         //var userId=GetQueryString("userId");
         //userInfo.userId
-        if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
-            this.showLoginView();
 
-
-        }else{
-            this.showProgress();
-            if(userInfo.recordMode!=null){
-                gSocketConn.SendZhanjiMessage(userInfo.userId,0,userInfo.recordMode);
-            }
-            cc.log("zhanji...end");
+        this.showProgress();
+        if(userInfo.recordMode!=null){
+            gSocketConn.SendZhanjiMessage(userInfo.userId,0,userInfo.recordMode);
         }
+        cc.log("zhanji...end");
 
+        // if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
+        //     this.showLoginView();
+        //
+        // }else{
+        //     this.showProgress();
+        //     if(userInfo.recordMode!=null){
+        //         gSocketConn.SendZhanjiMessage(userInfo.userId,0,userInfo.recordMode);
+        //     }
+        //     cc.log("zhanji...end");
+        // }
 	},
 
     rank:function()
@@ -697,6 +703,7 @@ var MainMenuScene =SceneBase.extend(
         cc.log("setMainMenuScenedata jsonText parse over");
         // "winOfMatchForOne":0,"sumOfMatchForOne":3,"winOfMatchForMore":0,"sumOfMatchForMore":0,"winOfMatchForAI":8,"sumOfMatchForAI":11,"gainCumulation":"-6.223","sumOfAllMatch":3}
 
+        userInfo.userId = data["uid"];
         userInfo.nickName=data["nickName"];
         userInfo.headSprite=data["headPicture"];
         userInfo.winOfMatchForOne=data["winOfMatchForOne"];
@@ -720,18 +727,37 @@ var MainMenuScene =SceneBase.extend(
 	{
 		var self=gMainMenuScene;
 		var packet=Packet.prototype.Parse(message);
-        cc.log("messageCallBack mainScene message callback message=###"+message+"###");
+        cc.log("messageCallBack mainScene message callback message");
 		if(packet==null) return;
         switch(packet.msgType)
         {
-            case "":
+            case "1"://切换登录
             {
-                cc.log("gMainMenuScene packet.msgType =''");
+                cc.log("gMainMenuScene packet.msgType ="+packet.msgType);
+                if(self.loginViewLayer!=null){
+                    self.LoginViewLayer_Close();
+                }
+
+                // userId:null,//
+                // 	deviceId:null,//设备号
+                // userInfo.username=gPlayerName;
+                // userInfo.password=packet.content.split("#")[1];
+                //更新用户信息
+                userInfo.userId=packet.content.split("#")[0];
+                userInfo.source=packet.content.split("#")[1];
+                userInfo.operationType=1;//登录方式记录为
+                // self.setMainMenuScenedata(packet.content);
+                // cc.log("get MainMenuScene passed");
+                // self.stopProgress();
+
                 break;
             }
             case "P"://接收到了大厅数据的消息
             {
                 cc.log("call get MainMenuScene data");
+                if(gMainMenuScene==false){
+                    gMainMenuScene==new MainMenuScene();
+                }
                 self.setMainMenuScenedata(packet.content);
                 cc.log("get MainMenuScene passed");
                 self.stopProgress();
@@ -944,11 +970,28 @@ var MainMenuScene =SceneBase.extend(
             {
                 if(packet.content=="SUCCESS"){
                     userInfo.matchBeginFlag=false;
-                    cc.log("messageCallBack.mainScene.default.packet.msgType="+packet.msgType+"=== UNMATCH SUCCESSpacket.content=="+ packet.content);
+                    cc.log("messageCallBack.mainScen.packet.msgType="+packet.msgType+"=== UNMATCH SUCCESSpacket.content=="+ packet.content);
                 }else {
-                    cc.log("messageCallBack.mainScene.default.packet.msgType="+packet.msgType+"=== packet.content=="+ packet.content);
+                    cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=== packet.content=="+ packet.content);
                 }
 
+                break;
+            }
+
+            case "SENDCODE"://获取验证码test
+            {
+                cc.log("messageCallBack.mainScenepacket.msgType="+packet.msgType+"packet.content=="+ packet.content);
+                break;
+            }
+
+
+            case "LOGIN"://获取验证码test
+            {
+                cc.log("messageCallBack.mainScenepacket.msgType="+packet.msgType+"packet.content=="+ packet.content);
+                // gSocketConn.toLogin(packet.content);
+                // self.login();toLogin
+                self.stopProgress();
+                gSocketConn.SendToHMessage(packet.content);
                 break;
             }
 
@@ -958,7 +1001,6 @@ var MainMenuScene =SceneBase.extend(
                 break;
             }
         }
-
 
 	},
 
@@ -1048,25 +1090,6 @@ var MainMenuScene =SceneBase.extend(
         this.resumeLowerLayer();
     },
 
-    showLoginView:function()
-    {
-        cc.log("showLoginView begin");
-        var self=this;
-        if(this.loginViewLayer==null){
-            this.loginViewLayer=new LoginViewLayer();
-            this.loginViewLayer.setVisible(false);
-            this.loginViewLayer.setPosition(0,0);
-            this.otherMessageTipLayer.addChild(this.loginViewLayer, 1,this.loginViewLayer.getTag());
-            this.loginViewLayer.closeCallBackFunction=function(){self.LoginViewLayer_Close()};
-        }
-        this.loginViewLayer.showLayer();
-        this.pauseLowerLayer();
-    },
-    LoginViewLayer_Close:function () {
-        //关闭登录界面
-        this.loginViewLayer.hideLayer();
-        this.resumeLowerLayer();
-    },
     matchViewLayer_Close:function()
     {
         //关闭战绩界面

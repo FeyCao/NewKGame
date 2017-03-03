@@ -6,7 +6,8 @@ SceneBase = cc.Scene.extend(
 	errorLayer:null,
 	
 	otherMessageTipLayer:null,
-	
+	loginViewLayer:null,
+
 	confirmBtn:null,
 	messageBoxSprite:null,
 	messageLabel:null,
@@ -302,16 +303,36 @@ SceneBase = cc.Scene.extend(
 		// if(sys.os===sys.OS_WINDOWS||sys.os===sys.OS_OSX) {//浏览器模式
         //
 		// }
-		if(sys.isMobile==false&&sys.isNative==false) {//浏览器模式
 
-			this.messageBoxLayer.setVisible(false);
-			this.resumeLowerLayer();
+		if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
 
-		}else{
+			this.showLoginView();
+
+		}
+		else{
 			var url = "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";
 			window.open(url);
 			// cc.view.enableRetina(true);
 		}
 
+	},
+	showLoginView:function()
+	{
+		cc.log("showLoginView begin");
+		var self=this;
+		if(this.loginViewLayer==null){
+			this.loginViewLayer=new LoginViewLayer();
+			this.loginViewLayer.setVisible(false);
+			this.loginViewLayer.setPosition(0,0);
+			this.otherMessageTipLayer.addChild(this.loginViewLayer, 1,this.loginViewLayer.getTag());
+			this.loginViewLayer.closeCallBackFunction=function(){self.LoginViewLayer_Close()};
+		}
+		this.loginViewLayer.showLayer();
+		this.pauseLowerLayer();
+	},
+	LoginViewLayer_Close:function () {
+		//关闭登录界面
+		this.loginViewLayer.hideLayer();
+		this.resumeLowerLayer();
 	}
 });

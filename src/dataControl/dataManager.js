@@ -54,15 +54,14 @@ SOURCE_ZSQQ = "ZSQQ";     //掌上全球APP
 SOURCE_ZZFW = "ZZFW";     //增值服务中心网站
 SOURCE_TEST = "TEST";     //东航金控APP
 SOURCE_WEB = "SWEB";      //通过web访问
-
 var RedColor=cc.color(255,27,27,255);//红色
 var YellowColor=cc.color(255,217,0,255);//黄色
 var GreenColor=cc.color(6,224,0,255);//绿色
-var WhiteColor=cc.color(189,240,255,255);//白色
+var WhiteColor=cc.color(255,255,255,255);//白色
 var BlueColor=cc.color(7,64,111,255);//蓝色
 var lightBlueColor=cc.color(22,95,146,100);//浅蓝色
+var BlackColor=cc.color(0,0,0,255);//黑色
 
-var SCENE_NAME=null;
 var userInfo ={
     //主界面数据
     userId:null,//

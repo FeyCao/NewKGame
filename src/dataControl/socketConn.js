@@ -109,7 +109,6 @@ SocketConn.prototype.UnRegisterEvent=function(eventname,callbackfunction)
 SocketConn.prototype.Login=function(username,password,source)
 {
 	var loginMsg="0|"+username+"#"+password+"#"+source+"|";
-	if(SocketConnLogFlag!=false)
 	cc.log("send login msg="+loginMsg);
 	ws.send(loginMsg);
 }
@@ -122,10 +121,17 @@ SocketConn.prototype.QuickLogin=function(source)
 	ws.send(quickLoginMsg);
 }
 
+SocketConn.prototype.toLogin=function(username,password)
+{
+	// LOGIN|mobile#code|
+	var loginMsg="LOGIN|"+username+"#"+password+"|";
+	cc.log("send toLogin msg="+loginMsg);
+	ws.send(loginMsg);
+}
+
 SocketConn.prototype.SendBeginMessage=function()
 {
-	if(SocketConnLogFlag!=false)
-    cc.log("send sBegin msg= BEGIN||");
+    cc.log("SocketConn send sBegin msg= BEGIN||");
     ws.send("BEGIN||");
 }
 
@@ -215,7 +221,13 @@ SocketConn.prototype.SendEHMessage=function(userId,matchId)//进入大厅的请�
     cc.log("send H msg="+ehMsg);
     ws.send(ehMsg);
 }
-
+SocketConn.prototype.SendToHMessage=function(message)//进入大厅的请求
+{
+	var ehMsg="P|"+message+"|";
+	// if(SocketConnLogFlag!=false)
+	cc.log("send H msg="+ehMsg);
+	ws.send(ehMsg);
+}
 
 SocketConn.prototype.SendZhanjiMessage=function(userId,pageIdx,matchType)//战绩请求
 {
@@ -241,9 +253,9 @@ SocketConn.prototype.SendInfoMessage=function(infoType,infoMsg)//发送不确定
 }
 
 
-/*SocketConn.prototype.ShareMessage=function(shareMsg)
+SocketConn.prototype.SendMoblieMessage=function(mobile)
 {
-	var shareMsg="G|"+shareMsg+"|";
-	cc.log("send share msg="+shareMsg);
-	ws.send(shareMsg);
-}*/
+	var moblieMsg="SENDCODE|"+mobile+"|";
+	cc.log("send moblieMsg msg="+moblieMsg);
+	ws.send(moblieMsg);
+}

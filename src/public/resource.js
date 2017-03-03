@@ -13,8 +13,8 @@ var res = {
  BG_playerInfo_png  :"res/playerInfo_bg.png",
 
  LOGIN_BG_png  :"res/login/bg_login.png",
- LOGIN_INFO_BG_png  :"res/login/info_bg.png",
- LOGIN_INFO_BG2_png  :"res/login/info_bg2.png",
+ LOGIN_BG1_png  :"res/login/info_bg.png",
+ LOGIN_BG2_png  :"res/login/blue_bg.png",
  LOGIN_SEND_BG_png  :"res/login/send_bg.png",
  LOGIN_SEND_BTN_png  :"res/login/send_btn.png",
  LOGIN_BTN_png  :"res/btn_login.png",

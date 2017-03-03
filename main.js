@@ -60,6 +60,7 @@ var gShareManager=null;
 var gSocketConn=null;
 var gPlayerName=null;			//用户名
 var gPlayerAvatarSprite=null;	//头像
+var currentScene = null;//记录当前显示的界面
 
 var gLoginManager=null;
 cc.game.onStart = function(){

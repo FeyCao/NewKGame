@@ -8,7 +8,7 @@
     "renderMode" : 1,
     "engineDir":"frameworks/cocos2d-html5",
 
-    "modules" : ["cocos2d","gui","shape-nodes"],
+    "modules" : ["cocos2d","gui","shape-nodes","editbox"],
 
     "jsList" : [
         "src/public/resource.js",

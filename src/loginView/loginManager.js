@@ -84,7 +84,7 @@ LoginManager.prototype.LoginOrQuickLogin=function()
 	if(this.operationType==1 || this.operationType==2)
 	{
 		var self=this;
-		gSocketConn.RegisterEvent("onmessage",this.LoginOrQucikLoginMessageCallback);
+		gSocketConn.RegisterEvent("onmessage",self.LoginOrQucikLoginMessageCallback);
 		if(this.operationType==1)
 		{
 			//登录
@@ -103,7 +103,7 @@ LoginManager.prototype.LoginOrQucikLoginMessageCallback=function(message)
 	var packet=Packet.prototype.Parse(message);
 	if(packet==null) return;
 	var self=LoginManager.instance;
-	gSocketConn.UnRegisterEvent("onmessage",self.LoginOrRegisterMessageCallback);
+	gSocketConn.UnRegisterEvent("onmessage",self.LoginOrQucikLoginMessageCallback);
 	if(self.messageCallBackFunction!=null)
 	{
 		if(packet.msgType=="1" || packet.msgType=="2" || packet.msgType=="B" || packet.msgType=="C")
@@ -111,6 +111,16 @@ LoginManager.prototype.LoginOrQucikLoginMessageCallback=function(message)
 			self.messageCallBackFunction(packet);
 		}
 	}
+}
+
+LoginManager.prototype.UnRegisterEvent=function()
+{
+
+	var self=LoginManager.instance;
+	gSocketConn.UnRegisterEvent("onopen",self.ConnectedCallBack);
+	gSocketConn.UnRegisterEvent("onerror",self.ErrorConnectCallBack);
+	gSocketConn.UnRegisterEvent("onmessage",self.LoginOrQucikLoginMessageCallback);
+
 }
 
 

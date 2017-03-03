@@ -36,8 +36,6 @@ var TempLoadScene = SceneBase.extend(
 		this.addChild(this.titleSprit, 2,this.titleSprit.getTag());
 
 
-
-
 		if(gLoginManager==null)
 		{
 			gLoginManager=new LoginManager();
@@ -148,12 +146,17 @@ var TempLoadScene = SceneBase.extend(
 			gMainMenuScene.onEnteredFunction=function(){
 				gMainMenuScene.showProgress();
 				cc.log("gMainMenuScene.onEnteredFunction=====");
+				gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
 				gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
 				gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
 			};
 
 
-			cc.director.runScene(gMainMenuScene);
+			if(null==currentScene||currentScene!="gMainMenuScene"){
+				cc.director.runScene(gMainMenuScene);
+				currentScene = "gMainMenuScene";
+			}
+
 			// gPlayerName=packet.content;
 			// //登录成功
 			// this.OnLogined(packet.content);
@@ -197,12 +200,15 @@ var TempLoadScene = SceneBase.extend(
 			gMainMenuScene.onEnteredFunction=function(){
 				gMainMenuScene.showProgress();
 				cc.log("gMainMenuScene.onEnteredFunction=====");
+				gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
 				gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
 				gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
 			};
 
-
-			cc.director.runScene(gMainMenuScene);
+			if(null==currentScene||currentScene!="gMainMenuScene"){
+				cc.director.runScene(gMainMenuScene);
+				currentScene = "gMainMenuScene";
+			}
 			// gSocketConn.SendEHMessage(this.username,this.password);
 
 			// gLoginManager.Login(this.username,this.password,this.source,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
@@ -236,9 +242,21 @@ var TempLoadScene = SceneBase.extend(
         this.moveToNextScene();
 
 	},
-	
-	
-	//一般是登录名或者密码错误之类的框关闭以后
+	onExit:function()
+	{
+		this._super();
+		cc.eventManager.removeAllListeners();
+		if(gSocketConn!=null)
+			gSocketConn.UnRegisterEvent("onmessage",this.messageCallBack);
+		this.removeAllChildrenWithCleanup(true);
+		//全部清除方法
+		for(var each in pageTimer){
+			clearTimeout(pageTimer[each]);
+		}
+		cc.log("login scene onExit end");
+	},
+
+		//一般是登录名或者密码错误之类的框关闭以后
 	messageBoxClosed:function()
 	{
 		//this.showOrHideTextBoxUILabel(false);
