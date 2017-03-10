@@ -7,7 +7,7 @@ var pageTimer = {} ; //定义计算器全局变量
 // for(var each in pageTimer){
 // 	clearInterval(pageTimer[each]);
 // }
-
+var faceSprite = {};
 var KLineScene = SceneBase.extend(
 {
 	backgroundLayer:null,		//背景层
@@ -53,7 +53,9 @@ var KLineScene = SceneBase.extend(
 	
 	onEnteredFunction:null,	//OnEnter调用结束后的Function
 
+
 	countDownSprite:null,
+
 	countDownNumber:null,
 	countBeginNumber:null,
 	countBeginSprite:null,
@@ -85,6 +87,7 @@ var KLineScene = SceneBase.extend(
 		this.KlineWidth = 726;
 		this.KlinePosX = 5;
 	},
+
 	onExit:function()
 	{
 		this._super();
@@ -117,12 +120,13 @@ var KLineScene = SceneBase.extend(
 		// }
 		cc.log("KLineScene onExit end");
 	},
+
 	onEnter:function () 
 	{
-
-		this._super();
-		// cc.director.setDisplayStats(true);
 		cc.log("KLineScene onEnter begin");
+		this._super();
+		gKlineScene=this;
+		// cc.director.setDisplayStats(true);
 		cc.view.enableRetina(userInfo.viewFlag);
 
 		// if(userInfo.bgSoundFlag==true){
@@ -139,7 +143,7 @@ var KLineScene = SceneBase.extend(
 		this.fYScale = this.size.height/720;
 		//document.getElementById("mainBody").style
 		document.bgColor="#152936";
-		gKlineScene=this;
+
 		gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
 
 		this.currentCandleDrawInterval=this.CANDAL_DRAW_INTERVAL;
@@ -160,7 +164,7 @@ var KLineScene = SceneBase.extend(
 		this.playerInfoLayer.setPosition(cc.p(0,0));
 		// this.playerInfoLayer.setPosition(cc.p(this.size.width/2,this.size.height/2));
 		this.addChild(this.playerInfoLayer, 8,this.playerInfoLayer.getTag());
-		this.setPlayerInfo();
+		// this.setPlayerInfo();
 
 
  		//  //设置K线图的区域
@@ -278,6 +282,7 @@ var KLineScene = SceneBase.extend(
 		}
 
 
+		cc.log("KLineScene onEnter end");
 		// //pageView begin
 		// var pageView = new ccui.PageView();
 		// pageView.setTouchEnabled(true);
@@ -331,6 +336,7 @@ var KLineScene = SceneBase.extend(
 		// ///pageView end
 		// return true;
 	},
+
 
 	setPlayerInfo:function()
 	{
@@ -400,6 +406,7 @@ var KLineScene = SceneBase.extend(
 
 		cc.log("setPlayerInfo userInfo.matchMode ="+userInfo.matchMode);
 	},
+
 	//修改副图的显示内容
 	changeTechLayer:function()
 	{
@@ -449,8 +456,7 @@ var KLineScene = SceneBase.extend(
 			}
 		}
 	},
-	
-	
+
 	drawAreaBorder:function()
 	{
 		 //给这个矩形区域添加边框
@@ -467,6 +473,7 @@ var KLineScene = SceneBase.extend(
 		 
 		 //this.borderArea.drawRect(cc.p(0,0),cc.p(this.borderArea.width, this.borderArea.height),cc.color(0,0,0,0),1,cc.color(38,64,86,255));
 	},
+
 	
 	drawHorizontalLine:function()
 	{
@@ -498,7 +505,7 @@ var KLineScene = SceneBase.extend(
 	
 	messageCallBack:function(message)
 	{
-		cc.log("KlineScene messageCallBack..." + message);
+		cc.log("KlineScene messageCallBack.begin..");
 		var packet=Packet.prototype.Parse(message);
 		var self=gKlineScene;
 		if(packet==null) return;
@@ -633,6 +640,26 @@ var KLineScene = SceneBase.extend(
 			// 	self.showErrorBox(packet.content,function(){self.errorBoxClosed();});
 			// 	break;
 			// }
+			case "FACE":
+			{
+				//接收到对局结束
+				//alert("接收到对局结束");
+				// self.showMatchEndInfo(packet.content);
+				var userNickName=packet.content.split("#")[0];
+				var faceNum = packet.content.split("#")[1];
+				cc.log("userNickName=="+userNickName+"||faceNum=="+faceNum);
+
+				if(null!=self.matchInfoLayer){
+					self.matchInfoLayer.showFaceSprite(userNickName,faceNum);
+				}
+
+				// userId:null,//
+				// 	deviceId:null,//设备号
+				// userInfo.username=gPlayerName;
+				// userInfo.password=packet.content.split("#")[1];
+
+				break;
+			}
 			case "":
 			{
 				break;
@@ -765,9 +792,7 @@ var KLineScene = SceneBase.extend(
 // 		window.open(url);
 		window.location.href=url;
 	},
-	
-	
-	
+
 	beginReplayKLineScene:function()
 	{
 		cc.log("beginReplayKLineScene  visible = true");
@@ -790,7 +815,6 @@ var KLineScene = SceneBase.extend(
 		
 	},
 
-	
 	beginNextKLineScene:function()
 	{
 
@@ -870,7 +894,6 @@ var KLineScene = SceneBase.extend(
 	// 	this.ongotklinedata(data);
 	// },
 
-
 	toSetklinedata:function(data)
 	{
 		//{"dataBusiness":[108,-113],"score":4.22374,"nickName":"誓约者艾琳诺","matchId":7571,"playerList":
@@ -927,24 +950,24 @@ var KLineScene = SceneBase.extend(
 			}
 		}
 
-		this.klineData=[];
+		gKlineScene.klineData=[];
 		for(var i=0;i<this.prevDataDayCount+this.mainDataDayCount;i++)
 		{
-			this.klineData.push({o:dailyData[5*i],x:dailyData[5*i+1],i:dailyData[5*i+2],c:dailyData[5*i+3],v:dailyData[5*i+4]});
+			gKlineScene.klineData.push({o:dailyData[5*i],x:dailyData[5*i+1],i:dailyData[5*i+2],c:dailyData[5*i+3],v:dailyData[5*i+4]});
 		}
 
-		this.klinedataMain=[];
+		gKlineScene.klinedataMain=[];
 		for(var i=this.prevDataDayCount;i<this.prevDataDayCount+this.mainDataDayCount;i++)
 		{
-			this.klinedataMain.push({o:dailyData[5*i],x:dailyData[5*i+1],i:dailyData[5*i+2],c:dailyData[5*i+3],v:dailyData[5*i+4]});
+			gKlineScene.klinedataMain.push({o:dailyData[5*i],x:dailyData[5*i+1],i:dailyData[5*i+2],c:dailyData[5*i+3],v:dailyData[5*i+4]});
 		}
 
-		this.prevKlineData=[];
+		gKlineScene.prevKlineData=[];
 		for(var i=0;i<this.prevDataDayCount;i++)
 		{
-			this.prevKlineData.push({o:dailyData[5*i],x:dailyData[5*i+1],i:dailyData[5*i+2],c:dailyData[5*i+3],v:dailyData[5*i+4]});
+			gKlineScene.prevKlineData.push({o:dailyData[5*i],x:dailyData[5*i+1],i:dailyData[5*i+2],c:dailyData[5*i+3],v:dailyData[5*i+4]});
 		}
-
+		gKlineScene.setPlayerInfo();
 
 	},
 
@@ -1049,7 +1072,6 @@ var KLineScene = SceneBase.extend(
         pageTimer["drawTimerMatch"] = setTimeout(function(){self.drawCandlesOneByOneForMatch();},self.currentCandleDrawInterval);
     },
 
-
     drawCandlesOneByOne:function()
     {
         if(this.drawCandleStoped==false)
@@ -1127,8 +1149,6 @@ var KLineScene = SceneBase.extend(
 		pageTimer["drawTimer"] = setTimeout(function(){self.drawAllCandlesOneByOne();},this.currentCandleDrawInterval);
 	},
 
-
-
 	setDataForLlineLayer:function()//比赛图
 	{
 		if(this.klinedataMain==null || this.prevKlineData==null) return;
@@ -1159,8 +1179,8 @@ var KLineScene = SceneBase.extend(
 		// cc.log("drawAllCandlesTillIndexOrEnd Over....");
 
 		//先显示前面120一副蜡烛图（历史数据）
-		this.klineLayerMain.setKLineData(this.klineData);
-		this.volumnTechLayerMain.setKLineData(this.klineData);
+		this.klineLayerMain.setKLineData(gKlineScene.klineData);
+		this.volumnTechLayerMain.setKLineData(gKlineScene.klineData);
 
 		this.drawHistoryCandlePart2();
 
@@ -1196,7 +1216,6 @@ var KLineScene = SceneBase.extend(
 
 		this.advanceToMainKLine_Share();
 	},
-	
 
 	//设置游戏倒计时
 	setCountDownSprite:function()
@@ -1229,22 +1248,25 @@ var KLineScene = SceneBase.extend(
 		{
 			this.countDownNumber=2;
 			//this.countDownSprite= cc.Sprite.create("res/cd_5.png");
-			this.countDownSprite= cc.LabelTTF.create("马上开始","Arial",50);
+			this.countDownSprite= cc.LabelTTF.create("马上开始","Arial",40);
 			this.addChild(this.countDownSprite,8);
 		}
+		var posCenter = cc.p(this.size.width / 2, this.size.height / 2);
 		this.countDownSprite.setVisible(true);
-		this.countDownSprite.setPosition(this.size.width / 2, this.size.height / 2+25);
+		this.countDownSprite.setPosition(posCenter);
 		this.countDownSprite.setOpacity(255);
+		this.countDownSprite.setColor(RedColor);
 		this.countDownSprite.setString("马上开始");
+
+		var jumpto = cc.jumpTo(1,posCenter,20,3);
+		this.countDownSprite.runAction(jumpto);
 
 		this.countDownNumber-=1;
 		var self=this;
 		pageTimer["beginTimer"] = setTimeout(function(){self.setCountDownSprite();},1000);
 	},
 
-
 	//设置游戏倒计时开始游戏
-
 	setCountBeginSprite:function()
 	{
 
@@ -1285,7 +1307,6 @@ var KLineScene = SceneBase.extend(
 	phase1Time:0.25,
 	phase2Time:0.5,
 	// phase3Time:0.25,
-	
 	createAnimation_Move:function()
 	{
 		var actionMoveIn=new cc.moveBy(this.phase1Time,0,-25);
@@ -1310,7 +1331,7 @@ var KLineScene = SceneBase.extend(
 		return new cc.Sequence(actionFadeIn,actionBlank,actionFadeOut);
 	},
 
-	
+
 	///得到当前的K线图的层
 	getCurrentKLineLayer:function()
 	{
@@ -1358,8 +1379,8 @@ var KLineScene = SceneBase.extend(
 		var posBegain = cc.p(0,0);
 		var posEnd0 = cc.p(-this.width/3,0);
 		var posEnd1 = cc.p(-this.width/3,0);
-		var moveLeft1  = cc.MoveBy.create(1,posEnd0);  // 左移
-		var moveLeft2  = cc.MoveBy.create(1,posEnd0);  // 左移
+		var moveLeft1  = cc.MoveBy.create(2,posEnd0);  // 左移
+		var moveLeft2  = cc.MoveBy.create(2,posEnd0);  // 左移
 		cc.log("posEnd1//比赛图 beginposEnd1=="+posEnd1);
 		this.klineLayerPrev.runAction(moveLeft1);
 		this.volumnTechLayerPrev.runAction(moveLeft2);
@@ -1392,8 +1413,8 @@ var KLineScene = SceneBase.extend(
 		var posBegain = cc.p(0,0);
 		var posEnd0 = cc.p(-this.KlineWidth,0);
 		var posEnd1 = cc.p(-this.KlineWidth/3,0);
-		var moveLeft1  = cc.MoveBy.create(1,posEnd0);  // 左移
-		var moveLeft2  = cc.MoveBy.create(1,posEnd0);  // 左移
+		var moveLeft1  = cc.MoveBy.create(2,posEnd0);  // 左移
+		var moveLeft2  = cc.MoveBy.create(2,posEnd0);  // 左移
 		cc.log("posEnd1//比赛图 beginposEnd1=="+this.KlineWidth);
 		this.klineLayerMain.runAction(moveLeft1);
 		this.volumnTechLayerMain.runAction(moveLeft2);
@@ -1519,8 +1540,8 @@ var KLineScene = SceneBase.extend(
 		{
 			this.playerInfoLayer.ableInfoButtons();
 		}
-		//一次性画出当前数据图
-		this.businessInfo();
+		//一次性画出当前数据图 观看交易记录Match
+		this.businessMatchInfo();
 		cc.log("advanceToMainKLine_RecordMatch:function()//Match观看记录 end");
 	},
 
@@ -1681,7 +1702,36 @@ var KLineScene = SceneBase.extend(
 			this.playerInfoLayer.ableInfoButtons();
 		}
 	},
-	
+//一次性画出当前数据图 观看交易记录Match
+// 		this.businessMatchInfo();
+	businessMatchInfo:function()
+	{
+		cc.log("businessInfo:function() begin= ");
+		if(this.phase2==false)return;
+		this.clearBuySellOperation();
+		var businessInfo = this.buyInfo;
+		this.selfOperations=[];
+		for (i=0;i<businessInfo.length;i++)
+		{
+			cc.log("businessInfo[" + i + "] = " + businessInfo[i]);
+			this.selfOperations.push(businessInfo[i]);
+			if(businessInfo[i]>0)
+			{
+				this.klineLayerMain.setUpArrowIndex(Math.abs(businessInfo[i]+120),(this.selfOperations.length%2==1));
+			}else{
+				this.klineLayerMain.setDownArrowIndex(Math.abs(businessInfo[i]+120),(this.selfOperations.length%2==1));
+			}
+
+		}
+		var score = this.buyScore;
+		this.playerInfoLayer.refreshScoresByData();
+		this.playerInfoLayer.refreshScores(score);
+		if(this.playerInfoLayer!=null)
+		{
+			this.playerInfoLayer.ableInfoButtons();
+		}
+	},
+
 	sendEndMessage:function()
 	{
 		if(gSocketConn!=null && gSocketConn!=undefined)
@@ -1732,7 +1782,7 @@ var KLineScene = SceneBase.extend(
 		}
 		this.playerInfoLayer.refreshScore(indexEnd,this.klineData,this.selfOperations,this.opponentOperations);
 	},
-	
+
 	matchEnd:function()
 	{
 		this.matchInfoLayer.disableAllButtons();

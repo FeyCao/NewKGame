@@ -72,8 +72,8 @@ var userInfo ={
     //
     nickName:"无名的游客",
     headSprite:null,	//头像
-    userName:null,
-    userPassword:null,
+    // userName:null,
+    // userPassword:null,
 // "winOfMatchForOne":0,"sumOfMatchForOne":3,"winOfMatchForMore":0,"sumOfMatchForMore":0,"winOfMatchForAI":8,"sumOfMatchForAI":11,"gainCumulation":"-6.223","sumOfAllMatch":3}
     winOfMatchForOne:0,//练习场胜利次数
     sumOfMatchForOne:0,//练习场总次数

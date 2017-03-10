@@ -18,6 +18,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 	playerNameLabel:null,				//名字
 	playerScoreLabel:null,			//分数
 
+	playerEmoticonBtn:null,
 	// player1Label:null,				//自己的名字
 	// playerScore1Label:null,			//自己的分数
 
@@ -41,6 +42,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 		this.playerHead_Sprite  =[];
         this.playerNameLabel =[];
         this.playerScoreLabel =[];
+		this.playerEmoticonBtn =[];
 
 		this.playerInfoArea=new cc.DrawNode();
 		//设置K线图的区域
@@ -78,7 +80,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 		this.avatarSprite.setScale(0.3);
 		this.addChild(this.avatarSprite,5);
 
-		this.setPlayerInfo();
+		// this.setPlayerInfo();
 		this.drawAreaBorder();
 	},
 
@@ -100,6 +102,14 @@ var PlayerInfoLayer= cc.Layer.extend({
 		var fontSize = 25;
 		var size = cc.size(90,90);
 		if(userInfo.matchMode==null)return;
+
+
+		var mu = new cc.Menu();
+		mu.x = 0;
+		mu.y = 0;
+		this.addChild(mu, 2);
+
+
 		switch(userInfo.matchMode)
 		{
 			case 0:
@@ -108,10 +118,11 @@ var PlayerInfoLayer= cc.Layer.extend({
 				this.avatarSprite.setVisible(true);
 				break;
 			}
+			case 2:
 			case 1:
 			{
-				cc.log("PlayerInfoLayer setPlayerInfo:function()=1" );// this.avatarSprite.setVisible(false);
-				for(var i=0;i<2;i++)
+				cc.log("PlayerInfoLayer setPlayerInfo:function()=1 userInfo.playerListData.length="+userInfo.playerListData.length );// this.avatarSprite.setVisible(false);
+				for(var i=0;i<userInfo.playerListData.length;i++)
 				{
 					if(this.playerInfo_bg[i] ==null)
 					{
@@ -121,19 +132,20 @@ var PlayerInfoLayer= cc.Layer.extend({
 						this.playerNameLabel[i] = cc.LabelTTF.create(userInfo.nickName, "fonts/Arial.ttf", fontSize,cc.size(100,100));
 						this.playerNameLabel[i].setAnchorPoint(0,1);
 						this.playerScoreLabel[i] = cc.LabelTTF.create("0.00%", "Arial", 24);
-						this.playerInfo_btn[i] = new Button("res/less_bg.png");
+						this.playerInfo_btn[i] = new cc.MenuItemImage(res.BLUE_BG_png,"", "", this);//new Button("res/less_bg.png");
 						// var size = this.playerInfo_btn[i].getContentSize();
 						this.playerInfo_btn[i].setContentSize(size);
 						// this.playerInfo_btn[i].setScale(40/size.width,40/size.height);
-						this.playerInfo_btn[i].setPosition(InfoposX,190);
+						this.playerInfo_btn[i].setPosition(60*this.fXScale,(500-252*i)*this.fYScale);
 						if (i==0)
 						{
 							this.playerNameLabel[i].setString(userInfo.nickName);
-							this.playerInfo_btn[i].setClickEvent(function (){
+							this.playerInfo_btn[i].setCallback(function (){
 								cc.log("playerInfo_btn0 ClickEvent ");
 								var matchId = userInfo.matchId;
 								var userId = userInfo.playerListData[0]["userName"];
 								cc.log("playerInfo_btn0 ClickEvent userId[0] ="+userId+"||matchId="+userInfo.matchId);
+
 								gSocketConn.SendRecordMatchMessage(userId,matchId);
 							});
 
@@ -141,7 +153,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 						else
 						{
 							this.playerNameLabel[i].setString("");
-							this.playerInfo_btn[i].setClickEvent(function () {
+							this.playerInfo_btn[i].setCallback(function () {
 								cc.log("playerInfo_btn1 ClickEvent ");
 
 								var matchId = userInfo.matchId;
@@ -152,6 +164,13 @@ var PlayerInfoLayer= cc.Layer.extend({
 							// this.playerInfo_bg[i].addChild(this.playerInfo_btn1);
 						}
 						this.playerInfo_btn[i].setVisible(false);
+
+						// this.btnAgain=new cc.MenuItemImage("res/meBtnAgain.png","", self.again, this);//new Button("res/home.png");
+						// this.btnAgain.setScale(fXScale,fYScale);
+						// this.btnAgain.set
+						// this.btnAgain.setPosition(cc.p(size.width/4,posY));
+						mu.addChild(this.playerInfo_btn[i]);
+
 
 						this.playerHead_Sprite[i] = cc.Sprite.create("res/bg_touxiang.png");
 						this.playerHead_Sprite[i].setContentSize(size);
@@ -163,7 +182,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 
 						this.playerNameLabel[i].setPosition(10,InfoposY1);
 						this.playerScoreLabel[i].setPosition(InfoposX,InfoposY2);
-						this.playerInfo_bg[i].addChild(this.playerInfo_btn[i]);
+						// this.playerInfo_bg[i].addChild(mu);
 
 						this.playerInfo_bg[i].addChild(this.playerNameLabel[i]);
 						this.playerInfo_bg[i].addChild(this.playerScoreLabel[i]);
@@ -173,70 +192,70 @@ var PlayerInfoLayer= cc.Layer.extend({
 				}
 				break;
 			}
-			case 2:
-			{
-				cc.log("PlayerInfoLayer setPlayerInfo:function()=2" );// this.avatarSprite.setVisible(false);
-                for(var i=0;i<2;i++)
-                {
-                    if(this.playerInfo_bg[i] ==null)
-                    {
-                        this.playerInfo_bg[i]=cc.Sprite.create("res/playerInfo_bg.png");
-                        this.playerInfo_bg[i].setPosition(60*this.fXScale,(500-252*i)*this.fYScale);
-                        this.playerInfo_bg[i].setScale(this.fXScale,this.fYScale);
-                        this.playerNameLabel[i] = cc.LabelTTF.create(userInfo.nickName, "Arial", fontSize,cc.size(100,100));
-						this.playerNameLabel[i].setAnchorPoint(0,1);
-                        this.playerScoreLabel[i] = cc.LabelTTF.create("0.00%", "Arial", 24);
-						this.playerInfo_btn[i] = new Button("res/less_bg.png");
-						// var size = this.playerInfo_btn[i].getContentSize();
-						this.playerInfo_btn[i].setContentSize(size);
-						// this.playerInfo_btn[i].setScale(40/size.width,40/size.height);
-						this.playerInfo_btn[i].setPosition(InfoposX,190);
-						if (i==0)
-						{
-							this.playerInfo_btn[i].setClickEvent(function (){
-								cc.log("playerInfo_btn0 ClickEvent ");
-								var matchId = userInfo.matchId;
-								var userId = userInfo.playerListData[0]["userName"];
-								cc.log("playerInfo_btn0 ClickEvent userId[0] ="+userId+"||matchId="+userInfo.matchId);
-								gSocketConn.SendRecordMatchMessage(userId,matchId);
-							});
-
-						}
-						else
-						{
-							this.playerInfo_btn[i].setClickEvent(function () {
-								cc.log("playerInfo_btn1 ClickEvent ");
-
-								var matchId = userInfo.matchId;
-								var userId = userInfo.playerListData[1]["userName"];
-								cc.log("playerInfo_btn0 ClickEvent userId[1] =" + userId + "||matchId=" + userInfo.matchId);
-								gSocketConn.SendRecordMatchMessage(userId, matchId);
-							});
-							// this.playerInfo_bg[i].addChild(this.playerInfo_btn1);
-						}
-						this.playerInfo_btn[i].setVisible(false);
-
-						this.playerHead_Sprite[i] = cc.Sprite.create("res/bg_touxiang.png");
-						this.playerHead_Sprite[i].setContentSize(size);
-						this.playerHead_Sprite[i].setAnchorPoint(0,0);
-						this.playerHead_Sprite[i].setPosition(10,140);
-						this.playerHead_Sprite[i].setVisible(false);
-
-						this.playerInfo_bg[i].addChild(this.playerHead_Sprite[i]);
-
-                        this.playerNameLabel[i].setPosition(10,InfoposY1);
-                        this.playerScoreLabel[i].setPosition(InfoposX,InfoposY2);
-						this.playerInfo_bg[i].addChild(this.playerInfo_btn[i]);
-
-                        this.playerInfo_bg[i].addChild(this.playerNameLabel[i]);
-                        this.playerInfo_bg[i].addChild(this.playerScoreLabel[i]);
-                        this.addChild(this.playerInfo_bg[i],5);
-
-                    }
-                }
-
-				break;
-			}
+			// case 2:
+			// {
+			// 	cc.log("PlayerInfoLayer setPlayerInfo:function()=2" );// this.avatarSprite.setVisible(false);
+             //    for(var i=0;i<2;i++)
+             //    {
+             //        if(this.playerInfo_bg[i] ==null)
+             //        {
+             //            this.playerInfo_bg[i]=cc.Sprite.create("res/playerInfo_bg.png");
+             //            this.playerInfo_bg[i].setPosition(60*this.fXScale,(500-252*i)*this.fYScale);
+             //            this.playerInfo_bg[i].setScale(this.fXScale,this.fYScale);
+             //            this.playerNameLabel[i] = cc.LabelTTF.create(userInfo.nickName, "Arial", fontSize,cc.size(100,100));
+			// 			this.playerNameLabel[i].setAnchorPoint(0,1);
+             //            this.playerScoreLabel[i] = cc.LabelTTF.create("0.00%", "Arial", 24);
+			// 			this.playerInfo_btn[i] = new Button("res/less_bg.png");
+			// 			// var size = this.playerInfo_btn[i].getContentSize();
+			// 			this.playerInfo_btn[i].setContentSize(size);
+			// 			// this.playerInfo_btn[i].setScale(40/size.width,40/size.height);
+			// 			this.playerInfo_btn[i].setPosition(InfoposX,190);
+			// 			if (i==0)
+			// 			{
+			// 				this.playerInfo_btn[i].setClickEvent(function (){
+			// 					cc.log("playerInfo_btn0 ClickEvent ");
+			// 					var matchId = userInfo.matchId;
+			// 					var userId = userInfo.playerListData[0]["userName"];
+			// 					cc.log("playerInfo_btn0 ClickEvent userId[0] ="+userId+"||matchId="+userInfo.matchId);
+			// 					gSocketConn.SendRecordMatchMessage(userId, matchId);
+			// 				});
+            //
+			// 			}
+			// 			else
+			// 			{
+			// 				this.playerInfo_btn[i].setClickEvent(function () {
+			// 					cc.log("playerInfo_btn1 ClickEvent ");
+            //
+			// 					var matchId = userInfo.matchId;
+			// 					var userId = userInfo.playerListData[1]["userName"];
+			// 					cc.log("playerInfo_btn0 ClickEvent userId[1] =" + userId + "||matchId=" + userInfo.matchId);
+			// 					gSocketConn.SendRecordMatchMessage(userId, matchId);
+			// 				});
+			// 				// this.playerInfo_bg[i].addChild(this.playerInfo_btn1);
+			// 			}
+			// 			this.playerInfo_btn[i].setVisible(false);
+            //
+			// 			this.playerHead_Sprite[i] = cc.Sprite.create("res/bg_touxiang.png");
+			// 			this.playerHead_Sprite[i].setContentSize(size);
+			// 			this.playerHead_Sprite[i].setAnchorPoint(0,0);
+			// 			this.playerHead_Sprite[i].setPosition(10,140);
+			// 			this.playerHead_Sprite[i].setVisible(false);
+            //
+			// 			this.playerInfo_bg[i].addChild(this.playerHead_Sprite[i]);
+            //
+             //            this.playerNameLabel[i].setPosition(10,InfoposY1);
+             //            this.playerScoreLabel[i].setPosition(InfoposX,InfoposY2);
+			// 			this.playerInfo_bg[i].addChild(this.playerInfo_btn[i]);
+            //
+             //            this.playerInfo_bg[i].addChild(this.playerNameLabel[i]);
+             //            this.playerInfo_bg[i].addChild(this.playerScoreLabel[i]);
+             //            this.addChild(this.playerInfo_bg[i],5);
+            //
+             //        }
+             //    }
+            //
+			// 	break;
+			// }
 			default:
 			{
 				cc.log("PlayerInfoLayer setPlayerInfo userInfo.matchMode=",userInfo.matchMode);
@@ -251,7 +270,7 @@ var PlayerInfoLayer= cc.Layer.extend({
 		 //this.playerInfoArea.drawRect(cc.p(0,0),cc.p(this.playerInfoArea.width, this.playerInfoArea.height),cc.color(0,0,0,0),1,cc.color(0,255,255,255));
 		 //this.playerInfoArea.drawRect(cc.p(0,0),cc.p(this.width, this.height),cc.color(0,0,0,0),1,cc.color(255,255,255,255));
 	},
-	
+
 	refreshScore:function(currentIndex,data,selfOperations,opponentOperations)//计算收益率
 	{
 		

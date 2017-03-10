@@ -293,7 +293,7 @@ LoginScene = SceneBase.extend(
 	
 	messageCallback:function(packet)
 	{
-		cc.log("login scene message callback packet.msgType="+packet.msgType+" content="+packet.content);
+		cc.log("login scene message callback packet.msgType="+packet.msgType);
 		var self=this;
 		if(packet.msgType=="1")
 		{

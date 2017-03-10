@@ -6,7 +6,8 @@ SceneBase = cc.Scene.extend(
 	errorLayer:null,
 	
 	otherMessageTipLayer:null,
-	loginViewLayer:null,
+	loginViewLayer:null,//登陆界面
+	// emoticonViewLayer:null,//发送表情界面
 
 	confirmBtn:null,
 	messageBoxSprite:null,
@@ -35,6 +36,7 @@ SceneBase = cc.Scene.extend(
 	{
 		this._super();
 		this.sceneEnterTime=new Date().getTime();
+		cc.log("SceneBase onEnter begin");
 		// if(userInfo.bgSoundFlag==true){
         //
 		// 	var musicFile = "res/sound/home_bg.mp3";
@@ -48,6 +50,11 @@ SceneBase = cc.Scene.extend(
 		var size = cc.director.getWinSize();
 		var fXScale = size.width/1280;
 		var fYScale = size.height/720;
+        // // 2.获取窗口大小
+		// var winSize = cc.director.getWinSize();
+        //
+		// // 3.窗口中心
+		// var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
 
 
 
@@ -160,7 +167,17 @@ SceneBase = cc.Scene.extend(
 		this.addChildEx(this.messageBoxLayer, 10);
 		this.addChildEx(this.errorLayer, 10);
 		this.addChildEx(this.progressLayer, 9);
-	
+
+		if(this.emoticonViewLayer==null) {
+			this.emoticonViewLayer=new EmoticonViewLayer();
+		}
+
+		this.emoticonViewLayer.setVisible(false);
+		this.emoticonViewLayer.setPosition(size.width / 2, size.height / 2);
+		this.addChildEx(this.emoticonViewLayer,6);
+
+
+
 		this.messageBoxLayer.setVisible(false);
 		this.errorLayer.setVisible(false);
 		cc.log("SceneBase onEnter end");
@@ -316,6 +333,8 @@ SceneBase = cc.Scene.extend(
 		}
 
 	},
+
+
 	showLoginView:function()
 	{
 		cc.log("showLoginView begin");

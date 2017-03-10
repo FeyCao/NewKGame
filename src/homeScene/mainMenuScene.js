@@ -463,9 +463,7 @@ var MainMenuScene =SceneBase.extend(
     setButtonInfo:function()
     {
         var self =this;
-        var size = cc.director.getWinSize();
-        var fXScale = size.width/1280;
-        var fYScale = size.height/720;
+
         var pButtonY = 520;
         var pButtonScale = cc.p(28,60);
         var fontSize = 25;
@@ -477,6 +475,7 @@ var MainMenuScene =SceneBase.extend(
 
         var bgSize = this.backgroundSprite.getContentSize();
         this.zhanjiButton = new cc.MenuItemImage("res/btn_zhanji.png", "res/btn_zhanji.png", self.zhanji, this);
+        // this.zhanjiButton = new cc.MenuItemImage("res/btn_zhanji.png", "res/btn_zhanji.png", self.ShowemoticonView, this);
         mu.addChild(this.zhanjiButton);
         // this.zhanjiButton=new Button("res/btn_zhanji.png");
         // // this.zhanjiButton.setScale(fXScale,fYScale);

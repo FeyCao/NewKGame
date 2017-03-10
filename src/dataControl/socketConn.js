@@ -1,6 +1,5 @@
 // JavaScript Document
 
-var SocketConnLogFlag = false;
 function SocketConn()
 {
 	this.onopenevent=[];
@@ -17,6 +16,8 @@ SocketConn.prototype.Connect=function(url)
 	var wsImpl = window.WebSocket || window.MozWebSocket;
 	var self=this;
 	cc.log("WS="+url);
+	cc.log("serverURL="+cc.game.config[cc.game.CONFIG_KEY.serverURL]);
+
 	window.ws = new wsImpl(url);
 	 // when data is comming from the server, this metod is called
 	ws.onmessage = function (evt) {
@@ -77,8 +78,9 @@ SocketConn.prototype.GetEventArrayByName=function(eventname)
 
 SocketConn.prototype.RegisterEvent=function(eventname,callbackfunction)
 {
-	if(SocketConnLogFlag!=false)
-	cc.log("RegisterEvent eventname="+eventname+", callbackfunction="+callbackfunction);
+
+	// cc.log("RegisterEvent eventname="+eventname+", callbackfunction="+callbackfunction);
+	cc.log("RegisterEvent eventname="+eventname);
 	var eventArray=this.GetEventArrayByName(eventname);
 	if(eventArray==null) return;
 	for(var i=0;i<eventArray.length;i++)
@@ -116,7 +118,7 @@ SocketConn.prototype.Login=function(username,password,source)
 SocketConn.prototype.QuickLogin=function(source)
 {
 	var quickLoginMsg="A|"+source+"|";
-	// if(SocketConnLogFlag!=false)
+	//
 	cc.log("send QuickLogin msg="+quickLoginMsg);
 	ws.send(quickLoginMsg);
 }
@@ -161,7 +163,6 @@ SocketConn.prototype.BeginMatch=function(mode)
 SocketConn.prototype.Buy=function(index)
 {
 	var buyMsg = "6|"+index+"|";
-	if(SocketConnLogFlag!=false)
 	cc.log("send Buymsg=="+buyMsg);
 	ws.send(buyMsg);
 }
@@ -169,7 +170,7 @@ SocketConn.prototype.Buy=function(index)
 SocketConn.prototype.Sell=function(index)
 {
 	var sellMsg = "7|"+index+"|";
-	if(SocketConnLogFlag!=false)
+	//
 	cc.log("send Sellmsg=="+sellMsg);
 	ws.send(sellMsg);
 	//ws.send("7|"+index+"|");
@@ -178,7 +179,7 @@ SocketConn.prototype.Sell=function(index)
 SocketConn.prototype.Step=function(index)
 {
 	var stepMsg = "8|"+index+"|";
-	if(SocketConnLogFlag!=false)
+
 	cc.log("send Stepmsg=="+stepMsg);
 	ws.send(stepMsg);
 	//ws.send("8|"+index+"|");
@@ -187,7 +188,7 @@ SocketConn.prototype.Step=function(index)
 SocketConn.prototype.SendEndMessage=function()
 {
 	cc.log("send Endmsg==E||");
-	if(SocketConnLogFlag!=false)
+
 	cc.log("send Endmsg==E||");
 	ws.send("E||");
 }
@@ -195,7 +196,7 @@ SocketConn.prototype.SendEndMessage=function()
 SocketConn.prototype.SendEndErrorMessage=function(errorInfo)
 {
 	var EndErrorMsg="ENDERROR|"+errorInfo+"|";
-	if(SocketConnLogFlag!=false)
+
 		cc.log(EndErrorMsg);
 	ws.send(EndErrorMsg);
 }
@@ -209,7 +210,7 @@ SocketConn.prototype.SendShareMessage=function()
 SocketConn.prototype.ShareMessage=function(userId,matchId)
 {
 	var shareMsg="G|"+userId+"#"+matchId+"|";
-	if(SocketConnLogFlag!=false)
+
 	cc.log("send share msg="+shareMsg);
 	ws.send(shareMsg);
 }
@@ -217,14 +218,14 @@ SocketConn.prototype.ShareMessage=function(userId,matchId)
 SocketConn.prototype.SendEHMessage=function(userId,matchId)//进入大厅的请求
 {
     var ehMsg="P|"+userId+"#"+matchId+"|";
-	// if(SocketConnLogFlag!=false)
+	//
     cc.log("send H msg="+ehMsg);
     ws.send(ehMsg);
 }
 SocketConn.prototype.SendToHMessage=function(message)//进入大厅的请求
 {
 	var ehMsg="P|"+message+"|";
-	// if(SocketConnLogFlag!=false)
+	//
 	cc.log("send H msg="+ehMsg);
 	ws.send(ehMsg);
 }
@@ -239,7 +240,7 @@ SocketConn.prototype.SendZhanjiMessage=function(userId,pageIdx,matchType)//战�
 SocketConn.prototype.SendRankMessage=function(matchType,userId)//查看比赛的对战记录
 {
 	var recordMsg = "RANK|"+matchType+"#"+userId+"|";
-	// if(SocketConnLogFlag!=false)
+	//
 		cc.log("send SendRANKMessage=="+recordMsg);
 	ws.send(recordMsg);
 }
@@ -247,7 +248,7 @@ SocketConn.prototype.SendRankMessage=function(matchType,userId)//查看比赛的
 SocketConn.prototype.SendInfoMessage=function(infoType,infoMsg)//发送不确定信息
 {
 	var infoTypeAndMsg = infoType+"|"+infoMsg+"|";
-	// if(SocketConnLogFlag!=false)
+	//
 	cc.log("send infoTypeAndMsg=="+infoTypeAndMsg);
 	ws.send(infoTypeAndMsg);
 }
@@ -258,4 +259,11 @@ SocketConn.prototype.SendMoblieMessage=function(mobile)
 	var moblieMsg="SENDCODE|"+mobile+"|";
 	cc.log("send moblieMsg msg="+moblieMsg);
 	ws.send(moblieMsg);
+}
+
+SocketConn.prototype.SendFaceMessage=function(name,num)//FACE|name#emojiNum|
+{
+	var faceMsg="FACE|"+name+"#"+num+"|";
+	cc.log("send faceMsg msg="+faceMsg);
+	ws.send(faceMsg);
 }

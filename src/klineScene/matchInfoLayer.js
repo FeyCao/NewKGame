@@ -28,12 +28,15 @@ var MatchInfoLayer= cc.Layer.extend({
 	
 	//变速区域
 	speedControlLayer:null,			//放变速按钮的层
-
 	scBackgroundSprite:null,		//按钮的背景层
 	scPlayCheckButton:null,			//播放和暂停切换的按钮
 	scHalfCheckButton:null,			//半速
 	scNormalCheckButton:null,		//普通速度
 	scDoubleCheckButton:null,		//2倍速度
+
+	//
+	emoticonButton:null,//
+	faceSprites:null,
 
 	//menuControlLayer:null,			//放功能按钮的层
 	// menuControlLayer:null,
@@ -117,66 +120,14 @@ var MatchInfoLayer= cc.Layer.extend({
 		this.sellButton.setScale(fXScale*0.5,fYScale*0.5);
 		this.sellButton.setPosition(cc.p(size.width/6*5,posY));
 		mu.addChild(this.sellButton);
-		//////////////////////////////////////////////////////////////
-		// this.buyButton=new Button("res/btnBuyEnable.png");
-		// //this.buyButton.setPosition(cc.p(77,44));
-		// this.buyButton.setPosition(cc.p(106,posY-5));
-		// this.buyButton.setClickEvent(function(){
-		// 	self.buyClick();
-		// });
-		// this.addChild(this.buyButton, 3);
-		// this.sellButton=new Button("res/btnSellEnable.png");
-		// //this.sellButton.setPosition(cc.p(600,44));
-		// this.sellButton.setPosition(cc.p(630,posY-5));
-		// this.sellButton.setClickEvent(function(){
-		// 	self.sellClick();
-		// });
-		// this.addChild(this.sellButton, 3);
-		// this.sellCloseButton=new Button("res/btnCloseSell.png");
-		// this.sellCloseButton.setPosition(cc.p(136,44));
-        //
-		// this.sellCloseButton=new Button("res/btnSellEnable.png");
-		// this.sellCloseButton.setPosition(cc.p(630,posY-5));
-        //
-		// this.sellCloseButton.setClickEvent(function(){
-		// 	self.sellCloseClick();
-		// });
-		// this.addChild(this.sellCloseButton, 3);
-		//
-		//
-		//
-		// this.buyCloseButton=new Button("res/btnCloseBuy.png");
-		// this.buyCloseButton.setPosition(cc.p(659,44));
-        //
-		// this.buyCloseButton=new Button("res/btnBuyEnable.png");
-		// this.buyCloseButton.setPosition(cc.p(106,posY));
-        //
-        //
-		// this.buyCloseButton.setClickEvent(function(){
-		// 	self.buyCloseClick();
-		// });
-		// this.addChild(this.buyCloseButton, 3);
-		//
-		// this.btnAgain=new Button("res/meBtnAgain.png");
-		// this.btnAgain.setPosition(cc.p(276,posY));
-		// this.btnAgain.setScale(0.5);
-		// this.btnAgain.setClickEvent(function(){
-		// 	self.again();
-		// });
-		//
-		// this.btnShare=new Button("res/meBtnShare.png");
-		// this.btnShare.setPosition(cc.p(460,posY));this.btnShare.setScale(0.5);
-		// this.btnShare.setScale(0.5);
-		// this.btnShare.setClickEvent(function(){
-		// 	self.share();
-		// });
-		//
-        // this.meBtnStart=new Button("res/meBtnStart.png");
-        // this.meBtnStart.setPosition(cc.p(363,posY));
-		// this.meBtnStart.setScale(0.5);
-        // this.meBtnStart.setClickEvent(function(){
-         //    self.meStart();
-        // });
+
+		this.emoticonButton=new cc.MenuItemImage(res.btn_Emoticon_png,"", self.ShowemoticonView, this);//new Button("res/home.png");
+		this.emoticonButton.setScale(0.8);
+		this.emoticonButton.setPosition(cc.p(size.width/2-100,posY));
+		mu.addChild(this.emoticonButton);
+		cc.log("userInfo.matchMode=="+userInfo.matchMode);
+		this.emoticonButton.setVisible(userInfo.matchMode==1?true:false);
+
 
 
 		this.matchInfoArea=new cc.DrawNode();
@@ -185,7 +136,6 @@ var MatchInfoLayer= cc.Layer.extend({
 		this.matchInfoArea.width=this.width;
 		this.matchInfoArea.height=this.height;
 		this.addChild(this.matchInfoArea, 1);
-
 
 
 		//设置变速信息的区域
@@ -229,9 +179,123 @@ var MatchInfoLayer= cc.Layer.extend({
 		 this.opponentScoreLabel.setPosition(500, 30);
 		 this.addChild(this.opponentScoreLabel,5);
 		 */
-		 
+
+
+		// this.setEmoticonSprites();
+
+
+
+		this.faceSprites = [];
+		for(var i=0;i<2;i++){
+			this.faceSprites[i] = new cc.Sprite(res.Emoticon_1_png);
+			this.faceSprites[i].setScale(fXScale*0.8);
+			this.faceSprites[i].setPosition(60,280-120*i);
+			this.faceSprites[i].setOpacity(0);
+			this.addChild(this.faceSprites[i]);
+		}
+	},
+
+	showFaceSprite:function(name,num)
+	{
+		var size = cc.director.getWinSize();
+		var resFace = "res/public/Emoticon_"+num+".png";
+		cc.log("showFaceSprite:function(name,num) resFace=="+resFace+"||userInfo.playerListData.length=="+userInfo.playerListData.length);
+
+		var posCurrent = null;
+		// var faceSpFrame = new cc.s
+		if(userInfo.playerListData.length>0&&name == userInfo.playerListData[0]["userName"]){
+			this.faceSprites[0].setTexture(resFace);
+			posCurrent = this.faceSprites[0].getPosition();
+			// this.faceSprites[0].runAction(actionTest);
+			// cc.log("showFaceSprite:function(name,num) resFace==11");
+		}else{
+			this.faceSprites[1].setTexture(resFace);
+			posCurrent = this.faceSprites[1].getPosition();
+			// this.faceSprites[1].runAction(jumpto);
+			// cc.log("showFaceSprite:function(name,num) resFace==22");
+		}
+		// headSprite.initWithTexture(texture2d);
+		// for(var i=userInfo.playerListData.length-1;i>0;i--)
+		// {
+		// 	cc.log("refreshMatchViewByData 2=="+content);
+		// 	for(var j=i;j>0;j--)
+		// 	{
+		// 		// cc.log("refreshMatchViewByData 2=="+content);
+		// 		if(userInfo.playerListData[j]["userName"]==userInfo.nickName)
+		// 		{
+		// 			var temp = userInfo.playerListData[j];
+		// 			userInfo.playerListData[j] =userInfo.playerListData[j-1];
+		// 			userInfo.playerListData[j-1] =temp;
+		// 		}
+		// 	}
+		// }
+		// 50,240-120*i
+		var winSize = cc.director.getWinSize();
+
+		// 3.窗口中心
+		var posCenter = cc.p(winSize.width / 2, winSize.height / 2);
+		var actionFadeIn=new cc.FadeTo(0.5,255);
+		var jumpto = cc.jumpTo(1,posCurrent,10,4);
+		var actionFadeOut=new cc.FadeTo(1,0);
+		var actionTest = new  cc.Sequence(actionFadeIn,jumpto,cc.ActionInterval(1),actionFadeOut);//
+
+		// var actionTest = cc.spawn(actionFadeIn,jumpto,actionFadeOut);//
+
+		if(userInfo.playerListData.length>0&&name == userInfo.playerListData[0]["userName"]){
+			// this.faceSprites[0].initWithTexture(texture2d);
+			this.faceSprites[0].runAction(actionTest);
+		}else{
+			// this.faceSprites[1].initWithTexture(texture2d);
+			// cc.log("showFaceSprite:function(name,num) resFace==22");
+			this.faceSprites[1].runAction(actionTest);
+		}
 
 	},
+
+	ShowemoticonView:function()
+	{
+		cc.log("showemoticonView begin");
+		// 2.获取窗口大小
+		var winSize = cc.director.getWinSize();
+
+		// 3.窗口中心
+		var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
+		// 3.窗口位置
+		var posBase = cc.p(180, 80);
+		// if (typeof(pos) == "undefined") {
+		// 	var pos = centerpos;
+		// }
+		// this.emoticonViewLayer.setVisible(true);
+		if(this.emoticonViewLayer==null) {
+			this.emoticonViewLayer=new EmoticonViewLayer();
+			this.addChild(this.emoticonViewLayer);
+			this.emoticonViewLayer.setVisible(false);
+		}
+		this.emoticonViewLayer.setPosition(posBase);
+		if(this.emoticonViewLayer.isVisible()){
+			this.emoticonViewLayer.hideLayer();
+		}else{
+			this.emoticonViewLayer.showLayer();
+		}
+
+		// this.pauseLowerLayer();
+	},
+	// setEmoticonSprites:function () {
+	// 	var size = cc.director.getWinSize();
+	// 	var posX =83;
+	// 	var posY = 35;
+	// 	var fXScale = size.width/1280;
+	// 	var fYScale = size.height/720;
+	// 	this.faceSprites = [];
+	// 	for(var i=0;i<1;i++){
+	// 		if(null == this.faceSprites[i]){
+	// 			this.faceSprites[i] = cc.Sprite(res.Emoticon_1_png);
+	// 			this.faceSprites[i].setPosition(100*fXScale,(500-252*i)*fYScale);
+	// 			this.addChild(this.faceSprites[i]);
+	// 		}
+	// 	}
+    //
+	// },
 
 	initSpeedControlArea:function()
 	{
@@ -316,7 +380,8 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.speedControlLayer.addChild(this.scNormalCheckButton,1);
 		// this.speedControlLayer.addChild(this.scDoubleCheckButton,1);
 	},
-	
+
+
 	playCheckChanged:function()
 	{
         cc.log("playCheckChanged gKlineScene.drawCandleStoped=="+gKlineScene.drawCandleStoped);

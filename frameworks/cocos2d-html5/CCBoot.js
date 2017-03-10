@@ -2112,7 +2112,7 @@ cc.game = /** @lends cc.game# */{
         showFPS: "showFPS",
         frameRate: "frameRate",
         id: "id",
-        wsURL:"wsURL",
+        serverURL:"serverURL",
         renderMode: "renderMode",
         jsList: "jsList",
         classReleaseMode: "classReleaseMode"

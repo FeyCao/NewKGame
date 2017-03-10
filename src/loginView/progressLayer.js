@@ -55,9 +55,7 @@ var ProgressLayer= cc.Layer.extend({
 		this.rotateSpriteInner.setPosition(this.width / 2+3, this.height / 2-3);
 		this.rotateSpriteInner.setScale(1);
 		this.addChild(this.rotateSpriteInner,2);
-		
-	
-		
+
 		
 		this.setVisible(true);
 		
@@ -74,6 +72,15 @@ var ProgressLayer= cc.Layer.extend({
 			this.rotateSprite.runAction(new cc.RepeatForever(this.combineAction));
 			this.rotateSpriteInner.runAction(new cc.RepeatForever(this.combineActionInner));
 		}
+        cc.log("rotate: sceneBase::sys.os=="+sys.os);
+
+        // if(sys.os===sys.OS_WINDOWS||sys.os===sys.OS_OSX) {//浏览器模式
+        //
+        // }
+
+        if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
+
+        }
 		if(sys.os === sys.OS_IOS || sys.os === sys.OS_OSX){
 			refreshUrl(10);
 		}
