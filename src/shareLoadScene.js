@@ -93,7 +93,8 @@ var ShareLoadScene = SceneBase.extend(
 		else if(packet.msgType=="H")
 		{
 			//分享成功
-			cc.log("获取分享数据成功"+packet.content);
+			cc.log("获取分享数据成功");
+			// cc.log("获取分享数据成功"+packet.content);
 			this.stopProgress();
 			this.moveToNextScene(packet.content);
 			//cc.log(packet.content);

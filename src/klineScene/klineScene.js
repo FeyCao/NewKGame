@@ -15,6 +15,7 @@ var KLineScene = SceneBase.extend(
 	matchEndInfoLayer:null,		//对局结束后弹出的对话框
 
 	// klineLayer:null,		//跳动的K线图
+	klineLayerView:null,
 	klineLayerMain:null,		//主要的持续跳动的K线图
 	klineLayerPrev:null,		//前期的K线，游戏一开始显示一下作为游戏时判断使用
 
@@ -44,7 +45,7 @@ var KLineScene = SceneBase.extend(
 	middleHorizontalLineCount:11,	//在中间的横线的个数
 	
 	currentCandleIndex:0,		//当前显示的是第几个蜡烛，从0开始
-	CANDAL_DRAW_INTERVAL:100,		//每个K线相隔的时间
+	CANDAL_DRAW_INTERVAL:cc.game.config["CANDAL_DRAW_INTERVAL"],		//每个K线相隔的时间
 	currentCandleDrawInterval:null,	//当前的K线绘画间隔
 	drawCandleStoped:false,			//是否绘画停止了
 	
@@ -64,6 +65,7 @@ var KLineScene = SceneBase.extend(
 		this._super();
 		this.backgroundLayer=null;
 		this.matchEndInfoLayer=null;
+		this.klineLayerView=null;
 		this.klineLayerMain=null;
 		this.klineLayerPrev=null;
 		this.volumnTechLayerMain=null;
@@ -142,6 +144,7 @@ var KLineScene = SceneBase.extend(
         this.fXScale = this.size.width/1280;
 		this.fYScale = this.size.height/720;
 		//document.getElementById("mainBody").style
+		var centerpos = cc.p(this.size.width / 2, this.size.height / 2);
 		document.bgColor="#152936";
 
 		gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
@@ -164,14 +167,14 @@ var KLineScene = SceneBase.extend(
 		this.playerInfoLayer.setPosition(cc.p(0,0));
 		// this.playerInfoLayer.setPosition(cc.p(this.size.width/2,this.size.height/2));
 		this.addChild(this.playerInfoLayer, 8,this.playerInfoLayer.getTag());
-		// this.setPlayerInfo();
-
+		this.setKlineInfo();
 
  		//  //设置K线图的区域
 
-		var kWidth = this.KlineWidth*2;
+		var kWidth = this.KlineWidth*2-10;
 		this.klineLayerMain=new KlineLayer(kWidth,192);
 		this.klineLayerMain.setPosition(cc.p(this.KlinePosX,170));
+
 
 		this.volumnTechLayerMain=new VolumnTechLayer(kWidth,94);
 		this.volumnTechLayerMain.setPosition(cc.p(this.KlinePosX,75));
@@ -179,7 +182,6 @@ var KLineScene = SceneBase.extend(
 
 		this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
 		this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
-
 		this.borderArea=new cc.DrawNodeCanvas();
 		this.borderArea.setPosition(cc.p(0,68));
 		this.borderArea.width=726;
@@ -188,31 +190,63 @@ var KLineScene = SceneBase.extend(
 		  //画边框
 		//this.drawAreaBorder();
 		this.drawHorizontalLine();
+
+		// this.klineLayerMain.setPosition(0,0);
+		// var contentSize = cc.size(kWidth,195);
+		// // //设置View的大小，相当于是显示的区域
+		// var viewSize = cc.size(720,192);
+		// // var contentSize = cc.size(610,270*8.2);
+		// // var sp =cc.Sprite.create("res/help/bg_help.png");
+		// var container = new cc.LayerColor();
+		// var containerColor=cc.color(0,32,52,255);//
+		// container.setColor(containerColor);
+		// container.setAnchorPoint(0,0);
+		// // container.addChild(sp);
+		// container.setPosition(0,0) ;
+		// container.setVisible(true);
+		// var posTopX = contentSize.width;
+		// this.klineLayerView = new cc.ScrollView();
+        // this.klineLayerView.setContainer(container);
+        // this.klineLayerView.setContentSize(contentSize);
+        // this.klineLayerView.setViewSize(viewSize);
+        // this.klineLayerView.setAnchorPoint(0,0);
+        // this.klineLayerView.setPosition(this.KlinePosX,170);
+        // this.klineLayerView.setDirection(cc.SCROLLVIEW_DIRECTION_HORIZONTAL);
+        // this.klineLayerView.setVisible(true);
+        // this.klineLayerView.setBounceable(true);
+		// // scroll_card.jumpToTop();
+        // this.klineLayerView.setContentOffset(this.klineLayerView.maxContainerOffset() , false);
+		// container.addChild(this.klineLayerMain);
+		// cc.log("klineLayerView.klineLayerView.maxContainerOffset()x=="+this.klineLayerView.maxContainerOffset().x+"y=="+this.klineLayerView.maxContainerOffset().y);
+		// // cc.log("scroll_card.maxContainerOffset()x=="+scroll_card.maxContainerOffset().x+"y=="+scroll_card.maxContainerOffset().y);
+		// this.backgroundLayer.addChild(this.klineLayerView,this.mainLayerNumber);
+
+
 		
-		// this.klineLayerPrev=new KlineLayer(this.klineLayerMain.width,this.klineLayerMain.height);
-		// this.klineLayerPrev.setPosition(this.klineLayerMain.getPosition());
-		//
-		// this.volumnTechLayerPrev=new VolumnTechLayer(this.volumnTechLayerMain.width,this.volumnTechLayerMain.height);
-		// this.volumnTechLayerPrev.setPosition(this.volumnTechLayerMain.getPosition());
-		// this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
+		this.klineLayerPrev=new KlineLayer(this.KlineWidth-5,192);
+		this.klineLayerPrev.setPosition(this.klineLayerMain.getPosition());
+
+		this.volumnTechLayerPrev=new VolumnTechLayer(this.KlineWidth,this.volumnTechLayerMain.height);
+		this.volumnTechLayerPrev.setPosition(this.volumnTechLayerMain.getPosition());
+		this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
 
 
 
 		
 		//需要设置指标
-		// this.klineLayerPrev.addNewTais(new TaisMa([10,20,30],0));
+		this.klineLayerPrev.addNewTais(new TaisMa([10,20,30],0));
 		this.klineLayerMain.addNewTais(new TaisMa([10,20,30],0));
-		//this.klineLayerMain.addNewTais(new TaisMa([5,10,20,30],0));
+		// this.klineLayerMain.addNewTais(new TaisMa([5,10,20,30],0));
 		
 		this.volumnTechLayerMain.addNewTais(new TaisMa([5,10],1));
-		// this.volumnTechLayerPrev.addNewTais(new TaisMa([5,10],1));
+		this.volumnTechLayerPrev.addNewTais(new TaisMa([5,10],1));
 		
 		var macdTais1=new TaisMacd(12,26,9);
 		var macdTais2=new TaisMacd(12,26,9);
 		macdTais1.isEnabled=false;
 		macdTais2.isEnabled=false;
 		this.volumnTechLayerMain.addNewTais(macdTais1);
-		// this.volumnTechLayerPrev.addNewTais(macdTais2);
+		this.volumnTechLayerPrev.addNewTais(macdTais2);
 
 
 		// this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
@@ -336,14 +370,46 @@ var KLineScene = SceneBase.extend(
 		// ///pageView end
 		// return true;
 	},
+		setKlineInfo:function()
+		{
+			switch(userInfo.matchMode)
+			{
+				case 0:
+				{
+					this.KlineWidth = 726;
+					this.KlinePosX = 5;
+					break;
+				}
+				case 1:
+				{
+				}
+				case 2:
+				{
+					this.KlineWidth = this.size.width-120*this.fXScale;
+					this.KlinePosX = 120*this.fXScale;
 
+					break;
+				}
+				case 3:
+				{
+					break;
+				}
+				default:
+				{
+					cc.log("userInfo.matchMode ="+userInfo.matchMode);
+					break;
+				}
+			}
+
+			cc.log("setKlineInfo userInfo.matchMode ="+userInfo.matchMode);
+		},
 
 	setPlayerInfo:function()
 	{
 		if(userInfo.matchMode==null)return;
 		if(this.playerInfoLayer!=null)
 		{
-			this.playerInfoLayer.setPlayerInfo();
+			this.playerInfoLayer.refreshScoresByData();
 		}
 		switch(userInfo.matchMode)
 		{
@@ -364,7 +430,7 @@ var KLineScene = SceneBase.extend(
 			case 1:
 			{
 				this.KlineWidth = this.size.width-120*this.fXScale;
-				this.KlinePosX = 125*this.fXScale;
+				this.KlinePosX = 120*this.fXScale;
 
 				this.matchEndInfoLayer=new MatchEndInfoLayer();
 				// this.matchEndInfoLayer.setAnchorPoint(0.5,0.5);
@@ -380,7 +446,7 @@ var KLineScene = SceneBase.extend(
 			case 2:
 			{
 				this.KlineWidth = this.size.width-120*this.fXScale;
-				this.KlinePosX = 125*this.fXScale;
+				this.KlinePosX = 120*this.fXScale;
 
 				this.matchEndInfoLayer=new MatchEndInfoLayer();
 				// this.matchEndInfoLayer.setAnchorPoint(0.5,0.5);
@@ -410,24 +476,24 @@ var KLineScene = SceneBase.extend(
 	//修改副图的显示内容
 	changeTechLayer:function()
 	{
-		cc.log("klinescene changeTechLayer instanceid="+this.__instanceid);
+		cc.log("klinescene changeTechLayer begin");
 		
 		if(this.phase2==false)
 		{
-			cc.log("changeTechLayer to begin");
+			cc.log("changeTechLayer this.phase2==false to begin");
 			if(this.volumnTechLayerPrev.isTaisEnabled("MACD")==true)
 			{
 				//如果MACD是激活的，则切换到"MA"
 				cc.log("changeTechLayer to ma");
 				this.volumnTechLayerPrev.changeToOtherTais(["MA"]);
-				this.volumnTechLayerMain.changeToOtherTais(["MA"]);
+				// this.volumnTechLayerMain.changeToOtherTais(["MA"]);
 			}
 			else if(this.volumnTechLayerPrev.isTaisEnabled("MA")==true)
 			{
 				//如果"MA"是激活的，则切换到MACD
 				cc.log("changeTechLayer to macd");
 				this.volumnTechLayerPrev.changeToOtherTais(["MACD"]);
-				this.volumnTechLayerMain.changeToOtherTais(["MACD"]);
+				// this.volumnTechLayerMain.changeToOtherTais(["MACD"]);
 			}
 			//需要重绘技术图
 			this.volumnTechLayerPrev.clearMaxAndMinValue();
@@ -436,6 +502,7 @@ var KLineScene = SceneBase.extend(
 		}
 		else
 		{
+			cc.log("changeTechLayer this.phase2 to begin");
 			if(this.volumnTechLayerMain.isTaisEnabled("MACD")==true)
 			{
 				cc.log("====changeTechLayer to ma");
@@ -541,6 +608,7 @@ var KLineScene = SceneBase.extend(
 			case "5":
 			{
 				//接收到了K线数据的消息
+				userInfo.matchFlag = false;
 				cc.log("jsonText parseK线数据over");
 				self.getklinedata(packet.content);
 
@@ -611,10 +679,7 @@ var KLineScene = SceneBase.extend(
 			case "O"://观看记录
 			{
 				cc.log("begin to parse 观看记录json text");
-				// // self.getRecordKlinedata(packet.content);
-				// var data=JSON.parse(packet.content);
-				// cc.log("jsonText parse 观看记录over");
-				// self.toSetklinedata(data);
+				userInfo.matchFlag = true;
 				self.getklinedata(packet.content);
 				self.advanceToMainKLine_Record();
 				cc.log("get 观看记录 passed");
@@ -624,11 +689,14 @@ var KLineScene = SceneBase.extend(
 			case "Y"://观看交易记录Match
 			{
 				cc.log("begin 观看交易记录Match");
-				// self.getRecordKlinedata(packet.content);
+				// self.getklinedata(packet.content);
+				// self.advanceToMainKLine_Record();
 				var data=JSON.parse(packet.content);
+				self.advanceToMainKLine_RecordMatch(data);
+
 				cc.log("jsonText parse 观看记录over");
 				// self.toSetklinedata(data);
-				self.advanceToMainKLine_RecordMatch(data);
+
 				cc.log("get 观看交易记录Match");
 
 				break;
@@ -897,7 +965,7 @@ var KLineScene = SceneBase.extend(
 	toSetklinedata:function(data)
 	{
 		//{"dataBusiness":[108,-113],"score":4.22374,"nickName":"誓约者艾琳诺","matchId":7571,"playerList":
-		this.clearDataForLineLayer();
+		// this.clearDataForLineLayer();
 		var businessData=data["dataBusiness"];
 		cc.log("dataBusiness="+businessData);
 		this.buyInfo=[];
@@ -975,7 +1043,14 @@ var KLineScene = SceneBase.extend(
 	{
 		this.selfOperations=[];
 		this.opponentOperations=[];
-		this.klineLayerMain.clearUpDownArrows();
+
+		if(null!=this.klineLayerMain){
+			this.klineLayerMain.clearUpDownArrows();
+		}
+		if(null!=this.klineLayerPrev){
+			this.klineLayerPrev.clearUpDownArrows();
+		}
+
 	},
 	
 	//清除最上面的玩家信息
@@ -1023,7 +1098,7 @@ var KLineScene = SceneBase.extend(
 		}
 		if(this.playerInfoLayer!=null)
 		{
-			this.playerInfoLayer.setPlayerInfo();
+			this.playerInfoLayer.refreshScoresByData();
 		}
 		this.setDisableAllButtons();
 	},
@@ -1186,7 +1261,7 @@ var KLineScene = SceneBase.extend(
 
 		if(this.playerInfoLayer!=null)
 		{
-			this.playerInfoLayer.setPlayerInfo();
+			this.playerInfoLayer.refreshScoresByData();
 		}
 
 		if(userInfo.matchMode==1){
@@ -1288,8 +1363,13 @@ var KLineScene = SceneBase.extend(
 			{
 				this.matchInfoLayer.disableAllButtons();
 				this.matchInfoLayer.setButtonsToNoPosition();
-				this.matchInfoLayer.ableSpeedButtons();
+				if(userInfo.matchMode!=1){
+					this.matchInfoLayer.ableSpeedButtons();
+				}else{
+					this.matchInfoLayer.ableAmoticonButtons();
+				}
 			}
+
 			//依次画后面的K线
 			this.drawAllCandlesOneByOne();
 			return;
@@ -1541,7 +1621,13 @@ var KLineScene = SceneBase.extend(
 			this.playerInfoLayer.ableInfoButtons();
 		}
 		//一次性画出当前数据图 观看交易记录Match
-		this.businessMatchInfo();
+		cc.log("userInfo.matchFlag=="+userInfo.matchFlag);
+		if(userInfo.matchFlag){
+			this.businessInfo();
+		}else {
+			this.businessMatchInfo();
+		}
+
 		cc.log("advanceToMainKLine_RecordMatch:function()//Match观看记录 end");
 	},
 
@@ -1549,39 +1635,35 @@ var KLineScene = SceneBase.extend(
 	advanceToMainKLine_Record:function()//观看记录
 	{
 		cc.log("advanceToMainKLine_Record:function()//观看记录 begin");
-		if(this.klinedataMain==null || this.prevKlineData==null) return;
-		this.phase2=true;
+        if(this.klinedataMain==null || this.prevKlineData==null) return;
+        this.phase2=false;
 
-		// if(this.klineLayerPrev!=null)
-		// 	this.klineLayerPrev.removeFromParent(false);
-		// if(this.volumnTechLayerPrev!=null)
-		// 	this.volumnTechLayerPrev.removeFromParent(false);
+		if(this.klineLayerMain!=null)
+			this.klineLayerMain.removeFromParent(false);
+		if(this.volumnTechLayerMain!=null)
+			this.volumnTechLayerMain.removeFromParent(false);
+        if(this.klineLayerPrev!=null)
+            this.klineLayerPrev.removeFromParent(false);
+        if(this.volumnTechLayerPrev!=null)
+            this.volumnTechLayerPrev.removeFromParent(false);
 
-		//设置主K线图的数据
-		this.klineLayerMain.setKLineData(this.klinedataMain,this.prevKlineData);
-		// this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
-		//设置附图的数据
-		this.volumnTechLayerMain.setKLineData(this.klinedataMain,this.prevKlineData);
-		// this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
-        //
-		// if(this.lowerLayer.getChildByTag(this.klineLayerMain.getTag())){
-		// 	this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
-		// }
-		// if(this.lowerLayer.getChildByTag(this.volumnTechLayerMain.getTag())){
-		// 	this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
-		// }
+        //设置主K线图的数据
+        this.klineLayerPrev.setKLineData(this.klinedataMain);
+        //设置附图的数据
+        this.volumnTechLayerPrev.setKLineData(this.klinedataMain);
+        this.addChild(this.klineLayerPrev,this.mainLayerNumber,this.klineLayerPrev.getTag());
+        this.addChild(this.volumnTechLayerPrev,this.volumnTechLayerNumber,this.volumnTechLayerPrev.getTag());
 
 		var self=this;
 		this.playerInfoLayer.refreshScoresByData();
 		this.setDisableAllButtons();
+
 		if(this.btnHome!=null)
 		{
 			this.btnHome.setVisible(true);
 		}
-
-
-		//一次性画出当前数据图
-		this.drawCandlesAll();
+        //一次性画出当前数据图
+        this.drawCandlesAll();
 		cc.log("advanceToMainKLine_Record:function()//观看记录 end");
 	},
 
@@ -1589,26 +1671,40 @@ var KLineScene = SceneBase.extend(
 	advanceToMainKLine_Share:function()//分享图
 	{
 		if(this.klinedataMain==null || this.prevKlineData==null) return;
-		this.phase2=true;
+		this.phase2=false;
+
+		if(this.klineLayerMain!=null)
+			this.klineLayerMain.removeFromParent(false);
+		if(this.volumnTechLayerMain!=null)
+			this.volumnTechLayerMain.removeFromParent(false);
 
 		if(this.klineLayerPrev!=null)
 			this.klineLayerPrev.removeFromParent(false);
 		if(this.volumnTechLayerPrev!=null)
 			this.volumnTechLayerPrev.removeFromParent(false);
-		
+
+
+		// this.klineLayerPrev=new KlineLayer(this.klineLayerMain.width,this.klineLayerMain.height);
+		// this.klineLayerPrev.setPosition(this.klineLayerMain.getPosition());
+        //
+		// this.volumnTechLayerPrev=new VolumnTechLayer(this.volumnTechLayerMain.width,this.volumnTechLayerMain.height);
+		// this.volumnTechLayerPrev.setPosition(this.volumnTechLayerMain.getPosition());
+		// this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
 		//设置主K线图的数据
-		this.klineLayerMain.setKLineData(this.klinedataMain,this.prevKlineData);
-		// this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
-		
+		this.klineLayerPrev.setKLineData(this.klinedataMain);
 		//设置附图的数据
-		this.volumnTechLayerMain.setKLineData(this.klinedataMain,this.prevKlineData);
+		this.volumnTechLayerPrev.setKLineData(this.klinedataMain);
+		this.addChild(this.klineLayerPrev,this.mainLayerNumber,this.klineLayerPrev.getTag());
+		this.addChild(this.volumnTechLayerPrev,this.volumnTechLayerNumber,this.volumnTechLayerPrev.getTag());
+		
+
 		// this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
-		if(this.lowerLayer.getChildByTag(this.klineLayerMain.getTag())){
-			this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
-		}
-		if(this.lowerLayer.getChildByTag(this.volumnTechLayerMain.getTag())){
-			this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
-		}
+		// if(this.lowerLayer.getChildByTag(this.klineLayerMain.getTag())){
+		// 	this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
+		// }
+		// if(this.lowerLayer.getChildByTag(this.volumnTechLayerMain.getTag())){
+		// 	this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
+		// }
 
 		var self=this;
 
@@ -1660,17 +1756,15 @@ var KLineScene = SceneBase.extend(
 	drawCandlesAll:function()
 	{
 		this.setPlayerInfo();
-		if(this.klineLayerMain!=null)
+		if(this.klineLayerPrev!=null)
 		{
-			this.klineLayerMain.drawAllCandlesAll();
+			this.klineLayerPrev.drawAllCandlesAll();
 			//画出买卖操作的信息
 			this.businessInfo();
 		}
-		if(this.volumnTechLayerMain!=null)
-			this.volumnTechLayerMain.drawAllCandlesAll();
+		if(this.volumnTechLayerPrev!=null)
+			this.volumnTechLayerPrev.drawAllCandlesAll();
 		this.currentCandleIndex=this.klinedataMain.length;
-
-
 		this.stopProgress();
 		//cc.log("drawCandlesAll this.currentCandleIndex = ",this.currentCandleIndex);
 	},
@@ -1678,7 +1772,7 @@ var KLineScene = SceneBase.extend(
 	businessInfo:function()
 	{
 		cc.log("businessInfo:function() begin= ");
-		if(this.phase2==false)return;
+		// if(this.phase2==false)return;
 		this.clearBuySellOperation();
 		var businessInfo = this.buyInfo;
 		this.selfOperations=[];
@@ -1688,9 +1782,9 @@ var KLineScene = SceneBase.extend(
 			this.selfOperations.push(businessInfo[i]);
 			if(businessInfo[i]>0)
 			{
-				this.klineLayerMain.setUpArrowIndex(Math.abs(businessInfo[i]),(this.selfOperations.length%2==1));
+				this.klineLayerPrev.setUpArrowIndex(Math.abs(businessInfo[i])-1,(this.selfOperations.length%2==1));
 			}else{
-				this.klineLayerMain.setDownArrowIndex(Math.abs(businessInfo[i]),(this.selfOperations.length%2==1));
+				this.klineLayerPrev.setDownArrowIndex(Math.abs(businessInfo[i])-1,(this.selfOperations.length%2==1));
 			}
 			
 		}
@@ -1707,7 +1801,7 @@ var KLineScene = SceneBase.extend(
 	businessMatchInfo:function()
 	{
 		cc.log("businessInfo:function() begin= ");
-		if(this.phase2==false)return;
+		// if(this.phase2==false)return;
 		this.clearBuySellOperation();
 		var businessInfo = this.buyInfo;
 		this.selfOperations=[];
@@ -1717,9 +1811,9 @@ var KLineScene = SceneBase.extend(
 			this.selfOperations.push(businessInfo[i]);
 			if(businessInfo[i]>0)
 			{
-				this.klineLayerMain.setUpArrowIndex(Math.abs(businessInfo[i]+120),(this.selfOperations.length%2==1));
+				this.klineLayerMain.setUpArrowIndex(Math.abs(businessInfo[i])+119,(this.selfOperations.length%2==1));
 			}else{
-				this.klineLayerMain.setDownArrowIndex(Math.abs(businessInfo[i]+120),(this.selfOperations.length%2==1));
+				this.klineLayerMain.setDownArrowIndex(Math.abs(businessInfo[i])+119,(this.selfOperations.length%2==1));
 			}
 
 		}

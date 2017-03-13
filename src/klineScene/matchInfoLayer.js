@@ -481,7 +481,7 @@ var MatchInfoLayer= cc.Layer.extend({
 		this.btnAgain.setVisible(false);
 		this.btnShare.setVisible(false);
         this.meBtnStart.setVisible(false);
-		// this.btnStart.setVisible(false);
+		this.emoticonButton.setVisible(false);
 		this.speedControlLayer.setVisible(false);
 		cc.log("disableAllButtons ====setButtonsToNoPosition");
 	},
@@ -489,7 +489,11 @@ var MatchInfoLayer= cc.Layer.extend({
 	{
 		this.speedControlLayer.setVisible(true);
 	},
-	
+
+	ableAmoticonButtons:function()
+	{
+		this.emoticonButton.setVisible(true);
+	},
 	//将按钮设置为平仓的状态
 	setButtonsToNoPosition:function()
 	{

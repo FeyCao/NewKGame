@@ -33,7 +33,7 @@ ShareManager.prototype.ConnectServer=function()
 	{
 		gSocketConn=new SocketConn();
 	}
-	
+	var wsURL = cc.game.config[cc.game.CONFIG_KEY.serverURL];
 	if(gSocketConn.isconnected==false)
 	{
 		gSocketConn.RegisterEvent("onopen",this.ConnectedCallBack);
