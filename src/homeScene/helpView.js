@@ -113,7 +113,7 @@ var HelpViewLayer = cc.Layer.extend({
         // scroll_card.jumpToTop();
         scroll_card.setContentOffset(scroll_card.minContainerOffset() , false);
         cc.log("scroll_card.minContainerOffset()x=="+scroll_card.minContainerOffset().x+"y=="+scroll_card.minContainerOffset().y);
-        cc.log("scroll_card.maxContainerOffset()x=="+scroll_card.maxContainerOffset().x+"y=="+scroll_card.maxContainerOffset().y);
+        // cc.log("scroll_card.maxContainerOffset()x=="+scroll_card.maxContainerOffset().x+"y=="+scroll_card.maxContainerOffset().y);
 
         this.backgroundSprite.addChild(scroll_card);
         //layer的锚点默认是(0,0),现在设置ImageView

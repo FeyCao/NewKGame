@@ -96,7 +96,7 @@ var userInfo ={
 
     //matchMode
     matchMode:0,//游戏模式0：练习场，1：多人战，2：人机战
-    matchModeFlag:false,
+    matchFlag:false,//false 比赛中，true 观看记录
     matchDayCount:120,
     matchAiMode:"DON",//游戏模式0：练习场，1：多人战，2：人机战3|matchType#aiType#mainDayCount|
     recordMode:0,//战绩模式0：练习场，1：多人战，2：人机战
@@ -109,7 +109,6 @@ var userInfo ={
     bgSoundFlag:false,//背景音乐
     buttonSoundFlag:true,//音效设置
     viewFlag:true,
-
 
 }
 
