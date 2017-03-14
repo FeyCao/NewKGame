@@ -79,10 +79,10 @@ var ProgressLayer= cc.Layer.extend({
         // }
 
         if(sys.isMobile==false&&sys.isNative==false) {//浏览器模式
-			cc.log("rotate: sceneBase::sys.os=="+sys.os);
+			cc.log("浏览器模式rotate: sceneBase::sys.os=="+sys.os);
         }
         else if(sys.os === sys.OS_IOS || sys.os === sys.OS_OSX){
-			cc.log("rotate: sceneBase::sys.os=="+sys.os);
+			cc.log("IOS rotate: sceneBase::sys.os=="+sys.os);
 			refreshUrl(10);
         }
 	},

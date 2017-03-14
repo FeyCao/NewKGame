@@ -44,8 +44,6 @@ LoginManager.prototype.ConnectServer=function()
 	{
 		gSocketConn=new SocketConn();
 	}
-	var wsURL = cc.game.config[cc.game.CONFIG_KEY.serverURL];
-	cc.log("cc.game.config serverURL="+cc.game.config["serverURL"]);
 	if(gSocketConn.isconnected==false)
 	{
 		gSocketConn.RegisterEvent("onopen",this.ConnectedCallBack);
