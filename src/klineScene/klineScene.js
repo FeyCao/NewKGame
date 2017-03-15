@@ -1186,6 +1186,8 @@ var KLineScene = SceneBase.extend(
 			// this.drawCandleStoped=true;
 			if(userInfo.matchMode==0){
 				this.refreshScores(this.currentCandleIndex);
+			}else if(userInfo.matchMode==1){
+				this.drawCandleStoped=true;
 			}
 
 			if(this.currentCandleIndex==241||this.currentCandleIndex==301)
