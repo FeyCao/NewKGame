@@ -129,6 +129,13 @@ var MatchInfoLayer= cc.Layer.extend({
 		this.emoticonButton.setVisible(userInfo.matchMode==1?true:false);
 
 
+		this.toolsButton=new cc.MenuItemImage(res.btn_Emoticon_png,"", self.ShowToolsButtonView, this);//new Button("res/home.png");
+		this.toolsButton.setScale(0.8);
+		this.toolsButton.setPosition(cc.p(size.width/2-200,posY));
+		mu.addChild(this.toolsButton);
+		cc.log("userInfo.matchMode=="+userInfo.matchMode);
+		// this.toolsButton.setVisible(userInfo.matchMode==1?true:false);
+
 
 		this.matchInfoArea=new cc.DrawNode();
 		//设置K线图的区域
@@ -250,6 +257,72 @@ var MatchInfoLayer= cc.Layer.extend({
 			this.faceSprites[1].runAction(actionTest);
 		}
 
+	},
+	ShowToolsButtonView:function()
+	{
+		cc.log("ShowToolsButtonView begin  userInfo.toolsFlag=="+userInfo.toolsFlag);
+		// var size = cc.director.getWinSize();
+		// var posCenter = cc.p(size.width / 2, size.height / 2);
+
+
+		if(gKlineScene!=null&&userInfo.toolsFlag==1){
+			gKlineScene.drawOppositeCandlePart();
+			userInfo.toolsFlag=0;
+		}else if(gKlineScene!=null&&userInfo.toolsFlag==0){
+			gKlineScene.drawNormalCandlePart();
+			userInfo.toolsFlag=1;
+		}else if(gKlineScene!=null&&userInfo.toolsFlag==0){
+			// gKlineScene.drawNormalCandlePart();
+			userInfo.toolsFlag=2;
+		}else if(gKlineScene!=null&&userInfo.toolsFlag==0){
+			// gKlineScene.drawNormalCandlePart();
+			userInfo.toolsFlag=3;
+		}
+
+
+		// var posBase = cc.p(gKlineScene.KlinePosX,75)
+		// var posTemp = cc.p(10,0);
+		// var actionFadeIn=new cc.moveTo(0.5,cc.pAdd(posBase,posTemp),3);
+		// var jumpto = cc.jumpTo(1,posBase,10,4);
+		// var jumpto1 = cc.jumpTo(2,posBase,10,5);
+		// var actionFadeOut=new cc.moveTo(0.5,cc.pSub(posBase,posTemp),3);
+		// var actionTest = new cc.Sequence(actionFadeIn,actionFadeOut,jumpto);//
+        //
+		// var orbit =cc.orbitCamera(8, 1, 0, 0, 360, 45, 0);
+		// //让树叶精灵始终执行三维翻转的动作
+		// // CCOrbitCamera::actionWithDuration
+        //
+		// // var pBackSeq = new cc.Sequence();
+		// var pSpawnBack =  new  cc.Spawn(actionTest,jumpto1);//new cc.Sequence(actionFadeOut,jumpto);//CCSpawn::create(pBackSeq,pScaleBack,NULL);
+        //
+        //
+		// if(gKlineScene!=null&&gKlineScene.volumnTechLayerMain!=null){
+		// 	gKlineScene.volumnTechLayerMain.runAction(pSpawnBack);
+		// }
+		// 2.获取窗口大小
+		// var winSize = cc.director.getWinSize();
+        //
+		// // 3.窗口中心
+		// var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
+		// // 3.窗口位置
+		// var posBase = cc.p(180, 80);
+		// // if (typeof(pos) == "undefined") {
+		// // 	var pos = centerpos;
+		// // }
+		// // this.emoticonViewLayer.setVisible(true);
+		// if(this.emoticonViewLayer==null) {
+		// 	this.emoticonViewLayer=new EmoticonViewLayer();
+		// 	this.addChild(this.emoticonViewLayer);
+		// 	this.emoticonViewLayer.setVisible(false);
+		// }
+		// this.emoticonViewLayer.setPosition(posBase);
+		// if(this.emoticonViewLayer.isVisible()){
+		// 	this.emoticonViewLayer.hideLayer();
+		// }else{
+		// 	this.emoticonViewLayer.showLayer();
+		// }
+
+		// this.pauseLowerLayer();
 	},
 
 	ShowemoticonView:function()

@@ -97,10 +97,7 @@ var ProgressLayer= cc.Layer.extend({
 			this.rotateSpriteInner.removeFromParent(true);
 			this.setVisible(false);
 		}
-		if(sys.os === sys.OS_IOS || sys.os === sys.OS_OSX){
-			clearRefreshUrl();
-		}
-
+		clearRefreshUrl();
 	}
 	
 });

@@ -321,16 +321,17 @@ SceneBase = cc.Scene.extend(
         //
 		// }
 
-		if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
-
-			this.showLoginView();
-
-		}
-		else{
-			var url = "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";
-			window.open(url);
-			// cc.view.enableRetina(true);
-		}
+		this.showLoginView();
+		// if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
+        //
+		//
+        //
+		// }
+		// else{
+		// 	var url = "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";
+		// 	window.open(url);
+		// 	// cc.view.enableRetina(true);
+		// }
 
 	},
 

@@ -109,7 +109,7 @@ var userInfo ={
     bgSoundFlag:false,//背景音乐
     buttonSoundFlag:true,//音效设置
     viewFlag:true,
-
+    toolsFlag:0,//0表示无道具，1表示K线颠倒
 }
 
 var AIOperation ={

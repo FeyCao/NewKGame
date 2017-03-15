@@ -541,8 +541,20 @@ var BaseGraphLayer= cc.Layer.extend({
 		this.drawCandle(candleIndex);
 		this.drawCandleForAllTais(candleIndex);
 		this.drawTaisValueInfo(candleIndex);
+
 	},
-	
+
+
+	//在某个时刻，画所有图像内容的函数，包括画蜡烛线，指标和其他内容
+	drawOppositeSingleDayGraphInfos:function(candleIndex)
+	{
+		//cc.log("drawSingleDayGraphInfos candleIndex="+candleIndex);
+		this.drawOppositeCandle(candleIndex);
+		this.drawCandleForAllTais(candleIndex);
+		this.drawTaisValueInfo(candleIndex);
+	},
+
+
 	//添加指标
 	addNewTais:function(tais)
 	{
@@ -633,7 +645,13 @@ var BaseGraphLayer= cc.Layer.extend({
 	{
 			
 	},
-	
+
+    //重载，在当前的位置画蜡烛图，或者成交量，或者其他技术指标等
+	drawOppositeCandle:function(candleIndex)
+	{
+
+	},
+
 	//重载，当重画后，可能需要重画除了K线，技术指标之外的其余内容，比如买入卖出标记，画的支撑压力线等，给派生类自己实现
 	redrawExceptCandles:function()
 	{
