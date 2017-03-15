@@ -1186,8 +1186,6 @@ var KLineScene = SceneBase.extend(
 			// this.drawCandleStoped=true;
 			if(userInfo.matchMode==0){
 				this.refreshScores(this.currentCandleIndex);
-			}else if(userInfo.matchMode==1){
-				this.drawCandleStoped=true;
 			}
 
 			if(this.currentCandleIndex==241||this.currentCandleIndex==301)
@@ -1217,7 +1215,12 @@ var KLineScene = SceneBase.extend(
 			}
 			else
 			{
-				gSocketConn.Step(this.currentCandleIndex-120);
+				if(this.currentCandleIndex-120>-1){
+					gSocketConn.Step(this.currentCandleIndex-120);
+					if(userInfo.matchMode==1){
+						this.drawCandleStoped=true;
+					}
+				}
 			}
 
 			this.currentCandleIndex+=1;
