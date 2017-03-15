@@ -846,7 +846,7 @@ var MainMenuScene =SceneBase.extend(
                 if(gKlineScene==null){
                     gKlineScene=new KLineScene();
                 }
-                //接收到了K线数据的消息
+
                 gSocketConn.UnRegisterEvent("onmessage",gMainMenuScene.messageCallBack);
                 gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
                 if(gKlineScene!=null)
@@ -1091,9 +1091,11 @@ var MainMenuScene =SceneBase.extend(
 
     matchViewLayer_Close:function()
     {
-        //关闭战绩界面
-        this.matchViewLayer.hideLayer();
-        this.resumeLowerLayer();
+        //关闭matchViewL界面
+        if(this.matchViewLayer!=null){
+            this.matchViewLayer.hideLayer();
+            this.resumeLowerLayer();
+        }
     },
     toHome:function()
     {
