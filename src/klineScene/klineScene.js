@@ -83,6 +83,9 @@ var KLineScene = SceneBase.extend(
 		this.onEnteredFunction=null;
 		this.currentCandleDrawInterval=null;
 
+		this.drawCandleStoped = false;
+
+
 		this.size=null;
 		this.fXScale = null;
 		this.fYScale = null;
@@ -406,11 +409,17 @@ var KLineScene = SceneBase.extend(
 
 	setPlayerInfo:function()
 	{
+		this.size = cc.director.getWinSize();
 		if(userInfo.matchMode==null)return;
 		if(this.playerInfoLayer!=null)
 		{
 			this.playerInfoLayer.refreshScoresByData();
 		}
+
+		if(this.matchEndInfoLayer!=null){
+			this.matchEndInfoLayer.removeFromParent(true);
+		}
+
 		switch(userInfo.matchMode)
 		{
 			case 0:
@@ -1154,6 +1163,8 @@ var KLineScene = SceneBase.extend(
             // this.drawCandleStoped=true;
 			if(userInfo.matchMode==0){
 				this.refreshScores(this.currentCandleIndex);
+			}else if(userInfo.matchMode==1){
+				this.drawCandleStoped=true;
 			}
             
             var ended=this.klineLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
@@ -1186,8 +1197,6 @@ var KLineScene = SceneBase.extend(
 			// this.drawCandleStoped=true;
 			if(userInfo.matchMode==0){
 				this.refreshScores(this.currentCandleIndex);
-			}else if(userInfo.matchMode==1){
-				this.drawCandleStoped=true;
 			}
 
 			if(this.currentCandleIndex==241||this.currentCandleIndex==301)
@@ -1206,6 +1215,7 @@ var KLineScene = SceneBase.extend(
 			var ended=this.klineLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
 			this.volumnTechLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
 			cc.log("drawAllCandlesOneByOne currentIndex=="+this.currentCandleIndex);
+
 			this.matchRunFlag=true;
 			if(ended)
 			{
@@ -1217,9 +1227,16 @@ var KLineScene = SceneBase.extend(
 			}
 			else
 			{
-				gSocketConn.Step(this.currentCandleIndex-120);
-			}
+				if(this.currentCandleIndex-120<0){
 
+				}else{
+					gSocketConn.Step(this.currentCandleIndex-120);
+					if(userInfo.matchMode==1){
+						this.drawCandleStoped=true;
+					}
+				}
+
+			}
 			this.currentCandleIndex+=1;
 		}
 		var self=this;
