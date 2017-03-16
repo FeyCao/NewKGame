@@ -1870,9 +1870,9 @@ var KLineScene = SceneBase.extend(
 			this.selfOperations.push(businessInfo[i]);
 			if(businessInfo[i]>0)
 			{
-				this.klineLayerPrev.setUpArrowIndex(Math.abs(businessInfo[i])-1,(this.selfOperations.length%2==1));
+				this.klineLayerPrev.setUpArrowIndex(Math.abs(businessInfo[i]),(this.selfOperations.length%2==1));
 			}else{
-				this.klineLayerPrev.setDownArrowIndex(Math.abs(businessInfo[i])-1,(this.selfOperations.length%2==1));
+				this.klineLayerPrev.setDownArrowIndex(Math.abs(businessInfo[i]),(this.selfOperations.length%2==1));
 			}
 			
 		}
@@ -1899,9 +1899,9 @@ var KLineScene = SceneBase.extend(
 			this.selfOperations.push(businessInfo[i]);
 			if(businessInfo[i]>0)
 			{
-				this.klineLayerMain.setUpArrowIndex(Math.abs(businessInfo[i])+119,(this.selfOperations.length%2==1));
+				this.klineLayerMain.setUpArrowIndex(Math.abs(businessInfo[i])+120,(this.selfOperations.length%2==1));
 			}else{
-				this.klineLayerMain.setDownArrowIndex(Math.abs(businessInfo[i])+119,(this.selfOperations.length%2==1));
+				this.klineLayerMain.setDownArrowIndex(Math.abs(businessInfo[i])+120,(this.selfOperations.length%2==1));
 			}
 
 		}
@@ -1935,7 +1935,7 @@ var KLineScene = SceneBase.extend(
 		
 		if(gSocketConn!=null && gSocketConn!=undefined)
 		{
-			gSocketConn.Buy(lastCandleIndex-120);
+			gSocketConn.Buy(lastCandleIndex-121);
 		}
 	},
 	
@@ -1951,7 +1951,7 @@ var KLineScene = SceneBase.extend(
 		this.klineLayerMain.setDownArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
 		if(gSocketConn!=null && gSocketConn!=undefined)
 		{
-			gSocketConn.Sell(lastCandleIndex-120);
+			gSocketConn.Sell(lastCandleIndex-121);
 		}
 	},
 	

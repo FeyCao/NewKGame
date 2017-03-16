@@ -230,7 +230,7 @@ var KlineLayer= BaseGraphLayer.extend({
 	///处理向上的箭头
 	setUpArrowIndex:function(index,isOpen)
 	{
-		 index=index;
+		 index=index-1;
 		 var upArrowSprite=null;
 		 if(isOpen==true)
 		 {
@@ -292,7 +292,7 @@ var KlineLayer= BaseGraphLayer.extend({
 	///处理向下的箭头
 	setDownArrowIndex:function(index,isOpen)
 	{
-		 index=index;
+		 index=index-1;
 		 var downArrowSprite=null;
 		 if(isOpen==true)
 		 {
