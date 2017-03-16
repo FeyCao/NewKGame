@@ -77,57 +77,23 @@ var MatchViewLayer = cc.Layer.extend({
         var self =this;
         var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
         cc.log(" beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
-
-
-        // var matchInfoMessage ="2#DON";
-        // var matchModeFlag =Math.round(Math.random()*100)%3;
-        // switch (matchModeFlag)
-        // {
-        //     case 0:
-        //     {
-        //         matchInfoMessage ="2#DON";
-        //         break;
-        //     }
-        //     case 1:
-        //     {
-        //         matchInfoMessage ="2#3MA";
-        //         break;
-        //     }
-        //     case 2:
-        //     {
-        //
-        //         matchInfoMessage ="2#3RED";
-        //         break;
-        //     }
-        //     case 3:
-        //     {
-        //         break;
-        //     }
-        //     default:
-        //     {
-        //         cc.log("userInfo.recordMode=="+userInfo.recordMode);
-        //         break;
-        //     }
-        // }
-
-
         switch (userInfo.matchMode)
         {
 
             case 0:
             {
 
-                var klineSceneNext=new KLineScene();
-                klineSceneNext.onEnteredFunction=function(){
-
-                    // klineSceneNext.showProgress();
-                };
-                gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
+                // var klineSceneNext=new KLineScene();
+                // klineSceneNext.onEnteredFunction=function(){
+                //
+                //     // klineSceneNext.showProgress();
+                // };
+                // gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
                 gSocketConn.BeginMatch(matchInfoMessage);
                 userInfo.matchBeginFlag=true;
                 //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
-                cc.director.runScene(klineSceneNext);
-                cc.log("klineSceneNext切换KGameScene场景调用完毕");
+                // cc.director.runScene(klineSceneNext);
+                // cc.log("klineSceneNext切换KGameScene场景调用完毕");
 
                 break;
             }
@@ -137,17 +103,6 @@ var MatchViewLayer = cc.Layer.extend({
                 self.unmatchButton.setVisible(true);
                 self.beginButton.setVisible(false);
                 self.textLabel.setVisible(true);
-                //
-                // var klineSceneNext=new KLineScene();
-                // klineSceneNext.onEnteredFunction=function(){
-                //
-                //     // klineSceneNext.showProgress();
-                // };
-                // gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
-                // gSocketConn.BeginMatch(matchInfoMessage);
-                //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
-
-                // cc.director.runScene(klineSceneNext);
                 if(null!=gMainMenuScene)
                 {
                     gSocketConn.BeginMatch("1");
@@ -158,16 +113,16 @@ var MatchViewLayer = cc.Layer.extend({
             }
             case 2:
             {
-                var klineSceneNext=new KLineScene();
-                klineSceneNext.onEnteredFunction=function(){
-
-                    // klineSceneNext.showProgress();
-                };
-                gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
+                // var klineSceneNext=new KLineScene();
+                // klineSceneNext.onEnteredFunction=function(){
+                //
+                //     // klineSceneNext.showProgress();
+                // };
+                // gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
                 gSocketConn.BeginMatch(matchInfoMessage);
                 userInfo.matchBeginFlag=true;
                 //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
-                cc.director.runScene(klineSceneNext);
+                // cc.director.runScene(klineSceneNext);
                 cc.log("klineSceneNext切换KGameScene场景调用完毕");
                 break;
             }
@@ -182,6 +137,9 @@ var MatchViewLayer = cc.Layer.extend({
             }
         }
 
+        // if(this.closeCallBackFunction!=null){
+        //     this.closeCallBackFunction();
+        // }
     },
 
     unMatch:function(){
