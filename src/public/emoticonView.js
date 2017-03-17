@@ -67,19 +67,19 @@ var EmoticonViewLayer = cc.LayerColor.extend({
         var size = cc.director.getWinSize();
         var fXScale = size.width/1280;
         var fYScale = size.height/720;
-
-        var bg = cc.Sprite.create(res.btn_Emoticon_png);
-        bg.setVisible(false);
-        this.addChild(bg);
-
-        var bgSize = bg.getContentSize();
+        //
+        // var bg = cc.Sprite.create(res.btn_Emoticon_png);
+        // bg.setVisible(false);
+        // this.addChild(bg);
+        //
+        // var bgSize = bg.getContentSize();
 
         var mu = new cc.Menu();
         mu.x = 0;
         mu.y = 0;
         this.addChild(mu,3);
 
-        var posX = 70;
+        var posX = 60;
         var posY = 20;
         var posBase = 20;
 

@@ -110,6 +110,10 @@ var KLineScene = SceneBase.extend(
 		{
 			this.matchEndInfoLayer.onExit();
 		}
+		if(this.matchViewLayer!=null)
+		{
+			this.matchViewLayer.onExit();
+		}
 
 		userInfo.endInfoOfAllPlayers = null;
 		userInfo.playerListData = null;
@@ -145,7 +149,7 @@ var KLineScene = SceneBase.extend(
 		this.fYScale = this.size.height/720;
 		//document.getElementById("mainBody").style
 		var centerpos = cc.p(this.size.width / 2, this.size.height / 2);
-		document.bgColor="#152936";
+		// document.bgColor="#152936";
 
 		gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
 
@@ -169,19 +173,32 @@ var KLineScene = SceneBase.extend(
 		this.addChild(this.playerInfoLayer, 8,this.playerInfoLayer.getTag());
 		this.setKlineInfo();
 
+
+
+		// var containerColor=cc.color(0,32,52,180);//
+		// this.container.setColor(containerColor);
+
+		this.coverSprite = new cc.LayerColor(BlackColor,700,200);;
+		// this.coverSprite = new cc.Sprite(res.BLUE_BG_png);
+		// this.coverSprite.setScale(70,20);
+		this.coverSprite.setOpacity(0);
+		this.coverSprite.setPosition(this.KlinePosX+5,170);
+		this.addChild(this.coverSprite,10);
+
+
  		//  //设置K线图的区域
 
-		// var kWidth = this.KlineWidth*2-10;
-		// this.klineLayerMain=new KlineLayer(kWidth,192);
-		// this.klineLayerMain.setPosition(cc.p(this.KlinePosX,170));
-        //
-        //
-		// this.volumnTechLayerMain=new VolumnTechLayer(kWidth,94);
-		// this.volumnTechLayerMain.setPosition(cc.p(this.KlinePosX,75));
-		// this.volumnTechLayerMain.setClickEvent(function(){self.changeTechLayer();});
-        //
-		// this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
-		// this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
+		var kWidth = this.KlineWidth*2-10;
+		this.klineLayerMain=new KlineLayer(kWidth,192);
+		this.klineLayerMain.setPosition(cc.p(this.KlinePosX,170));
+
+
+		this.volumnTechLayerMain=new VolumnTechLayer(kWidth,94);
+		this.volumnTechLayerMain.setPosition(cc.p(this.KlinePosX,75));
+		this.volumnTechLayerMain.setClickEvent(function(){self.changeTechLayer();});
+
+		this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
+		this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
 		this.borderArea=new cc.DrawNodeCanvas();
 		this.borderArea.setPosition(cc.p(0,68));
 		this.borderArea.width=726;
@@ -191,52 +208,52 @@ var KLineScene = SceneBase.extend(
 		//this.drawAreaBorder();
 		this.drawHorizontalLine();
 
-        var kWidth = this.KlineWidth*2-10;
+        // var kWidth = this.KlineWidth*2-10;
+        // // this.klineLayerMain=new KlineLayer(kWidth,192);
+        // this.volumnTechLayerMain=new VolumnTechLayer(kWidth,94);
+        // this.volumnTechLayerMain.setAnchorPoint(0,0);
+        // this.volumnTechLayerMain.setPosition(cc.p(this.KlinePosX,75));
+        // this.volumnTechLayerMain.setClickEvent(function(){self.changeTechLayer();});
+        // // this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
+        // this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
         // this.klineLayerMain=new KlineLayer(kWidth,192);
-        this.volumnTechLayerMain=new VolumnTechLayer(kWidth,94);
-        this.volumnTechLayerMain.setAnchorPoint(0,0);
-        this.volumnTechLayerMain.setPosition(cc.p(this.KlinePosX,75));
-        this.volumnTechLayerMain.setClickEvent(function(){self.changeTechLayer();});
-        // this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
-        this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
-        this.klineLayerMain=new KlineLayer(kWidth,192);
-        this.klineLayerMain.setPosition(this.KlineWidth,0);
-        this.klineLayerMain.setAnchorPoint(0,0.5);
-        var contentSize = cc.size(kWidth,195);
-        // //设置View的大小，相当于是显示的区域
-        var viewSize = cc.size(720,192);
-        // var contentSize = cc.size(610,270*8.2);
-        // var sp =cc.Sprite.create("res/help/bg_help.png");
-        this.container = new cc.LayerColor();
-        var containerColor=cc.color(0,32,52,180);//
-        this.container.setColor(containerColor);
-        this.container.setAnchorPoint(0,0);
-        // container.addChild(sp);
-        this.container.setPosition(0,0) ;
-        this.container.setVisible(true);
-        var posTopX = contentSize.width;
-        this.klineLayerView = new cc.ScrollView();
-        this.klineLayerView.setContainer(this.container);
-        this.klineLayerView.setContentSize(contentSize);
-        this.klineLayerView.setViewSize(viewSize);
-        this.klineLayerView.setAnchorPoint(0.5,0.5);
-        this.klineLayerView.setPosition(this.KlinePosX,170);
-        this.klineLayerView.setDirection(cc.SCROLLVIEW_DIRECTION_HORIZONTAL);
-        this.klineLayerView.setVisible(true);
-        this.klineLayerView.setBounceable(true);
-        // scroll_card.jumpToTop();
-        this.klineLayerView.setContentOffset(this.klineLayerView.minContainerOffset() , false);
-        this.container.addChild(this.klineLayerMain);
-        cc.log("klineLayerView.klineLayerView.maxContainerOffset()x=="+this.klineLayerView.minContainerOffset().x+"y=="+this.klineLayerView.minContainerOffset().y);
-        this.backgroundLayer.addChild(this.klineLayerView,this.mainLayerNumber);
+        // this.klineLayerMain.setPosition(this.KlineWidth-5,0);
+        // this.klineLayerMain.setAnchorPoint(0,0.5);
+        // var contentSize = cc.size(kWidth,195);
+        // // //设置View的大小，相当于是显示的区域
+        // var viewSize = cc.size(720,192);
+        // // var contentSize = cc.size(610,270*8.2);
+        // // var sp =cc.Sprite.create("res/help/bg_help.png");
+        // this.container = new cc.LayerColor();
+        // var containerColor=cc.color(0,32,52,180);//
+        // this.container.setColor(containerColor);
+        // this.container.setAnchorPoint(0,0);
+        // // container.addChild(sp);
+        // this.container.setPosition(0,0) ;
+        // this.container.setVisible(true);
+        // var posTopX = contentSize.width;
+        // this.klineLayerView = new cc.ScrollView();
+        // this.klineLayerView.setContainer(this.container);
+        // this.klineLayerView.setContentSize(contentSize);
+        // this.klineLayerView.setViewSize(viewSize);
+        // this.klineLayerView.setAnchorPoint(0,0);
+        // this.klineLayerView.setPosition(this.KlinePosX,170);
+        // this.klineLayerView.setDirection(cc.SCROLLVIEW_DIRECTION_HORIZONTAL);
+        // this.klineLayerView.setVisible(true);
+        // this.klineLayerView.setBounceable(true);
+        // // scroll_card.jumpToTop();
+        // this.klineLayerView.setContentOffset(this.klineLayerView.minContainerOffset() , false);
+        // this.container.addChild(this.klineLayerMain);
+        // cc.log("klineLayerView.klineLayerView.maxContainerOffset()x=="+this.klineLayerView.minContainerOffset().x+"y=="+this.klineLayerView.minContainerOffset().y);
+        // this.backgroundLayer.addChild(this.klineLayerView,this.mainLayerNumber);
 
 
 
         this.klineLayerPrev=new KlineLayer(this.KlineWidth-5,192);
-		this.klineLayerPrev.setPosition(this.klineLayerMain.getPosition());
+		this.klineLayerPrev.setPosition(cc.p(this.KlinePosX,170));
 
-		this.volumnTechLayerPrev=new VolumnTechLayer(this.KlineWidth,this.volumnTechLayerMain.height);
-		this.volumnTechLayerPrev.setPosition(cc.p(this.KlinePosX,170));
+		this.volumnTechLayerPrev=new VolumnTechLayer(this.KlineWidth-5,94);
+		this.volumnTechLayerPrev.setPosition(cc.p(this.KlinePosX,75));
 		this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
 
 
@@ -1546,10 +1563,10 @@ var KLineScene = SceneBase.extend(
         cc.log(" mainLayerAnction begin this.klineLayerMain.x=="+this.klineLayerMain.getPosition().x+"this.KlinePosX=="+this.KlinePosX);
         var self =this;
         var posBegain = cc.p(this.KlinePosX,this.klineLayerMain.getPosition().y);
-        var posEnd1 = cc.p(-this.KlineWidth+this.KlinePosX+10,this.klineLayerMain.getPosition().y);
-        var posEnd2 = cc.p(-this.KlineWidth+this.KlinePosX+10,this.volumnTechLayerMain.getPosition().y);
-        var moveLeft1  = cc.MoveTo.create(3,posEnd1);  // 左移
-        var moveLeft2  = cc.MoveTo.create(3,posEnd2);  // 左移
+        var posEnd1 = cc.p(-this.KlineWidth+this.KlinePosX+10,0);
+        var posEnd2 = cc.p(-this.KlineWidth+this.KlinePosX+10,0);
+        var moveLeft1  = cc.MoveBy.create(3,posEnd1);  // 左移
+        var moveLeft2  = cc.MoveBy.create(3,posEnd2);  // 左移
         cc.log("posEnd1//比赛图 beginposEnd posEnd1.x=="+posEnd1.x);
         this.klineLayerMain.runAction(moveLeft1);
         this.volumnTechLayerMain.runAction(moveLeft2);
@@ -1696,18 +1713,18 @@ var KLineScene = SceneBase.extend(
         this.phase2=false;
 
 		if(this.klineLayerMain!=null)
-			this.klineLayerMain.removeFromParent(false);
+			this.klineLayerMain.removeFromParent(true);
 		if(this.volumnTechLayerMain!=null)
-			this.volumnTechLayerMain.removeFromParent(false);
+			this.volumnTechLayerMain.removeFromParent(true);
         if(this.klineLayerPrev!=null)
             this.klineLayerPrev.removeFromParent(false);
         if(this.volumnTechLayerPrev!=null)
             this.volumnTechLayerPrev.removeFromParent(false);
 
         //设置主K线图的数据
-        this.klineLayerPrev.setKLineData(this.klinedataMain);
+        this.klineLayerPrev.setKLineData(this.klinedataMain,this.klineDataPrev);
         //设置附图的数据
-        this.volumnTechLayerPrev.setKLineData(this.klinedataMain);
+        this.volumnTechLayerPrev.setKLineData(this.klinedataMain,this.klineDataPrev);
         this.addChild(this.klineLayerPrev,this.mainLayerNumber,this.klineLayerPrev.getTag());
         this.addChild(this.volumnTechLayerPrev,this.volumnTechLayerNumber,this.volumnTechLayerPrev.getTag());
 
@@ -1856,6 +1873,48 @@ var KLineScene = SceneBase.extend(
                 // this.volumnTechLayerMain.drawOppositeSingleDayGraphInfos(i);
             }
         },
+
+		drawCoverCandlePart:function()
+		{
+			this.phase2=true;
+			if(this.coverSprite!=null){
+				var act1 = this.createAnimation_ACT2();
+				this.coverSprite.runAction(act1);
+			}
+		},
+
+		createAnimation_ACT1:function()
+		{
+
+			var posBase = cc.p(0,-10);
+			var actionFadeIn=new cc.FadeTo(2,255);
+			var actMoveBy = cc.MoveBy.create(2,posBase);
+			var actionFadeOut=new cc.FadeTo(1,0);
+			// var actionTest = new  cc.Sequence(actionFadeIn,jumpto,cc.ActionInterval(1),actionFadeOut);//
+			var posBy = cc.p(0,-this.size.height+20);
+			var actMoveBy = cc.MoveBy.create(2,posBy);
+
+			var actionMoveIn=cc.spawn(actionFadeIn,actMoveBy);//
+			var actionBlank=new cc.ActionInterval(2);
+			var actionMoveOut=cc.spawn(actionFadeOut,actMoveBy);//
+			return new cc.Sequence(actionMoveIn,actMoveBy,actionBlank,actionMoveOut);
+		},
+		createAnimation_ACT2:function()
+		{
+			var actionFadeIn=new cc.FadeTo(1,240);
+			var actionFadeOut=new cc.FadeTo(1,0);
+			var actionFade1=new cc.FadeTo(1,180);
+			var actionFade2=new cc.FadeTo(1,120);
+			var actionFade3=new cc.FadeTo(1,60);
+
+			// var actScale1 = cc.ScaleTo(2,50,40);
+			// var actScale2 = cc.ScaleTo(2,1,1);
+
+			// var actionIn=cc.spawn(actionFadeIn,actScale1);//
+			var actionBlank=new cc.ActionInterval(2);
+			// var actionOut=cc.spawn(actionFadeOut,actScale2);//
+			return new cc.Sequence(actionFade3,actionFade2,actionFade1,actionFadeIn,actionFade1,actionFade2,actionFade3,actionFadeOut);
+		},
 	//
 	businessInfo:function()
 	{

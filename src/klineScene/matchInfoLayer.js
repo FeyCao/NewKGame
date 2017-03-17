@@ -66,7 +66,7 @@ var MatchInfoLayer= cc.Layer.extend({
 		var fXScale = size.width/1280;
 		var fYScale = size.height/720;
 		var fontSize = 25;
-		var posY = 35;
+
 		// this.backgroundSprite=cc.Sprite.create("res/battle_bg.png");
 		// var bgSize = this.backgroundSprite.getContentSize();
 
@@ -111,27 +111,31 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.addChild(this.meBtnStart,3);
 		// this.addChild(this.btnStart,3);
 
-
+		var posX = 150
+		var posY = 35;
+		var posBuy = cc.p(posX,posY);
+		var posSell = cc.p(size.width-posX,posY);
+		var posTool = cc.p(70,0);
 		this.buyButton=new cc.MenuItemImage("res/btnBuyEnable.png","res/btnBuyEnable.png", self.buyClick, this);//new Button("res/home.png");
 		this.buyButton.setScale(fXScale*0.5,fYScale*0.5);
-		this.buyButton.setPosition(cc.p(size.width/6,posY));
+		this.buyButton.setPosition(posBuy);
 		mu.addChild(this.buyButton);
 		this.sellButton=new cc.MenuItemImage("res/btnSellEnable.png","res/btnSellEnable.png", self.sellClick, this);//new Button("res/home.png");
 		this.sellButton.setScale(fXScale*0.5,fYScale*0.5);
-		this.sellButton.setPosition(cc.p(size.width/6*5,posY));
+		this.sellButton.setPosition(posSell);
 		mu.addChild(this.sellButton);
 
 		this.emoticonButton=new cc.MenuItemImage(res.btn_Emoticon_png,"", self.ShowemoticonView, this);//new Button("res/home.png");
 		this.emoticonButton.setScale(0.8);
-		this.emoticonButton.setPosition(cc.p(size.width/2-100,posY));
+		this.emoticonButton.setPosition(cc.pSub(posBuy,posTool));
 		mu.addChild(this.emoticonButton);
 		cc.log("userInfo.matchMode=="+userInfo.matchMode);
-		this.emoticonButton.setVisible(userInfo.matchMode==1?true:false);
+		// this.emoticonButton.setVisible(userInfo.matchMode==1?true:false);
 
 
 		this.toolsButton=new cc.MenuItemImage(res.btn_Emoticon_png,"", self.ShowToolsButtonView, this);//new Button("res/home.png");
 		this.toolsButton.setScale(0.8);
-		this.toolsButton.setPosition(cc.p(size.width/2-200,posY));
+		this.toolsButton.setPosition(cc.pAdd(posSell,posTool));
 		mu.addChild(this.toolsButton);
 		cc.log("userInfo.matchMode=="+userInfo.matchMode);
 		// this.toolsButton.setVisible(userInfo.matchMode==1?true:false);
@@ -263,66 +267,22 @@ var MatchInfoLayer= cc.Layer.extend({
 		cc.log("ShowToolsButtonView begin  userInfo.toolsFlag=="+userInfo.toolsFlag);
 		// var size = cc.director.getWinSize();
 		// var posCenter = cc.p(size.width / 2, size.height / 2);
+		gKlineScene.drawCoverCandlePart();
 
-
-		if(gKlineScene!=null&&userInfo.toolsFlag==1){
-			gKlineScene.drawOppositeCandlePart();
-			userInfo.toolsFlag=0;
-		}else if(gKlineScene!=null&&userInfo.toolsFlag==0){
-			gKlineScene.drawNormalCandlePart();
-			userInfo.toolsFlag=1;
-		}else if(gKlineScene!=null&&userInfo.toolsFlag==0){
-			// gKlineScene.drawNormalCandlePart();
-			userInfo.toolsFlag=2;
-		}else if(gKlineScene!=null&&userInfo.toolsFlag==0){
-			// gKlineScene.drawNormalCandlePart();
-			userInfo.toolsFlag=3;
-		}
-
-
-		// var posBase = cc.p(gKlineScene.KlinePosX,75)
-		// var posTemp = cc.p(10,0);
-		// var actionFadeIn=new cc.moveTo(0.5,cc.pAdd(posBase,posTemp),3);
-		// var jumpto = cc.jumpTo(1,posBase,10,4);
-		// var jumpto1 = cc.jumpTo(2,posBase,10,5);
-		// var actionFadeOut=new cc.moveTo(0.5,cc.pSub(posBase,posTemp),3);
-		// var actionTest = new cc.Sequence(actionFadeIn,actionFadeOut,jumpto);//
-        //
-		// var orbit =cc.orbitCamera(8, 1, 0, 0, 360, 45, 0);
-		// //让树叶精灵始终执行三维翻转的动作
-		// // CCOrbitCamera::actionWithDuration
-        //
-		// // var pBackSeq = new cc.Sequence();
-		// var pSpawnBack =  new  cc.Spawn(actionTest,jumpto1);//new cc.Sequence(actionFadeOut,jumpto);//CCSpawn::create(pBackSeq,pScaleBack,NULL);
-        //
-        //
-		// if(gKlineScene!=null&&gKlineScene.volumnTechLayerMain!=null){
-		// 	gKlineScene.volumnTechLayerMain.runAction(pSpawnBack);
-		// }
-		// 2.获取窗口大小
-		// var winSize = cc.director.getWinSize();
-        //
-		// // 3.窗口中心
-		// var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
-		// // 3.窗口位置
-		// var posBase = cc.p(180, 80);
-		// // if (typeof(pos) == "undefined") {
-		// // 	var pos = centerpos;
-		// // }
-		// // this.emoticonViewLayer.setVisible(true);
-		// if(this.emoticonViewLayer==null) {
-		// 	this.emoticonViewLayer=new EmoticonViewLayer();
-		// 	this.addChild(this.emoticonViewLayer);
-		// 	this.emoticonViewLayer.setVisible(false);
-		// }
-		// this.emoticonViewLayer.setPosition(posBase);
-		// if(this.emoticonViewLayer.isVisible()){
-		// 	this.emoticonViewLayer.hideLayer();
-		// }else{
-		// 	this.emoticonViewLayer.showLayer();
+		// if(gKlineScene!=null&&userInfo.toolsFlag==0){
+		// 	gKlineScene.drawNormalCandlePart();
+		// 	userInfo.toolsFlag=1;
+		// }else if(gKlineScene!=null&&userInfo.toolsFlag==1){
+		// 	gKlineScene.drawOppositeCandlePart();
+		// 	userInfo.toolsFlag=2;
+		// }else if(gKlineScene!=null&&userInfo.toolsFlag==2){
+		// 	gKlineScene.drawCoverCandlePart();
+		// 	userInfo.toolsFlag=3;
+		// }else if(gKlineScene!=null&&userInfo.toolsFlag==3){
+		// 	// gKlineScene.drawNormalCandlePart();
+		// 	userInfo.toolsFlag=0;
 		// }
 
-		// this.pauseLowerLayer();
 	},
 
 	ShowemoticonView:function()
@@ -334,7 +294,7 @@ var MatchInfoLayer= cc.Layer.extend({
 		// 3.窗口中心
 		var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
 		// 3.窗口位置
-		var posBase = cc.p(180, 80);
+		var posBase = cc.p(0, 80);
 		// if (typeof(pos) == "undefined") {
 		// 	var pos = centerpos;
 		// }
@@ -554,8 +514,15 @@ var MatchInfoLayer= cc.Layer.extend({
 		this.btnAgain.setVisible(false);
 		this.btnShare.setVisible(false);
         this.meBtnStart.setVisible(false);
+
 		this.emoticonButton.setVisible(false);
+		this.toolsButton.setVisible(false);
+
 		this.speedControlLayer.setVisible(false);
+		if(testFlag==true){
+			this.emoticonButton.setVisible(true);
+			this.toolsButton.setVisible(true);
+		}
 		cc.log("disableAllButtons ====setButtonsToNoPosition");
 	},
 	ableSpeedButtons:function()

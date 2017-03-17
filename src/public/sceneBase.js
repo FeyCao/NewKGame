@@ -320,7 +320,6 @@ SceneBase = cc.Scene.extend(
 		// if(sys.os===sys.OS_WINDOWS||sys.os===sys.OS_OSX) {//浏览器模式
         //
 		// }
-
 		this.showLoginView();
 		// if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
         //

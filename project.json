@@ -8,7 +8,8 @@
     "renderMode" : 1,
     "engineDir":"frameworks/cocos2d-html5",
     "CANDAL_DRAW_INTERVAL":100,
-    "serverURL":"192.168.16.250:5210/Kgamefeng/websocket",
+    "testFlag" : false,
+    "serverURL":"kgt.kiiik.com:7003/Kgamefeng/websocket",
     "other":"222.66.97.203:7003/Kgamefeng/websocket';/晓峰环境/ '180.169.108.231:5003/Kgamefeng/websocket';/晓峰环境/  192.168.16.250:5210/Kgamefeng/websocket';//本地环境/'ws://192.168.16.145:8080/Kgamefeng/websocket';/晓峰环境",
 
     "modules" : ["cocos2d","gui","shape-nodes","editbox"],

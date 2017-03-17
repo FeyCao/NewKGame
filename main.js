@@ -82,7 +82,7 @@ cc.game.onStart = function(){
     // The game will be resized when browser size change
     cc.view.resizeWithBrowserSize(true);
 
-    //load resources
+    //load resources// 预加载资源
     cc.LoaderScene.preload(g_resources, function () {
         if(typeof(shareFlag)!="undefined"&&shareFlag==true){
             cc.director.runScene(new ShareLoadScene());//分享
@@ -93,5 +93,9 @@ cc.game.onStart = function(){
         // cc.director.runScene(new MainMenuScene());
         // cc.director.runScene(new KLineScene());
     }, this);
+    // 开始加载引擎和游戏脚本，准备游戏执行环境
+    cc.game.prepare();
+
+
 };
 cc.game.run();
