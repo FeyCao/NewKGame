@@ -69,7 +69,7 @@ cc.game.onStart = function(){
 
     // Pass true to enable retina display, on Android disabled by default to improve performance
     // cc.view.enableRetina(cc.sys.os === cc.sys.OS_IOS ? true : false);
-    cc.view.enableRetina(true);
+    // cc.view.enableRetina(true);
     // Adjust viewport meta
     cc.view.adjustViewPort(true);
 

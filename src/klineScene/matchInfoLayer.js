@@ -111,7 +111,7 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.addChild(this.meBtnStart,3);
 		// this.addChild(this.btnStart,3);
 
-		var posX = 150
+		var posX = 80
 		var posY = 35;
 		var posBuy = cc.p(posX,posY);
 		var posSell = cc.p(size.width-posX,posY);
@@ -127,7 +127,7 @@ var MatchInfoLayer= cc.Layer.extend({
 
 		this.emoticonButton=new cc.MenuItemImage(res.btn_Emoticon_png,"", self.ShowemoticonView, this);//new Button("res/home.png");
 		this.emoticonButton.setScale(0.8);
-		this.emoticonButton.setPosition(cc.pSub(posBuy,posTool));
+		this.emoticonButton.setPosition(cc.pAdd(posBuy,posTool));
 		mu.addChild(this.emoticonButton);
 		cc.log("userInfo.matchMode=="+userInfo.matchMode);
 		// this.emoticonButton.setVisible(userInfo.matchMode==1?true:false);
@@ -135,7 +135,7 @@ var MatchInfoLayer= cc.Layer.extend({
 
 		this.toolsButton=new cc.MenuItemImage(res.btn_Emoticon_png,"", self.ShowToolsButtonView, this);//new Button("res/home.png");
 		this.toolsButton.setScale(0.8);
-		this.toolsButton.setPosition(cc.pAdd(posSell,posTool));
+		this.toolsButton.setPosition(cc.pSub(posSell,posTool));
 		mu.addChild(this.toolsButton);
 		cc.log("userInfo.matchMode=="+userInfo.matchMode);
 		// this.toolsButton.setVisible(userInfo.matchMode==1?true:false);
@@ -294,7 +294,7 @@ var MatchInfoLayer= cc.Layer.extend({
 		// 3.窗口中心
 		var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
 		// 3.窗口位置
-		var posBase = cc.p(0, 80);
+		var posBase = cc.p(this.emoticonButton.getPositionX()-80, 80);
 		// if (typeof(pos) == "undefined") {
 		// 	var pos = centerpos;
 		// }

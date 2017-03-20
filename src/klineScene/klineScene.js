@@ -157,17 +157,17 @@ var KLineScene = SceneBase.extend(
 		cc.log("............klinescene on enter called");
 		this.backgroundLayer=new cc.LayerColor(cc.color(21,41,54, 255));
 		this.backgroundLayer.ignoreAnchorPointForPosition(false);  
-		this.backgroundLayer.setPosition(this.size.width / 2, this.size.height / 2);
+		this.backgroundLayer.setPosition(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2);
 		this.addChild(this.backgroundLayer, 1,this.backgroundLayer.getTag());
 
 		this.backgroundSprite=cc.Sprite.create("res/battle_bg.png");
 		this.backgroundSprite.setScale(this.fXScale,this.fYScale);
-		this.backgroundSprite.setPosition(this.size.width/2,this.size.height/2);
+		this.backgroundSprite.setPosition(gDesignResolutionWidth/2,gDesignResolutionHeight/2);
 		this.backgroundLayer.addChild(this.backgroundSprite, 1);
 
 		var background = this.backgroundSprite.getContentSize();
 
-		this.playerInfoLayer=new PlayerInfoLayer(this.size.width,this.size.height);
+		this.playerInfoLayer=new PlayerInfoLayer(gDesignResolutionWidth,gDesignResolutionHeight);
 		this.playerInfoLayer.setPosition(cc.p(0,0));
 		// this.playerInfoLayer.setPosition(cc.p(this.size.width/2,this.size.height/2));
 		this.addChild(this.playerInfoLayer, 8,this.playerInfoLayer.getTag());
@@ -258,15 +258,15 @@ var KLineScene = SceneBase.extend(
 
 
 
-		
+
 		//需要设置指标
 		this.klineLayerPrev.addNewTais(new TaisMa([10,20,30],0));
 		this.klineLayerMain.addNewTais(new TaisMa([10,20,30],0));
 		// this.klineLayerMain.addNewTais(new TaisMa([5,10,20,30],0));
-		
+
 		this.volumnTechLayerMain.addNewTais(new TaisMa([5,10],1));
 		this.volumnTechLayerPrev.addNewTais(new TaisMa([5,10],1));
-		
+
 		var macdTais1=new TaisMacd(12,26,9);
 		var macdTais2=new TaisMacd(12,26,9);
 		macdTais1.isEnabled=false;
@@ -389,7 +389,7 @@ var KLineScene = SceneBase.extend(
 			{
 				case 0:
 				{
-					this.KlineWidth = 726;
+					this.KlineWidth = gDesignResolutionWidth-10;
 					this.KlinePosX = 5;
 					break;
 				}
@@ -398,7 +398,7 @@ var KLineScene = SceneBase.extend(
 				}
 				case 2:
 				{
-					this.KlineWidth = this.size.width-120*this.fXScale;
+					this.KlineWidth = gDesignResolutionWidth-120*this.fXScale;
 					this.KlinePosX = 120*this.fXScale;
 
 					break;
@@ -434,41 +434,51 @@ var KLineScene = SceneBase.extend(
 				this.matchEndInfoLayer=new MatchEndInfoLayer();
 				// this.matchEndInfoLayer.setAnchorPoint(0.5,0.5);
 				this.matchEndInfoLayer.setVisible(false);
-				this.matchEndInfoLayer.setPosition((this.size.width-this.matchEndInfoLayer.width) / 2, (this.size.height-this.matchEndInfoLayer.height) / 2);
+				this.matchEndInfoLayer.setPosition((gDesignResolutionWidth-this.matchEndInfoLayer.width) / 2, (gDesignResolutionHeight-this.matchEndInfoLayer.height) / 2);
 				// this.matchEndInfoLayer.setPosition(this.size.width / 2, this.size.height / 2);
-				this.otherMessageTipLayer.addChild(this.matchEndInfoLayer, 1,this.matchEndInfoLayer.getTag());
+				if(null!=this.otherMessageTipLayer){
+					this.otherMessageTipLayer.addChild(this.matchEndInfoLayer, 1,this.matchEndInfoLayer.getTag());
+				}
 
 				break;
 			}
 			case 1:
 			{
-				this.KlineWidth = this.size.width-120*this.fXScale;
-				this.KlinePosX = 120*this.fXScale;
+				// this.KlineWidth = this.size.width-120*this.fXScale;
+				// this.KlinePosX = 120*this.fXScale;
+				this.KlineWidth = 666;
+				this.KlinePosX = 60;
 
 				this.matchEndInfoLayer=new MatchEndInfoLayer();
 				// this.matchEndInfoLayer.setAnchorPoint(0.5,0.5);
 				this.matchEndInfoLayer.setVisible(false);
-				this.matchEndInfoLayer.setPosition((this.size.width-this.matchEndInfoLayer.width) / 2, (this.size.height-this.matchEndInfoLayer.height) / 2);
+				this.matchEndInfoLayer.setPosition((gDesignResolutionWidth-this.matchEndInfoLayer.width) / 2, (gDesignResolutionHeight-this.matchEndInfoLayer.height) / 2);
 				// this.matchEndInfoLayer.setPosition(this.size.width / 2, this.size.height / 2);
-				this.otherMessageTipLayer.addChild(this.matchEndInfoLayer, 1,this.matchEndInfoLayer.getTag());
+				if(null!=this.otherMessageTipLayer){
+					this.otherMessageTipLayer.addChild(this.matchEndInfoLayer, 1,this.matchEndInfoLayer.getTag());
+				}
 
-				cc.log("人人战this.KlineWidth ="+this.KlineWidth +"||this.KlinePosX="+this.KlinePosX+"||this.size.width="+this.size.width);//this.KlineWidth =667||this.KlinePosX=69||this.size.width=736
+				cc.log("人人战this.KlineWidth ="+this.KlineWidth +"||this.KlinePosX="+this.KlinePosX+"||this.size.width="+gDesignResolutionWidth);//this.KlineWidth =667||this.KlinePosX=69||this.size.width=736
 
 				break;
 			}
 			case 2:
 			{
-				this.KlineWidth = this.size.width-120*this.fXScale;
-				this.KlinePosX = 120*this.fXScale;
+				// this.KlineWidth = this.size.width-120*this.fXScale;
+				// this.KlinePosX = 120*this.fXScale;
+				this.KlineWidth = 666;
+				this.KlinePosX = 60;
 
 				this.matchEndInfoLayer=new MatchEndInfoLayer();
 				// this.matchEndInfoLayer.setAnchorPoint(0.5,0.5);
 				this.matchEndInfoLayer.setVisible(false);
-				this.matchEndInfoLayer.setPosition((this.size.width-this.matchEndInfoLayer.width) / 2, (this.size.height-this.matchEndInfoLayer.height) / 2);
+				this.matchEndInfoLayer.setPosition((gDesignResolutionWidth-this.matchEndInfoLayer.width) / 2, (gDesignResolutionHeight-this.matchEndInfoLayer.height) / 2);
 				// this.matchEndInfoLayer.setPosition(this.size.width / 2, this.size.height / 2);
-				this.otherMessageTipLayer.addChild(this.matchEndInfoLayer, 1,this.matchEndInfoLayer.getTag());
+				if(null!=this.otherMessageTipLayer){
+					this.otherMessageTipLayer.addChild(this.matchEndInfoLayer, 1,this.matchEndInfoLayer.getTag());
+				}
 
-				cc.log("人机战this.KlineWidth ="+this.KlineWidth +"||this.KlinePosX="+this.KlinePosX+"||this.size.width="+this.size.width);//this.KlineWidth =667||this.KlinePosX=69||this.size.width=736
+				cc.log("人机战this.KlineWidth ="+this.KlineWidth +"||this.KlinePosX="+this.KlinePosX+"||this.size.width="+gDesignResolutionWidth);//this.KlineWidth =667||this.KlinePosX=69||this.size.width=736
 
 				break;
 			}
@@ -579,7 +589,7 @@ var KLineScene = SceneBase.extend(
 			// this.borderArea.drawSegment(pointBegin,pointEnd,0.4,WhiteColor);
 			// cc.log("drawHorizontalLine middleGapHeight i="+i+"||middleGapHeight=="+middleGapHeight);
 		}
-		this.borderArea.drawSegment(cc.p(0,100),cc.p(this.size.width,100),1,BlueColor);
+		this.borderArea.drawSegment(cc.p(0,100),cc.p(gDesignResolutionWidth,100),1,BlueColor);
 	},
 
 	
@@ -1299,10 +1309,17 @@ var KLineScene = SceneBase.extend(
 		// cc.log("drawAllCandlesTillIndexOrEnd Over....");
 
 		//先显示前面120一副蜡烛图（历史数据）
-		this.klineLayerMain.setKLineData(gKlineScene.klineData);
-		this.volumnTechLayerMain.setKLineData(gKlineScene.klineData);
+		if(null!=this.klineLayerMain){
+			this.klineLayerMain.setKLineData(gKlineScene.klineData);
+		}
+		if(null!=this.volumnTechLayerMain){
+			this.volumnTechLayerMain.setKLineData(gKlineScene.klineData);
+		}
 
-		this.drawHistoryCandlePart2();
+		if(null!=this.klineLayerMain && null!=this.volumnTechLayerMain){
+			this.drawHistoryCandlePart2();
+		}
+
 
 		if(this.playerInfoLayer!=null)
 		{
@@ -1374,12 +1391,13 @@ var KLineScene = SceneBase.extend(
 		var posCenter = cc.p(this.size.width / 2, this.size.height / 2);
 		this.countDownSprite.setVisible(true);
 		this.countDownSprite.setPosition(posCenter);
-		this.countDownSprite.setOpacity(255);
-		this.countDownSprite.setColor(RedColor);
+		this.countDownSprite.setOpacity(0);
+		this.countDownSprite.setColor(GreenColor);
 		this.countDownSprite.setString("马上开始");
 
-		var jumpto = cc.jumpTo(1,posCenter,20,3);
-		this.countDownSprite.runAction(jumpto);
+		// var jumpto = cc.jumpTo(1,posCenter,20,3);
+		var actFade = this.createAnimation_ACT0();
+		this.countDownSprite.runAction(actFade);
 
 		this.countDownNumber-=1;
 		var self=this;
@@ -1429,9 +1447,10 @@ var KLineScene = SceneBase.extend(
 		pageTimer["beginTimer"] = setTimeout(function(){self.setCountBeginSprite();},1000);
 	},
 
+		phaseSecTime:1,
 	phase1Time:0.25,
 	phase2Time:0.5,
-	// phase3Time:0.25,
+	phase3Time:0.25,
 	createAnimation_Move:function()
 	{
 		var actionMoveIn=new cc.moveBy(this.phase1Time,0,-25);
@@ -1442,7 +1461,7 @@ var KLineScene = SceneBase.extend(
 	
 	createAnimation_Scale:function()
 	{
-		var actionScaleIn=new cc.ScaleBy(this.phase1Time,1,5);
+		var actionScaleIn=new cc.ScaleBy(this.phaseSecTime,1,5);
 		var actionBlank=new cc.ActionInterval(this.phase2Time);
 		var actionScaleOut=new cc.ScaleBy(this.phase1Time,1,0.2);
 		return new cc.Sequence(actionScaleIn,actionBlank,actionScaleOut);
@@ -1450,9 +1469,10 @@ var KLineScene = SceneBase.extend(
 	
 	createAnimation_Fade:function()
 	{
-		var actionFadeIn=new cc.FadeTo(this.phase1Time,255);
-		var actionBlank=new cc.ActionInterval(this.phase2Time);
-		var actionFadeOut=new cc.FadeTo(this.phase3Time,0);
+		var actionFadeIn=new cc.FadeTo(this.phaseSecTime/2,255);
+		// var actionBlank=new cc.ActionInterval(this.phaseSecTime);
+		var actionBlank=new cc.ScaleBy(this.phaseSecTime*2,1.2,1.2);
+		var actionFadeOut=new cc.FadeTo(this.phaseSecTime/2,0);
 		return new cc.Sequence(actionFadeIn,actionBlank,actionFadeOut);
 	},
 
@@ -1560,11 +1580,11 @@ var KLineScene = SceneBase.extend(
 		// var moveLeft  = cc.MoveBy.create(0.1,cc.p(3,0));  // 左移
 		// var moveRight = moveLeft.reverse(); // 回位
 		// start1_3.runAction(cc.RepeatForever.create(cc.Sequence.create(bigger,smaller,moveLeft,moveRight))); // 变大缩小再闪动一下
-        cc.log(" mainLayerAnction begin this.klineLayerMain.x=="+this.klineLayerMain.getPosition().x+"this.KlinePosX=="+this.KlinePosX);
+        cc.log(" mainLayerAnction begin this.klineLayerMain.x=="+this.klineLayerMain.getPositionX()+"this.KlinePosX=="+this.KlinePosX);
         var self =this;
-        var posBegain = cc.p(this.KlinePosX,this.klineLayerMain.getPosition().y);
-        var posEnd1 = cc.p(-this.KlineWidth+this.KlinePosX+10,0);
-        var posEnd2 = cc.p(-this.KlineWidth+this.KlinePosX+10,0);
+        var posBegain = cc.p(this.klineLayerMain.getPositionX(),this.klineLayerMain.getPosition().y);
+        var posEnd1 = cc.p(-gDesignResolutionWidth+this.klineLayerMain.getPositionX()+10,0);
+        var posEnd2 = cc.p(-gDesignResolutionWidth+this.klineLayerMain.getPositionX()+10,0);
         var moveLeft1  = cc.MoveBy.create(3,posEnd1);  // 左移
         var moveLeft2  = cc.MoveBy.create(3,posEnd2);  // 左移
         cc.log("posEnd1//比赛图 beginposEnd posEnd1.x=="+posEnd1.x);
@@ -1883,6 +1903,26 @@ var KLineScene = SceneBase.extend(
 			}
 		},
 
+		createAnimation_ACT0:function()
+		{
+
+			// var actionFadeIn=new cc.FadeTo(1,240);
+			// var actionFadeOut=new cc.FadeTo(0.5,0);
+			// var actionFade1=new cc.FadeTo(1,180);
+			// var actionFade2=new cc.FadeTo(1,120);
+			// var actionFade3=new cc.FadeTo(1,60);
+
+			var actionFadeIn=new cc.FadeTo(this.phaseSecTime*2,255);
+			// var actionBlank=new cc.ActionInterval(this.phaseSecTime);
+			var actionBlank=new cc.ScaleBy(this.phaseSecTime*2,1.2,1.2);
+			var actionFadeOut=new cc.FadeTo(this.phaseSecTime/2,0);
+			return new cc.Sequence(actionFadeIn,actionBlank,actionFadeOut);
+
+			var actionIn=cc.spawn(actionFadeIn,actionBlank);//
+			// var actionOut=cc.spawn(actionFadeOut,actScale2);//
+			return new cc.Sequence(actionIn,actionFadeOut);
+		},
+
 		createAnimation_ACT1:function()
 		{
 
@@ -1899,7 +1939,7 @@ var KLineScene = SceneBase.extend(
 			var actionMoveOut=cc.spawn(actionFadeOut,actMoveBy);//
 			return new cc.Sequence(actionMoveIn,actMoveBy,actionBlank,actionMoveOut);
 		},
-		createAnimation_ACT2:function()
+		createAnimation_ACT2:function()//渐出渐隐
 		{
 			var actionFadeIn=new cc.FadeTo(1,240);
 			var actionFadeOut=new cc.FadeTo(1,0);
