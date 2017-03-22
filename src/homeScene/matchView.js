@@ -128,6 +128,16 @@ var MatchViewLayer = cc.Layer.extend({
             }
             case 3:
             {
+
+                self.unmatchButton.setVisible(true);
+                self.beginButton.setVisible(false);
+                self.textLabel.setVisible(true);
+                if(null!=gMainMenuScene)
+                {
+                    gSocketConn.BeginMatch("3");
+                    this.showHeadChange();
+                }
+
                 break;
             }
             default:
@@ -611,32 +621,32 @@ var MatchViewLayer = cc.Layer.extend({
         switch (userInfo.matchMode)
         {
 
-            case 0:
+            case 0://练习场
             {
 
                 self.setPracticeBattleView();
                 break;
             }
-            case 1:
+            case 1://人人大战
             {
                 self.setPersonBattleView();
                 break;
                 // this.mode3Button.setDisabled(true);winOfMatchForMore"
-                break;
             }
-            case 2:
+            case 2://人机大战
             {
                 self.setAiBattleView();
 
                 break;
             }
-            case 3:
+            case 3://道具大战
             {
+                self.setPersonBattleView();
                 break;
             }
             default:
             {
-                cc.log("userInfo.recordMode=="+userInfo.recordMode);
+                cc.log("userInfo.recordMode=="+userInfo.recordMode);//无效战斗模式
                 break;
             }
         }

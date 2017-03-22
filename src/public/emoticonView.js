@@ -153,7 +153,6 @@ var EmoticonViewLayer = cc.LayerColor.extend({
     // }
 });
 
-
 var ToolsViewLayer = cc.LayerColor.extend({
 
     closeCallBackFunction:null,
@@ -235,20 +234,20 @@ var ToolsViewLayer = cc.LayerColor.extend({
         var posY = 20;
         var posBase = 20;
 
-        var  emoBtn1 = new cc.MenuItemImage(res.Emoticon_BTN1_png, "", this.sendFace1, this);
-        emoBtn1.setPosition(cc.p(posBase,posY));
-        emoBtn1.setScale(fXScale,fYScale);
-        mu.addChild(emoBtn1);
-        var  emoBtn2 = new cc.MenuItemImage(res.Emoticon_BTN1_png, "", this.sendFace2, this);
+        var  toolBtn1 = new cc.MenuItemImage(res.Emoticon_BTN1_png, "", this.sendTool1, this);
+        toolBtn1.setPosition(cc.p(posBase,posY));
+        toolBtn1.setScale(fXScale,fYScale);
+        mu.addChild(toolBtn1);
+        var  toolBtn2 = new cc.MenuItemImage(res.Emoticon_BTN1_png, "", this.sendTool2, this);
 
-        emoBtn2.setPosition(cc.p(posBase+posX,posY));
-        emoBtn2.setScale(fXScale,fYScale);
-        cc.log("emoBtn2.setPosition=("+emoBtn2.getPosition().x+"|"+emoBtn2.getPosition().y+")");
-        mu.addChild(emoBtn2);
-        var  emoBtn3 = new cc.MenuItemImage(res.Emoticon_BTN1_png, "", this.sendFace3, this);
-        emoBtn3.setPosition(cc.p(posBase+posX*2,posY));
-        emoBtn3.setScale(fXScale,fYScale);
-        mu.addChild(emoBtn3);
+        toolBtn2.setPosition(cc.p(posBase+posX,posY));
+        toolBtn2.setScale(fXScale,fYScale);
+        cc.log("toolBtn2.setPosition=("+toolBtn2.getPosition().x+"|"+toolBtn2.getPosition().y+")");
+        mu.addChild(toolBtn2);
+        var  toolBtn3 = new cc.MenuItemImage(res.Emoticon_BTN1_png, "", this.sendTool3, this);
+        toolBtn3.setPosition(cc.p(posBase+posX*2,posY));
+        toolBtn3.setScale(fXScale,fYScale);
+        mu.addChild(toolBtn3);
 
         // this.refreshHelpViewLayer();
 
@@ -271,25 +270,25 @@ var ToolsViewLayer = cc.LayerColor.extend({
         cc.eventManager.resumeTarget(this,true);
     },
 
-    sendFace1:function () {
+    sendTool1:function () {//red2green,cover,ban
 
         this.hideLayer();
-        var userName = userInfo.nickName;
-        cc.log("FACE NAME=="+userName);
-        gSocketConn.SendFaceMessage(userName,1);
+        var toolName = "red2green";//红绿颠倒效果
+        cc.log("TOOL NAME1=="+toolName);
+        gSocketConn.SendToolMessage(toolName);
 
     },
-    sendFace2:function () {
+    sendTool2:function () {//遮盖效果
         this.hideLayer();
-        var userName = userInfo.nickName;
-        cc.log("FACE NAME=="+userName);
-        gSocketConn.SendFaceMessage(userName,2);
+        var toolName = "cover";
+        cc.log("TOOL NAME2=="+toolName);
+        gSocketConn.SendToolMessage(toolName);
     },
-    sendFace3:function () {
+    sendTool3:function () {//禁止买卖操作
         this.hideLayer();
-        var userName = userInfo.nickName;
-        cc.log("FACE NAME=="+userName);
-        gSocketConn.SendFaceMessage(userName,3);
+        var toolName = "ban";
+        cc.log("TOOL NAME3=="+toolName);
+        gSocketConn.SendToolMessage(toolName);
     },
     hideLayer:function()
     {

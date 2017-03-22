@@ -112,13 +112,14 @@ var PlayerInfoLayer= cc.Layer.extend({
 
 		switch(userInfo.matchMode)
 		{
-			case 0:
+			case 0://练习场比赛
 			{
 				cc.log("PlayerInfoLayer setPlayerInfo:function()=0" );
 				this.avatarSprite.setVisible(true);
 				break;
 			}
 			case 2:
+			case 3:
 			case 1:
 			{
 				cc.log("PlayerInfoLayer setPlayerInfo:function()=1 userInfo.playerListData.length="+userInfo.playerListData.length );// this.avatarSprite.setVisible(false);

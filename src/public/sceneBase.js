@@ -47,18 +47,19 @@ SceneBase = cc.Scene.extend(
 		// 	// }
 		// }
 		var self=this;
-		var size = cc.director.getWinSize();
-		var fXScale = size.width/1280;
-		var fYScale = size.height/720;
+		// var size = cc.director.getWinSize();
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
         // // 2.获取窗口大小
 		// var winSize = cc.director.getWinSize();
         //
 		// // 3.窗口中心
 		// var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
 
+		var contentSize = cc.size(300,100);
 
 
-		this.messageBoxLayer=new cc.LayerColor(cc.color(0,0,0,127),size.width,size.height);
+		this.messageBoxLayer=new cc.LayerColor(cc.color(0,0,0,127),gDesignResolutionWidth,gDesignResolutionHeight);
 		
 		this.lowerLayer=new cc.Layer();
 
@@ -66,7 +67,7 @@ SceneBase = cc.Scene.extend(
 		
 		this.messageBoxSprite=cc.Sprite.create("res/bg_message.png");
 		// this.messageBoxSprite=cc.Sprite.create("res/messagebox.png");
-		this.messageBoxSprite.setPosition(size.width / 2, size.height / 2);
+		this.messageBoxSprite.setPosition(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2);
 		this.messageBoxSprite.setScale(fXScale,fYScale);
 		this.messageBoxLayer.addChild(this.messageBoxSprite,2);
 		var mu = new cc.Menu();
@@ -99,20 +100,24 @@ SceneBase = cc.Scene.extend(
 		// });
 		// this.messageBoxSprite.addChild(loginBtn,3);
 
-		this.messageLabelShadow=new cc.LabelTTF("登录失败", "黑体", 20);
+		this.messageLabelShadow=new cc.LabelTTF("登录失败", "黑体", 20,contentSize);
 		this.messageLabelShadow.setColor(cc.color(0, 0, 0,100));
-		this.messageLabelShadow.setPosition(size.width / 2+2,220-2);
+		this.messageLabelShadow.textAlign = cc.TEXT_ALIGNMENT_CENTER;//设置文本位置
+		this.messageLabelShadow.verticalAlign = cc.TEXT_ALIGNMENT_CENTER;
+		this.messageLabelShadow.setPosition(gDesignResolutionWidth / 2+2,220-2);
 		this.messageBoxLayer.addChild(this.messageLabelShadow,2);
 
-		this.messageLabel=new cc.LabelTTF("登录失败", "黑体", 20);
-		this.messageLabel.setPosition(size.width / 2,220);
+		this.messageLabel=new cc.LabelTTF("登录失败", "黑体", 20,contentSize );
+		this.messageLabel.setPosition(gDesignResolutionWidth / 2,220);
+		this.messageLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//设置文本位置
+		this.messageLabel.verticalAlign = cc.TEXT_ALIGNMENT_CENTER;
 		this.messageBoxLayer.addChild(this.messageLabel,3);
 
 
-		this.errorLayer=new cc.LayerColor(cc.color(0,0,0,127),size.width,size.height);
+		this.errorLayer=new cc.LayerColor(cc.color(0,0,0,127),gDesignResolutionWidth,gDesignResolutionHeight);
 		var errorSprite=cc.Sprite.create("res/bg_message.png");
 		// this.messageBoxSprite=cc.Sprite.create("res/messagebox.png");
-		errorSprite.setPosition(size.width / 2, size.height / 2);
+		errorSprite.setPosition(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2);
 		errorSprite.setScale(fXScale,fYScale);
 		this.errorLayer.addChild(errorSprite,2);
 		// errorBtn=new Button("res/close.png");
@@ -147,19 +152,23 @@ SceneBase = cc.Scene.extend(
 		// 	}
 		// });
 		// errorSprite.addChild(this.confirmBtn,3);
-		this.errorLabelShadow=new cc.LabelTTF("登录失败", "黑体", 30);
+		this.errorLabelShadow=new cc.LabelTTF("登录失败", "黑体", 30,cc.size(300,100));
 		this.errorLabelShadow.setColor(cc.color(0, 0, 0,100));
 		this.errorLabelShadow.setPosition(bgSize.width/2+2,bgSize.height/2-2);
+		this.errorLabelShadow.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+		this.errorLabelShadow.verticalAlign = cc.TEXT_ALIGNMENT_CENTER;
 		errorSprite.addChild(this.errorLabelShadow,2);
 
-		this.errorLabel=new cc.LabelTTF("登录失败", "黑体", 30);
+		this.errorLabel=new cc.LabelTTF("登录失败", "黑体", 30,cc.size(300,100));
 		this.errorLabel.setPosition(bgSize.width/2,bgSize.height/2);
+		this.errorLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+		this.errorLabel.verticalAlign = cc.TEXT_ALIGNMENT_CENTER;
 		errorSprite.addChild(this.errorLabel,3);
 
 
 
 		this.progressLayer=new ProgressLayer(70,70);
-		this.progressLayer.setPosition(size.width / 2-this.progressLayer.width/2, size.height / 2-this.progressLayer.height/2);
+		this.progressLayer.setPosition(gDesignResolutionWidth / 2-this.progressLayer.width/2, gDesignResolutionHeight / 2-this.progressLayer.height/2);
 		this.progressLayer.setVisible(false);
 		
 		this.addChildEx(this.lowerLayer, 1);
@@ -173,7 +182,7 @@ SceneBase = cc.Scene.extend(
 		}
 
 		this.emoticonViewLayer.setVisible(false);
-		this.emoticonViewLayer.setPosition(size.width / 2, size.height / 2);
+		this.emoticonViewLayer.setPosition(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2);
 		this.addChildEx(this.emoticonViewLayer,6);
 
 

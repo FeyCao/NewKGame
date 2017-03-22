@@ -63,13 +63,14 @@ var MatchInfoLayer= cc.Layer.extend({
 		this._super();
 		var self=this;
 		var size = cc.director.getWinSize();
-		var fXScale = size.width/1280;
-		var fYScale = size.height/720;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
 		var fontSize = 25;
 
+		var posX = 80
+		var posY = 35;
 		// this.backgroundSprite=cc.Sprite.create("res/battle_bg.png");
 		// var bgSize = this.backgroundSprite.getContentSize();
-
 
 
 		// this.menuControlLayer = new cc.Layer();
@@ -83,15 +84,15 @@ var MatchInfoLayer= cc.Layer.extend({
 
 		this.btnAgain=new cc.MenuItemImage("res/meBtnAgain.png","", self.again, this);//new Button("res/home.png");
 		this.btnAgain.setScale(fXScale,fYScale);
-		this.btnAgain.setPosition(cc.p(size.width/4,posY));
+		this.btnAgain.setPosition(cc.p(gDesignResolutionWidth/4,posY));
 		mu.addChild(this.btnAgain);
 		this.btnShare=new cc.MenuItemImage("res/meBtnShare.png","",self.share, this);//new Button("res/home.png");
 		this.btnShare.setScale(fXScale,fYScale);
-		this.btnShare.setPosition(cc.p(size.width/4*3,posY));
+		this.btnShare.setPosition(cc.p(gDesignResolutionWidth/4*3,posY));
 		mu.addChild(this.btnShare);
 		this.meBtnStart=new cc.MenuItemImage("res/meBtnStart.png","", self.meStart, this);//new Button("res/home.png");
 		this.meBtnStart.setScale(fXScale,fYScale);
-		this.meBtnStart.setPosition(cc.p(size.width/2,posY));
+		this.meBtnStart.setPosition(cc.p(gDesignResolutionWidth/2,posY));
 		mu.addChild(this.meBtnStart);
 
 		// this.btnStart=new Button("res/btnStart.png");
@@ -111,10 +112,9 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.addChild(this.meBtnStart,3);
 		// this.addChild(this.btnStart,3);
 
-		var posX = 80
-		var posY = 35;
+
 		var posBuy = cc.p(posX,posY);
-		var posSell = cc.p(size.width-posX,posY);
+		var posSell = cc.p(gDesignResolutionWidth-posX,posY);
 		var posTool = cc.p(70,0);
 		this.buyButton=new cc.MenuItemImage("res/btnBuyEnable.png","res/btnBuyEnable.png", self.buyClick, this);//new Button("res/home.png");
 		this.buyButton.setScale(fXScale*0.5,fYScale*0.5);
@@ -133,7 +133,7 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.emoticonButton.setVisible(userInfo.matchMode==1?true:false);
 
 
-		this.toolsButton=new cc.MenuItemImage(res.btn_Emoticon_png,"", self.ShowToolsButtonView, this);//new Button("res/home.png");
+		this.toolsButton=new cc.MenuItemImage(res.btn_Emoticon_png,"", self.ShowToolsView, this);//new Button("res/home.png");
 		this.toolsButton.setScale(0.8);
 		this.toolsButton.setPosition(cc.pSub(posSell,posTool));
 		mu.addChild(this.toolsButton);
@@ -313,6 +313,35 @@ var MatchInfoLayer= cc.Layer.extend({
 
 		// this.pauseLowerLayer();
 	},
+
+	ShowToolsView:function()
+	{
+		cc.log("showemoticonView begin");
+		// 2.获取窗口大小
+		var winSize = cc.director.getWinSize();
+
+		// 3.窗口中心
+		var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
+		// 3.窗口位置
+		var posBase = cc.p(this.toolsButton.getPositionX()-80, 80);
+		// if (typeof(pos) == "undefined") {
+		// 	var pos = centerpos;
+		// }
+		// this.toolsViewLayer.setVisible(true);
+		if(this.toolsViewLayer==null) {
+			this.toolsViewLayer=new ToolsViewLayer();
+			this.addChild(this.toolsViewLayer);
+			this.toolsViewLayer.setVisible(false);
+		}
+		this.toolsViewLayer.setPosition(posBase);
+		if(this.toolsViewLayer.isVisible()){
+			this.toolsViewLayer.hideLayer();
+		}else{
+			this.toolsViewLayer.showLayer();
+		}
+
+		// this.pauseLowerLayer();
+	},
 	// setEmoticonSprites:function () {
 	// 	var size = cc.director.getWinSize();
 	// 	var posX =83;
@@ -337,10 +366,10 @@ var MatchInfoLayer= cc.Layer.extend({
 		var size = cc.director.getWinSize();
         var posX =83;
 		var posY = 35;
-		var fXScale = size.width/1280;
-		var fYScale = size.height/720;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
 		this.speedControlLayer=cc.Sprite.create("res/btn_sc_bg.png");
-		this.speedControlLayer.setPosition(size.width/2,posY);
+		this.speedControlLayer.setPosition(gDesignResolutionWidth/2,posY);
 		this.speedControlLayer.setScale(fXScale*0.6,fYScale*0.6);
 		this.addChild(this.speedControlLayer,3);
 

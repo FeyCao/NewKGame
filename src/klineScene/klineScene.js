@@ -442,6 +442,10 @@ var KLineScene = SceneBase.extend(
 
 				break;
 			}
+			case 3:
+			{
+				;
+			}
 			case 1:
 			{
 				// this.KlineWidth = this.size.width-120*this.fXScale;
@@ -482,10 +486,7 @@ var KLineScene = SceneBase.extend(
 
 				break;
 			}
-			case 3:
-			{
-				break;
-			}
+
 			default:
 			{
 				cc.log("userInfo.matchMode ="+userInfo.matchMode);
@@ -748,7 +749,7 @@ var KLineScene = SceneBase.extend(
 			// 	self.showErrorBox(packet.content,function(){self.errorBoxClosed();});
 			// 	break;
 			// }
-			case "FACE":
+			case "FACE"://表情处理
 			{
 				//接收到对局结束
 				//alert("接收到对局结束");
@@ -768,6 +769,43 @@ var KLineScene = SceneBase.extend(
 
 				break;
 			}
+            case "TOOL"://被使用了道具信息处理
+            {
+                //接收到对局结束
+                //alert("接收到对局结束");
+                // self.showMatchEndInfo(packet.content);
+               var toolType = packet.content;
+                // var faceNum = packet.content.split("#")[1];
+                cc.log("TOOLTYPE=="+toolType);
+				switch(toolType){
+					case "red2green":{//红绿颠倒
+						gKlineScene.drawOppositeCandlePart();
+						break;
+					}
+					case "cover":{//遮盖效果
+						gKlineScene.drawCoverCandlePart();
+						break;
+					}
+					case "ban":{//禁止买卖操作
+						gKlineScene.drawBanCandlePart();
+						break;
+					}
+					default:{//其它无效信息
+						cc.log("TOOLTYPE messageCallBack..default TOOL NAME."+toolType);
+						break;
+					}
+
+				}
+				cc.log("KlineScene messageCallBack..TOOL NAME."+message);
+
+
+                // userId:null,//
+                // 	deviceId:null,//设备号
+                // userInfo.username=gPlayerName;
+                // userInfo.password=packet.content.split("#")[1];
+
+                break;
+            }
 			case "":
 			{
 				break;
@@ -1326,7 +1364,7 @@ var KLineScene = SceneBase.extend(
 			this.playerInfoLayer.refreshScoresByData();
 		}
 
-		if(userInfo.matchMode==1){
+		if(userInfo.matchMode==1||userInfo.matchMode==3){
 			if(gKlineScene!=null)
 			{
 				gSocketConn.SendBeginMessage();
@@ -1388,7 +1426,7 @@ var KLineScene = SceneBase.extend(
 			this.countDownSprite= cc.LabelTTF.create("马上开始","Arial",40);
 			this.addChild(this.countDownSprite,8);
 		}
-		var posCenter = cc.p(this.size.width / 2, this.size.height / 2);
+		var posCenter = cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2);
 		this.countDownSprite.setVisible(true);
 		this.countDownSprite.setPosition(posCenter);
 		this.countDownSprite.setOpacity(0);
@@ -1901,6 +1939,15 @@ var KLineScene = SceneBase.extend(
 				var act1 = this.createAnimation_ACT2();
 				this.coverSprite.runAction(act1);
 			}
+		},
+
+		drawBanCandlePart:function()
+		{
+			this.phase2=true;
+			// if(this.coverSprite!=null){
+			// 	var act1 = this.createAnimation_ACT2();
+			// 	this.coverSprite.runAction(act1);
+			// }
 		},
 
 		createAnimation_ACT0:function()

@@ -47,7 +47,9 @@ SocketConn.prototype.Connect=function(url)
 		{
 			self.oncloseevent[i]();
 		}
-		window.location.reload();
+		if(testFlag!=true){
+			window.location.reload();
+		}
 		cc.log("close");
 	};
 	
@@ -266,4 +268,11 @@ SocketConn.prototype.SendFaceMessage=function(name,num)//FACE|name#emojiNum|
 	var faceMsg="FACE|"+name+"#"+num+"|";
 	cc.log("send faceMsg msg="+faceMsg);
 	ws.send(faceMsg);
+}
+
+SocketConn.prototype.SendToolMessage=function(name)//TOOL|name#emojiNum|red2green,cover,ban
+{
+	var toolMsg="TOOL|"+name+"|";
+	cc.log("send TOOLMsg msg="+toolMsg);
+	ws.send(toolMsg);
 }
