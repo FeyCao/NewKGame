@@ -297,6 +297,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 				this.scoreLabel2.setString(ratio.toFixed(2)+"%");
 				break;
 			}
+			case 3:
 			case 1:
 			{
 				cc.log("MatchEndInfoLayer to parse json text");
@@ -389,10 +390,10 @@ var MatchEndInfoLayer= cc.Layer.extend({
 
 				break;
 			}
-			case 3:
-			{
-				break;
-			}
+			// case 3:
+			// {
+			// 	break;
+			// }
 			default:
 			{
 				cc.log("userInfo.matchMode ="+userInfo.matchMode);

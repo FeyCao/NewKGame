@@ -1,5 +1,4 @@
 
-var pageTimer = {} ; //定义计算器全局变量
 // //赋值模拟
 // pageTimer["timer1"] = setInterval(function(){},2000);
 // pageTimer["timer2"] = setInterval(function(){},2000);
@@ -54,12 +53,14 @@ var KLineScene = SceneBase.extend(
 	
 	onEnteredFunction:null,	//OnEnter调用结束后的Function
 
-
 	countDownSprite:null,
-
 	countDownNumber:null,
 	countBeginNumber:null,
 	countBeginSprite:null,
+
+		countDownInfo:null,
+		countDownTime:null,
+
 	ctor: function ()
 	{
 		this._super();
@@ -145,9 +146,10 @@ var KLineScene = SceneBase.extend(
 		// }
 		var self=this;
         this.size = cc.director.getWinSize();
-        this.fXScale = this.size.width/1280;
-		this.fYScale = this.size.height/720;
-		//document.getElementById("mainBody").style
+        this.fXScale = gDesignResolutionWidth/1280;
+		this.fYScale = gDesignResolutionHeight/720;
+		cc.log("比例大小=="+this.fXScale);
+		//document.getElementById("mainBody").style比例大小==0.575
 		var centerpos = cc.p(this.size.width / 2, this.size.height / 2);
 		// document.bgColor="#152936";
 
@@ -178,25 +180,56 @@ var KLineScene = SceneBase.extend(
 		// var containerColor=cc.color(0,32,52,180);//
 		// this.container.setColor(containerColor);
 
-		this.coverSprite = new cc.LayerColor(BlackColor,700,200);;
+		// this.coverSprite = new cc.LayerColor(BlackColor,700,200);;
 		// this.coverSprite = new cc.Sprite(res.BLUE_BG_png);
 		// this.coverSprite.setScale(70,20);
+		// this.coverSprite = new cc.Scale9Sprite(res.BG_COVER_png,cc.size(700,200));
+		// var baseSize = cc.size(720,200);
+		this.coverSprite = new cc.Sprite(res.BG_COVER_png);
+		this.coverSprite.setScale(0.575,0.52);
+		this.coverSprite.setAnchorPoint(0,0);
+		// this.coverSprite.setContentSize(baseSize);
 		this.coverSprite.setOpacity(0);
-		this.coverSprite.setPosition(this.KlinePosX+5,170);
+		this.coverSprite.setPosition(this.KlinePosX,168);
+		// var coverSp = new cc.Sprite(res.SP_COVER_png);
+		// coverSp.setPosition(this.coverSprite.getContentSize().width/2,this.coverSprite.getContentSize().height/2);
+		// this.coverSprite.addChild(coverSp);
 		this.addChild(this.coverSprite,10);
+
+		this.banSprite = new cc.Sprite(res.BG_BAN_png);
+		this.banSprite.setScale(0.58,0.52);
+		this.banSprite.setAnchorPoint(0,0);
+		// this.coverSprite.setContentSize(baseSize);
+		this.banSprite.setOpacity(0);
+		this.banSprite.setPosition(this.KlinePosX-5,165);
+		this.addChild(this.banSprite,1);
+
+
+		var posBar = cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight-80);
+		this.barSprite = new cc.Sprite(res.BG_BAR_png);
+		this.barSprite.setScale(0.58,0.52);
+		// this.barSprite.setAnchorPoint(0,0);
+		// this.coverSprite.setContentSize(baseSize);
+		// this.barSprite.setOpacity(255);
+		this.barSprite.setPosition(posBar);
+		this.addChild(this.barSprite,1);
+		this.barInfo= cc.LabelTTF.create("xxx对xxx使用了道具","Arial",30);
+		this.barInfo.setScale(0.5);
+		this.barInfo.setPosition(posBar);
+		gKlineScene.barInfo.setVisible(false);
+		gKlineScene.barSprite.setVisible(false);
+		this.addChild(this.barInfo,1);
 
 
  		//  //设置K线图的区域
 
 		var kWidth = this.KlineWidth*2-10;
 		this.klineLayerMain=new KlineLayer(kWidth,192);
-		this.klineLayerMain.setPosition(cc.p(this.KlinePosX,170));
-
 
 		this.volumnTechLayerMain=new VolumnTechLayer(kWidth,94);
-		this.volumnTechLayerMain.setPosition(cc.p(this.KlinePosX,75));
 		this.volumnTechLayerMain.setClickEvent(function(){self.changeTechLayer();});
-
+		this.klineLayerMain.setPosition(cc.p(this.KlinePosX,170));
+		this.volumnTechLayerMain.setPosition(cc.p(this.KlinePosX,75));
 		this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
 		this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
 		this.borderArea=new cc.DrawNodeCanvas();
@@ -290,7 +323,8 @@ var KLineScene = SceneBase.extend(
 
 
         this.btnHome=new cc.MenuItemImage("res/home.png", "res/home.png", self.toHome, this);//new Button("res/home.png");
-		this.btnHome.setPosition(cc.p(40,bgSize.height-40));
+		this.btnHome.setPosition(cc.p(35,bgSize.height-35));
+		this.btnHome.setScale(0.9);
 		mu.addChild(this.btnHome);
 		this.btnStart=new cc.MenuItemImage("res/btnStart.png", "res/btnStart.png", self.start, this);//new cc.MenuItemImage("res/home.png", "res/home.png", self.start, this);
 		this.btnStart.setPosition(cc.p(bgSize.width/2,60));
@@ -396,6 +430,7 @@ var KLineScene = SceneBase.extend(
 				case 1:
 				{
 				}
+				case 3:
 				case 2:
 				{
 					this.KlineWidth = gDesignResolutionWidth-120*this.fXScale;
@@ -403,10 +438,8 @@ var KLineScene = SceneBase.extend(
 
 					break;
 				}
-				case 3:
-				{
-					break;
-				}
+
+
 				default:
 				{
 					cc.log("userInfo.matchMode ="+userInfo.matchMode);
@@ -443,9 +476,6 @@ var KLineScene = SceneBase.extend(
 				break;
 			}
 			case 3:
-			{
-				;
-			}
 			case 1:
 			{
 				// this.KlineWidth = this.size.width-120*this.fXScale;
@@ -777,6 +807,7 @@ var KLineScene = SceneBase.extend(
                var toolType = packet.content;
                 // var faceNum = packet.content.split("#")[1];
                 cc.log("TOOLTYPE=="+toolType);
+
 				switch(toolType){
 					case "red2green":{//红绿颠倒
 						gKlineScene.drawOppositeCandlePart();
@@ -788,6 +819,7 @@ var KLineScene = SceneBase.extend(
 					}
 					case "ban":{//禁止买卖操作
 						gKlineScene.drawBanCandlePart();
+						gKlineScene.setCountDownInfo();
 						break;
 					}
 					default:{//其它无效信息
@@ -806,6 +838,17 @@ var KLineScene = SceneBase.extend(
 
                 break;
             }
+
+				// TNOTICE|坎坎坷坷6xcvd对5566使用了道具“键盘损坏”|
+			case "TNOTICE":
+			{
+				var noticeInfo = packet.content;
+				gKlineScene.barInfo.setString(noticeInfo);
+				gKlineScene.barInfo.setVisible(true);
+				gKlineScene.barSprite.setVisible(true);
+				pageTimer["hideBar"] = setTimeout(function(){gKlineScene.hideBarInfo();},5000);
+				break;
+			}
 			case "":
 			{
 				break;
@@ -818,7 +861,12 @@ var KLineScene = SceneBase.extend(
 			}
 		}
 	},
-	
+
+	hideBarInfo:function () {
+		gKlineScene.barInfo.setVisible(false);
+		gKlineScene.barSprite.setVisible(false);
+	},
+
 	showMatchEndInfo:function(content)
 	{
 		cc.log("showMatchEndInfo  visible = true");
@@ -887,7 +935,7 @@ var KLineScene = SceneBase.extend(
 	{
 		this.matchEndInfoLayer.hideLayer();
 		this.resumeLowerLayer();
-		gSocketConn.UnRegisterEvent("onmessage",this.messageCallBack);
+		// gSocketConn.UnRegisterEvent("onmessage",this.messageCallBack);
 		//再开始一盘
 
 		this.beginNextKLineScene();
@@ -968,27 +1016,41 @@ var KLineScene = SceneBase.extend(
 		// cc.director.runScene(gKlineScene);
 		var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
 		cc.log(" beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
-		var klineSceneNext=new KLineScene();
-		var self=this;
-		klineSceneNext.onEnteredFunction=function(){
 
-			cc.log("klineSceneNext onEnteredFunction end");
-            if(gKlineScene.matchViewLayer==null){
-                gKlineScene.matchViewLayer=new MatchViewLayer();
-                gKlineScene.matchViewLayer.setVisible(false);
-                gKlineScene.matchViewLayer.setPosition(0,0);
-                gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1,gKlineScene.matchViewLayer.getTag());
-                gKlineScene.matchViewLayer.closeCallBackFunction=function(){gKlineScene.matchViewLayer_Close()};
-                // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
-            }
-            gKlineScene.matchViewLayer.refreshMatchViewLayer();
-            gKlineScene.matchViewLayer.showLayer();
-            gKlineScene.pauseLowerLayer();// klineSceneNext.showProgress();
-		};
-		cc.log("klineSceneNext middle");
-		//不能放到onEnteredFunction里面
-		gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
-		cc.director.runScene(klineSceneNext);
+
+		if(gKlineScene.matchViewLayer==null){
+			gKlineScene.matchViewLayer=new MatchViewLayer();
+			gKlineScene.matchViewLayer.setVisible(false);
+			gKlineScene.matchViewLayer.setPosition(0,0);
+			gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1,gKlineScene.matchViewLayer.getTag());
+			gKlineScene.matchViewLayer.closeCallBackFunction=function(){gKlineScene.matchViewLayer_Close()};
+			// this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
+		}
+		gKlineScene.matchViewLayer.refreshMatchViewLayer();
+		gKlineScene.matchViewLayer.showLayer();
+		gKlineScene.pauseLowerLayer();// klineSceneNext.showProgress();
+
+		// var klineSceneNext=new KLineScene();
+		// var self=this;
+		// klineSceneNext.onEnteredFunction=function(){
+        //
+		// 	cc.log("klineSceneNext onEnteredFunction end");
+         //    if(gKlineScene.matchViewLayer==null){
+         //        gKlineScene.matchViewLayer=new MatchViewLayer();
+         //        gKlineScene.matchViewLayer.setVisible(false);
+         //        gKlineScene.matchViewLayer.setPosition(0,0);
+         //        gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1,gKlineScene.matchViewLayer.getTag());
+         //        gKlineScene.matchViewLayer.closeCallBackFunction=function(){gKlineScene.matchViewLayer_Close()};
+         //        // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
+         //    }
+         //    gKlineScene.matchViewLayer.refreshMatchViewLayer();
+         //    gKlineScene.matchViewLayer.showLayer();
+         //    gKlineScene.pauseLowerLayer();// klineSceneNext.showProgress();
+		// };
+		// cc.log("klineSceneNext middle");
+		// //不能放到onEnteredFunction里面
+		// gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
+		// cc.director.runScene(klineSceneNext);
 		// switch(userInfo.matchMode)
 		// {
 		// 	case 0:
@@ -1053,7 +1115,7 @@ var KLineScene = SceneBase.extend(
 	toSetklinedata:function(data)
 	{
 		//{"dataBusiness":[108,-113],"score":4.22374,"nickName":"誓约者艾琳诺","matchId":7571,"playerList":
-		// this.clearDataForLineLayer();
+		this.clearDataForLineLayer();
 		var businessData=data["dataBusiness"];
 		cc.log("dataBusiness="+businessData);
 		this.buyInfo=[];
@@ -1168,26 +1230,42 @@ var KLineScene = SceneBase.extend(
 	clearDataForLineLayer:function()
 	{
 		if(this.klinedataMain==null || this.prevKlineData==null) return;
-		
-		//设置前面的一副蜡烛图
-		this.klineLayerPrev.setKLineData(null);
-		this.volumnTechLayerPrev.setKLineData(null);
-		
-	
-		
-		this.klineLayerMain.setKLineData(null);
-		this.volumnTechLayerMain.setKLineData(null);
-		
-		////////////////////////////////////////////////////////
+
+		//K线部分清空
+		if(this.klineLayerMain.graphArea!=null){
+			this.klineLayerMain.graphArea.clear();
+		}
+		if(this.volumnTechLayerMain.graphArea!=null){
+			this.volumnTechLayerMain.graphArea.clear();
+		}
+		this.clearBuySellOperation();
+
+
+
+		////////////////////////倒计时信息重置////////////////////////////////
 		if(this.countDownSprite!=null)
 		{
 			this.countDownSprite.removeFromParent(false);
 			this.countDownSprite=null;
+			this.countDownNumber=2;
+		}
+		if(this.countBeginSprite!=null)
+		{
+			this.countBeginSprite.removeFromParent(false);
+			this.countBeginSprite=null;
+			this.countBeginNumber=3;
+		}
+		if(this.countDownInfo!=null)
+		{
+			this.countDownInfo.removeFromParent(false);
+			this.countDownInfo=null;
+			this.countDownTime=5;
 		}
 		if(this.playerInfoLayer!=null)
 		{
 			this.playerInfoLayer.refreshScoresByData();
 		}
+		//按钮信息重置
 		this.setDisableAllButtons();
 	},
 
@@ -1217,10 +1295,11 @@ var KLineScene = SceneBase.extend(
 			this.matchRunFlag=true;
             if(ended)
             {
-                cc.log("绘制结束");
+                cc.log("//匹配赛绘制结束");
 				this.matchRunFlag=false;
                 this.sendEndMessage();
                 this.matchEnd();
+				clearTimeout(pageTimer["drawTimerMatch"]);
                 return;
             }
             else
@@ -1254,6 +1333,7 @@ var KLineScene = SceneBase.extend(
 				this.matchRunFlag=false;
                 this.sendEndMessage();
                 this.matchEnd();
+				clearTimeout(pageTimer["drawTimer"]);
                 return;
             }
             else
@@ -1299,13 +1379,14 @@ var KLineScene = SceneBase.extend(
 				this.matchRunFlag=false;
 				this.sendEndMessage();
 				this.matchEnd();
+				clearTimeout(pageTimer["drawTimer"]);
 				return;
 			}
 			else
 			{
                 if(this.currentCandleIndex-120>-1){
                     gSocketConn.Step(this.currentCandleIndex-120);
-                    if(userInfo.matchMode==1){
+                    if(userInfo.matchMode==1||userInfo.matchMode==3){//多人赛同步处理
                         this.drawCandleStoped=true;
                     }
                 }
@@ -1355,7 +1436,15 @@ var KLineScene = SceneBase.extend(
 		}
 
 		if(null!=this.klineLayerMain && null!=this.volumnTechLayerMain){
+			if(this.klineLayerMain.graphArea!=null){
+				this.klineLayerMain.graphArea.clear();
+			}
+			if(this.volumnTechLayerMain.graphArea!=null){
+				this.volumnTechLayerMain.graphArea.clear();
+			}
 			this.drawHistoryCandlePart2();
+			this.klineLayerMain.setPosition(cc.p(this.KlinePosX,170));
+			this.volumnTechLayerMain.setPosition(cc.p(this.KlinePosX,75));
 		}
 
 
@@ -1416,30 +1505,48 @@ var KLineScene = SceneBase.extend(
 			this.countDownSprite.setVisible(false);
 			this.setDataForLlineLayerTest();
 			// this.advanceToMainKLine_PhaseMatch();
+			clearTimeout(pageTimer["beginDownTimer"]);
 			return;
 		}
-		
+
 		if(this.countDownSprite==null)
 		{
 			this.countDownNumber=2;
-			//this.countDownSprite= cc.Sprite.create("res/cd_5.png");
-			this.countDownSprite= cc.LabelTTF.create("马上开始","Arial",40);
-			this.addChild(this.countDownSprite,8);
+			this.countDownSprite= cc.Sprite.create(res.BEGIN_INFO_png);
+			// this.countDownSprite= new cc.LabelTTF.create("马上开始","Arial",40);
+			gKlineScene.addChild(this.countDownSprite,8);
+			var posCenter = cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2+20);
+			this.countDownSprite.setVisible(true);
+			this.countDownSprite.setScale(0.5);
+			this.countDownSprite.setPosition(posCenter);
+			this.countDownSprite.setOpacity(0);
+			// this.countDownSprite.setColor(GreenColor);
+			var actFade = this.createAnimation_ACT0();
+			this.countDownSprite.runAction(actFade);
+			// var jumpto = cc.jumpTo(1,posCenter,20,3);
 		}
-		var posCenter = cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2);
-		this.countDownSprite.setVisible(true);
-		this.countDownSprite.setPosition(posCenter);
-		this.countDownSprite.setOpacity(0);
-		this.countDownSprite.setColor(GreenColor);
-		this.countDownSprite.setString("马上开始");
+
+		// if(this.countDownSprite==null)
+		// {
+		// 	this.countDownNumber=2;
+		// 	//this.countDownSprite= cc.Sprite.create("res/cd_5.png");
+		// 	this.countDownSprite= cc.LabelTTF.create("马上开始","Arial",40);
+		// 	this.addChild(this.countDownSprite,8);
+		// }
+		// var posCenter = cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2);
+		// this.countDownSprite.setVisible(true);
+		// this.countDownSprite.setPosition(posCenter);
+		// this.countDownSprite.setOpacity(0);
+		// this.countDownSprite.setColor(GreenColor);
+		// this.countDownSprite.setString("马上开始");
 
 		// var jumpto = cc.jumpTo(1,posCenter,20,3);
-		var actFade = this.createAnimation_ACT0();
-		this.countDownSprite.runAction(actFade);
+		// var actFade = this.createAnimation_ACT0();
+		// this.countDownSprite.runAction(actFade);
 
 		this.countDownNumber-=1;
 		var self=this;
-		pageTimer["beginTimer"] = setTimeout(function(){self.setCountDownSprite();},1000);
+		pageTimer["beginDownTimer"] = setTimeout(function(){self.setCountDownSprite();},1000);
 	},
 
 	//设置游戏倒计时开始游戏
@@ -1464,15 +1571,13 @@ var KLineScene = SceneBase.extend(
 			{
 				this.matchInfoLayer.disableAllButtons();
 				this.matchInfoLayer.setButtonsToNoPosition();
-				if(userInfo.matchMode!=1){
-					this.matchInfoLayer.ableSpeedButtons();
-				}else{
-					this.matchInfoLayer.ableAmoticonButtons();
-				}
+				cc.log("begin userInfo.matchMode==",userInfo.matchMode);
+
 			}
 
 			//依次画后面的K线
 			this.drawAllCandlesOneByOne();
+			clearTimeout(pageTimer["beginTimer"]);
 			return;
 		}
 
@@ -1485,7 +1590,7 @@ var KLineScene = SceneBase.extend(
 		pageTimer["beginTimer"] = setTimeout(function(){self.setCountBeginSprite();},1000);
 	},
 
-		phaseSecTime:1,
+	phaseSecTime:1,
 	phase1Time:0.25,
 	phase2Time:0.5,
 	phase3Time:0.25,
@@ -1930,11 +2035,22 @@ var KLineScene = SceneBase.extend(
                 this.klineLayerMain.drawSingleDayGraphInfos(i);
                 // this.volumnTechLayerMain.drawOppositeSingleDayGraphInfos(i);
             }
+			this.matchInfoLayer.setEnableBuyOrSell(true);
+			if(this.countDownInfo!=null)
+			{
+				this.countDownInfo.removeFromParent(false);
+				this.countDownInfo=null;
+				this.countDownTime=5;
+			}
+			gKlineScene.barSprite.setVisible(false);
+			gKlineScene.barInfo.setVisible(false);
         },
+
 
 		drawCoverCandlePart:function()
 		{
 			this.phase2=true;
+			cc.log("遮盖效果显示");
 			if(this.coverSprite!=null){
 				var act1 = this.createAnimation_ACT2();
 				this.coverSprite.runAction(act1);
@@ -1944,12 +2060,52 @@ var KLineScene = SceneBase.extend(
 		drawBanCandlePart:function()
 		{
 			this.phase2=true;
-			// if(this.coverSprite!=null){
-			// 	var act1 = this.createAnimation_ACT2();
-			// 	this.coverSprite.runAction(act1);
-			// }
+			cc.log("禁止买卖操作效果显示");
+			if(this.banSprite!=null){
+				var act1 = this.createAnimation_ACT2();
+				this.banSprite.runAction(act1);
+			}
+			this.matchInfoLayer.setEnableBuyOrSell(false);
 		},
+		// drawToolsInfo:function(info)
+		// {
+		// 	if(this.toolsSprite!=null){
+		// 		var act1 = this.createAnimation_ACT2();
+		// 		this.toolsSprite.runAction(act1);
+		// 	}
+		// },
 
+
+	setCountDownInfo:function () {
+		if(this.countDownTime==0 && this.countDownInfo!=null)
+		{
+			this.countDownInfo.setVisible(false);
+			this.drawNormalCandlePart();
+			// this.advanceToMainKLine_PhaseMatch();
+			return;
+		}
+
+		if(this.countDownInfo==null)
+		{
+			this.countDownTime=5;
+			//this.countDownSprite= cc.Sprite.create("res/cd_5.png");
+			this.countDownInfo= cc.LabelTTF.create("解除倒计时：5","Arial",30);
+			this.addChild(this.countDownInfo,10);
+		}
+		var posCenter = cc.p(gDesignResolutionWidth / 2+200, gDesignResolutionHeight-80);
+		this.countDownInfo.setVisible(true);
+		this.countDownInfo.setPosition(posCenter);
+		this.countDownInfo.setOpacity(255);
+		this.countDownInfo.setColor(YellowColor);
+		this.countDownInfo.setString("解除倒计时："+this.countDownTime);
+
+		// var jumpto = cc.jumpTo(1,posCenter,20,3);
+
+		this.countDownTime-=1;
+		var self=this;
+		pageTimer["beginDownTimer"] = setTimeout(function(){self.setCountDownInfo();},1000);
+
+	},
 		createAnimation_ACT0:function()
 		{
 
@@ -1990,17 +2146,21 @@ var KLineScene = SceneBase.extend(
 		{
 			var actionFadeIn=new cc.FadeTo(1,240);
 			var actionFadeOut=new cc.FadeTo(1,0);
-			var actionFade1=new cc.FadeTo(1,180);
-			var actionFade2=new cc.FadeTo(1,120);
-			var actionFade3=new cc.FadeTo(1,60);
+			// var actionFade1=new cc.FadeTo(1,180);
+			// var actionFade2=new cc.FadeTo(1,120);
+			// var actionFade3=new cc.FadeTo(1,60);
+			var actionFade1=new cc.FadeTo(1,240);
+			var actionFade2=new cc.FadeTo(1,240);
+			var actionFade3=new cc.FadeTo(1,240);
 
 			// var actScale1 = cc.ScaleTo(2,50,40);
 			// var actScale2 = cc.ScaleTo(2,1,1);
 
 			// var actionIn=cc.spawn(actionFadeIn,actScale1);//
-			var actionBlank=new cc.ActionInterval(2);
+			// var actionBlank=new cc.ActionInterval(2);
 			// var actionOut=cc.spawn(actionFadeOut,actScale2);//
-			return new cc.Sequence(actionFade3,actionFade2,actionFade1,actionFadeIn,actionFade1,actionFade2,actionFade3,actionFadeOut);
+			return new cc.Sequence(actionFadeIn,actionFade1,actionFade2,actionFade3,actionFadeOut);
+			// return new cc.Sequence(actionFade3,actionFade2,actionFade1,actionFadeIn,actionFade1,actionFade2,actionFade3,actionFadeOut);
 		},
 	//
 	businessInfo:function()

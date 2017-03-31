@@ -22,6 +22,7 @@ var MatchViewLayer = cc.Layer.extend({
     dayCount3Btn:null,
     dayCount4Btn:null,
     dayCountSelect:null,
+    timeBegin:0,
 
     onEnter: function () {
         this._super();
@@ -73,6 +74,17 @@ var MatchViewLayer = cc.Layer.extend({
         }
     },
 
+    generalMatch:function () {
+        userInfo.matchMode=1;
+        this.propButton.unselected();
+        this.generalButton.selected();
+    },
+
+    propMatch:function () {
+        userInfo.matchMode=3;
+        this.propButton.selected();
+        this.generalButton.unselected();
+    },
     beginMatch:function(){
         var self =this;
         var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
@@ -106,6 +118,7 @@ var MatchViewLayer = cc.Layer.extend({
                 if(null!=gMainMenuScene)
                 {
                     gSocketConn.BeginMatch("1");
+                    this.timeBegin = new Date().getTime();
                     this.showHeadChange();
                 }
 
@@ -135,6 +148,7 @@ var MatchViewLayer = cc.Layer.extend({
                 if(null!=gMainMenuScene)
                 {
                     gSocketConn.BeginMatch("3");
+                    this.timeBegin = new Date().getTime();
                     this.showHeadChange();
                 }
 
@@ -157,6 +171,7 @@ var MatchViewLayer = cc.Layer.extend({
 
         this.unmatchButton.setVisible(false);
         this.textLabel.setVisible(false);
+        this.timeLabel.setVisible(false);
         this.beginButton.setVisible(true);
         gSocketConn.SendInfoMessage("UNMATCH","");
         this.stopHeadChange();
@@ -501,8 +516,8 @@ var MatchViewLayer = cc.Layer.extend({
         var size = cc.director.getWinSize();
         var fXScale = size.width/1280;
         var fYScale = size.height/720;
-        var posD = 50;
-        var posY = 100;
+
+        var posY = 80;
         var fontSize = 25;
 
         if(this.AiBattleView !=null){
@@ -511,37 +526,45 @@ var MatchViewLayer = cc.Layer.extend({
         if(this.PersonBattleView ==null){
             this.PersonBattleView =new cc.LayerColor(cc.color(0,0,0,127),size.width,size.height);
 
-            this.backgroundSprite=cc.Sprite.create("res/bg_control.png");
+            cc.spriteFrameCache.addSpriteFrames(res.touxiang_plist);
+            this.backgroundSprite=new cc.Sprite("res/bg_control.png");
 
             this.backgroundSprite.initWithFile("res/bg_match.png");
             bgSize = this.backgroundSprite.getContentSize();
             cc.log("MatchViewLayer backgroundSprite bgSize="+bgSize.width);
+            var spriteFrame = cc.spriteFrameCache.getSpriteFrame("bg_touxiang.png");
+            // var sprite = new cc.Sprite(spriteFrame);
+            var posD = bgSize.height/2+80;
+            this.selfBg = new cc.Sprite(spriteFrame );
+            this.selfBg.setPosition(bgSize.width/4,posD);
+            this.backgroundSprite.addChild(this.selfBg,2);
 
-
-            selfSprite = cc.Sprite.create("res/bg_touxiang.png");
-            selfSprite.setPosition(bgSize.width/4,bgSize.height/2+posD);
-            this.backgroundSprite.addChild(selfSprite,2);
-
-            vsSprite = cc.Sprite.create("res/vs.png");
-            vsSprite.setPosition(bgSize.width/2,bgSize.height/2+posD);
-            this.backgroundSprite.addChild(vsSprite,2);
+            this.vsSprite = new cc.Sprite("res/vs.png");
+            this.vsSprite.setPosition(bgSize.width/2,posD);
+            this.backgroundSprite.addChild( this.vsSprite,2);
             this.textLabel = cc.LabelTTF.create("匹配中...", "Arial", fontSize);
-            this.textLabel.setPosition(bgSize.width/2,bgSize.height/2-50);
+            this.textLabel.setPosition(bgSize.width/2,posD-80);
             this.textLabel.setColor(YellowColor);
             this.textLabel.setVisible(false);
             this.backgroundSprite.addChild(this.textLabel,2);
+            this.timeLabel = cc.LabelTTF.create("已等待____", "Arial", fontSize);
+            this.timeLabel.setPosition(bgSize.width/2,posD-120);
+            this.timeLabel.setColor(WhiteColor);
+            this.timeLabel.setVisible(false);
+            this.backgroundSprite.addChild(this.timeLabel,2);
 
 
-            opponentBg = cc.Sprite.create("res/bg_touxiang.png");
-            opponentBg.setPosition(bgSize.width/4*3,bgSize.height/2+posD);
-            this.backgroundSprite.addChild(opponentBg,2);
+
+            this.opponentBg = new cc.Sprite(spriteFrame);
+            this.opponentBg.setPosition(bgSize.width/4*3,posD);
+            this.backgroundSprite.addChild(this.opponentBg,2);
 
             this.selfNameLabel = cc.LabelTTF.create(userInfo.nickName, "Arial", fontSize);
-            this.selfNameLabel.setPosition(bgSize.width/4,bgSize.height/2-50);
+            this.selfNameLabel.setPosition(bgSize.width/4,posD-100);
             this.backgroundSprite.addChild(this.selfNameLabel,2);
 
-            this.opponentNameLabel = cc.LabelTTF.create("_ _ _ _ _", "Arial", fontSize);
-            this.opponentNameLabel.setPosition(bgSize.width/4*3,bgSize.height/2-50);
+            this.opponentNameLabel = cc.LabelTTF.create("-- -- -- --", "Arial", fontSize);
+            this.opponentNameLabel.setPosition(bgSize.width/4*3,posD-100);
             this.backgroundSprite.addChild(this.opponentNameLabel,2);
 
             var mu = new cc.Menu();
@@ -570,8 +593,8 @@ var MatchViewLayer = cc.Layer.extend({
                         headSprite.initWithTexture(texture2d);
 
                         var size = headSprite.getContentSize();
-                        headSprite.setScale(90/size.width,90/size.height);
-                        headSprite.setPosition(bgSize.width/4,bgSize.height/2+posD);
+                        headSprite.setScale(95/size.width,95/size.height);
+                        headSprite.setPosition(self.selfBg.getPosition());
                         self.backgroundSprite.addChild(headSprite,2);
                         cc.log("refreshMatchViewLayer success loadImg="+userInfo.headSprite); // self.addChild(logo);
                     }
@@ -586,6 +609,28 @@ var MatchViewLayer = cc.Layer.extend({
             // this.opponentSprite = new HeadSpriteChange(100,100);
             // this.opponentSprite.setPosition(bgSize.width/4*3,bgSize.height/2+posD);
             // this.opponentSprite.setVisible(false);
+            var macthButtonPosY = 150;
+
+            this.generalButton=new cc.MenuItemImage(res.SELECT_NO_PNG, res.SELECT_OK_PNG, self.generalMatch, this);//new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
+            this.generalButton.setPosition(cc.p(bgSize.width/2-150,macthButtonPosY));
+            mu.addChild(this.generalButton);
+
+            this.generalLabel=cc.LabelTTF.create("普通模式", "fonts/Self.ttf",fontSize);
+            this.generalLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
+            this.generalLabel.setAnchorPoint(0,0.5);
+            this.generalLabel.setPosition(cc.p(bgSize.width/2-130,macthButtonPosY));
+            this.backgroundSprite.addChild(this.generalLabel,2);
+
+            this.propButton=new cc.MenuItemImage(res.SELECT_NO_PNG, res.SELECT_OK_PNG, self.propMatch, this);//new CheckButton("res/btn_unmatch.png","res/btn_unmatch.png");//new Button("res/btn_mode1d.png");
+            this.propButton.setPosition(cc.p(bgSize.width/2+50,macthButtonPosY-3));
+            // this.propButton.setVisible(false);
+            mu.addChild(this.propButton);
+            this.propLabel=cc.LabelTTF.create("道具模式", "fonts/Self.ttf",fontSize);
+            this.propLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
+            this.propLabel.setAnchorPoint(0,0.5);
+            this.propLabel.setPosition(cc.p(bgSize.width/2+70,macthButtonPosY-3));
+            this.backgroundSprite.addChild(this.propLabel,2);
+
 
             this.beginButton=new cc.MenuItemImage("res/btn_begin.png", "res/btn_begin.png", self.beginMatch, this);//new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
             this.beginButton.setPosition(cc.p(bgSize.width/2,posY));
@@ -595,6 +640,7 @@ var MatchViewLayer = cc.Layer.extend({
             this.unmatchButton.setPosition(cc.p(bgSize.width/2,posY));
             this.unmatchButton.setVisible(false);
             mu.addChild(this.unmatchButton);
+
             // soundButton.setScale(0.8);
             // unmatchButton.setClickEvent(function(){
             //
@@ -610,6 +656,28 @@ var MatchViewLayer = cc.Layer.extend({
         }
         this.PersonBattleView.setVisible(true);
         this.textLabel.setString("匹配中...");
+
+        if(userInfo.matchMode==1){
+            this.generalButton.selected();
+            this.propButton.unselected();
+        }else {
+            this.generalButton.unselected();
+            this.propButton.selected();
+        }
+
+
+        // cc.spriteFrameCache.addSpriteFrames("res/animated-grossini.plist");
+        // var spriteTest001 = cc.Sprite.create(cc.spriteFrameCache.getSpriteFrame("grossini-head.png"));
+        // var playerPlist = cc.spriteFrameCache
+
+        /*plist文件测试*/
+        //  cc.spriteFrameCache.addSpriteFrames(res.touxiang_plist);
+        // // var playerTexture = cc.textureCache.addImage(res.touxiang_png);
+        // var spriteTest001 = cc.Sprite.create(cc.spriteFrameCache.getSpriteFrame("touxiangAI.png"));
+        // spriteTest001.setPosition(gDesignResolutionWidth/4,gDesignResolutionHeight/2);
+        //
+        // this.backgroundSprite.addChild(spriteTest001, 3);
+
     },
 
 
@@ -710,7 +778,7 @@ var MatchViewLayer = cc.Layer.extend({
 
                         var size = headSprite.getContentSize();
                         headSprite.setScale(90/size.width,90/size.height);
-                        headSprite.setPosition(bgSize.width/4*3,bgSize.height/2+posD);
+                        headSprite.setPosition(self.opponentBg.getPosition());
                         self.backgroundSprite.addChild(headSprite,2);
                         cc.log("refreshMatchViewLayer2 success loadImg="+userInfo.headSprite); // self.addChild(logo);
                     }
@@ -724,29 +792,42 @@ var MatchViewLayer = cc.Layer.extend({
     showHeadChange:function()
     {
         // var frameCache = cc.spriteFrameCache;
-        // frameCache.addSpriteFrames("res/touxiang.plist","res/touxiang.png");
-        var frameName = "res/touxiang_"+Math.round(Math.random()*100)%10+".png";
-        cc.log("frameName = " + frameName);
+        // cc.spriteFrameCache.addSpriteFrames(res.touxiang_plist);
+        // cc.spriteFrameCache.addSpriteFrames(res.touxiang_plist);
+        // var spriteTest001 = cc.Sprite.create(cc.spriteFrameCache.getSpriteFrame("touxiangAI.png"));
+        var timeEnd = new Date().getTime();
 
+        var timeSpace  = timeEnd-this.timeBegin;
+        cc.log("time.getMinutes()=="+timeSpace)
+        var time = new Date(timeSpace);
+        this.timeLabel.setVisible(true);
+        this.timeLabel.setString("已等待 "+add0(time.getMinutes())+":"+add0(time.getSeconds()));
+
+
+        var frameName = "touxiang_"+Math.round(Math.random()*100)%10+".png";
+        var spriteFrame = cc.spriteFrameCache.getSpriteFrame(frameName);
+        // var sprite = new cc.Sprite(spriteFrame);
+        cc.log("frameName = " + frameName);
+        // CCSpriteBatchNode
         if(this.opponentSprite!=null)
         {
             this.opponentSprite.setVisible(true);
-            this.opponentSprite.initWithFile(frameName);
+            this.opponentSprite.initWithSpriteFrame(spriteFrame);
             var size = this.opponentSprite.getContentSize();
-            this.opponentSprite.setScale(90/size.width,90/size.height);
+            this.opponentSprite.setScale(95/size.width,95/size.height);
             // this.opponentSprite.setContentSize(size);
         }
         else {
-            this.opponentSprite = new cc.Sprite(frameName);
-            this.opponentSprite.setPosition(bgSize.width/4*3,bgSize.height/2+50);
+            this.opponentSprite = new cc.Sprite(spriteFrame);
+            this.opponentSprite.setPosition(this.opponentBg.getPosition());
 
             var size = this.opponentSprite.getContentSize();
-            this.opponentSprite.setScale(90/size.width,90/size.height);
+            this.opponentSprite.setScale(95/size.width,95/size.height);
             this.backgroundSprite.addChild(this.opponentSprite, 1);
             // this.opponentSprite.runAction(cc.repeatForever(action));
         }
         var self =this;
-        pageTimer["Change"] = setTimeout(function(){self.showHeadChange();},200);
+        pageTimer["Change"] = setTimeout(function(){self.showHeadChange();},500);
     },
 
     stopHeadChange:function()

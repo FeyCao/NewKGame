@@ -367,24 +367,6 @@ var MainMenuScene =SceneBase.extend(
 	fourthModeChanged:function()
 	{
         cc.log("Waiting for fourthMode...");
-        var self = this;
-        userInfo.matchMode = 3;
-        if(userInfo.operationType==2){
-            gSocketConn.BeginMatch("3");
-        }else{
-            if(this.matchViewLayer==null){
-                this.matchViewLayer=new MatchViewLayer();
-                this.matchViewLayer.setVisible(false);
-                this.matchViewLayer.setPosition(0,0);
-                this.otherMessageTipLayer.addChild(this.matchViewLayer, 1,this.matchViewLayer.getTag());
-                this.matchViewLayer.closeCallBackFunction=function(){self.matchViewLayer_Close()};
-                // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
-            }
-            this.matchViewLayer.refreshMatchViewLayer();
-            this.matchViewLayer.showLayer();
-            this.pauseLowerLayer();
-        }
-        cc.log("Waiting for fourthModeChanged");
 
 	},
 
@@ -600,7 +582,7 @@ var MainMenuScene =SceneBase.extend(
         this.fourthMode = new cc.MenuItemImage("res/btn_mode4_d.png", "res/btn_mode4_d.png", self.fourthModeChanged, this);
         mu.addChild(this.fourthMode);
         this.fourthMode.setPosition(cc.p((190+3*pModeXdistance),pModeY));
-        // this.fourthMode.setEnabled(false);
+        this.fourthMode.setEnabled(false);
         // this.fourthMode.setDisabledImage( "res/btn_mode4_d.png");
         // this.fourthMode.setClickEvent(function(){
         //     self.fourthModeChanged();

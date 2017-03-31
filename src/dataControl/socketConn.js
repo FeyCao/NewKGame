@@ -47,9 +47,7 @@ SocketConn.prototype.Connect=function(url)
 		{
 			self.oncloseevent[i]();
 		}
-		if(testFlag!=true){
-			window.location.reload();
-		}
+		//
 		cc.log("close");
 	};
 	
@@ -189,8 +187,6 @@ SocketConn.prototype.Step=function(index)
 
 SocketConn.prototype.SendEndMessage=function()
 {
-	cc.log("send Endmsg==E||");
-
 	cc.log("send Endmsg==E||");
 	ws.send("E||");
 }

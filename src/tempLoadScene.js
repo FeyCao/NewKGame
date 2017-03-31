@@ -137,7 +137,12 @@ var TempLoadScene = SceneBase.extend(
 			// userInfo.password=packet.content.split("#")[1];
 			userInfo.userId=gPlayerName;
 			userInfo.deviceId=packet.content.split("#")[1];
-			userInfo.source=packet.content.split("#")[2];
+
+			//
+			if(userInfo.source!="DHJK"){
+				userInfo.source=packet.content.split("#")[2];
+			}
+
 			this.stopProgress();
 
 
@@ -191,7 +196,10 @@ var TempLoadScene = SceneBase.extend(
 			// userInfo.password=packet.content.split("#")[1];
 			userInfo.userId=gPlayerName;
 			userInfo.deviceId=packet.content.split("#")[1];
-			userInfo.source=packet.content.split("#")[2];
+            if(userInfo.source!="DHJK"){
+                userInfo.source=packet.content.split("#")[2];
+            }
+			// userInfo.source=packet.content.split("#")[2];
 			this.stopProgress();
 
 

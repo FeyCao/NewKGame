@@ -212,7 +212,7 @@ var ToolsViewLayer = cc.LayerColor.extend({
 
     init:function () {
 
-        cc.log("showemoticonView init");
+        cc.log("showtoolView init");
 
         var self=this;
         var size = cc.director.getWinSize();
@@ -232,19 +232,25 @@ var ToolsViewLayer = cc.LayerColor.extend({
 
         var posX = 70;
         var posY = 20;
-        var posBase = 20;
+        // var posBase = 20;
+        var posBase = -30;
 
+        //红绿颠倒
         var  toolBtn1 = new cc.MenuItemImage(res.Emoticon_BTN1_png, "", this.sendTool1, this);
         toolBtn1.setPosition(cc.p(posBase,posY));
         toolBtn1.setScale(fXScale,fYScale);
+        toolBtn1.setVisible(false);
         mu.addChild(toolBtn1);
-        var  toolBtn2 = new cc.MenuItemImage(res.Emoticon_BTN1_png, "", this.sendTool2, this);
 
+        //遮盖
+        var  toolBtn2 = new cc.MenuItemImage(res.BTN_COVER_png, "", this.sendTool2, this);
         toolBtn2.setPosition(cc.p(posBase+posX,posY));
         toolBtn2.setScale(fXScale,fYScale);
         cc.log("toolBtn2.setPosition=("+toolBtn2.getPosition().x+"|"+toolBtn2.getPosition().y+")");
         mu.addChild(toolBtn2);
-        var  toolBtn3 = new cc.MenuItemImage(res.Emoticon_BTN1_png, "", this.sendTool3, this);
+
+        //禁止买卖
+        var  toolBtn3 = new cc.MenuItemImage(res.BTN_BAN_png, "", this.sendTool3, this);
         toolBtn3.setPosition(cc.p(posBase+posX*2,posY));
         toolBtn3.setScale(fXScale,fYScale);
         mu.addChild(toolBtn3);
@@ -280,12 +286,19 @@ var ToolsViewLayer = cc.LayerColor.extend({
     },
     sendTool2:function () {//遮盖效果
         this.hideLayer();
+        if(testFlag){
+            gKlineScene.drawCoverCandlePart();
+        }
+
         var toolName = "cover";
         cc.log("TOOL NAME2=="+toolName);
         gSocketConn.SendToolMessage(toolName);
     },
     sendTool3:function () {//禁止买卖操作
         this.hideLayer();
+        if(testFlag){
+            gKlineScene.drawBanCandlePart();
+        }
         var toolName = "ban";
         cc.log("TOOL NAME3=="+toolName);
         gSocketConn.SendToolMessage(toolName);

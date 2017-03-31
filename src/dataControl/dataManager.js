@@ -50,7 +50,7 @@ var Singleton = (function () {
 Singleton.getInstance().publicMethod();
 
 SOURCE_DHJK = "DHJK";     //东航金控APP
-SOURCE_ZSQQ = "ZSQQ";     //掌上全球APP
+SOURCE_ZSQQ = "ZKQQ";     //掌上全球APP
 SOURCE_ZZFW = "ZZFW";     //增值服务中心网站
 SOURCE_TEST = "TEST";     //东航金控APP
 SOURCE_WEB = "SWEB";      //通过web访问

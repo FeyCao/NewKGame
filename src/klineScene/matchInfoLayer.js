@@ -116,11 +116,11 @@ var MatchInfoLayer= cc.Layer.extend({
 		var posBuy = cc.p(posX,posY);
 		var posSell = cc.p(gDesignResolutionWidth-posX,posY);
 		var posTool = cc.p(70,0);
-		this.buyButton=new cc.MenuItemImage("res/btnBuyEnable.png","res/btnBuyEnable.png", self.buyClick, this);//new Button("res/home.png");
+		this.buyButton=new cc.MenuItemImage(res.BTN_BUY_ENABLE_png,res.BTN_BUY_ENABLE_png,res.BTN_BUY_DISABLE_png, self.buyClick, this);//new Button("res/home.png");
 		this.buyButton.setScale(fXScale*0.5,fYScale*0.5);
 		this.buyButton.setPosition(posBuy);
 		mu.addChild(this.buyButton);
-		this.sellButton=new cc.MenuItemImage("res/btnSellEnable.png","res/btnSellEnable.png", self.sellClick, this);//new Button("res/home.png");
+		this.sellButton=new cc.MenuItemImage(res.BTN_SELL_ENABLE_png,res.BTN_SELL_ENABLE_png,res.BTN_SELL_DISABLE_png, self.sellClick, this);//new Button("res/home.png");
 		this.sellButton.setScale(fXScale*0.5,fYScale*0.5);
 		this.sellButton.setPosition(posSell);
 		mu.addChild(this.sellButton);
@@ -133,8 +133,8 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.emoticonButton.setVisible(userInfo.matchMode==1?true:false);
 
 
-		this.toolsButton=new cc.MenuItemImage(res.btn_Emoticon_png,"", self.ShowToolsView, this);//new Button("res/home.png");
-		this.toolsButton.setScale(0.8);
+		this.toolsButton=new cc.MenuItemImage(res.BTN_PROPS_png,"", self.ShowToolsView, this);//new Button("res/home.png");
+		this.toolsButton.setScale(0.6);
 		this.toolsButton.setPosition(cc.pSub(posSell,posTool));
 		mu.addChild(this.toolsButton);
 		cc.log("userInfo.matchMode=="+userInfo.matchMode);
@@ -152,8 +152,11 @@ var MatchInfoLayer= cc.Layer.extend({
 		//设置变速信息的区域
 		this.initSpeedControlArea();
 
+		// setEnableBuyOrSell
+
 		this.setButtonsToNoPosition();
-		this.drawDisableButtons();
+		// this.setEnableBuyOrSell(true);
+		// this.drawDisableButtons();
 		this.drawAreaBorder();
 		/*
 		 this.buyButtonImage=new cc.MenuItemImage("res/buy.png","res/buy_p.png",this.buyButtonCallBack);
@@ -205,6 +208,7 @@ var MatchInfoLayer= cc.Layer.extend({
 			this.addChild(this.faceSprites[i]);
 		}
 	},
+
 
 	showFaceSprite:function(name,num)
 	{
@@ -443,10 +447,18 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.speedControlLayer.addChild(this.scDoubleCheckButton,1);
 	},
 
+	setEnableBuyOrSell:function (flag) {
+
+		cc.log("setEnableBuyOrSell:function (flag)== "+flag);
+		this.buyButton.setEnabled(flag);
+		this.sellButton.setEnabled(flag);
+	},
 
 	playCheckChanged:function()
 	{
         cc.log("playCheckChanged gKlineScene.drawCandleStoped=="+gKlineScene.drawCandleStoped);
+
+		// cc.log("playCheckChanged this.setEnableBuyOrSell(gKlineScene.drawCandleStoped)=="+gKlineScene.drawCandleStoped);
 		gKlineScene.drawCandleStoped=!gKlineScene.drawCandleStoped;
 		this.scPlayCheckButton.setVisible(gKlineScene.drawCandleStoped);
 		this.scPauseCheckButton.setVisible(!gKlineScene.drawCandleStoped);
@@ -563,6 +575,12 @@ var MatchInfoLayer= cc.Layer.extend({
 	{
 		this.emoticonButton.setVisible(true);
 	},
+
+	ableToolButtons:function()
+	{
+		this.toolsButton.setVisible(true);
+	},
+
 	//将按钮设置为平仓的状态
 	setButtonsToNoPosition:function()
 	{
@@ -572,6 +590,19 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.buyButton.setDisabled(false);
 		// this.sellButton.setDisabled(false);
 		this.statusFlag = 0;
+
+		if(userInfo.matchMode==1||userInfo.matchMode==3){
+			if(userInfo.matchMode==1){
+				this.ableAmoticonButtons();
+			}
+			if(userInfo.matchMode==3){
+				this.ableAmoticonButtons();
+				this.ableToolButtons();
+			}
+			cc.log("setButtonsToNoPosition 1");
+		}else{
+			this.ableSpeedButtons();
+		}
 		// this.buyCloseButton.setVisible(false);
 		// this.sellCloseButton.setVisible(false);
 	},
@@ -679,7 +710,8 @@ var MatchInfoLayer= cc.Layer.extend({
 		}
 		this.setButtonsToNoPosition();
 	},
-	
+
+
 	//画买卖开平等按钮
 	drawDisableButtons:function()
 	{

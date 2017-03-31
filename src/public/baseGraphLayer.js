@@ -124,6 +124,8 @@ var BaseGraphLayer= cc.Layer.extend({
 	{
 		// cc.log("basegraphlayer setKLineData instanceid="+this.__instanceid+" klineData="+klineData+" klineDataPrev="+klineDataPrev);
 		this.klineData=klineData;
+		this.maxValue=null;
+		this.minValue=null;
 		if(this.klineData!=null){
 			this.maxCandleCountPerPage = this.klineData.length;
 		}
@@ -151,8 +153,7 @@ var BaseGraphLayer= cc.Layer.extend({
 			{
 				this.taisInfoLabelArray[i].setVisible(false);
 			}
-			this.maxValue=null;
-			this.minValue=null;
+
 			this.clearKLineDataForTais();
 		}
 		else
@@ -304,11 +305,11 @@ var BaseGraphLayer= cc.Layer.extend({
 		var lastmin=this.minValue;
 		if(lastmax==null && lastmin==null)
 		{
-			var startIndex=0>currentIndex-120?0:currentIndex-120;
-			if(this.klineDataPrev!=null)
-			{
-				startIndex=this.getHistoryCandleIndexByPageIndex();
-			}
+			var startIndex=(0>currentIndex-120?0:currentIndex-120);
+			// if(this.klineDataPrev!=null)
+			// {
+			// 	startIndex=this.getHistoryCandleIndexByPageIndex();
+			// }
 			this.calculateMaxMinBetweenIndex(startIndex,currentIndex);
 			//再计算指标图的最大最小
 			this.calculateMaxMinBetweenIndexForAllTais(startIndex,currentIndex);
@@ -370,8 +371,9 @@ var BaseGraphLayer= cc.Layer.extend({
 		}
 
 		this.drawAreaBorder();
-		var startIndex=this.getHistoryCandleIndexByPageIndex();
-		
+		// var startIndex=this.getHistoryCandleIndexByPageIndex();
+		cc.log("redrawCandlesToIndex:function(index)......");
+		var startIndex=(0>index-120?0:index-120);
 		for(var i=startIndex;i<index;i++)
 		{
 			this.drawSingleDayGraphInfos(i);

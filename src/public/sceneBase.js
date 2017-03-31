@@ -60,8 +60,12 @@ SceneBase = cc.Scene.extend(
 
 
 		this.messageBoxLayer=new cc.LayerColor(cc.color(0,0,0,127),gDesignResolutionWidth,gDesignResolutionHeight);
-		
-		this.lowerLayer=new cc.Layer();
+
+		if(this.lowerLayer==null){
+			this.lowerLayer=new cc.Layer();
+			this.addChildEx(this.lowerLayer, 1);
+		}
+
 
 		this.otherMessageTipLayer=new cc.Layer();
 		
@@ -86,10 +90,9 @@ SceneBase = cc.Scene.extend(
 		// 		self.closeMessageBox();
 		// 	}
 		// });
-
-		var loginBtn= new cc.MenuItemImage("res/btn_login.png", "res/btn_login.png", self.login, this);//new Button("res/btn_login.png");
-		loginBtn.setPosition(cc.p(bgSize.width/2,150));
-		mu.addChild(loginBtn);
+		this.loginBtn= new cc.MenuItemImage("res/btn_login.png", "res/btn_login.png", self.login, this);//new Button("res/btn_login.png");
+		this.loginBtn.setPosition(cc.p(bgSize.width/2,150));
+		mu.addChild(this.loginBtn);
 		// loginBtn.setClickEvent(function(){
         //
 		// 	if(null!=self.messageBoxLayer&&self.messageBoxLayer.isVisible()==true){
@@ -171,7 +174,7 @@ SceneBase = cc.Scene.extend(
 		this.progressLayer.setPosition(gDesignResolutionWidth / 2-this.progressLayer.width/2, gDesignResolutionHeight / 2-this.progressLayer.height/2);
 		this.progressLayer.setVisible(false);
 		
-		this.addChildEx(this.lowerLayer, 1);
+
 		this.addChildEx(this.otherMessageTipLayer,5);
 		this.addChildEx(this.messageBoxLayer, 10);
 		this.addChildEx(this.errorLayer, 10);
@@ -240,7 +243,14 @@ SceneBase = cc.Scene.extend(
 		this.closeCallback=closeCallback;
 		this.messageLabel.setString(msg);
 		this.messageLabelShadow.setString(msg);
-		
+		cc.log("userInfo.source=="+userInfo.source);
+		if(null!=userInfo.source&&userInfo.source!="DHJK"&&null!=this.loginBtn){
+			this.loginBtn.setNormalSpriteFrame("res/btn_download.png");
+			this.loginBtn.setSelectedSpriteFrame("res/btn_download.png");
+		}else {
+			this.loginBtn.setNormalSpriteFrame("res/btn_login.png");
+			this.loginBtn.setSelectedSpriteFrame("res/btn_login.png");
+		}
 		this.messageBoxLayer.setVisible(true);
 		this.pauseLowerLayer();
 		//alert(msg);
@@ -315,6 +325,12 @@ SceneBase = cc.Scene.extend(
 	 },
 	
 	 addChild: function (child, localZOrder, tag) {
+
+		 if(this.lowerLayer==null){
+			 this.lowerLayer=new cc.Layer();
+			 this.addChildEx(this.lowerLayer, 1);
+		 }
+
 		 this.lowerLayer.addChild(child,localZOrder,tag);
     },
 	
@@ -326,13 +342,15 @@ SceneBase = cc.Scene.extend(
 		this.closeMessageBox();
 		cc.log("login sceneBase::sys.os=="+sys.os);
 
+		var url = "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";
+		window.open(url);
 		// if(sys.os===sys.OS_WINDOWS||sys.os===sys.OS_OSX) {//浏览器模式
         //
 		// }
-		this.showLoginView();
+		// this.showLoginView();
 		// if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
         //
-		//
+        //
         //
 		// }
 		// else{
