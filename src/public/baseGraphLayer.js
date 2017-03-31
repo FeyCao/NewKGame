@@ -456,8 +456,20 @@ var BaseGraphLayer= cc.Layer.extend({
 	drawTaisValueInfo:function(candleIndex)
 	{
 		//cc.log(".........drawTaisValueInfo candleIndex="+candleIndex);
-		var labelIndex=0;
-		var leftXStart=5;
+		// cc.log(".........指标位置this.getPositionX()="+this.getPositionX());
+		var labelIndex=0;		// if()
+		var leftXStart=10;
+		if(userInfo.matchMode>0){
+			if(this.getPositionX()>0){
+				leftXStart=10;
+			}else{
+				leftXStart=80-this.getPositionX();
+			}
+		}else{
+			leftXStart=10-this.getPositionX();
+		}
+		// cc.log(".........this.getPositionX()leftXStart="+leftXStart);
+
 		for(var i=0;i<this.taisArray.length;i++)
 		{
 			if(this.taisArray[i].shownName!=null && this.taisArray[i].isEnabled==true)

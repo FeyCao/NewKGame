@@ -207,13 +207,13 @@ var KLineScene = SceneBase.extend(
 
 		var posBar = cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight-80);
 		this.barSprite = new cc.Sprite(res.BG_BAR_png);
-		this.barSprite.setScale(0.58,0.52);
+		this.barSprite.setScale(0.8,0.6);
 		// this.barSprite.setAnchorPoint(0,0);
 		// this.coverSprite.setContentSize(baseSize);
 		// this.barSprite.setOpacity(255);
 		this.barSprite.setPosition(posBar);
 		this.addChild(this.barSprite,1);
-		this.barInfo= cc.LabelTTF.create("xxx对xxx使用了道具","Arial",30);
+		this.barInfo= cc.LabelTTF.create("xxx对xxx使用了道具","Arial",25);
 		this.barInfo.setScale(0.5);
 		this.barInfo.setPosition(posBar);
 		gKlineScene.barInfo.setVisible(false);
