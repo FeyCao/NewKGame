@@ -7,7 +7,7 @@
     "id" : "gameCanvas",
     "renderMode" : 1,
     "engineDir":"frameworks/cocos2d-html5",
-    "CANDAL_DRAW_INTERVAL":200,
+    "CANDAL_DRAW_INTERVAL":50,
     "testFlag" : false,
     "testMyFlag" : true,
     "enableRetina":true,

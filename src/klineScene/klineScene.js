@@ -936,7 +936,7 @@ var KLineScene = SceneBase.extend(
 		this.matchEndInfoLayer.hideLayer();
 		this.resumeLowerLayer();
 		// gSocketConn.UnRegisterEvent("onmessage",this.messageCallBack);
-		//再开始一盘
+		//再开始一盘再来一局
 
 		this.beginNextKLineScene();
 	},
@@ -1011,46 +1011,53 @@ var KLineScene = SceneBase.extend(
 
 	beginNextKLineScene:function()
 	{
+//再开始一盘再来一局
+// 		cc.log("klineSceneNext begin");
+// 		// cc.director.runScene(gKlineScene);
+// 		var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
+// 		cc.log(" beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
+//
+//
+// 		if(gKlineScene.matchViewLayer==null){
+// 			gKlineScene.matchViewLayer=new MatchViewLayer();
+// 			gKlineScene.matchViewLayer.setVisible(false);
+// 			gKlineScene.matchViewLayer.setPosition(0,0);
+// 			gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1,gKlineScene.matchViewLayer.getTag());
+// 			gKlineScene.matchViewLayer.closeCallBackFunction=function(){gKlineScene.matchViewLayer_Close()};
+// 			// this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
+// 		}
+// 		gKlineScene.matchViewLayer.refreshMatchViewLayer();
+// 		gKlineScene.matchViewLayer.showLayer();
+// 		gKlineScene.pauseLowerLayer();// klineSceneNext.showProgress();
 
-		cc.log("klineSceneNext begin");
-		// cc.director.runScene(gKlineScene);
-		var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
-		cc.log(" beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
+        cc.log("klineSceneNext begin");
+        // cc.director.runScene(gKlineScene);
+        var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
+        cc.log(" beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
+        var klineSceneNext=new KLineScene();
+        var self=this;
+        klineSceneNext.onEnteredFunction=function(){
+
+            cc.log("klineSceneNext onEnteredFunction end");
+            if(gKlineScene.matchViewLayer==null){
+                gKlineScene.matchViewLayer=new MatchViewLayer();
+                gKlineScene.matchViewLayer.setVisible(false);
+                gKlineScene.matchViewLayer.setPosition(0,0);
+                gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1,gKlineScene.matchViewLayer.getTag());
+                gKlineScene.matchViewLayer.closeCallBackFunction=function(){gKlineScene.matchViewLayer_Close()};
+                // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
+            }
+            gKlineScene.matchViewLayer.refreshMatchViewLayer();
+            gKlineScene.matchViewLayer.showLayer();
+            gKlineScene.pauseLowerLayer();// klineSceneNext.showProgress();
+        };
+        cc.log("klineSceneNext middle");
+        //不能放到onEnteredFunction里面
+        gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
+        cc.director.runScene(klineSceneNext);
 
 
-		if(gKlineScene.matchViewLayer==null){
-			gKlineScene.matchViewLayer=new MatchViewLayer();
-			gKlineScene.matchViewLayer.setVisible(false);
-			gKlineScene.matchViewLayer.setPosition(0,0);
-			gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1,gKlineScene.matchViewLayer.getTag());
-			gKlineScene.matchViewLayer.closeCallBackFunction=function(){gKlineScene.matchViewLayer_Close()};
-			// this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
-		}
-		gKlineScene.matchViewLayer.refreshMatchViewLayer();
-		gKlineScene.matchViewLayer.showLayer();
-		gKlineScene.pauseLowerLayer();// klineSceneNext.showProgress();
 
-		// var klineSceneNext=new KLineScene();
-		// var self=this;
-		// klineSceneNext.onEnteredFunction=function(){
-        //
-		// 	cc.log("klineSceneNext onEnteredFunction end");
-         //    if(gKlineScene.matchViewLayer==null){
-         //        gKlineScene.matchViewLayer=new MatchViewLayer();
-         //        gKlineScene.matchViewLayer.setVisible(false);
-         //        gKlineScene.matchViewLayer.setPosition(0,0);
-         //        gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1,gKlineScene.matchViewLayer.getTag());
-         //        gKlineScene.matchViewLayer.closeCallBackFunction=function(){gKlineScene.matchViewLayer_Close()};
-         //        // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
-         //    }
-         //    gKlineScene.matchViewLayer.refreshMatchViewLayer();
-         //    gKlineScene.matchViewLayer.showLayer();
-         //    gKlineScene.pauseLowerLayer();// klineSceneNext.showProgress();
-		// };
-		// cc.log("klineSceneNext middle");
-		// //不能放到onEnteredFunction里面
-		// gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
-		// cc.director.runScene(klineSceneNext);
 		// switch(userInfo.matchMode)
 		// {
 		// 	case 0:
