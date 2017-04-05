@@ -609,7 +609,7 @@ var MatchViewLayer = cc.Layer.extend({
             // this.opponentSprite = new HeadSpriteChange(100,100);
             // this.opponentSprite.setPosition(bgSize.width/4*3,bgSize.height/2+posD);
             // this.opponentSprite.setVisible(false);
-            var macthButtonPosY = 150;
+            var macthButtonPosY = 170;
 
             this.generalButton=new cc.MenuItemImage(res.SELECT_NO_PNG, res.SELECT_OK_PNG, self.generalMatch, this);//new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
             this.generalButton.setPosition(cc.p(bgSize.width/2-150,macthButtonPosY));

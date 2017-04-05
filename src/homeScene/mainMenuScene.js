@@ -195,12 +195,29 @@ var MainMenuScene =SceneBase.extend(
             this.onEnteredFunction();
         }
 
-
+        this.setInfoBySource(userInfo.source);
         this.openSceneType();
         var loadTime=new Date().getTime();
         cc.log("MainMenuScene onEnter end");
 	},
+    setInfoBySource:function (source) {
 
+        switch(source){
+            case "ZKQQ":{
+                this.thirdMode.setEnabled(false);
+                this.paimingButton.setEnabled(false);
+                this.zhanjiButton.setEnabled(false);
+                // this.thirdMode.set;
+                // this.paimingButton.setEnabled(false);
+                // this.zhanjiButton.setEnabled(false);
+            }
+            case 2:
+            default:{
+                cc.log("setInfoBySource source=="+source);
+                break;
+            }
+        }
+    },
     onExit:function()
     {
         this._super();
@@ -474,16 +491,10 @@ var MainMenuScene =SceneBase.extend(
         this.backgroundSprite.addChild(mu, 2);
 
         var bgSize = this.backgroundSprite.getContentSize();
-        this.zhanjiButton = new cc.MenuItemImage("res/btn_zhanji.png", "res/btn_zhanji.png", self.zhanji, this);
+        this.zhanjiButton = new cc.MenuItemImage("res/btn_zhanji.png","", "res/btn_zhanji_disable.png", self.zhanji, this);
         // this.zhanjiButton = new cc.MenuItemImage("res/btn_zhanji.png", "res/btn_zhanji.png", self.ShowemoticonView, this);
         mu.addChild(this.zhanjiButton);
-        // this.zhanjiButton=new Button("res/btn_zhanji.png");
-        // // this.zhanjiButton.setScale(fXScale,fYScale);
-        // this.zhanjiButton.setPosition(cc.p(780,pButtonY));
-        // this.zhanjiButton.setClickEvent(function(){
-        //     cc.log("zhanjiButton ClickEvent");
-        //     self.zhanji();
-        // });
+
         this.zhanjiButton.setPosition(cc.p(780,pButtonY));
         this.zhanjiLabel=cc.LabelTTF.create("战绩", "fonts/Self.ttf",fontSize);
         //this.zhanjiLabel=cc.LabelTTF.create(gPlayerName, "Arial", 20);
@@ -493,7 +504,7 @@ var MainMenuScene =SceneBase.extend(
         this.backgroundSprite.addChild(this.zhanjiLabel,5);
 
 
-        this.paimingButton = new cc.MenuItemImage("res/btn_paihang.png","res/btn_paihang.png",self.rank, this);
+        this.paimingButton = new cc.MenuItemImage("res/btn_paihang.png","","res/btn_paihang_disable.png",self.rank, this);
         mu.addChild(this.paimingButton);
         // this.paimingButton=new Button("res/btn_paihang.png");
         // // this.paimingButton.setScale(fXScale,fYScale);
@@ -573,7 +584,7 @@ var MainMenuScene =SceneBase.extend(
         this.secondMode.setPosition(cc.p((190+pModeXdistance),pModeY));
 
 
-        this.thirdMode = new cc.MenuItemImage("res/btn_mode3_u.png", "res/btn_mode3_d.png", self.thirdModeChanged, this);
+        this.thirdMode = new cc.MenuItemImage("res/btn_mode3_u.png", "","res/btn_mode3_d.png", self.thirdModeChanged, this);
         mu.addChild(this.thirdMode);
         this.thirdMode.setPosition(cc.p((190+2*pModeXdistance),pModeY));
 
