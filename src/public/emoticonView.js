@@ -276,16 +276,24 @@ var ToolsViewLayer = cc.LayerColor.extend({
         cc.eventManager.resumeTarget(this,true);
     },
 
+    toolEnableCD:function () {
+
+        cc.log("toolEnableCD==");
+        gKlineScene.matchInfoLayer.disableToolButtons();
+        setTimeout(function(){gKlineScene.matchInfoLayer.ableToolButtons();},5000);
+    },
+
     sendTool1:function () {//red2green,cover,ban
 
         this.hideLayer();
+        this.toolEnableCD();
         var toolName = "red2green";//红绿颠倒效果
         cc.log("TOOL NAME1=="+toolName);
         gSocketConn.SendToolMessage(toolName);
-
     },
     sendTool2:function () {//遮盖效果
         this.hideLayer();
+        this.toolEnableCD();
         if(testFlag){
             gKlineScene.drawCoverCandlePart();
         }
@@ -296,6 +304,7 @@ var ToolsViewLayer = cc.LayerColor.extend({
     },
     sendTool3:function () {//禁止买卖操作
         this.hideLayer();
+        this.toolEnableCD();
         if(testFlag){
             gKlineScene.drawBanCandlePart();
         }

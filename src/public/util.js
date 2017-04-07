@@ -196,16 +196,16 @@ function checkPassword()
 var sys = cc.sys;//记录平台信息
 
 var wsURL = 'ws://' + cc.game.config[cc.game.CONFIG_KEY.serverURL];
-if (window.location.protocol == 'http:') {
-    wsURL = 'wss://' + cc.game.config[cc.game.CONFIG_KEY.serverURL];
-} else {
-    wsURL  = 'wss://' + cc.game.config[cc.game.CONFIG_KEY.serverURL];//  + window.location.host + target;
-}
+// if (window.location.protocol == 'http:') {
+//     wsURL = 'ws://' + cc.game.config[cc.game.CONFIG_KEY.serverURL];
+// } else {
+//     wsURL  = 'wss://' + cc.game.config[cc.game.CONFIG_KEY.serverURL];//  + window.location.host + target;
+// }
 if(cc.game.config["testMyFlag"]==true){
     wsURL = 'ws://' + cc.game.config["serverMyURL"];
 }
-var testFlag = cc.game.config["testFlag"];//记录测试模式信息
-if(testFlag==true){
+var testFlag = cc.game.config["testMyFlag"];//记录测试模式信息
+if(cc.game.config["testFlag"]==true){
     wsURL = 'ws://' + cc.game.config["serverTestURL"];
 }
 

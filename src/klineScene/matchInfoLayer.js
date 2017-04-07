@@ -581,6 +581,10 @@ var MatchInfoLayer= cc.Layer.extend({
 		this.toolsButton.setVisible(true);
 	},
 
+	disableToolButtons:function()
+	{
+		this.toolsButton.setVisible(false);
+	},
 	//将按钮设置为平仓的状态
 	setButtonsToNoPosition:function()
 	{

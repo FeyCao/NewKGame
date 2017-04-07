@@ -57,9 +57,10 @@ var KLineScene = SceneBase.extend(
 	countDownNumber:null,
 	countBeginNumber:null,
 	countBeginSprite:null,
+	countDownInfo:null,
+	countDownTimeInfo:null,
+	countDownTime:null,
 
-		countDownInfo:null,
-		countDownTime:null,
 
 	ctor: function ()
 	{
@@ -194,7 +195,7 @@ var KLineScene = SceneBase.extend(
 		// var coverSp = new cc.Sprite(res.SP_COVER_png);
 		// coverSp.setPosition(this.coverSprite.getContentSize().width/2,this.coverSprite.getContentSize().height/2);
 		// this.coverSprite.addChild(coverSp);
-		this.addChild(this.coverSprite,10);
+		this.addChild(this.coverSprite,9);
 
 		this.banSprite = new cc.Sprite(res.BG_BAN_png);
 		this.banSprite.setScale(0.58,0.52);
@@ -202,7 +203,7 @@ var KLineScene = SceneBase.extend(
 		// this.coverSprite.setContentSize(baseSize);
 		this.banSprite.setOpacity(0);
 		this.banSprite.setPosition(this.KlinePosX-5,165);
-		this.addChild(this.banSprite,1);
+		this.addChild(this.banSprite,4);
 
 
 		var posBar = cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight-80);
@@ -212,14 +213,22 @@ var KLineScene = SceneBase.extend(
 		// this.coverSprite.setContentSize(baseSize);
 		// this.barSprite.setOpacity(255);
 		this.barSprite.setPosition(posBar);
-		this.addChild(this.barSprite,1);
+		this.addChild(this.barSprite,10);
 		this.barInfo= cc.LabelTTF.create("xxx对xxx使用了道具","Arial",25);
+		this.barInfo.setAnchorPoint(0,0.5);
 		this.barInfo.setScale(0.5);
-		this.barInfo.setPosition(posBar);
+		this.barInfo.setPosition(cc.p(gDesignResolutionWidth / 3-20, gDesignResolutionHeight-80));
 		gKlineScene.barInfo.setVisible(false);
 		gKlineScene.barSprite.setVisible(false);
-		this.addChild(this.barInfo,1);
+		this.addChild(this.barInfo,11);
 
+
+		this.warnInfo= cc.LabelTTF.create("警告信息：","Arial",30);
+		// this.warnInfo.setAnchorPoint(0,0.5);
+		this.warnInfo.setScale(0.5);
+		this.warnInfo.setPosition(cc.p(gDesignResolutionWidth / 2, 30));
+		gKlineScene.warnInfo.setVisible(false);
+		this.addChild(this.warnInfo,11);
 
  		//  //设置K线图的区域
 
@@ -808,18 +817,20 @@ var KLineScene = SceneBase.extend(
                 // var faceNum = packet.content.split("#")[1];
                 cc.log("TOOLTYPE=="+toolType);
 
+				gKlineScene.setCountDownInfo();
 				switch(toolType){
 					case "red2green":{//红绿颠倒
 						gKlineScene.drawOppositeCandlePart();
+						// gKlineScene.setCountDownInfo();
 						break;
 					}
 					case "cover":{//遮盖效果
+						// gKlineScene.setCountDownInfo();
 						gKlineScene.drawCoverCandlePart();
 						break;
 					}
 					case "ban":{//禁止买卖操作
 						gKlineScene.drawBanCandlePart();
-						gKlineScene.setCountDownInfo();
 						break;
 					}
 					default:{//其它无效信息
@@ -847,6 +858,15 @@ var KLineScene = SceneBase.extend(
 				gKlineScene.barInfo.setVisible(true);
 				gKlineScene.barSprite.setVisible(true);
 				pageTimer["hideBar"] = setTimeout(function(){gKlineScene.hideBarInfo();},5000);
+				break;
+			}
+			case "WARN":
+			{
+				var warnInfo = packet.content;
+				gKlineScene.warnInfo.setString(warnInfo);
+				gKlineScene.warnInfo.setVisible(true);
+				pageTimer["WARN"] = setTimeout(function(){gKlineScene.warnInfo.setVisible(false);},5000);
+				break;
 				break;
 			}
 			case "":
@@ -1122,7 +1142,7 @@ var KLineScene = SceneBase.extend(
 	toSetklinedata:function(data)
 	{
 		//{"dataBusiness":[108,-113],"score":4.22374,"nickName":"誓约者艾琳诺","matchId":7571,"playerList":
-		this.clearDataForLineLayer();
+		// this.clearDataForLineLayer();
 		var businessData=data["dataBusiness"];
 		cc.log("dataBusiness="+businessData);
 		this.buyInfo=[];
@@ -1266,6 +1286,8 @@ var KLineScene = SceneBase.extend(
 		{
 			this.countDownInfo.removeFromParent(false);
 			this.countDownInfo=null;
+			this.countDownTimeInfo.removeFromParent(false);
+			this.countDownTimeInfo=null;
 			this.countDownTime=5;
 		}
 		if(this.playerInfoLayer!=null)
@@ -1306,7 +1328,7 @@ var KLineScene = SceneBase.extend(
 				this.matchRunFlag=false;
                 this.sendEndMessage();
                 this.matchEnd();
-				clearTimeout(pageTimer["drawTimerMatch"]);
+				// clearTimeout(pageTimer["drawTimerMatch"]);
                 return;
             }
             else
@@ -1340,7 +1362,7 @@ var KLineScene = SceneBase.extend(
 				this.matchRunFlag=false;
                 this.sendEndMessage();
                 this.matchEnd();
-				clearTimeout(pageTimer["drawTimer"]);
+				// clearTimeout(pageTimer["drawTimer"]);
                 return;
             }
             else
@@ -1386,7 +1408,7 @@ var KLineScene = SceneBase.extend(
 				this.matchRunFlag=false;
 				this.sendEndMessage();
 				this.matchEnd();
-				clearTimeout(pageTimer["drawTimer"]);
+				// clearTimeout(pageTimer["drawTimer"]);
 				return;
 			}
 			else
@@ -1584,7 +1606,7 @@ var KLineScene = SceneBase.extend(
 
 			//依次画后面的K线
 			this.drawAllCandlesOneByOne();
-			clearTimeout(pageTimer["beginTimer"]);
+			// clearTimeout(pageTimer["beginTimer"]);
 			return;
 		}
 
@@ -2047,8 +2069,11 @@ var KLineScene = SceneBase.extend(
 			{
 				this.countDownInfo.removeFromParent(false);
 				this.countDownInfo=null;
+				this.countDownTimeInfo.removeFromParent(false);
+				this.countDownTimeInfo=null;
 				this.countDownTime=5;
 			}
+
 			gKlineScene.barSprite.setVisible(false);
 			gKlineScene.barInfo.setVisible(false);
         },
@@ -2087,6 +2112,7 @@ var KLineScene = SceneBase.extend(
 		if(this.countDownTime==0 && this.countDownInfo!=null)
 		{
 			this.countDownInfo.setVisible(false);
+			this.countDownTimeInfo.setVisible(false);
 			this.drawNormalCandlePart();
 			// this.advanceToMainKLine_PhaseMatch();
 			return;
@@ -2096,15 +2122,20 @@ var KLineScene = SceneBase.extend(
 		{
 			this.countDownTime=5;
 			//this.countDownSprite= cc.Sprite.create("res/cd_5.png");
-			this.countDownInfo= cc.LabelTTF.create("解除倒计时：5","Arial",30);
+			this.countDownInfo= cc.LabelTTF.create("解除倒计时:","Arial",20);
+			this.countDownInfo.setColor(YellowColor);
 			this.addChild(this.countDownInfo,10);
+			this.countDownTimeInfo= cc.LabelTTF.create("5","Arial",30);
+			this.addChild(this.countDownTimeInfo,10);
+			this.countDownTimeInfo.setColor(YellowColor);
+
 		}
-		var posCenter = cc.p(gDesignResolutionWidth / 2+200, gDesignResolutionHeight-80);
+		var posCenter = cc.p(gDesignResolutionWidth / 2+130, gDesignResolutionHeight-28);
 		this.countDownInfo.setVisible(true);
 		this.countDownInfo.setPosition(posCenter);
-		this.countDownInfo.setOpacity(255);
-		this.countDownInfo.setColor(YellowColor);
-		this.countDownInfo.setString("解除倒计时："+this.countDownTime);
+		this.countDownTimeInfo.setVisible(true);
+		this.countDownTimeInfo.setPosition(cc.pAdd(posCenter,cc.p(this.countDownInfo.width/2+10,0)));
+		this.countDownTimeInfo.setString(""+this.countDownTime);
 
 		// var jumpto = cc.jumpTo(1,posCenter,20,3);
 
@@ -2151,8 +2182,8 @@ var KLineScene = SceneBase.extend(
 		},
 		createAnimation_ACT2:function()//渐出渐隐
 		{
-			var actionFadeIn=new cc.FadeTo(1,240);
-			var actionFadeOut=new cc.FadeTo(1,0);
+			var actionFadeIn=new cc.FadeTo(4.5,240);
+			var actionFadeOut=new cc.FadeTo(0.5,0);
 			// var actionFade1=new cc.FadeTo(1,180);
 			// var actionFade2=new cc.FadeTo(1,120);
 			// var actionFade3=new cc.FadeTo(1,60);
@@ -2166,8 +2197,8 @@ var KLineScene = SceneBase.extend(
 			// var actionIn=cc.spawn(actionFadeIn,actScale1);//
 			// var actionBlank=new cc.ActionInterval(2);
 			// var actionOut=cc.spawn(actionFadeOut,actScale2);//
-			return new cc.Sequence(actionFadeIn,actionFade1,actionFade2,actionFade3,actionFadeOut);
-			// return new cc.Sequence(actionFade3,actionFade2,actionFade1,actionFadeIn,actionFade1,actionFade2,actionFade3,actionFadeOut);
+			// return new cc.Sequence(actionFadeIn,actionFade1,actionFade2,actionFade3,actionFadeOut);
+			return new cc.Sequence(actionFadeIn,actionFadeOut);
 		},
 	//
 	businessInfo:function()

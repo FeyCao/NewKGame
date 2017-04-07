@@ -615,21 +615,38 @@ var MatchViewLayer = cc.Layer.extend({
             this.generalButton.setPosition(cc.p(bgSize.width/2-150,macthButtonPosY));
             mu.addChild(this.generalButton);
 
-            this.generalLabel=cc.LabelTTF.create("普通模式", "fonts/Self.ttf",fontSize);
-            this.generalLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-            this.generalLabel.setAnchorPoint(0,0.5);
-            this.generalLabel.setPosition(cc.p(bgSize.width/2-130,macthButtonPosY));
-            this.backgroundSprite.addChild(this.generalLabel,2);
+            // this.generalLabel=cc.LabelTTF.create("普通模式", "fonts/Self.ttf",fontSize);
+            // this.generalLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
+            // this.generalLabel.setAnchorPoint(0,0.5);
+            // this.generalLabel.setPosition(cc.p(bgSize.width/2-130,macthButtonPosY));
+            // this.backgroundSprite.addChild(this.generalLabel,2);
 
             this.propButton=new cc.MenuItemImage(res.SELECT_NO_PNG, res.SELECT_OK_PNG, self.propMatch, this);//new CheckButton("res/btn_unmatch.png","res/btn_unmatch.png");//new Button("res/btn_mode1d.png");
             this.propButton.setPosition(cc.p(bgSize.width/2+50,macthButtonPosY-3));
             // this.propButton.setVisible(false);
             mu.addChild(this.propButton);
-            this.propLabel=cc.LabelTTF.create("道具模式", "fonts/Self.ttf",fontSize);
-            this.propLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-            this.propLabel.setAnchorPoint(0,0.5);
-            this.propLabel.setPosition(cc.p(bgSize.width/2+70,macthButtonPosY-3));
-            this.backgroundSprite.addChild(this.propLabel,2);
+
+            cc.MenuItemFont.setFontName("fonts/Self.ttf");
+            cc.MenuItemFont.setFontSize(fontSize);
+
+            var item1 = new cc.MenuItemFont("普通模式", self.generalMatch, this);
+            item1.setAnchorPoint(0,0.5);
+            item1.setPosition(cc.p(bgSize.width/2-130,macthButtonPosY-5));
+            mu.addChild(item1);
+
+            var item2 = new cc.MenuItemFont("道具模式", self.propMatch, this);
+            item2.setAnchorPoint(0,0.5);
+            item2.setPosition(cc.p(bgSize.width/2+70,macthButtonPosY-5));
+            mu.addChild(item2);
+
+
+
+
+            // this.propLabel=cc.LabelTTF.create("道具模式", "fonts/Self.ttf",fontSize);
+            // this.propLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
+            // this.propLabel.setAnchorPoint(0,0.5);
+            // this.propLabel.setPosition(cc.p(bgSize.width/2+70,macthButtonPosY-3));
+            // this.backgroundSprite.addChild(this.propLabel,2);
 
 
             this.beginButton=new cc.MenuItemImage("res/btn_begin.png", "res/btn_begin.png", self.beginMatch, this);//new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
