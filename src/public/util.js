@@ -44,10 +44,12 @@ function cutstr(str, len) {
             //中文字符的长度经编码之后大于4
             str_length++;
         }
-        str_cut = str_cut.concat(a);
+
         if (str_length >= len) {
             str_cut = str_cut.concat("...");
             return str_cut;
+        }else{
+            str_cut = str_cut.concat(a);
         }
     }
     //如果给定字符串小于指定长度，则返回源字符串；

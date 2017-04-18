@@ -622,7 +622,7 @@ var MatchViewLayer = cc.Layer.extend({
             // this.backgroundSprite.addChild(this.generalLabel,2);
 
             this.propButton=new cc.MenuItemImage(res.SELECT_NO_PNG, res.SELECT_OK_PNG, self.propMatch, this);//new CheckButton("res/btn_unmatch.png","res/btn_unmatch.png");//new Button("res/btn_mode1d.png");
-            this.propButton.setPosition(cc.p(bgSize.width/2+50,macthButtonPosY-3));
+            this.propButton.setPosition(cc.p(bgSize.width/2+50,macthButtonPosY));
             // this.propButton.setVisible(false);
             mu.addChild(this.propButton);
 
@@ -631,12 +631,12 @@ var MatchViewLayer = cc.Layer.extend({
 
             var item1 = new cc.MenuItemFont("普通模式", self.generalMatch, this);
             item1.setAnchorPoint(0,0.5);
-            item1.setPosition(cc.p(bgSize.width/2-130,macthButtonPosY-5));
+            item1.setPosition(cc.p(bgSize.width/2-130,macthButtonPosY));
             mu.addChild(item1);
 
             var item2 = new cc.MenuItemFont("道具模式", self.propMatch, this);
             item2.setAnchorPoint(0,0.5);
-            item2.setPosition(cc.p(bgSize.width/2+70,macthButtonPosY-5));
+            item2.setPosition(cc.p(bgSize.width/2+70,macthButtonPosY));
             mu.addChild(item2);
 
 

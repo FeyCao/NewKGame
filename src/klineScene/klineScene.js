@@ -163,7 +163,7 @@ var KLineScene = SceneBase.extend(
 		this.backgroundLayer.setPosition(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2);
 		this.addChild(this.backgroundLayer, 1,this.backgroundLayer.getTag());
 
-		this.backgroundSprite=cc.Sprite.create("res/battle_bg.png");
+		this.backgroundSprite=new cc.Sprite(res.BG_BATTLE_png);
 		this.backgroundSprite.setScale(this.fXScale,this.fYScale);
 		this.backgroundSprite.setPosition(gDesignResolutionWidth/2,gDesignResolutionHeight/2);
 		this.backgroundLayer.addChild(this.backgroundSprite, 1);
@@ -241,14 +241,16 @@ var KLineScene = SceneBase.extend(
 		this.volumnTechLayerMain.setPosition(cc.p(this.KlinePosX,75));
 		this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
 		this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
-		this.borderArea=new cc.DrawNodeCanvas();
-		this.borderArea.setPosition(cc.p(0,68));
-		this.borderArea.width=726;
-		this.borderArea.height=294;
-		this.addChild(this.borderArea, 2);
-		  //画边框
-		//this.drawAreaBorder();
-		this.drawHorizontalLine();
+
+		//画虚线非常耗性能
+		// this.borderArea=new cc.DrawNodeCanvas();
+		// this.borderArea.setPosition(cc.p(0,68));
+		// this.borderArea.width=726;
+		// this.borderArea.height=294;
+		// this.addChild(this.borderArea, 2);
+		//   //画边框
+		// //this.drawAreaBorder();
+		// this.drawHorizontalLine();
 
         // var kWidth = this.KlineWidth*2-10;
         // // this.klineLayerMain=new KlineLayer(kWidth,192);
