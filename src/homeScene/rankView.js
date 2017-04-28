@@ -439,7 +439,7 @@ var RankViewLayer = cc.Layer.extend({
         }
         if(this.mode4Button==null)
         {
-            this.mode4Button=new CheckButton("res/btn_mode4d.png","res/btn_mode4u.png");
+            this.mode4Button=new CheckButton(res.BTN_SELECT_MODE4_D_png,res.BTN_SELECT_MODE4_U_png);
             this.mode4Button.setPosition(cc.p(975,520));
             this.mode4Button.setClickEvent(function(){
                 cc.log("mode4Button ClickEvent");

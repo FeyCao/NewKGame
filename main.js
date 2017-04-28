@@ -63,6 +63,7 @@ var gPlayerAvatarSprite=null;	//头像
 var currentScene = null;//记录当前显示的界面
 
 var gLoginManager=null;
+
 cc.game.onStart = function(){
     if(!cc.sys.isNative && document.getElementById("cocosLoading")) //If referenced loading.js, please remove it
         document.body.removeChild(document.getElementById("cocosLoading"));

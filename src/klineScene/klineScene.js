@@ -170,10 +170,10 @@ var KLineScene = SceneBase.extend(
 
 		var background = this.backgroundSprite.getContentSize();
 
-		this.playerInfoLayer=new PlayerInfoLayer(gDesignResolutionWidth,gDesignResolutionHeight);
+		this.playerInfoLayer=new PlayerInfoLayer();
 		this.playerInfoLayer.setPosition(cc.p(0,0));
 		// this.playerInfoLayer.setPosition(cc.p(this.size.width/2,this.size.height/2));
-		this.addChild(this.playerInfoLayer, 8,this.playerInfoLayer.getTag());
+		this.backgroundSprite.addChild(this.playerInfoLayer, 8,this.playerInfoLayer.getTag());
 		this.setKlineInfo();
 
 
@@ -208,7 +208,9 @@ var KLineScene = SceneBase.extend(
 		this.addChild(this.banSprite,4);
 
 
-		var posBar = cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight-80);
+		var posBar = cc.p(gDesignResolutionWidth / 2+20, gDesignResolutionHeight-60);
+
+
 		this.barSprite = new cc.Sprite(res.BG_BAR_png);
 		this.barSprite.setScale(0.8,0.6);
 		// this.barSprite.setAnchorPoint(0,0);
@@ -216,13 +218,19 @@ var KLineScene = SceneBase.extend(
 		// this.barSprite.setOpacity(255);
 		this.barSprite.setPosition(posBar);
 		this.addChild(this.barSprite,10);
-		this.barInfo= cc.LabelTTF.create("xxx对xxx使用了道具","Arial",25);
-		this.barInfo.setAnchorPoint(0,0.5);
-		this.barInfo.setScale(0.5);
-		this.barInfo.setPosition(cc.p(gDesignResolutionWidth / 3-20, gDesignResolutionHeight-80));
-		gKlineScene.barInfo.setVisible(false);
+
+		this.barInfo= new createClipRoundNode("xxx对xxx使用了道具xxx对",22,YellowColor,350,30);// cc.LabelTTF.create("xxx对xxx使用了道具","Arial",25);//createClipRoundText = function(txt,fontsize,color,width,height)
+		// this.barInfo.setAnchorPoint(0,0.5);
+		this.barInfo.setPosition(90,12);//.text.setString();
+
+		// this.barInfo.setString("使用了道具使用了道具使用了道具使用了道具");
+		this.barSprite.addChild(this.barInfo);
+
+
+		// this.barInfo.setPosition(cc.p(gDesignResolutionWidth / 3-20, gDesignResolutionHeight-80));
+		// // gKlineScene.barInfo.setVisible(false);
 		gKlineScene.barSprite.setVisible(false);
-		this.addChild(this.barInfo,11);
+		// this.addChild(this.barInfo,11);
 
 
 		this.warnInfo= cc.LabelTTF.create("警告信息：","Arial",30);
@@ -432,33 +440,37 @@ var KLineScene = SceneBase.extend(
 	},
 		setKlineInfo:function()
 		{
-			switch(userInfo.matchMode)
-			{
-				case 0:
-				{
-					this.KlineWidth = gDesignResolutionWidth-10;
-					this.KlinePosX = 5;
-					break;
-				}
-				case 1:
-				{
-				}
-				case 3:
-				case 2:
-				{
-					this.KlineWidth = gDesignResolutionWidth-120*this.fXScale;
-					this.KlinePosX = 120*this.fXScale;
-
-					break;
-				}
 
 
-				default:
-				{
-					cc.log("userInfo.matchMode ="+userInfo.matchMode);
-					break;
-				}
-			}
+			this.KlineWidth = gDesignResolutionWidth-10;
+			this.KlinePosX = 5;
+			// switch(userInfo.matchMode)
+			// {
+			// 	case 0:
+			// 	{
+			// 		this.KlineWidth = gDesignResolutionWidth-10;
+			// 		this.KlinePosX = 5;
+			// 		break;
+			// 	}
+			// 	case 1:
+			// 	{
+			// 	}
+			// 	case 3:
+			// 	case 2:
+			// 	{
+			// 		this.KlineWidth = gDesignResolutionWidth-120*this.fXScale;
+			// 		this.KlinePosX = 120*this.fXScale;
+            //
+			// 		break;
+			// 	}
+            //
+            //
+			// 	default:
+			// 	{
+			// 		cc.log("userInfo.matchMode ="+userInfo.matchMode);
+			// 		break;
+			// 	}
+			// }
 
 			cc.log("setKlineInfo userInfo.matchMode ="+userInfo.matchMode);
 		},
@@ -493,8 +505,8 @@ var KLineScene = SceneBase.extend(
 			{
 				// this.KlineWidth = this.size.width-120*this.fXScale;
 				// this.KlinePosX = 120*this.fXScale;
-				this.KlineWidth = 666;
-				this.KlinePosX = 60;
+				this.KlineWidth = 726;
+				this.KlinePosX = 5;
 
 				this.matchEndInfoLayer=new MatchEndInfoLayer();
 				// this.matchEndInfoLayer.setAnchorPoint(0.5,0.5);
@@ -513,8 +525,8 @@ var KLineScene = SceneBase.extend(
 			{
 				// this.KlineWidth = this.size.width-120*this.fXScale;
 				// this.KlinePosX = 120*this.fXScale;
-				this.KlineWidth = 666;
-				this.KlinePosX = 60;
+				this.KlineWidth = 726;
+				this.KlinePosX = 5;
 
 				this.matchEndInfoLayer=new MatchEndInfoLayer();
 				// this.matchEndInfoLayer.setAnchorPoint(0.5,0.5);
@@ -859,7 +871,7 @@ var KLineScene = SceneBase.extend(
 			{
 				var noticeInfo = packet.content;
 				gKlineScene.barInfo.setString(noticeInfo);
-				gKlineScene.barInfo.setVisible(true);
+				// gKlineScene.barInfo.setVisible(true);
 				gKlineScene.barSprite.setVisible(true);
 				pageTimer["hideBar"] = setTimeout(function(){gKlineScene.hideBarInfo();},5000);
 				break;
@@ -887,7 +899,7 @@ var KLineScene = SceneBase.extend(
 	},
 
 	hideBarInfo:function () {
-		gKlineScene.barInfo.setVisible(false);
+		// gKlineScene.barInfo.setVisible(false);
 		gKlineScene.barSprite.setVisible(false);
 	},
 
@@ -1761,7 +1773,7 @@ var KLineScene = SceneBase.extend(
         var posBegain = cc.p(this.klineLayerMain.getPositionX(),this.klineLayerMain.getPosition().y);
         var posEnd1 = cc.p(-gDesignResolutionWidth+this.klineLayerMain.getPositionX()+10,0);
         var posEnd2 = cc.p(-gDesignResolutionWidth+this.klineLayerMain.getPositionX()+10,0);
-        var moveLeft1  = cc.MoveBy.create(3,posEnd1);  // 左移
+        var moveLeft1  = cc.moveBy(3,posEnd1,3);//cc.MoveBy.create(3,posEnd1);  // 左移
         var moveLeft2  = cc.MoveBy.create(3,posEnd2);  // 左移
         cc.log("posEnd1//比赛图 beginposEnd posEnd1.x=="+posEnd1.x);
         this.klineLayerMain.runAction(moveLeft1);
@@ -2078,8 +2090,7 @@ var KLineScene = SceneBase.extend(
 				this.countDownTime=5;
 			}
 
-			gKlineScene.barSprite.setVisible(false);
-			gKlineScene.barInfo.setVisible(false);
+			this.hideBarInfo();
         },
 
 

@@ -304,6 +304,7 @@ var ToolsViewLayer = cc.LayerColor.extend({
     },
     sendTool3:function () {//禁止买卖操作
         this.hideLayer();
+
         this.toolEnableCD();
         if(testFlag){
             gKlineScene.drawBanCandlePart();

@@ -459,15 +459,15 @@ var BaseGraphLayer= cc.Layer.extend({
 		// cc.log(".........指标位置this.getPositionX()="+this.getPositionX());
 		var labelIndex=0;		// if()
 		var leftXStart=10;
-		if(userInfo.matchMode>0){
-			if(this.getPositionX()>0){
-				leftXStart=10;
-			}else{
-				leftXStart=80-this.getPositionX();
-			}
-		}else{
-			leftXStart=10-this.getPositionX();
-		}
+		// if(userInfo.matchMode>0){
+		// 	if(this.getPositionX()>0){
+		// 		leftXStart=10;
+		// 	}else{
+		// 		leftXStart=80-this.getPositionX();
+		// 	}
+		// }else{
+		// 	leftXStart=10-this.getPositionX();
+		// }
 		// cc.log(".........this.getPositionX()leftXStart="+leftXStart);
 
 		for(var i=0;i<this.taisArray.length;i++)
@@ -491,7 +491,7 @@ var BaseGraphLayer= cc.Layer.extend({
 				}
 				labelIndex=labelIndex+1;
 				taisFulleNameLabel.setString(this.taisArray[i].shownName);
-				taisFulleNameLabel.setPosition(leftXStart, this.height-3);//-this.topIndexAreaHeight/2);
+				taisFulleNameLabel.setPosition(leftXStart, this.height-5);//-this.topIndexAreaHeight/2);
 				taisFulleNameLabel.setColor(cc.color(252,0,1,255));
 				taisFulleNameLabel.setVisible(true);
 				
@@ -522,7 +522,7 @@ var BaseGraphLayer= cc.Layer.extend({
 					}
 					labelIndex=labelIndex+1;
 					taisInfoLabel.setString(shownString);
-					taisInfoLabel.setPosition(leftXStart, this.height-3);//-this.topIndexAreaHeight/2);
+					taisInfoLabel.setPosition(leftXStart, this.height-5);//-this.topIndexAreaHeight/2);
 					taisInfoLabel.setVisible(true);
 					if(taiInst.defaultColor!=null)
 					{

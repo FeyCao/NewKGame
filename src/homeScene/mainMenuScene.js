@@ -9,7 +9,7 @@ var MainMenuScene =SceneBase.extend(
     source:null,
 
 	backgroundSprite:null,
-    touxiangSprite:null,
+    headSprite:null,
 	//praticeButton:null,
 	//configButton:null,
 	
@@ -103,9 +103,13 @@ var MainMenuScene =SceneBase.extend(
 		//"res/mainMenu_bg.png","res/btn_control.png","res/btn_zhanji.png","res/btn_paihang.png","res/btn_help.png"，"res/btn_model1_u.png","res/btn_model1_d.png"，"res/btn_model2_u.png","res/btn_model2_d.png"，"res/btn_model3_u.png","res/btn_model3_d.png"，"res/btn_model4_u.png","res/btn_model4_d.png"
 
 
-        this.touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
-        this.touxiangSprite.setPosition(cc.p(180,500));
-        this.backgroundSprite.addChild(this.touxiangSprite,2);
+        this.headSpritebg = new cc.Sprite(res.BG_HEAD_PNG);
+        this.headSpritebg.setPosition(cc.p(180,500));
+        this.backgroundSprite.addChild(this.headSpritebg,3);
+
+        this.headSprite = new cc.Sprite(res.HEAD_0_PNG);
+        this.headSprite.setPosition(cc.p(180,500));
+        this.backgroundSprite.addChild(this.headSprite,2);
 
         var fontSize = 22;
         this.selfNameLabel = cc.LabelTTF.create(userInfo.nickName, "Arial", fontSize,cc.size(25*6,200));
@@ -590,7 +594,7 @@ var MainMenuScene =SceneBase.extend(
 
         // this.fourthMode=new CheckButton("res/btn_mode4_d.png","res/btn_mode4_u.png");
         // this.fourthMode.setScale(fXScale,fYScale);
-        this.fourthMode = new cc.MenuItemImage("res/btn_mode4_d.png", "res/btn_mode4_d.png", self.fourthModeChanged, this);
+        this.fourthMode = new cc.MenuItemImage(res.BTN_MATCH_MODE4_D_png, res.BTN_MATCH_MODE4_D_png, self.fourthModeChanged, this);
         mu.addChild(this.fourthMode);
         this.fourthMode.setPosition(cc.p((190+3*pModeXdistance),pModeY));
         this.fourthMode.setEnabled(false);
@@ -662,7 +666,7 @@ var MainMenuScene =SceneBase.extend(
                     // this.touxiangSprite.setScale(fXScale,fYScale);
 
                     var size = headSprite.getContentSize();
-                    headSprite.setScale(100/size.width,100/size.height);
+                    headSprite.setScale(90/size.width,90/size.height);
                     headSprite.setPosition(cc.p(180,500));
                     self.backgroundSprite.addChild(headSprite,2);
 

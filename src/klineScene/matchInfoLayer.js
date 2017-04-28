@@ -1,16 +1,11 @@
-﻿// JavaScript Document
-//用来显示对局的信息和按钮等控件
-var MatchInfoLayer= cc.Layer.extend({
-
-	matchInfoArea:null,			//绘图的区域
-
-	buyDisableSprite:null,		//买入按钮关闭图片
+﻿//﻿ JavaScript Document用来显示对局的信息和按钮等控件
+var MatchInfoLayer = cc.Layer.extend({
+    buyDisableSprite:null,		//买入按钮关闭图片
 	buyCloseDisableSprite:null,	//买入平仓按钮关闭图片
-	
+
 	sellDisableSprite:null,		//卖出按钮关闭图片
 	sellCloseDisableSprite:null,//卖出平仓按钮关闭图片
-	
-	
+
 	buyButton:null,				//买入按钮
 	sellButton:null,			//卖出按钮
 	buyCloseButton:null,		//买平按钮
@@ -34,7 +29,6 @@ var MatchInfoLayer= cc.Layer.extend({
 	scNormalCheckButton:null,		//普通速度
 	scDoubleCheckButton:null,		//2倍速度
 
-	//
 	emoticonButton:null,//
 	faceSprites:null,
 
@@ -62,12 +56,12 @@ var MatchInfoLayer= cc.Layer.extend({
 	{
 		this._super();
 		var self=this;
-		var size = cc.director.getWinSize();
+		// var size = cc.director.getWinSize();
 		var fXScale = gDesignResolutionWidth/1280;
 		var fYScale = gDesignResolutionHeight/720;
-		var fontSize = 25;
+		// var fontSize = 25;
 
-		var posX = 80
+		var posX = 80;
 		var posY = 35;
 		// this.backgroundSprite=cc.Sprite.create("res/battle_bg.png");
 		// var bgSize = this.backgroundSprite.getContentSize();
@@ -117,11 +111,11 @@ var MatchInfoLayer= cc.Layer.extend({
 		var posSell = cc.p(gDesignResolutionWidth-posX,posY);
 		var posTool = cc.p(70,0);
 		this.buyButton=new cc.MenuItemImage(res.BTN_BUY_ENABLE_png,res.BTN_BUY_ENABLE_png,res.BTN_BUY_DISABLE_png, self.buyClick, this);//new Button("res/home.png");
-		this.buyButton.setScale(fXScale*0.5,fYScale*0.5);
+		this.buyButton.setScale(fXScale,fYScale);
 		this.buyButton.setPosition(posBuy);
 		mu.addChild(this.buyButton);
 		this.sellButton=new cc.MenuItemImage(res.BTN_SELL_ENABLE_png,res.BTN_SELL_ENABLE_png,res.BTN_SELL_DISABLE_png, self.sellClick, this);//new Button("res/home.png");
-		this.sellButton.setScale(fXScale*0.5,fYScale*0.5);
+		this.sellButton.setScale(fXScale,fYScale);
 		this.sellButton.setPosition(posSell);
 		mu.addChild(this.sellButton);
 
@@ -141,12 +135,12 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.toolsButton.setVisible(userInfo.matchMode==1?true:false);
 
 
-		this.matchInfoArea=new cc.DrawNode();
-		//设置K线图的区域
-		this.matchInfoArea.setPosition(cc.p(0,0));
-		this.matchInfoArea.width=this.width;
-		this.matchInfoArea.height=this.height;
-		this.addChild(this.matchInfoArea, 1);
+		// this.matchInfoArea=new cc.DrawNode();
+		// //设置K线图的区域
+		// this.matchInfoArea.setPosition(cc.p(0,0));
+		// this.matchInfoArea.width=this.width;
+		// this.matchInfoArea.height=this.height;
+		// this.addChild(this.matchInfoArea, 1);
 
 
 		//设置变速信息的区域
@@ -157,45 +151,6 @@ var MatchInfoLayer= cc.Layer.extend({
 		this.setButtonsToNoPosition();
 		// this.setEnableBuyOrSell(true);
 		// this.drawDisableButtons();
-		this.drawAreaBorder();
-		/*
-		 this.buyButtonImage=new cc.MenuItemImage("res/buy.png","res/buy_p.png",this.buyButtonCallBack);
-		 this.buyMenu=new cc.Menu(this.buyButtonImage);
-		 this.buyMenu.setPosition(cc.p(96/2,96/2));
-	 	 this.addChild(this.buyMenu, 5);		
-		 
-		 this.sellButtonImage=new cc.MenuItemImage("res/sell.png","res/sell_p.png",this.sellButtonCallBack);
-		 this.sellMenu=new cc.Menu(this.sellButtonImage);
-		 this.sellMenu.setPosition(cc.p(this.width-96/2,96/2));
-	 	 this.addChild(this.sellMenu, 5);		
-		 
-		 this.selfNameLabel = cc.LabelTTF.create(gPlayerName, "微软雅黑", 24);
-		 this.selfNameLabel.setPosition(300, 80);
-		 this.addChild(this.selfNameLabel,5);
-		 
-		  this.opponentNameLabel = cc.LabelTTF.create(this.parent.opponentsInfo[0], "微软雅黑", 24);
-		 this.opponentNameLabel.setPosition(300, 30);
-		 this.addChild(this.opponentNameLabel,5);
-		 
-		  this.selfDirLabel = cc.LabelTTF.create("", "微软雅黑", 24);
-		 this.selfDirLabel.setPosition(400, 80);
-		 this.addChild(this.selfDirLabel,5);
-		 
-		  this.opponentDirLabel = cc.LabelTTF.create("", "微软雅黑", 24);
-		 this.opponentDirLabel.setPosition(400, 30);
-		 this.addChild(this.opponentDirLabel,5);
-		 
-		  this.selfScoreLabel = cc.LabelTTF.create("", "微软雅黑", 24);
-		 this.selfScoreLabel.setPosition(500, 80);
-		 this.addChild(this.selfScoreLabel,5);
-		 
-		  this.opponentScoreLabel = cc.LabelTTF.create("", "微软雅黑", 24);
-		 this.opponentScoreLabel.setPosition(500, 30);
-		 this.addChild(this.opponentScoreLabel,5);
-		 */
-
-
-		// this.setEmoticonSprites();
 
 
 
@@ -367,12 +322,12 @@ var MatchInfoLayer= cc.Layer.extend({
 	{
 		//设置变速信息的信息
 		var self=this;
-		var size = cc.director.getWinSize();
+		// var size = cc.director.getWinSize();
         var posX =83;
 		var posY = 35;
 		var fXScale = gDesignResolutionWidth/1280;
 		var fYScale = gDesignResolutionHeight/720;
-		this.speedControlLayer=cc.Sprite.create("res/btn_sc_bg.png");
+		this.speedControlLayer=new cc.Sprite(res.BTN_SC_BG_png);
 		this.speedControlLayer.setPosition(gDesignResolutionWidth/2,posY);
 		this.speedControlLayer.setScale(fXScale*0.6,fYScale*0.6);
 		this.addChild(this.speedControlLayer,3);
@@ -447,19 +402,17 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.speedControlLayer.addChild(this.scDoubleCheckButton,1);
 	},
 
-	//禁止买卖操作
 	setEnableBuyOrSell:function (flag) {
 
 		cc.log("setEnableBuyOrSell:function (flag)== "+flag);
 		this.buyButton.setEnabled(flag);
 		this.sellButton.setEnabled(flag);
-
-		if(flag&&this.statusFlag==-1){
-			this.setButtonsToSellPosition();
-		}
-		if(flag&&this.statusFlag==1){
-			this.setButtonsToBuyPosition();
-		}
+        if(flag&&this.statusFlag==-1){
+            this.setButtonsToSellPosition();
+        }
+        if(flag&&this.statusFlag==1){
+            this.setButtonsToBuyPosition();
+        }
 	},
 
 	playCheckChanged:function()
@@ -597,10 +550,16 @@ var MatchInfoLayer= cc.Layer.extend({
 	setButtonsToNoPosition:function()
 	{
 		cc.log("setButtonsToNoPosition");
+		var self = this;
 		this.buyButton.setVisible(true);
 		this.sellButton.setVisible(true);
 		this.buyButton.setEnabled(true);
 		this.sellButton.setEnabled(true);
+
+		this.buyButton.initWithNormalImage(res.BTN_BUY_ENABLE_png,res.BTN_BUY_ENABLE_png,res.BTN_BUY_DISABLE_png, self.buyClick, this);
+		this.sellButton.initWithNormalImage(res.BTN_SELL_ENABLE_png,res.BTN_SELL_ENABLE_png,res.BTN_SELL_DISABLE_png, self.sellClick, this);
+
+
 		this.statusFlag = 0;
 
 		if(userInfo.matchMode==1||userInfo.matchMode==3){
@@ -623,9 +582,11 @@ var MatchInfoLayer= cc.Layer.extend({
 	setButtonsToBuyPosition:function()
 	{
 		// this.buyButton.setVisible(false);
+		var self = this;
 		this.buyButton.setEnabled(false);
 		this.sellButton.setEnabled(true);
 		this.sellButton.setVisible(true);
+		this.sellButton.initWithNormalImage(res.BTN_SELL_CLOSE_png,res.BTN_SELL_CLOSE_png,res.BTN_SELL_DISABLE_png, self.sellClick, this);
 
 		// this.buyButton.setDisabled(true);
 		// this.sellButton.setDisabled(false);
@@ -637,7 +598,9 @@ var MatchInfoLayer= cc.Layer.extend({
 	//将按钮设置为空仓的状态
 	setButtonsToSellPosition:function()
 	{
+		var self = this;
 		this.buyButton.setVisible(true);
+		this.buyButton.initWithNormalImage(res.BTN_BUY_CLOSE_png,res.BTN_BUY_CLOSE_png,res.BTN_BUY_DISABLE_png, self.buyClick, this);
 		// this.sellButton.setVisible(false);
 		this.buyButton.setEnabled(true);
 		this.sellButton.setEnabled(false);
@@ -726,39 +689,6 @@ var MatchInfoLayer= cc.Layer.extend({
 	},
 
 
-	//画买卖开平等按钮
-	drawDisableButtons:function()
-	{
-		// this.buyDisableSprite.setVisible(false);
-		// this.buyCloseDisableSprite.setVisible(false);
-		// this.sellDisableSprite.setVisible(false);
-		// this.sellCloseDisableSprite.setVisible(false);
-		
-		
-		/*
-		var start=cc.p(77,44);
-		var end=cc.p(136,44);
-		this.matchInfoArea.drawSegment(start,end,4,cc.color(62,62,62,255));
-		
-		start=cc.p(600,44);
-		end=cc.p(659,44);
-		this.matchInfoArea.drawSegment(start,end,4,cc.color(62,62,62,255));
-		
-		this.buyDisableSprite.setPosition(cc.p(77,44));
-		this.buyCloseDisableSprite.setPosition(cc.p(136,44));
-		this.sellDisableSprite.setPosition(cc.p(600,44));
-		this.sellCloseDisableSprite.setPosition(cc.p(659,44));
-		*/
-	},
-	
-	drawAreaBorder:function()
-	{
-		 //给这个矩形区域添加红色的边框
-		 /*
-		 this.matchInfoArea.drawRect(cc.p(0,0),cc.p(this.matchInfoArea.width, this.matchInfoArea.height),cc.color(0,0,0,0),1,cc.color(0,255,255,255));
-		 this.matchInfoArea.drawRect(cc.p(0,0),cc.p(this.width, this.height),cc.color(0,0,0,0),1,cc.color(255,255,255,255));
-		 */
-	},
 
 	buyButtonCallBack:function()
 	{
@@ -820,5 +750,5 @@ var MatchInfoLayer= cc.Layer.extend({
         {
             this.startCallBackFunction();
         }
-    },
+    }
 });// JavaScript Document

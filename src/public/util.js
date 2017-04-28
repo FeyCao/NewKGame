@@ -211,7 +211,149 @@ if(cc.game.config["testFlag"]==true){
     wsURL = 'ws://' + cc.game.config["serverTestURL"];
 }
 
-function add0(m){return m<10?'0'+m:m }
+function add0(m){return m<10?'0'+m:m }//显示时间加0修正
+
+// 自动根据文本的宽度稳定滚动速率text.width/width*5
+/**
+ *  创建滚动字幕
+ * @param txt
+ * @param fontsize
+ * @param {cc.Color|null} color
+ * @param width
+ * @param height
+ * @returns {cc.Node|*}
+ */
+// var createClipRoundText = function(txt,fontsize,color,width,height){
+//     var text = new cc.LabelTTF(txt,"Arial",fontsize);
+//     console.log('text width:'+text.width);
+//     text.setColor(color?color:cc.color.BLUE);
+//     text.anchorX = 0;
+//     // if(text.width<=width){
+//     //     text.anchorY = 0;
+//     //     return text;
+//     // }
+//     var cliper = new cc.ClippingNode();
+//     var drawNode = new cc.DrawNode();
+//     drawNode.drawRect(cc.p(0,0),cc.p(width,height),cc.color.BLUE);
+//     cliper.setStencil(drawNode);
+//     cliper.anchorX = 0.5;
+//     cliper.anchorY = 0.5;
+//     text.y = height/2;
+//     cliper.addChild(text);
+//     text.x = width+fontsize;
+//     text.runAction(cc.repeatForever(cc.sequence(
+//         cc.moveTo(text.width/width*5,cc.p(-text.width,text.y)),
+//         cc.callFunc(function(){
+//             text.x = width+fontsize;
+//         }))));
+//     return cliper;
+// };
+
+
+var createClipRoundNode = cc.Node.extend({
+    _text:null,
+    _fontSize:null,
+    _color:null,
+    _width:null,
+    _height:null,
+    _cliper:null,
+    ctor: function (txt,fontsize,color,width,height) {
+        var self = this;
+        cc.Node.prototype.ctor.call(self);
+        self._text = new cc.LabelTTF(txt,"Arial",fontsize);
+        self._text.setColor(color?color:cc.color.BLUE);
+        var cliper = new cc.ClippingNode();
+        var drawNode = new cc.DrawNode();
+        drawNode.drawRect(cc.p(0,0),cc.p(width,height),cc.color.BLUE);
+        cliper.setStencil(drawNode);
+        cliper.anchorX = 0.5;
+        cliper.anchorY = 0.5;
+        self._text.y = height/2;
+        cliper.addChild(self._text);
+        self._text.x = width+fontsize;
+        self._text.runAction(cc.repeatForever(cc.sequence(
+            cc.moveTo(self._text.width/width*5,cc.p(-self._text.width,self._text.y)),
+            cc.callFunc(function(){
+                self._text.x = width+fontsize;
+            }))));
+        self.addChild(cliper);
+    },
+    setString:function (txt) {
+        this._text.setString(txt);
+    }
+
+});
+
+var barInfoLayer = cc.Layer.extend({
+    sprite:null,
+    text:null,
+    ctor:function(txt,fontsize,color,width,height)
+    {
+        this._super();
+        this.text = new cc.LabelTTF(txt,"Arial",fontsize);
+        // console.log('text width:'+text.width);
+        this.text.setColor(color?color:cc.color.BLUE);
+
+        var self = this;
+        var cliper = new cc.ClippingNode();
+        var drawNode = new cc.DrawNode();
+        drawNode.drawRect(cc.p(0,0),cc.p(width,height),cc.color.BLUE);
+        cliper.setStencil(drawNode);
+        cliper.anchorX = 0.5;
+        cliper.anchorY = 0.5;
+        this.text.y = height/2;
+        cliper.addChild(this.text);
+        this.text.x = width+fontsize;
+        this.text.runAction(cc.repeatForever(cc.sequence(
+            cc.moveTo(self.text.width/width*5,cc.p(-self.text.width,self.text.y)),
+            cc.callFunc(function(){
+                self.text.x = width+fontsize;
+            }))));
+        this.addChild(cliper);
+    },
+
+    onEnter:function ()
+    {
+        this._super();
+        this.sprite = new cc.Sprite(res.BG_BAR_png);
+        this.addChild(this.sprite, 0);
+    },
+    setString:function (txt) {
+        this.text.setString(txt);
+    }
+
+
+});
+// var Singleton = (function () {
+//     var instantiated;
+//     function init() {
+//         /*这里定义单例代码*/
+//         return {
+//             publicMethod: function () {
+//                 cc.log('hello world sys=='+sys.os);
+//                 cc.log("sys.OS_WINDOWS=="+sys.OS_WINDOWS+"sys.isMobile=="+sys.isMobile+"sys.isNative=="+sys.isNative);
+//             },
+//             publicProperty: 'test'
+//         };
+//
+//         return {
+//             otherMethod: function () {
+//                 cc.log('other world');
+//             },
+//             otherProperty: 'other'
+//         };
+//     }
+//
+//     return {
+//         getInstance: function () {
+//             if (!instantiated) {
+//                 instantiated = init();
+//             }
+//             return instantiated;
+//         }
+//     };
+// })();
+
 // refresh(600);//调用方法启动定时刷新，数值单位：秒。
 // cc.LoaderScene.preload(["res/title.png","res/battle_bg.png","res/sound/home_bg.mp3","res/sound/button.mp3","res/playerInfo_bg.png","res/rank_bg.png","res/rank1.png","res/rank2.png","res/rank3.png","res/ko.png","res/vs.png","res/zhanji_bg.png","res/close.png","res/line_bg.png","res/selected.png","res/rotate.png","res/rotate_shadow.png","res/bg_touxiang.png","res/touxiang.plist","res/touxiang.png","res/bg_control.png","res/btn_open.png","res/btn_close.png","res/bg_message.png","res/btn_login.png","res/btn_download.png","res/btn_general.png","res/btn_hd.png","res/btn_hd1.png","res/btn_general1.png","res/btnBuyDisable.png","res/btnBuyEnable.png","res/btnCloseBuy.png","res/btnCloseDisable.png","res/btnCloseSell.png","res/btnSellDisable.png","res/btnSellEnable.png","res/buyOpenTag.png","res/buyCloseTag.png","res/sellOpenTag.png","res/sellCloseTag.png","res/cursor.png","res/selectedBar.png","res/matchMoreEnd.png","res/matchEnd.png","res/btnEnd.png","res/meBtnReplay.png","res/meBtnAgain.png","res/btnStart.png","res/meBtnShare.png","res/btn_sc_d_normal.png","res/btn_sc_a_normal.png","res/btn_sc_d_double.png","res/btn_sc_a_double.png","res/btn_sc_d_half.png","res/btn_sc_a_half.png","res/btn_sc_play.png","res/btn_sc_bg.png","res/btn_sc_pause.png","res/mainMenu_bg.png","res/btn_control.png","res/btn_zhanji.png","res/btn_paihang.png","res/btn_help.png","res/btn_mode1_u.png","res/btn_mode1_d.png","res/btn_mode2_u.png","res/btn_mode2_d.png","res/btn_mode3_u.png","res/btn_mode3_d.png","res/btn_mode4_u.png","res/btn_mode4_d.png","res/xunzhang.png","res/btnRecord.png","res/btn_mode1d.png", "res/btn_mode1u.png","res/btn_mode2d.png", "res/btn_mode2u.png","res/btn_mode3d.png", "res/btn_mode3u.png","res/btn_mode4d.png", "res/btn_mode4u.png","res/home.png","res/blue_bg.png","res/less_bg.png","fonts/Arial.ttf"]
 //
