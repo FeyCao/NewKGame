@@ -447,11 +447,19 @@ var MatchInfoLayer= cc.Layer.extend({
 		// this.speedControlLayer.addChild(this.scDoubleCheckButton,1);
 	},
 
+	//禁止买卖操作
 	setEnableBuyOrSell:function (flag) {
 
 		cc.log("setEnableBuyOrSell:function (flag)== "+flag);
 		this.buyButton.setEnabled(flag);
 		this.sellButton.setEnabled(flag);
+
+		if(flag&&this.statusFlag==-1){
+			this.setButtonsToSellPosition();
+		}
+		if(flag&&this.statusFlag==1){
+			this.setButtonsToBuyPosition();
+		}
 	},
 
 	playCheckChanged:function()
@@ -591,8 +599,8 @@ var MatchInfoLayer= cc.Layer.extend({
 		cc.log("setButtonsToNoPosition");
 		this.buyButton.setVisible(true);
 		this.sellButton.setVisible(true);
-		// this.buyButton.setDisabled(false);
-		// this.sellButton.setDisabled(false);
+		this.buyButton.setEnabled(true);
+		this.sellButton.setEnabled(true);
 		this.statusFlag = 0;
 
 		if(userInfo.matchMode==1||userInfo.matchMode==3){
@@ -614,7 +622,9 @@ var MatchInfoLayer= cc.Layer.extend({
 	//将按钮设置为多仓的状态
 	setButtonsToBuyPosition:function()
 	{
-		this.buyButton.setVisible(false);
+		// this.buyButton.setVisible(false);
+		this.buyButton.setEnabled(false);
+		this.sellButton.setEnabled(true);
 		this.sellButton.setVisible(true);
 
 		// this.buyButton.setDisabled(true);
@@ -628,9 +638,9 @@ var MatchInfoLayer= cc.Layer.extend({
 	setButtonsToSellPosition:function()
 	{
 		this.buyButton.setVisible(true);
-		this.sellButton.setVisible(false);
-		// this.buyButton.setDisabled(false);
-		// this.sellButton.setDisabled(true);
+		// this.sellButton.setVisible(false);
+		this.buyButton.setEnabled(true);
+		this.sellButton.setEnabled(false);
 		this.statusFlag = -1;
 		// this.buyCloseButton.setVisible(true);
 		// this.sellCloseButton.setVisible(false);

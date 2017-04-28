@@ -190,7 +190,8 @@ var KLineScene = SceneBase.extend(
 		this.coverSprite.setScale(0.575,0.52);
 		this.coverSprite.setAnchorPoint(0,0);
 		// this.coverSprite.setContentSize(baseSize);
-		this.coverSprite.setOpacity(0);
+		// this.coverSprite.setOpacity(0);
+		this.coverSprite.setVisible(false);
 		this.coverSprite.setPosition(this.KlinePosX,168);
 		// var coverSp = new cc.Sprite(res.SP_COVER_png);
 		// coverSp.setPosition(this.coverSprite.getContentSize().width/2,this.coverSprite.getContentSize().height/2);
@@ -201,7 +202,8 @@ var KLineScene = SceneBase.extend(
 		this.banSprite.setScale(0.58,0.52);
 		this.banSprite.setAnchorPoint(0,0);
 		// this.coverSprite.setContentSize(baseSize);
-		this.banSprite.setOpacity(0);
+		// this.banSprite.setOpacity(0);
+		this.banSprite.setVisible(false);
 		this.banSprite.setPosition(this.KlinePosX-5,165);
 		this.addChild(this.banSprite,4);
 
@@ -611,26 +613,26 @@ var KLineScene = SceneBase.extend(
 	{
 		var size = cc.director.getWinSize();
 		var middleGapHeight=this.borderArea.height/(this.middleHorizontalLineCount+1);
-		for(var i=0;i<this.middleHorizontalLineCount;i++)
-		{
-			// var pointBegin=cc.p(5,middleGapHeight*(i+1));
-			// var pointEnd=cc.p(this.borderArea.width-5,middleGapHeight*(i+1));
-
-			// var WhiteColor=cc.color(189,240,255,255);//白色
-			if(i!=3)
-			for(var j=0;this.borderArea.width>3*j;j++)//画虚线
-			{
-				var pointBegin=cc.p(5+3*j,middleGapHeight*(i+1));
-				var pointEnd=cc.p(6+3*j,middleGapHeight*(i+1));
-				// var pointMiddle = cc.p(5+3*j,middleGapHeight*(i+1));
-				this.borderArea.drawSegment(pointBegin,pointEnd,0.2,cc.color(189,240,255,100));
-			}
-
-			//
-			//this.borderArea.drawSegment(pointBegin,pointEnd,0.4,cc.color(36,62,83,80));
-			// this.borderArea.drawSegment(pointBegin,pointEnd,0.4,WhiteColor);
-			// cc.log("drawHorizontalLine middleGapHeight i="+i+"||middleGapHeight=="+middleGapHeight);
-		}
+		// for(var i=0;i<this.middleHorizontalLineCount;i++)
+		// {
+		// 	// var pointBegin=cc.p(5,middleGapHeight*(i+1));
+		// 	// var pointEnd=cc.p(this.borderArea.width-5,middleGapHeight*(i+1));
+        //
+		// 	// var WhiteColor=cc.color(189,240,255,255);//白色
+		// 	if(i!=3)
+		// 	for(var j=0;this.borderArea.width>3*j;j++)//画虚线
+		// 	{
+		// 		var pointBegin=cc.p(5+3*j,middleGapHeight*(i+1));
+		// 		var pointEnd=cc.p(6+3*j,middleGapHeight*(i+1));
+		// 		// var pointMiddle = cc.p(5+3*j,middleGapHeight*(i+1));
+		// 		this.borderArea.drawSegment(pointBegin,pointEnd,0.2,cc.color(189,240,255,100));
+		// 	}
+        //
+		// 	//
+		// 	//this.borderArea.drawSegment(pointBegin,pointEnd,0.4,cc.color(36,62,83,80));
+		// 	// this.borderArea.drawSegment(pointBegin,pointEnd,0.4,WhiteColor);
+		// 	// cc.log("drawHorizontalLine middleGapHeight i="+i+"||middleGapHeight=="+middleGapHeight);
+		// }
 		this.borderArea.drawSegment(cc.p(0,100),cc.p(gDesignResolutionWidth,100),1,BlueColor);
 	},
 
@@ -2086,8 +2088,11 @@ var KLineScene = SceneBase.extend(
 			this.phase2=true;
 			cc.log("遮盖效果显示");
 			if(this.coverSprite!=null){
-				var act1 = this.createAnimation_ACT2();
-				this.coverSprite.runAction(act1);
+
+				this.coverSprite.setVisible(true);
+				pageTimer["hideCover"] = setTimeout(function(){gKlineScene.coverSprite.setVisible(false);},5000);
+				// var act1 = this.createAnimation_ACT2();
+				// this.coverSprite.runAction(act1);
 			}
 		},
 
@@ -2095,11 +2100,14 @@ var KLineScene = SceneBase.extend(
 		{
 			this.phase2=true;
 			cc.log("禁止买卖操作效果显示");
-			if(this.banSprite!=null){
-				var act1 = this.createAnimation_ACT2();
-				this.banSprite.runAction(act1);
-			}
 			this.matchInfoLayer.setEnableBuyOrSell(false);
+			if(this.banSprite!=null){
+				this.banSprite.setVisible(true);
+				pageTimer["hideBan"] = setTimeout(function(){gKlineScene.banSprite.setVisible(false);gKlineScene.matchInfoLayer.setEnableBuyOrSell(true);},5000);
+				// var act1 = this.createAnimation_ACT2();
+				// this.banSprite.runAction(act1);
+			}
+
 		},
 		// drawToolsInfo:function(info)
 		// {
@@ -2184,8 +2192,9 @@ var KLineScene = SceneBase.extend(
 		},
 		createAnimation_ACT2:function()//渐出渐隐
 		{
-			var actionFadeIn=new cc.FadeTo(4.5,240);
-			var actionFadeOut=new cc.FadeTo(0.5,0);
+			var actionFadeIn=new cc.FadeTo(1,200);
+			var actionBlank=new cc.FadeTo(4,240);
+			var actionFadeOut=new cc.FadeTo(1,0);
 			// var actionFade1=new cc.FadeTo(1,180);
 			// var actionFade2=new cc.FadeTo(1,120);
 			// var actionFade3=new cc.FadeTo(1,60);
@@ -2200,7 +2209,7 @@ var KLineScene = SceneBase.extend(
 			// var actionBlank=new cc.ActionInterval(2);
 			// var actionOut=cc.spawn(actionFadeOut,actScale2);//
 			// return new cc.Sequence(actionFadeIn,actionFade1,actionFade2,actionFade3,actionFadeOut);
-			return new cc.Sequence(actionFadeIn,actionFadeOut);
+			return new cc.Sequence(actionFadeIn,actionBlank,actionFadeOut);
 		},
 	//
 	businessInfo:function()
