@@ -80,6 +80,7 @@ var PlayerInfoLayer= cc.Node.extend({
 	},
 	setPlayerInfo:function()
 	{
+		var self = this;
 		var posY = 670;
 		var posX1 = 160;
 		// var posX2 = 1280-posX1;
@@ -145,6 +146,8 @@ var PlayerInfoLayer= cc.Node.extend({
 					this.headSprite = new cc.Sprite(res.HEAD_0_PNG);
 					this.headSprite.setPosition(posX1,posY);
 					this.backgroundSprite.addChild(this.headSprite,2);
+					// var size = self.headSprite.getContentSize();
+					// self.headSprite.setScale(80/size.width,80/size.height);
 				}
 
 
@@ -165,16 +168,17 @@ var PlayerInfoLayer= cc.Node.extend({
 						gPlayerAvatarSprite.handleLoadedTexture();
 						self.headSprite.initWithTexture(gPlayerAvatarSprite);
 
-						// var size = self.headSprite.getContentSize();
-						// self.headSprite.setScale(80/size.width,80/size.height);
+						var size = self.headSprite.getContentSize();
+						self.headSprite.setScale(90/size.width,90/size.height);
 					}
-					cc.log("loadImg="+userInfo.headSprite); // self.addChild(logo);
+					cc.log("//练习场比赛loadImg="+userInfo.headSprite); // self.addChild(logo);
 				});
 				break;
 			}
-			case 2:
-			case 3:
-			case 1:
+			case 2://人机
+			case 3://道具赛人人
+			case 4://好友赛人人
+			case 1://普通赛人人
 			{
 
 				if(this.nameSpritebg==null){
@@ -185,9 +189,9 @@ var PlayerInfoLayer= cc.Node.extend({
 				}
 
 				this.nameSpritebg.setVisible(true);
-				cc.log("PlayerInfoLayer setPlayerInfo:function()=1 userInfo.playerListData.length="+userInfo.playerListData.length );// this.avatarSprite.setVisible(false);
+				 cc.log("PlayerInfoLayer setPlayerInfo:function()userInfo.playerListData="+userInfo.playerListData );// this.avatarSprite.setVisible(false);
 
-				for(var i=0;i<userInfo.playerListData.length;i++)
+				for(var i=0;userInfo.playerListData!=null&&i<userInfo.playerListData.length;i++)
 				{
 					if(this.playerInfo_bg[i] ==null)
 					{
@@ -358,9 +362,9 @@ var PlayerInfoLayer= cc.Node.extend({
 					self.headSprite.initWithTexture(gPlayerAvatarSprite);
 
 					var size = self.headSprite.getContentSize();
-					self.headSprite.setScale(90/size.width,90/size.height);
+					self.headSprite.setScale(80/size.width,80/size.height);
 				}
-				cc.log("loadImg="+userInfo.headSprite); // self.addChild(logo);
+				cc.log("refreshScoresByData1 loadImg="+userInfo.headSprite); // self.addChild(logo);
 			});
             for(var i=0;i<userInfo.playerListData.length;i++)
             {
@@ -391,7 +395,7 @@ var PlayerInfoLayer= cc.Node.extend({
 							self.playerHead_Sprite[0].setScale(90/size.width,90/size.height);
 
 						}
-						cc.log("loadImg"+userInfo.headSprite); // self.addChild(logo);
+						cc.log("refreshScoresByData2 loadImg"+userInfo.headSprite); // self.addChild(logo);
 					});
 				}
 				if(i==1&&i<self.playerInfo_bg.length)
@@ -409,7 +413,7 @@ var PlayerInfoLayer= cc.Node.extend({
 							var size = self.playerHead_Sprite[1].getContentSize();
 							self.playerHead_Sprite[1].setScale(90/size.width,90/size.height);
 						}
-						cc.log("loadImg"+userInfo.headSprite); // self.addChild(logo);
+						cc.log("refreshScoresByData3 loadImg"+userInfo.headSprite); // self.addChild(logo);
 					});
 				}
 

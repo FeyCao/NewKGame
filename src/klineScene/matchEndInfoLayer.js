@@ -274,6 +274,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 	//根据Content的内容，解析后赋予参数
 	applyParamsFromContent:function(content)
 	{
+		cc.log("MatchEndInfoLayer to applyParamsFromContent");
 		switch(userInfo.matchMode)
 		{
 			case 0:
@@ -298,6 +299,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 				break;
 			}
 			case 3:
+			case 4:
 			case 1:
 			{
 				cc.log("MatchEndInfoLayer to parse json text");

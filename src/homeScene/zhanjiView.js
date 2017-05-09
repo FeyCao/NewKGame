@@ -277,6 +277,7 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
                     });
                     break;
                 }
+                case 4:
                 case 1:
                 {
                     this.setCellView(idx);
@@ -289,10 +290,10 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
 
                     break;
                 }
-                case 3:
-                {
-                    break;
-                }
+                // case 3:
+                // {
+                //     break;
+                // }
                 default:
                 {
                     cc.log("userInfo.recordMode=="+userInfo.recordMode);
@@ -495,7 +496,7 @@ var ZhanjiViewLayer = cc.Layer.extend({
             this.mode4Button.setPosition(cc.p(975,520));
             this.mode4Button.setClickEvent(function(){
                 cc.log("mode4Button ClickEvent");
-                userInfo.recordMode=3;
+                userInfo.recordMode=4;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.zhanji();
@@ -511,11 +512,11 @@ var ZhanjiViewLayer = cc.Layer.extend({
         this.mode1Button.setDisabled(userInfo.recordMode==0);
         this.mode2Button.setDisabled(userInfo.recordMode==2);
         this.mode3Button.setDisabled(userInfo.recordMode==1);
-        this.mode4Button.setDisabled(true);
+        this.mode4Button.setDisabled(userInfo.recordMode==4);
         this.mode1Button.setTextureByStatus(userInfo.recordMode==0);
         this.mode2Button.setTextureByStatus(userInfo.recordMode==2);
         this.mode3Button.setTextureByStatus(userInfo.recordMode==1);
-        this.mode4Button.setTextureByStatus(userInfo.recordMode==3);
+        this.mode4Button.setTextureByStatus(userInfo.recordMode==4);
     },
 
     toMainScene:function () {

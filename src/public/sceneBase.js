@@ -117,6 +117,7 @@ SceneBase = cc.Scene.extend(
 		this.messageBoxLayer.addChild(this.messageLabel,3);
 
 
+
 		this.errorLayer=new cc.LayerColor(cc.color(0,0,0,127),gDesignResolutionWidth,gDesignResolutionHeight);
 		var errorSprite=cc.Sprite.create("res/bg_message.png");
 		// this.messageBoxSprite=cc.Sprite.create("res/messagebox.png");

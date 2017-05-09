@@ -32,8 +32,10 @@ var MainMenuScene =SceneBase.extend(
 	fourthMode:null,
     zhanjiInfoLayer:null,
     rankViewLayer:null,
+    friendLayer:null,
 
     controlViewLayer:null,
+    invitedViewLayer:null,
     helpViewLayer:null,
     matchViewLayer:null,
     loadTime:null,
@@ -66,7 +68,7 @@ var MainMenuScene =SceneBase.extend(
         this.firstMode=null;
         this.secondMode=null;
 
-
+        this.friendLayer=null;
         this.zhanjiInfoLayer=null;
        // this.klineScene=null;
         this.onEnteredFunction=null;
@@ -103,13 +105,20 @@ var MainMenuScene =SceneBase.extend(
 		//"res/mainMenu_bg.png","res/btn_control.png","res/btn_zhanji.png","res/btn_paihang.png","res/btn_help.png"，"res/btn_model1_u.png","res/btn_model1_d.png"，"res/btn_model2_u.png","res/btn_model2_d.png"，"res/btn_model3_u.png","res/btn_model3_d.png"，"res/btn_model4_u.png","res/btn_model4_d.png"
 
 
-        this.headSpritebg = new cc.Sprite(res.BG_HEAD_PNG);
+        // this.headSpritebg = new cc.Sprite(res.BG_HEAD_PNG);
+        this.headSpritebg =new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);
         this.headSpritebg.setPosition(cc.p(180,500));
+
+        var size =this.headSpritebg.getContentSize();
+        this.headSpritebg.setScale(120/size.width);
         this.backgroundSprite.addChild(this.headSpritebg,3);
 
-        this.headSprite = new cc.Sprite(res.HEAD_0_PNG);
-        this.headSprite.setPosition(cc.p(180,500));
-        this.backgroundSprite.addChild(this.headSprite,2);
+        if(this.headSprite ==null){
+            this.headSprite = new cc.Sprite(res.HEAD_0_PNG);
+            this.headSprite.setPosition(cc.p(180,500));
+            this.backgroundSprite.addChild(this.headSprite,2);
+        }
+
 
         var fontSize = 22;
         this.selfNameLabel = cc.LabelTTF.create(userInfo.nickName, "Arial", fontSize,cc.size(25*6,200));
@@ -287,7 +296,6 @@ var MainMenuScene =SceneBase.extend(
             this.matchViewLayer.setPosition(0,0);
             this.otherMessageTipLayer.addChild(this.matchViewLayer, 1,this.matchViewLayer.getTag());
             this.matchViewLayer.closeCallBackFunction=function(){self.matchViewLayer_Close()};
-            // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
         }
         this.matchViewLayer.refreshMatchViewLayer();
         this.matchViewLayer.showLayer();
@@ -330,7 +338,6 @@ var MainMenuScene =SceneBase.extend(
             this.matchViewLayer.setPosition(0,0);
             this.otherMessageTipLayer.addChild(this.matchViewLayer, 1,this.matchViewLayer.getTag());
             this.matchViewLayer.closeCallBackFunction=function(){self.matchViewLayer_Close()};
-            // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
         }
         this.matchViewLayer.refreshMatchViewLayer();
         this.matchViewLayer.showLayer();
@@ -372,7 +379,6 @@ var MainMenuScene =SceneBase.extend(
                 this.matchViewLayer.setPosition(0,0);
                 this.otherMessageTipLayer.addChild(this.matchViewLayer, 1,this.matchViewLayer.getTag());
                 this.matchViewLayer.closeCallBackFunction=function(){self.matchViewLayer_Close()};
-                // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
             }
             this.matchViewLayer.refreshMatchViewLayer();
             this.matchViewLayer.showLayer();
@@ -388,6 +394,29 @@ var MainMenuScene =SceneBase.extend(
 	fourthModeChanged:function()
 	{
         cc.log("Waiting for fourthMode...");
+
+        cc.log("Waiting for thirdModeChanged");
+        var self = this;
+        userInfo.matchMode = 4;
+        if(userInfo.operationType==2){
+            gSocketConn.BeginMatch("1");
+        }else{
+            gSocketConn.BeginMatch("4");
+            gSocketConn.getFriendList();
+            if(this.friendLayer==null){
+                this.friendLayer=new FriendViewLayer();
+                this.friendLayer.setVisible(false);
+                this.friendLayer.setAnchorPoint(0,0);
+                this.friendLayer.setPosition(0,0);
+                this.otherMessageTipLayer.addChild(this.friendLayer, 1,this.friendLayer.getTag());
+                this.friendLayer.closeCallBackFunction=function(){self.friendLayer_Close()};
+            }
+
+            // LISTFRIEND||
+            this.friendLayer.showLayer();
+            this.pauseLowerLayer();
+        }
+        cc.log("Waiting for thirdModeChanged");
 
 	},
 
@@ -415,6 +444,8 @@ var MainMenuScene =SceneBase.extend(
         // }
 	},
 
+
+
     rank:function()
     {
 
@@ -431,14 +462,25 @@ var MainMenuScene =SceneBase.extend(
         // var musicFile = "res/sound/home_bg.mp3";
         // cc.audioEngine.playMusic(musicFile,true);
 
+        // var self = this;
+        // if(this.invitedViewLayer==null){
+        //     this.invitedViewLayer=new InvitedViewLayer();
+        //     this.invitedViewLayer.setVisible(false);
+        //     this.invitedViewLayer.setPosition(0,0);
+        //     this.otherMessageTipLayer.addChild(this.invitedViewLayer, 1,this.invitedViewLayer.getTag());
+        //     this.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+        // }
+        //
+        // this.invitedViewLayer.showLayer();
+        // this.pauseLowerLayer();
+
         var self = this;
         if(this.controlViewLayer==null){
             this.controlViewLayer=new ControlViewLayer();
             this.controlViewLayer.setVisible(false);
             this.controlViewLayer.setPosition(0,0);
             this.otherMessageTipLayer.addChild(this.controlViewLayer, 1,this.controlViewLayer.getTag());
-            this.controlViewLayer.closeCallBackFunction=function(){self.controlViewLayer_Close()};
-            // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
+            this.controlViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
         }
         // this.controlViewLayer.refreshControlViewLayer();
 
@@ -446,12 +488,25 @@ var MainMenuScene =SceneBase.extend(
         this.pauseLowerLayer();
 
 	},
-    controlViewLayer_Close:function()
+    popViewLayer_Close:function()
     {
-        //关闭kongzhi界面
-        this.controlViewLayer.hideLayer();
+        //关闭应邀请求界面
+        if(this.invitedViewLayer!=null){
+            this.invitedViewLayer.hideLayer();
+        }
+        //关闭控制界面
+        if(this.controlViewLayer!=null){
+            this.controlViewLayer.hideLayer();
+        }
+
         this.resumeLowerLayer();
     },
+    // controlViewLayer_Close:function()
+    // {
+    //     //关闭kongzhi界面
+    //     this.controlViewLayer.hideLayer();
+    //     this.resumeLowerLayer();
+    // },
 
     help:function()
     {
@@ -594,10 +649,10 @@ var MainMenuScene =SceneBase.extend(
 
         // this.fourthMode=new CheckButton("res/btn_mode4_d.png","res/btn_mode4_u.png");
         // this.fourthMode.setScale(fXScale,fYScale);
-        this.fourthMode = new cc.MenuItemImage(res.BTN_MATCH_MODE4_D_png, res.BTN_MATCH_MODE4_D_png, self.fourthModeChanged, this);
+        this.fourthMode = new cc.MenuItemImage(res.BTN_MATCH_MODE4_U_png, res.BTN_MATCH_MODE4_D_png, self.fourthModeChanged, this);
         mu.addChild(this.fourthMode);
         this.fourthMode.setPosition(cc.p((190+3*pModeXdistance),pModeY));
-        this.fourthMode.setEnabled(false);
+        // this.fourthMode.setEnabled(false);
         // this.fourthMode.setDisabledImage( "res/btn_mode4_d.png");
         // this.fourthMode.setClickEvent(function(){
         //     self.fourthModeChanged();
@@ -635,17 +690,7 @@ var MainMenuScene =SceneBase.extend(
         {
 
             cc.log(userInfo.headSprite);
-            //
-            // var webView = new ccui.WebView();
-            // webView.setPosition(cc.p(this.getContentSize().width/2, this.getContentSize().height/2 -20));
-            // webView.setContentSize(cc.size(this.getContentSize().width -150, this.getContentSize().height- 150));
-            // cc.log("this.getContentSize().width/2" + this.getContentSize().width/2);
-            // cc.log("this.getContentSize().height/2" + this.getContentSize().height/2);
-            // webView.loadURL(userInfo.headSprite);
-            // webView.setScalesPageToFit(false);
-            // this.addChild(webView);
-            // var self = this;
-            // var url = userInfo.headSprite;
+
             var url = userInfo.headSprite;
             cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
                 if(err){
@@ -655,20 +700,26 @@ var MainMenuScene =SceneBase.extend(
                 if(img)
                 {
                     cc.log("img!=null"+img);
-                    var headSprite = new cc.Sprite();
+                    // var headSprite = new cc.Sprite();
                     //     this.touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
                     // cc.textureCache.addImage(imgUrl);
+                    if(self.headSprite ==null){
+                        self.headSprite = new cc.Sprite(res.HEAD_0_PNG);
+                        self.headSprite.setPosition(cc.p(180,500));
+                        self.backgroundSprite.addChild(this.headSprite,2);
+                    }
+
                     var texture2d = new cc.Texture2D();
                     texture2d.initWithElement(img);
                     texture2d.handleLoadedTexture();
-                    headSprite.initWithTexture(texture2d);
+                    self.headSprite.initWithTexture(texture2d);
 
                     // this.touxiangSprite.setScale(fXScale,fYScale);
 
-                    var size = headSprite.getContentSize();
-                    headSprite.setScale(90/size.width,90/size.height);
-                    headSprite.setPosition(cc.p(180,500));
-                    self.backgroundSprite.addChild(headSprite,2);
+                    var size = self.headSprite.getContentSize();
+                    self.headSprite.setScale(90/size.width,90/size.height);
+
+
 
                     cc.log("success loadImg="+userInfo.headSprite); // self.addChild(logo);
                     // self.touxiangSprite.setValue(false);
@@ -867,7 +918,7 @@ var MainMenuScene =SceneBase.extend(
                 if(gKlineScene!=null)
                 {
                     cc.log("call get kline data");
-                    if(userInfo.matchMode==1&&userInfo.matchBeginFlag==true){
+                    if(userInfo.matchMode==1||userInfo.matchBeginFlag==true){
                         cc.log("get kline userInfo.matchMode==1 passed");
                         pageTimer["runScene"] = setTimeout(function(){cc.director.runScene(gKlineScene);},1000);
                     }
@@ -877,6 +928,7 @@ var MainMenuScene =SceneBase.extend(
                     }
                     cc.log("get kline passed");
                 }
+                // userInfo.matchBeginFlag=true;
                 gKlineScene.getklinedata(packet.content);
                 gKlineScene.setDataForLlineLayer();
                 self.stopProgress();
@@ -1009,6 +1061,135 @@ var MainMenuScene =SceneBase.extend(
                 break;
             }
 
+            case "LISTFRIEND":
+            {
+
+                cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                userInfo.friendListData = [];
+                var data=JSON.parse(packet.content);
+                userInfo.friendListData  = data;
+                cc.log(userInfo.friendListData);
+                userInfo.friendListData.sort(function (a,b) {
+                    if(a["status"]=="在线"){
+                        return -1;
+                    }else if(b["status"]=="在线"){
+                        return 1;
+                    }else if(a["status"]=="组队中"){
+                        return -1;
+                    }else if(b["status"]=="组队中"){
+                        return 1;
+                    }else if(a["status"]=="比赛中"){
+                        return -1;
+                    }else if(b["status"]=="比赛中"){
+                        return 1;
+                    }else {
+                        return -1;
+                    }
+                });
+                //
+            //     var arrSimple2=new Array(1,8,7,6);
+            //     arrSimple2.sort(function(a,b){
+            //         return b-a});
+            // 解释：a,b表示数组中的任意两个元素，若return > 0 b前a后；reutrn < 0 a前b后；a=b时存在浏览器兼容
+            //     简化一下：a-b输出从小到大排序，b-a输出从大到小排序。
+                // cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+
+                if(self.friendLayer!=null){
+                    self.friendLayer.refreshFriendViewLayer();
+                }
+
+                break;
+
+            }
+            case "FRIENDCHANGE":
+            {
+
+                cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                cc.log(userInfo.friendListData);
+
+                var friendName = packet.content.split("#")[0];
+                var status = packet.content.split("#")[1];
+                for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
+                {
+                   if(userInfo.friendListData[i]["friendname"]==friendName){
+                       userInfo.friendListData[i]["status"]=status;
+                   }
+                }
+
+                for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
+                {
+                    if(userInfo.friendListData[i]["friendname"]==friendName){
+                        userInfo.friendListData[i]["status"]=status;
+                    }
+                }
+
+                userInfo.friendListData.sort(function (a,b) {
+                    if(a["status"]=="在线"){
+                        return -1;
+                    }else if(b["status"]=="在线"){
+                        return 1;
+                    }else if(a["status"]=="组队中"){
+                        return -1;
+                    }else if(b["status"]=="组队中"){
+                        return 1;
+                    }else if(a["status"]=="比赛中"){
+                        return -1;
+                    }else if(b["status"]=="比赛中"){
+                        return 1;
+                    }else {
+                        return -1;
+                    }
+                });
+                cc.log(userInfo.friendListData);
+                // cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+
+                if(self.friendLayer!=null){
+                    self.friendLayer.refreshFriendViewLayer();
+                }
+                break;
+
+            }
+            case "INVITE":
+            {
+                cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                inviteInfo.code = packet.content.split("#")[0];
+                inviteInfo.friendName = packet.content.split("#")[1];
+                inviteInfo.picUrl = packet.content.split("#")[2];
+                userInfo.matchMode = 4;
+                // var self = this;
+                if(self.invitedViewLayer==null){
+                    self.invitedViewLayer=new InvitedViewLayer();
+                    self.invitedViewLayer.setVisible(false);
+                    self.invitedViewLayer.setPosition(0,0);
+                    self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
+                    self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+                }
+
+                self.invitedViewLayer.showLayer();
+                self.pauseLowerLayer();
+
+                // if(self.friendLayer!=null){
+                //     self.friendLayer.refreshFriendViewLayer();
+                // }
+                break;
+
+            }
+            case "REJECT":
+            {
+                cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                var name = packet.content.split("#")[0];
+
+                if(self.friendLayer!=null){
+                    self.friendLayer.showMessageInfo(name+"拒绝了你的邀请！");
+                }
+
+                // if(self.friendLayer!=null){
+                //     self.friendLayer.refreshFriendViewLayer();
+                // }
+                break;
+
+            }
+                // REJECT|张三|
             default:
             {
                 cc.log("messageCallBack.mainScene.default.packet.msgType="+packet.msgType+"=====");
@@ -1112,6 +1293,14 @@ var MainMenuScene =SceneBase.extend(
             this.resumeLowerLayer();
         }
     },
+
+    friendLayer_Close:function()
+    {
+        //关闭好友界面
+        this.friendLayer.hideLayer();
+        this.resumeLowerLayer();
+    },
+
     toHome:function()
     {
         //window.close();

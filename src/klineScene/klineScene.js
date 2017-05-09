@@ -480,6 +480,7 @@ var KLineScene = SceneBase.extend(
 		if(userInfo.matchMode==null)return;
 		if(this.playerInfoLayer!=null)
 		{
+			cc.log("setPlayerInfo:function()");
 			this.playerInfoLayer.refreshScoresByData();
 		}
 		switch(userInfo.matchMode)
@@ -497,27 +498,6 @@ var KLineScene = SceneBase.extend(
 				if(null!=this.otherMessageTipLayer){
 					this.otherMessageTipLayer.addChild(this.matchEndInfoLayer, 1,this.matchEndInfoLayer.getTag());
 				}
-
-				break;
-			}
-			case 3:
-			case 1:
-			{
-				// this.KlineWidth = this.size.width-120*this.fXScale;
-				// this.KlinePosX = 120*this.fXScale;
-				this.KlineWidth = 726;
-				this.KlinePosX = 5;
-
-				this.matchEndInfoLayer=new MatchEndInfoLayer();
-				// this.matchEndInfoLayer.setAnchorPoint(0.5,0.5);
-				this.matchEndInfoLayer.setVisible(false);
-				this.matchEndInfoLayer.setPosition((gDesignResolutionWidth-this.matchEndInfoLayer.width) / 2, (gDesignResolutionHeight-this.matchEndInfoLayer.height) / 2);
-				// this.matchEndInfoLayer.setPosition(this.size.width / 2, this.size.height / 2);
-				if(null!=this.otherMessageTipLayer){
-					this.otherMessageTipLayer.addChild(this.matchEndInfoLayer, 1,this.matchEndInfoLayer.getTag());
-				}
-
-				cc.log("人人战this.KlineWidth ="+this.KlineWidth +"||this.KlinePosX="+this.KlinePosX+"||this.size.width="+gDesignResolutionWidth);//this.KlineWidth =667||this.KlinePosX=69||this.size.width=736
 
 				break;
 			}
@@ -541,7 +521,28 @@ var KLineScene = SceneBase.extend(
 
 				break;
 			}
+			case 4:
+			case 3:
+			case 1:
+			{
+				// this.KlineWidth = this.size.width-120*this.fXScale;
+				// this.KlinePosX = 120*this.fXScale;
+				this.KlineWidth = 726;
+				this.KlinePosX = 5;
 
+				this.matchEndInfoLayer=new MatchEndInfoLayer();
+				// this.matchEndInfoLayer.setAnchorPoint(0.5,0.5);
+				this.matchEndInfoLayer.setVisible(false);
+				this.matchEndInfoLayer.setPosition((gDesignResolutionWidth-this.matchEndInfoLayer.width) / 2, (gDesignResolutionHeight-this.matchEndInfoLayer.height) / 2);
+				// this.matchEndInfoLayer.setPosition(this.size.width / 2, this.size.height / 2);
+				if(null!=this.otherMessageTipLayer){
+					this.otherMessageTipLayer.addChild(this.matchEndInfoLayer, 1,this.matchEndInfoLayer.getTag());
+				}
+
+				cc.log("人人战this.KlineWidth ="+this.KlineWidth +"||this.KlinePosX="+this.KlinePosX+"||this.size.width="+gDesignResolutionWidth);//this.KlineWidth =667||this.KlinePosX=69||this.size.width=736
+
+				break;
+			}
 			default:
 			{
 				cc.log("userInfo.matchMode ="+userInfo.matchMode);
@@ -686,8 +687,8 @@ var KLineScene = SceneBase.extend(
 			}
 			case "5":
 			{
-				//接收到了K线数据的消息
-				userInfo.matchFlag = false;
+				//接收到了K线数据的消息we
+				userInfo.matchBeginFlag=true;
 				cc.log("jsonText parseK线数据over");
 				self.getklinedata(packet.content);
 
@@ -883,6 +884,16 @@ var KLineScene = SceneBase.extend(
 				gKlineScene.warnInfo.setVisible(true);
 				pageTimer["WARN"] = setTimeout(function(){gKlineScene.warnInfo.setVisible(false);},5000);
 				break;
+			}
+			case "LISTFRIEND":
+			{
+
+				userInfo.friendListData = [];
+				userInfo.friendListData  = packet.content;
+				cc.log(userInfo.friendListData);
+				cc.log("userInfo.friendListData[1]"+userInfo.friendListData[1]["friendname"]);
+
+
 				break;
 			}
 			case "":
@@ -933,7 +944,7 @@ var KLineScene = SceneBase.extend(
 		//把该用户信息排在第一位
 		for(var i=userInfo.playerListData.length-1;i>0;i--)
 		{
-			for(var j=i;j>1;j--)
+			for(var j=i;j>0;j--)
 			{
 				if(userInfo.playerListData[j]["userName"]==userInfo.nickName)
 				{
@@ -943,8 +954,14 @@ var KLineScene = SceneBase.extend(
 				}
 			}
 		}
+		cc.log("showPlayerInfo  this.playerInfoLayer.refreshScoresByData();");
 		this.playerInfoLayer.refreshScoresByData();
 
+		var indexFromServe = userInfo.playerListData[0]["index"];
+		if(indexFromServe>this.currentCandleIndex-120){
+
+			this.drawHistoryCandlePartToIndex(120+indexFromServe);
+		}
 		this.drawCandleStoped=false;
 	},
 	matchEndInfoLayer_Replay:function()
@@ -1308,6 +1325,7 @@ var KLineScene = SceneBase.extend(
 		}
 		if(this.playerInfoLayer!=null)
 		{
+			cc.log("clearDataForLineLayer  this.playerInfoLayer.refreshScoresByData();");
 			this.playerInfoLayer.refreshScoresByData();
 		}
 		//按钮信息重置
@@ -1431,12 +1449,11 @@ var KLineScene = SceneBase.extend(
 			{
                 if(this.currentCandleIndex-120>-1){
                     gSocketConn.Step(this.currentCandleIndex-120);
-                    if(userInfo.matchMode==1||userInfo.matchMode==3){//多人赛同步处理
+                    if(userInfo.matchMode==1||userInfo.matchMode==3||userInfo.matchMode==4){//多人赛同步处理
                         this.drawCandleStoped=true;
                     }
                 }
 			}
-
 			this.currentCandleIndex+=1;
 		}
 		var self=this;
@@ -1495,13 +1512,14 @@ var KLineScene = SceneBase.extend(
 
 		if(this.playerInfoLayer!=null)
 		{
+			cc.log("setDataForLlineLayer  this.playerInfoLayer.refreshScoresByData();");
 			this.playerInfoLayer.refreshScoresByData();
 		}
 
-		if(userInfo.matchMode==1||userInfo.matchMode==3){
+		if(userInfo.matchMode==1||userInfo.matchMode==3||userInfo.matchMode==4){
 			if(gKlineScene!=null)
 			{
-				gSocketConn.SendBeginMessage();
+				// gSocketConn.SendBeginMessage();
 				gKlineScene.setCountDownSprite();
 			}
 		}else {
@@ -1536,7 +1554,7 @@ var KLineScene = SceneBase.extend(
         // this.prevLayerAnction();
 
 		// this.mainLayerAnction();
-		this.matchRunFlag=true;
+		// this.matchRunFlag=true;
 		if(this.btnStart!=null)
 		{
 			this.btnStart.setVisible(false);
@@ -1619,7 +1637,7 @@ var KLineScene = SceneBase.extend(
 				cc.log("begin userInfo.matchMode==",userInfo.matchMode);
 
 			}
-
+			gSocketConn.SendBeginMessage();//画线前请求比赛
 			//依次画后面的K线
 			this.drawAllCandlesOneByOne();
 			// clearTimeout(pageTimer["beginTimer"]);
@@ -1937,6 +1955,7 @@ var KLineScene = SceneBase.extend(
         this.addChild(this.volumnTechLayerPrev,this.volumnTechLayerNumber,this.volumnTechLayerPrev.getTag());
 
 		var self=this;
+		cc.log("advanceToMainKLine_Record:function()观看记录his.playerInfoLayer.refreshScoresByData();");
 		this.playerInfoLayer.refreshScoresByData();
 		this.setDisableAllButtons();
 
@@ -2017,7 +2036,14 @@ var KLineScene = SceneBase.extend(
 			this.volumnTechLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
 		}
 	},
-
+		drawHistoryCandlePartToIndex:function(index)
+		{
+			cc.log("drawHistoryCandlePartToIndex:function(index) this.currentCandleIndex=="+this.currentCandleIndex+"||index=="+index);
+			this.phase2=true;
+			this.currentCandleIndex=index;
+			this.klineLayerMain.redrawCandlesToIndex(this.currentCandleIndex);
+			this.volumnTechLayerMain.redrawCandlesToIndex(this.currentCandleIndex);
+		},
 
 	drawHistoryCandlePart:function()
 	{
@@ -2243,8 +2269,9 @@ var KLineScene = SceneBase.extend(
 			
 		}
 		var score = this.buyScore;
-		this.playerInfoLayer.refreshScoresByData();
-		this.playerInfoLayer.refreshScores(score);
+		cc.log("businessInfo:function() his.playerInfoLayer.refreshScoresByData();");
+		// this.playerInfoLayer.refreshScoresByData();
+		// this.playerInfoLayer.refreshScores(score);
 		if(this.playerInfoLayer!=null)
 		{
 			this.playerInfoLayer.ableInfoButtons();
@@ -2272,6 +2299,7 @@ var KLineScene = SceneBase.extend(
 
 		}
 		var score = this.buyScore;
+		cc.log("bbusinessMatchInfo:function() his.playerInfoLayer.refreshScoresByData();");
 		this.playerInfoLayer.refreshScoresByData();
 		this.playerInfoLayer.refreshScores(score);
 		if(this.playerInfoLayer!=null)
@@ -2292,7 +2320,7 @@ var KLineScene = SceneBase.extend(
 	{
 		cc.log("buyClick:function() begin");
 		if(this.phase2==false)return;
-		//注意：此处存入的买入操作的index不是从0开始，而是从1开始的
+		//注意：此处存入的买入操作的index不是从0开始，而是从120开始的
 		var lastCandleIndex=this.currentCandleIndex;
 		this.selfOperations.push(lastCandleIndex);
 		this.refreshScores(lastCandleIndex);
@@ -2301,7 +2329,10 @@ var KLineScene = SceneBase.extend(
 		
 		if(gSocketConn!=null && gSocketConn!=undefined)
 		{
-			gSocketConn.Buy(lastCandleIndex-121);
+			if(this.matchRunFlag){
+				gSocketConn.Buy(lastCandleIndex-121>0?lastCandleIndex-121:0);//
+			}
+
 		}
 	},
 	
@@ -2317,7 +2348,9 @@ var KLineScene = SceneBase.extend(
 		this.klineLayerMain.setDownArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
 		if(gSocketConn!=null && gSocketConn!=undefined)
 		{
-			gSocketConn.Sell(lastCandleIndex-121);
+			if(this.matchRunFlag){
+				gSocketConn.Sell(lastCandleIndex-121>0?lastCandleIndex-121:0);
+			}
 		}
 	},
 	
@@ -2346,6 +2379,10 @@ var KLineScene = SceneBase.extend(
     toHome:function()
     {
 
+		if(userInfo.matchBeginFlag==true){
+			var errorInfo = "matchBeginFlag===true";
+			gSocketConn.SendEndErrorMessage(errorInfo);
+		}
         if(typeof(gMainMenuScene)=="undefined")
         {
 			window.location.href="http://analyse.kiiik.com/";
@@ -2356,11 +2393,9 @@ var KLineScene = SceneBase.extend(
 
 			if(gMainMenuScene==false)
 				gMainMenuScene=new MainMenuScene();
-			if(this.matchRunFlag==true){
-				var errorInfo = "";
-				gSocketConn.SendEndErrorMessage(errorInfo);
-			}
-			
+
+			// var errorInfo = "";
+			// gSocketConn.SendEndErrorMessage(errorInfo);
 			gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
 			gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
 			//cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
@@ -2382,7 +2417,7 @@ var KLineScene = SceneBase.extend(
 	{
 		if(gKlineScene!=null)
 		{
-			gSocketConn.SendBeginMessage();
+
             // gKlineScene.setDataForLlineLayerTest();
 			gKlineScene.setCountDownSprite();
 		}

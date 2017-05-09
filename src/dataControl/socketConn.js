@@ -195,7 +195,7 @@ SocketConn.prototype.SendEndErrorMessage=function(errorInfo)
 {
 	var EndErrorMsg="ENDERROR|"+errorInfo+"|";
 
-		cc.log(EndErrorMsg);
+	cc.log("send error msg= "+EndErrorMsg);
 	ws.send(EndErrorMsg);
 }
 
@@ -271,4 +271,23 @@ SocketConn.prototype.SendToolMessage=function(name)//TOOL|name#emojiNum|red2gree
 	var toolMsg="TOOL|"+name+"|";
 	cc.log("send TOOLMsg msg="+toolMsg);
 	ws.send(toolMsg);
+}
+
+SocketConn.prototype.getFriendList=function(mode)
+{
+	cc.log("send LISTFRIEND|"+mode+"|");
+	ws.send("LISTFRIEND||");
+}
+
+SocketConn.prototype.inviteFriend=function(userName)
+{
+	cc.log("send inviteFriend==INVITE|"+userName+"|");
+	ws.send("INVITE|"+userName+"|");
+}
+
+
+SocketConn.prototype.ansInviteFriend=function(boolean,code)//ANSINVITE｜boolean#code｜
+{
+	cc.log("send ANSINVITEFriend==ANSINVITE|"+boolean+"#"+code+"|");
+	ws.send("ANSINVITE|"+boolean+"#"+code+"|");
 }

@@ -562,8 +562,8 @@ var MatchInfoLayer = cc.Layer.extend({
 
 		this.statusFlag = 0;
 
-		if(userInfo.matchMode==1||userInfo.matchMode==3){
-			if(userInfo.matchMode==1){
+		if(userInfo.matchMode==1||userInfo.matchMode==3||userInfo.matchMode==4){
+			if(userInfo.matchMode==1||userInfo.matchMode==4){
 				this.ableAmoticonButtons();
 			}
 			if(userInfo.matchMode==3){

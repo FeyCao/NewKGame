@@ -53,6 +53,7 @@ var RankTableViewCell = cc.TableViewCell.extend({
                 {
                     case 1:
                     {
+                        rankSprite.setTexture("res/rank1.png");
                         break;
                     }
                     case 2:
@@ -156,7 +157,7 @@ var RankTableViewCell = cc.TableViewCell.extend({
             avgGainReteLabel.setPosition(cc.pAdd(avgGainReteInfoLabel.getPosition(),cc.p(avgGainReteInfoLabel.getContentSize().width,0)));
             this.addChild(avgGainReteLabel,5);
 
-
+            // {"myRanking":{"rank":3,"playerInfo":{"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":6,"sumOfMatchForOne":21,"winOfMatchForMore":77,"sumOfMatchForMore":131,"winOfMatchForAI":24,"sumOfMatchForAI":42,"gainCumulation":"-0.03","sumOfAllMatch":42,"winMatchFriend":0,"sumMatchFriend":0,"GainCumulationForFriend":0,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}}
             switch (userInfo.recordMode)
             {
 
@@ -171,6 +172,17 @@ var RankTableViewCell = cc.TableViewCell.extend({
                     avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
                     break;
                 }
+                case 4:{
+                    // sumMatchFriend
+                    //总场数
+                    sumLabel.setString(" "+playerInfo["sumMatchFriend"]);
+                    //胜场数
+                    winLabel.setString(" "+playerInfo["winMatchFriend"]);
+                    //平均收益率
+                    avgGainReteLabel.setString(""+playerInfo["GainCumulationForFriend"]+"%");
+                    avgGainReteLabel.setColor(setLabelColor(playerInfo["GainCumulationForFriend"]));
+                    break;
+                }
                 case 1:
                 {
                     //总场数
@@ -182,7 +194,6 @@ var RankTableViewCell = cc.TableViewCell.extend({
                     avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
                     break;
                     // this.mode3Button.setDisabled(true);winOfMatchForMore"
-                    break;
                 }
                 case 2:
                 {
@@ -196,10 +207,10 @@ var RankTableViewCell = cc.TableViewCell.extend({
                     avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
                     break;
                 }
-                case 3:
-                {
-                    break;
-                }
+                // case 3:
+                // {
+                //     break;
+                // }
                 default:
                 {
                     cc.log("userInfo.recordMode=="+userInfo.recordMode);
@@ -443,7 +454,7 @@ var RankViewLayer = cc.Layer.extend({
             this.mode4Button.setPosition(cc.p(975,520));
             this.mode4Button.setClickEvent(function(){
                 cc.log("mode4Button ClickEvent");
-                userInfo.recordMode=3;
+                userInfo.recordMode=4;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.rank();
@@ -458,11 +469,11 @@ var RankViewLayer = cc.Layer.extend({
         this.mode1Button.setDisabled(userInfo.recordMode==0);
         this.mode2Button.setDisabled(userInfo.recordMode==2);
         this.mode3Button.setDisabled(userInfo.recordMode==1);
-        this.mode4Button.setDisabled(true);
+        this.mode4Button.setDisabled(userInfo.recordMode==4);
         this.mode1Button.setTextureByStatus(userInfo.recordMode==0);
         this.mode2Button.setTextureByStatus(userInfo.recordMode==2);
         this.mode3Button.setTextureByStatus(userInfo.recordMode==1);
-        this.mode4Button.setTextureByStatus(userInfo.recordMode==3);
+        this.mode4Button.setTextureByStatus(userInfo.recordMode==4);
     },
 
     toMainScene:function () {
@@ -586,6 +597,7 @@ var RankViewLayer = cc.Layer.extend({
                     self.avgGainAILabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
                     break;
                 }
+                case 3:
                 case 1:
                 {
                     //总场数
@@ -608,8 +620,15 @@ var RankViewLayer = cc.Layer.extend({
                     self.avgGainAILabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
                     break;
                 }
-                case 3:
-                {
+                case 4:
+                {//winMatchFriend":0,"sumMatchFriend":0,"GainCumulationForFriend":0
+                    //总场数
+                    self.winOneLabel.setString(" "+playerInfo["sumMatchFriend"]);
+                    //胜场数
+                    self.winAILabel.setString(" "+playerInfo["winMatchFriend"]);
+                    //
+                    self.avgGainAILabel.setString(""+playerInfo["GainCumulationForFriend"]+"%");
+                    self.avgGainAILabel.setColor(setLabelColor(playerInfo["GainCumulationForFriend"]));
                     break;
                 }
                 default:
