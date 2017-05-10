@@ -179,8 +179,8 @@ var RankTableViewCell = cc.TableViewCell.extend({
                     //胜场数
                     winLabel.setString(" "+playerInfo["winMatchFriend"]);
                     //平均收益率
-                    avgGainReteLabel.setString(""+playerInfo["GainCumulationForFriend"]+"%");
-                    avgGainReteLabel.setColor(setLabelColor(playerInfo["GainCumulationForFriend"]));
+                    avgGainReteLabel.setString(""+playerInfo["gainCumulation"]+"%");
+                    avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
                     break;
                 }
                 case 1:
@@ -627,8 +627,8 @@ var RankViewLayer = cc.Layer.extend({
                     //胜场数
                     self.winAILabel.setString(" "+playerInfo["winMatchFriend"]);
                     //
-                    self.avgGainAILabel.setString(""+playerInfo["GainCumulationForFriend"]+"%");
-                    self.avgGainAILabel.setColor(setLabelColor(playerInfo["GainCumulationForFriend"]));
+                    self.avgGainAILabel.setString(""+playerInfo["gainCumulation"]+"%");
+                    self.avgGainAILabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
                     break;
                 }
                 default:

@@ -1029,7 +1029,7 @@ var MainMenuScene =SceneBase.extend(
             {
                 //登录失败
                 self.stopProgress();
-                self.showMessageBox(packet.content,function(){self.messageBoxClosed();});
+                self.showErrorBox(packet.content,function(){self.errorBoxClosed();});
                 break;
             }
             case "UNMATCH":
