@@ -295,7 +295,7 @@ var MainMenuScene =SceneBase.extend(
             this.matchViewLayer.setVisible(false);
             this.matchViewLayer.setPosition(0,0);
             this.otherMessageTipLayer.addChild(this.matchViewLayer, 1,this.matchViewLayer.getTag());
-            this.matchViewLayer.closeCallBackFunction=function(){self.matchViewLayer_Close()};
+            this.matchViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
         }
         this.matchViewLayer.refreshMatchViewLayer();
         this.matchViewLayer.showLayer();
@@ -337,7 +337,7 @@ var MainMenuScene =SceneBase.extend(
             this.matchViewLayer.setVisible(false);
             this.matchViewLayer.setPosition(0,0);
             this.otherMessageTipLayer.addChild(this.matchViewLayer, 1,this.matchViewLayer.getTag());
-            this.matchViewLayer.closeCallBackFunction=function(){self.matchViewLayer_Close()};
+            this.matchViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
         }
         this.matchViewLayer.refreshMatchViewLayer();
         this.matchViewLayer.showLayer();
@@ -378,7 +378,7 @@ var MainMenuScene =SceneBase.extend(
                 this.matchViewLayer.setVisible(false);
                 this.matchViewLayer.setPosition(0,0);
                 this.otherMessageTipLayer.addChild(this.matchViewLayer, 1,this.matchViewLayer.getTag());
-                this.matchViewLayer.closeCallBackFunction=function(){self.matchViewLayer_Close()};
+                this.matchViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
             }
             this.matchViewLayer.refreshMatchViewLayer();
             this.matchViewLayer.showLayer();
@@ -409,7 +409,7 @@ var MainMenuScene =SceneBase.extend(
                 this.friendLayer.setAnchorPoint(0,0);
                 this.friendLayer.setPosition(0,0);
                 this.otherMessageTipLayer.addChild(this.friendLayer, 1,this.friendLayer.getTag());
-                this.friendLayer.closeCallBackFunction=function(){self.friendLayer_Close()};
+                this.friendLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
             }
 
             // LISTFRIEND||
@@ -498,14 +498,53 @@ var MainMenuScene =SceneBase.extend(
         if(this.controlViewLayer!=null){
             this.controlViewLayer.hideLayer();
         }
+        //关闭战绩界面
+        if(this.rankViewLayer!=null){
+            this.rankViewLayer.hideLayer();
+        }
+        //关闭matchViewL界面
+        if(this.matchViewLayer!=null){
+            this.matchViewLayer.hideLayer();
+        }
+        //关闭好友界面
+        if(this.friendLayer!=null){
+            this.friendLayer.hideLayer();
+        }
+        //关闭help界面
+        if(this.helpViewLayer!=null){
+            this.helpViewLayer.hideLayer();
+        }
+
 
         this.resumeLowerLayer();
     },
+    // helpViewLayer_Close:function()
+    // {
+    //     //关闭help界面
+    //     this.helpViewLayer.hideLayer();
+    //     this.resumeLowerLayer();
+    // },
+
     // controlViewLayer_Close:function()
     // {
     //     //关闭kongzhi界面
     //     this.controlViewLayer.hideLayer();
     //     this.resumeLowerLayer();
+    // },
+    // rankViewLayer_Close:function()
+    // {
+    //
+    //     this.resumeLowerLayer();
+    // },
+    //
+    // matchViewLayer_Close:function()
+    // {
+    //
+    // },
+    //
+    // friendLayer_Close:function()
+    // {
+    //
     // },
 
     help:function()
@@ -518,7 +557,7 @@ var MainMenuScene =SceneBase.extend(
             this.helpViewLayer.setVisible(false);
             this.helpViewLayer.setPosition(0,0);
             this.otherMessageTipLayer.addChild(this.helpViewLayer, 1,this.helpViewLayer.getTag());
-            this.helpViewLayer.closeCallBackFunction=function(){self.helpViewLayer_Close()};
+            this.helpViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
             // this.helpViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
         }
         // this.helpViewLayer.refreshhelpViewLayer();
@@ -528,12 +567,6 @@ var MainMenuScene =SceneBase.extend(
         // cc.audioEngine.stopMusic();
     },
 
-    helpViewLayer_Close:function()
-    {
-        //关闭help界面
-        this.helpViewLayer.hideLayer();
-        this.resumeLowerLayer();
-    },
 
 
     setButtonInfo:function()
@@ -913,6 +946,7 @@ var MainMenuScene =SceneBase.extend(
                     gKlineScene=new KLineScene();
                 }
 
+                userInfo.matchBeginFlag=true;
                 gSocketConn.UnRegisterEvent("onmessage",gMainMenuScene.messageCallBack);
                 gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
                 if(gKlineScene!=null)
@@ -1266,7 +1300,7 @@ var MainMenuScene =SceneBase.extend(
             this.otherMessageTipLayer.addChild(this.rankViewLayer, 1,this.rankViewLayer.getTag());
             //this.zhanjiInfoLayer.applyParamsFromContent(content);
             //content的内容为:   总用户个数(假设为2)#用户名A#收益率A#得分A#用户名B#收益率B#得分B#品种名字#起始日期#终止日期
-            this.rankViewLayer.closeCallBackFunction=function(){self.rankViewLayer_Close()};
+            this.rankViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
         }
         pageTimer["rank"] = setTimeout(function(){self.rankrefreshRViewLayer();},100);
     },
@@ -1278,28 +1312,6 @@ var MainMenuScene =SceneBase.extend(
         this.pauseLowerLayer();
     },
 
-    rankViewLayer_Close:function()
-    {
-        //关闭战绩界面
-        this.rankViewLayer.hideLayer();
-        this.resumeLowerLayer();
-    },
-
-    matchViewLayer_Close:function()
-    {
-        //关闭matchViewL界面
-        if(this.matchViewLayer!=null){
-            this.matchViewLayer.hideLayer();
-            this.resumeLowerLayer();
-        }
-    },
-
-    friendLayer_Close:function()
-    {
-        //关闭好友界面
-        this.friendLayer.hideLayer();
-        this.resumeLowerLayer();
-    },
 
     toHome:function()
     {

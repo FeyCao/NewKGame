@@ -696,8 +696,8 @@ var KLineScene = SceneBase.extend(
 				 // self.setDataForLlineLayerTest();
 				self.setDataForLlineLayer();
 
-                self.matchViewLayer_Close();
-
+                // self.matchViewLayer_Close();
+				self.popViewLayer_Close();
                 cc.log("get kline K线数据 passed");
                 break;
             }
@@ -797,6 +797,134 @@ var KLineScene = SceneBase.extend(
 				cc.log("get 观看交易记录Match");
 
 				break;
+			}
+			case "LISTFRIEND":
+			{
+
+				cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+				userInfo.friendListData = [];
+				var data=JSON.parse(packet.content);
+				userInfo.friendListData  = data;
+				cc.log(userInfo.friendListData);
+				userInfo.friendListData.sort(function (a,b) {
+					if(a["status"]=="在线"){
+						return -1;
+					}else if(b["status"]=="在线"){
+						return 1;
+					}else if(a["status"]=="组队中"){
+						return -1;
+					}else if(b["status"]=="组队中"){
+						return 1;
+					}else if(a["status"]=="比赛中"){
+						return -1;
+					}else if(b["status"]=="比赛中"){
+						return 1;
+					}else {
+						return -1;
+					}
+				});
+				//
+				//     var arrSimple2=new Array(1,8,7,6);
+				//     arrSimple2.sort(function(a,b){
+				//         return b-a});
+				// 解释：a,b表示数组中的任意两个元素，若return > 0 b前a后；reutrn < 0 a前b后；a=b时存在浏览器兼容
+				//     简化一下：a-b输出从小到大排序，b-a输出从大到小排序。
+				// cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+
+				if(self.friendLayer!=null){
+					self.friendLayer.refreshFriendViewLayer();
+				}
+
+				break;
+
+			}
+			case "FRIENDCHANGE":
+			{
+
+				cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+				cc.log(userInfo.friendListData);
+
+				var friendName = packet.content.split("#")[0];
+				var status = packet.content.split("#")[1];
+				for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
+				{
+					if(userInfo.friendListData[i]["friendname"]==friendName){
+						userInfo.friendListData[i]["status"]=status;
+					}
+				}
+
+				for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
+				{
+					if(userInfo.friendListData[i]["friendname"]==friendName){
+						userInfo.friendListData[i]["status"]=status;
+					}
+				}
+
+				userInfo.friendListData.sort(function (a,b) {
+					if(a["status"]=="在线"){
+						return -1;
+					}else if(b["status"]=="在线"){
+						return 1;
+					}else if(a["status"]=="组队中"){
+						return -1;
+					}else if(b["status"]=="组队中"){
+						return 1;
+					}else if(a["status"]=="比赛中"){
+						return -1;
+					}else if(b["status"]=="比赛中"){
+						return 1;
+					}else {
+						return -1;
+					}
+				});
+				cc.log(userInfo.friendListData);
+				// cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+
+				if(self.friendLayer!=null){
+					self.friendLayer.refreshFriendViewLayer();
+				}
+				break;
+
+			}
+			case "INVITE":
+			{
+				cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+				inviteInfo.code = packet.content.split("#")[0];
+				inviteInfo.friendName = packet.content.split("#")[1];
+				inviteInfo.picUrl = packet.content.split("#")[2];
+				userInfo.matchMode = 4;
+				// var self = this;
+				if(self.invitedViewLayer==null){
+					self.invitedViewLayer=new InvitedViewLayer();
+					self.invitedViewLayer.setVisible(false);
+					self.invitedViewLayer.setPosition(0,0);
+					self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
+					self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+				}
+
+				self.invitedViewLayer.showLayer();
+				self.pauseLowerLayer();
+
+				// if(self.friendLayer!=null){
+				//     self.friendLayer.refreshFriendViewLayer();
+				// }
+				break;
+
+			}
+			case "REJECT":
+			{
+				cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+				var name = packet.content.split("#")[0];
+
+				if(self.friendLayer!=null){
+					self.friendLayer.showMessageInfo(name+"拒绝了你的邀请！");
+				}
+
+				// if(self.friendLayer!=null){
+				//     self.friendLayer.refreshFriendViewLayer();
+				// }
+				break;
+
 			}
 			// case "2":
 			// {
@@ -1084,24 +1212,45 @@ var KLineScene = SceneBase.extend(
 // 		gKlineScene.pauseLowerLayer();// klineSceneNext.showProgress();
 
         cc.log("klineSceneNext begin");
+
+
+
         // cc.director.runScene(gKlineScene);
         var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
         cc.log(" beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
         var klineSceneNext=new KLineScene();
         var self=this;
         klineSceneNext.onEnteredFunction=function(){
-
             cc.log("klineSceneNext onEnteredFunction end");
-            if(gKlineScene.matchViewLayer==null){
-                gKlineScene.matchViewLayer=new MatchViewLayer();
-                gKlineScene.matchViewLayer.setVisible(false);
-                gKlineScene.matchViewLayer.setPosition(0,0);
-                gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1,gKlineScene.matchViewLayer.getTag());
-                gKlineScene.matchViewLayer.closeCallBackFunction=function(){gKlineScene.matchViewLayer_Close()};
-                // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
-            }
-            gKlineScene.matchViewLayer.refreshMatchViewLayer();
-            gKlineScene.matchViewLayer.showLayer();
+			if(userInfo.matchMode==4){
+				gSocketConn.BeginMatch("4");
+				gSocketConn.getFriendList();
+				if(gKlineScene.friendLayer==null){
+					gKlineScene.friendLayer=new FriendViewLayer();
+					gKlineScene.friendLayer.setVisible(false);
+					gKlineScene.friendLayer.setAnchorPoint(0,0);
+					gKlineScene.friendLayer.setPosition(0,0);
+					gKlineScene.otherMessageTipLayer.addChild(gKlineScene.friendLayer, 1,gKlineScene.friendLayer.getTag());
+					gKlineScene.friendLayer.closeCallBackFunction=function(){gKlineScene.popViewLayer_Close()};
+				}
+
+				// LISTFRIEND||
+				gKlineScene.friendLayer.showLayer();
+				gKlineScene.friendLayer.refreshFriendViewLayer();
+
+			}else{
+				if(gKlineScene.matchViewLayer==null){
+					gKlineScene.matchViewLayer=new MatchViewLayer();
+					gKlineScene.matchViewLayer.setVisible(false);
+					gKlineScene.matchViewLayer.setPosition(0,0);
+					gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1,gKlineScene.matchViewLayer.getTag());
+					gKlineScene.matchViewLayer.closeCallBackFunction=function(){gKlineScene.popViewLayer_Close()};
+					// this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
+				}
+				gKlineScene.matchViewLayer.refreshMatchViewLayer();
+				gKlineScene.matchViewLayer.showLayer();
+			}
+
             gKlineScene.pauseLowerLayer();// klineSceneNext.showProgress();
         };
         cc.log("klineSceneNext middle");
@@ -2405,13 +2554,21 @@ var KLineScene = SceneBase.extend(
         //this.matchInfoLayer.disableAllButtons();
     },
 
-        matchViewLayer_Close:function()
+        popViewLayer_Close:function()
         {
             //关闭matchViewL界面
             if(this.matchViewLayer!=null){
                 this.matchViewLayer.hideLayer();
-                this.resumeLowerLayer();
             }
+			//关闭应邀请求界面
+			if(this.invitedViewLayer!=null){
+				this.invitedViewLayer.hideLayer();
+			}
+			//关闭好友界面
+			if(this.friendLayer!=null){
+				this.friendLayer.hideLayer();
+			}
+			this.resumeLowerLayer();
         },
 	start:function()
 	{

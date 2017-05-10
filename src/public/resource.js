@@ -48,10 +48,10 @@ var res = {
  //买卖按钮
  BTN_BUY_ENABLE_png:"res/btn_buy_k.png",
  BTN_BUY_CLOSE_png:"res/btn_buy_p.png",
- BTN_BUY_DISABLE_png:"res/btnBuyDisable.png",
+ BTN_BUY_DISABLE_png:"res/btn_gdt.png",
  BTN_SELL_ENABLE_png:"res/btn_sell_k.png",
  BTN_SELL_CLOSE_png:"res/btn_sell_p.png",
- BTN_SELL_DISABLE_png:"res/btnSellDisable.png",
+ BTN_SELL_DISABLE_png:"res/btn_gkt.png",
 
  //比赛进度控制按钮"res/btn_sc_d_normal.png","res/btn_sc_a_normal.png","res/btn_sc_d_double.png","res/btn_sc_a_double.png","res/btn_sc_d_half.png","res/btn_sc_a_half.png","res/btn_sc_play.png","res/btn_sc_bg.png","res/btn_sc_pause.png",
  BTN_SC_NORMAL_png:"res/btn_sc_a_normal.png",
