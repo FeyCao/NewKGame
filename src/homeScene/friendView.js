@@ -45,6 +45,15 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         self.statusSprite = new cc.Sprite(res.STATUS_FRIEND_OFFLINE_png);
         self.addChild(this.statusSprite,2);
         // self.statusSprite.setPosition(cc.p(140+self.statusSprite.getContentSize().width/2,30));
+
+        // self.invitedInfoLabel = new cc.LabelTTF("已邀请",res.FONT_TYPE, 18);
+        // // self.invitedInfoLabel.enableStroke(ShadowColor, 2);
+        // self.invitedInfoLabel.setVisible(false);
+        // self.invitedInfoLabel.setPosition(cc.p(140,30));
+        // self.invitedInfoLabel.setAnchorPoint(0,0.5);
+        // self.addChild( self.invitedInfoLabel,2);
+
+
         var url = userInfo.friendListData[idx]["headPicture"];
         cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
             if(err){
@@ -68,6 +77,7 @@ var FriendTableViewCell = cc.TableViewCell.extend({
 
         var username = userInfo.friendListData[idx]["friendname"];
         self.friendnameLabel.setString(cutstr(username,17));
+
 
         var stausFlag = userInfo.friendListData[idx]["status"];//在线or离线or组队中or比赛中
         var inviteFlag = false;
@@ -98,16 +108,23 @@ var FriendTableViewCell = cc.TableViewCell.extend({
                 break;
             }
         }
+        self.statusSprite.setVisible(true);
         self.statusSprite.setPosition(cc.p(140,30));
         self.statusSprite.setAnchorPoint(0,0.5);
         // self.statusSprite.setPosition(cc.p(140+self.statusSprite.getContentSize().width/2,30));
         //设置邀请按钮
         var inviteButton=new Button(res.BTN_FRIEND_INVITE_png);
-        inviteButton.setPosition(cc.p(290,30));
+        inviteButton.setScale(0.9);
+        inviteButton.setPosition(cc.p(300,30));
         inviteButton.setVisible(inviteFlag);
         self.addChild(inviteButton,2);//INVITE|username|
 
         inviteButton.setClickEvent(function(){
+            self.statusSprite.initWithFile(res.STATUS_FRIEND_INVITED_png);
+            self.statusSprite.setPosition(cc.p(140,30));
+            self.statusSprite.setAnchorPoint(0,0.5);
+            // self.statusSprite.setVisible(false);
+            // self.invitedInfoLabel.setVisible(true);
             gSocketConn.inviteFriend(username);
         });
 
@@ -190,6 +207,7 @@ var FriendViewLayer = cc.Layer.extend({
 
         this.selfNameLabel = cc.LabelTTF.create(userInfo.nickName, "Arial", fontSize);
         this.selfNameLabel.setPosition(270,posD-100);
+        this.selfNameLabel.enableStroke(ShadowColor, 2);
         this.backgroundSprite.addChild(this.selfNameLabel,2);
 
         this.opponentNameLabel = cc.LabelTTF.create("-- -- -- --", "Arial", fontSize);

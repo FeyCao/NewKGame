@@ -187,24 +187,24 @@ var KLineScene = SceneBase.extend(
 		// this.coverSprite = new cc.Scale9Sprite(res.BG_COVER_png,cc.size(700,200));
 		// var baseSize = cc.size(720,200);
 		this.coverSprite = new cc.Sprite(res.BG_COVER_png);
-		this.coverSprite.setScale(0.575,0.52);
+		this.coverSprite.setScale(0.63,0.52);
 		this.coverSprite.setAnchorPoint(0,0);
 		// this.coverSprite.setContentSize(baseSize);
 		// this.coverSprite.setOpacity(0);
 		this.coverSprite.setVisible(false);
-		this.coverSprite.setPosition(this.KlinePosX,168);
+		this.coverSprite.setPosition(this.KlinePosX,165);
 		// var coverSp = new cc.Sprite(res.SP_COVER_png);
 		// coverSp.setPosition(this.coverSprite.getContentSize().width/2,this.coverSprite.getContentSize().height/2);
 		// this.coverSprite.addChild(coverSp);
 		this.addChild(this.coverSprite,9);
 
 		this.banSprite = new cc.Sprite(res.BG_BAN_png);
-		this.banSprite.setScale(0.58,0.52);
+		this.banSprite.setScale(0.63,0.52);
 		this.banSprite.setAnchorPoint(0,0);
 		// this.coverSprite.setContentSize(baseSize);
 		// this.banSprite.setOpacity(0);
 		this.banSprite.setVisible(false);
-		this.banSprite.setPosition(this.KlinePosX-5,165);
+		this.banSprite.setPosition(this.KlinePosX,165);
 		this.addChild(this.banSprite,4);
 
 
@@ -2068,6 +2068,7 @@ var KLineScene = SceneBase.extend(
 		if(this.playerInfoLayer!=null)
 		{
 			this.playerInfoLayer.ableInfoButtons();
+			this.playerInfoLayer.refreshScoresByData();
 		}
 		//一次性画出当前数据图 观看交易记录Match
 		cc.log("userInfo.matchFlag=="+userInfo.matchFlag);
@@ -2141,9 +2142,9 @@ var KLineScene = SceneBase.extend(
 		// this.volumnTechLayerPrev.setPosition(this.volumnTechLayerMain.getPosition());
 		// this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
 		//设置主K线图的数据
-		this.klineLayerPrev.setKLineData(this.klinedataMain);
+		this.klineLayerPrev.setKLineData(this.klinedataMain,this.klineLayerPrev);
 		//设置附图的数据
-		this.volumnTechLayerPrev.setKLineData(this.klinedataMain);
+		this.volumnTechLayerPrev.setKLineData(this.klinedataMain,this.klineLayerPrev);
 		this.addChild(this.klineLayerPrev,this.mainLayerNumber,this.klineLayerPrev.getTag());
 		this.addChild(this.volumnTechLayerPrev,this.volumnTechLayerNumber,this.volumnTechLayerPrev.getTag());
 		
@@ -2430,7 +2431,7 @@ var KLineScene = SceneBase.extend(
 // 		this.businessMatchInfo();
 	businessMatchInfo:function()
 	{
-		cc.log("businessInfo:function() begin= ");
+		cc.log("businessMatchInfo:function() begin= ");
 		// if(this.phase2==false)return;
 		this.clearBuySellOperation();
 		var businessInfo = this.buyInfo;

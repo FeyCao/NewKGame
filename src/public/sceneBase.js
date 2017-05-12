@@ -252,6 +252,7 @@ SceneBase = cc.Scene.extend(
 			this.loginBtn.setNormalSpriteFrame("res/btn_login.png");
 			this.loginBtn.setSelectedSpriteFrame("res/btn_login.png");
 		}
+		this.loginBtn.setVisible(userInfo.operationType==2);
 		this.messageBoxLayer.setVisible(true);
 		this.pauseLowerLayer();
 		//alert(msg);
@@ -265,7 +266,7 @@ SceneBase = cc.Scene.extend(
 		// {
 		// 	this.closeCallback();
 		// }
-		window.location.href="http://analyse.kiiik.com";
+		// window.location.href="http://analyse.kiiik.com";
 		cc.log("closeErrorBox sceneBase");
 	},
 

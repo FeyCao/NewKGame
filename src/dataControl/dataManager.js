@@ -61,7 +61,7 @@ var WhiteColor=cc.color(255,255,255,255);//白色
 var BlueColor=cc.color(7,64,111,255);//蓝色
 var lightBlueColor=cc.color(22,95,146,100);//浅蓝色
 var BlackColor=cc.color(0,0,0,255);//黑色
-
+var ShadowColor=cc.color(0,133,200,255);//描边
 var userInfo ={
     //主界面数据
     userId:null,//

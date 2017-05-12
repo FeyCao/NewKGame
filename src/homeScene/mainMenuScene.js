@@ -1063,14 +1063,14 @@ var MainMenuScene =SceneBase.extend(
             {
                 //登录失败
                 self.stopProgress();
-                self.showErrorBox(packet.content,function(){self.errorBoxClosed();});
+                self.showMessageBox(packet.content,function(){self.messageBoxClosed();});
                 break;
             }
             case "UNMATCH":
             {
                 if(packet.content=="SUCCESS"){
                     userInfo.matchBeginFlag=false;
-                    cc.log("messageCallBack.mainScen.packet.msgType="+packet.msgType+"=== UNMATCH SUCCESSpacket.content=="+ packet.content);
+                    cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=== UNMATCH SUCCESSpacket.content=="+ packet.content);
                 }else {
                     cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=== packet.content=="+ packet.content);
                 }

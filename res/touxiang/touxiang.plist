@@ -7,46 +7,33 @@
             <key>bg_touxiang.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{227,323},{100,100}}</string>
+                <string>{{2,2},{175,157}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{100,100}}</string>
+                <string>{{0,0},{175,157}}</string>
                 <key>sourceSize</key>
-                <string>{100,100}</string>
-            </dict>
-            <key>touxiangAI.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{109,323},{116,117}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{116,117}}</string>
-                <key>sourceSize</key>
-                <string>{116,117}</string>
+                <string>{175,157}</string>
             </dict>
             <key>touxiang_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,323},{105,105}}</string>
+                <string>{{179,2},{175,157}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{105,105}}</string>
+                <string>{{0,0},{175,157}}</string>
                 <key>sourceSize</key>
-                <string>{105,105}</string>
+                <string>{175,157}</string>
             </dict>
             <key>touxiang_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{216,216},{105,105}}</string>
+                <string>{{2,161},{105,105}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -59,7 +46,7 @@
             <key>touxiang_2.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{109,216},{105,105}}</string>
+                <string>{{109,161},{105,105}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -72,7 +59,7 @@
             <key>touxiang_3.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,216},{105,105}}</string>
+                <string>{{216,161},{105,105}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -85,7 +72,7 @@
             <key>touxiang_4.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{216,109},{105,105}}</string>
+                <string>{{2,268},{105,105}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -98,7 +85,7 @@
             <key>touxiang_5.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{109,109},{105,105}}</string>
+                <string>{{109,268},{105,105}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -111,7 +98,7 @@
             <key>touxiang_6.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,109},{105,105}}</string>
+                <string>{{216,268},{105,105}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -124,7 +111,7 @@
             <key>touxiang_7.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{216,2},{105,105}}</string>
+                <string>{{2,375},{105,105}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -137,7 +124,7 @@
             <key>touxiang_8.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{109,2},{105,105}}</string>
+                <string>{{109,375},{105,105}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -150,7 +137,7 @@
             <key>touxiang_9.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{105,105}}</string>
+                <string>{{216,375},{105,105}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -168,9 +155,9 @@
             <key>realTextureFileName</key>
             <string>touxiang.png</string>
             <key>size</key>
-            <string>{329,442}</string>
+            <string>{356,482}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:1c341bc93fc3b5cc5e31fe428a37c890:c052a02568a847b44b09b58805d17065:6b50e27fffe860eb57641a277b71c26f$</string>
+            <string>$TexturePacker:SmartUpdate:5c6174a9f06ef89cc0ca7defef1e14d9$</string>
             <key>textureFileName</key>
             <string>touxiang.png</string>
         </dict>

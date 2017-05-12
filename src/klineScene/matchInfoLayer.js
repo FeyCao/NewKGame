@@ -155,10 +155,11 @@ var MatchInfoLayer = cc.Layer.extend({
 
 
 		this.faceSprites = [];
+		var posX = 85;
 		for(var i=0;i<2;i++){
 			this.faceSprites[i] = new cc.Sprite(res.Emoticon_1_png);
 			this.faceSprites[i].setScale(fXScale*0.8);
-			this.faceSprites[i].setPosition(60,280-120*i);
+			this.faceSprites[i].setPosition(i==0?posX:gDesignResolutionWidth-posX,300);
 			this.faceSprites[i].setOpacity(0);
 			this.addChild(this.faceSprites[i]);
 		}

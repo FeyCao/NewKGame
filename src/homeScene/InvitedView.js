@@ -44,7 +44,7 @@ var InvitedViewLayer = cc.Layer.extend({
 
         this.bgColorLayer=new cc.LayerColor(cc.color(0,0,0,127),size.width,size.height);
         this.addChild(this.bgColorLayer);
-        this.backgroundSprite=new cc.Sprite("res/bg_message.png");
+        this.backgroundSprite=new cc.Sprite(res.BG_FRIEND_ACCEPT_png);
         this.backgroundSprite.setScale(fXScale,fYScale);
         this.backgroundSprite.setPosition(0,0);
         this.backgroundSprite.setPosition(size.width/2,size.height/2);
@@ -54,18 +54,25 @@ var InvitedViewLayer = cc.Layer.extend({
 
 
         var bgSize = this.backgroundSprite.getContentSize();
-        var posD = 320;
+        var posD = 340;
         this.selfBg = new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);
         this.selfBg.setPosition(bgSize.width/2,posD);
         this.backgroundSprite.addChild(this.selfBg,2);
         var fontSize = 25;
 
         this.selfNameLabel = cc.LabelTTF.create(inviteInfo.friendName, "Arial", fontSize);
-        this.selfNameLabel.setPosition(bgSize.width/2,posD-100);
+        this.selfNameLabel.setPosition(bgSize.width/2,posD-110);
+        this.selfNameLabel.enableStroke(ShadowColor,2);
+        // this.selfNameLabel.enableShadow();
         this.backgroundSprite.addChild(this.selfNameLabel,2);
 
+        // this.selfNameLabelShadow = cc.LabelTTF.create(inviteInfo.friendName, "Arial", fontSize+1);
+        // this.selfNameLabelShadow.setColor(ShadowColor);
+        // this.selfNameLabelShadow.setPosition(bgSize.width/2,posD-110);
+        // this.backgroundSprite.addChild(this.selfNameLabelShadow,1);
+
         this.opponentNameLabel = cc.LabelTTF.create("邀请你参加好友战", "Arial", fontSize);
-        this.opponentNameLabel.setPosition(bgSize.width/2,posD-140);
+        this.opponentNameLabel.setPosition(bgSize.width/2,posD-160);
         this.backgroundSprite.addChild(this.opponentNameLabel,2);
 
 
@@ -112,27 +119,27 @@ var InvitedViewLayer = cc.Layer.extend({
         var macthButtonPosY = 100;
 
         this.rejectButton=new cc.MenuItemImage(res.BTN_REJECT,res.BTN_REJECT, self.rejectFriend, this);//new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
-        this.rejectButton.setPosition(cc.p(bgSize.width/2-80,macthButtonPosY));
+        this.rejectButton.setPosition(cc.p(bgSize.width/2-120,macthButtonPosY));
         mu.addChild(this.rejectButton);
 
 
         this.agreeButton=new cc.MenuItemImage(res.BTN_AGREE, res.BTN_AGREE, self.agreeFriend, this);//new CheckButton("res/btn_unmatch.png","res/btn_unmatch.png");//new Button("res/btn_mode1d.png");
-        this.agreeButton.setPosition(cc.p(bgSize.width/2+80,macthButtonPosY));
+        this.agreeButton.setPosition(cc.p(bgSize.width/2+120,macthButtonPosY));
         // this.agreeButton.setVisible(false);
         mu.addChild(this.agreeButton);
 
-        cc.MenuItemFont.setFontName("fonts/Self.ttf");
-        cc.MenuItemFont.setFontSize(30);
-
-        var item1 = new cc.MenuItemFont("拒绝", self.rejectFriend, this);
-        // item1.setAnchorPoint(0,0.5);
-        item1.setPosition(cc.p(bgSize.width/2-80,macthButtonPosY+5));
-        mu.addChild(item1,2);
-
-        var item2 = new cc.MenuItemFont("同意", self.agreeFriend, this);
-        // item2.setAnchorPoint(0,0.5);
-        item2.setPosition(cc.p(bgSize.width/2+80,macthButtonPosY+5));
-        mu.addChild(item2,2);
+        // cc.MenuItemFont.setFontName("fonts/Self.ttf");
+        // cc.MenuItemFont.setFontSize(30);
+        //
+        // var item1 = new cc.MenuItemFont("拒绝", self.rejectFriend, this);
+        // // item1.setAnchorPoint(0,0.5);
+        // item1.setPosition(cc.p(bgSize.width/2-80,macthButtonPosY+5));
+        // mu.addChild(item1,2);
+        //
+        // var item2 = new cc.MenuItemFont("同意", self.agreeFriend, this);
+        // // item2.setAnchorPoint(0,0.5);
+        // item2.setPosition(cc.p(bgSize.width/2+80,macthButtonPosY+5));
+        // mu.addChild(item2,2);
 
 
 
