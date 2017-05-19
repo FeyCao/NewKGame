@@ -24,6 +24,7 @@
         "src/public/button.js",
         "src/public/checkButton.js",
         "src/public/util.js",
+        "src/public/soundManage.js",
         "src/public/resource.js",
         "src/public/emoticonView.js",
         "src/public/baseGraphLayer.js",

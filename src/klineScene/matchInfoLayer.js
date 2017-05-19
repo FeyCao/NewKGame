@@ -615,7 +615,8 @@ var MatchInfoLayer = cc.Layer.extend({
 		if(userInfo.buttonSoundFlag==true)
 		{
 			cc.log("buyClick===== ");
-			cc.audioEngine.playEffect("res/sound/button.mp3",false);
+			playBuySound();
+			// cc.audioEngine.playEffect("res/sound/button.mp3",false);
 		}
 		var klineScene=this.parent.parent;
 		var i=klineScene.selfOperations.length;
@@ -652,7 +653,7 @@ var MatchInfoLayer = cc.Layer.extend({
 	{
 		if(userInfo.buttonSoundFlag==true)
 		{
-			cc.audioEngine.playEffect("res/sound/button.mp3",false);
+			playSellSound();
 		}
 		var klineScene=this.parent.parent;
 		var i=klineScene.selfOperations.length;

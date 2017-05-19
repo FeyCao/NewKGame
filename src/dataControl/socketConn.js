@@ -185,7 +185,7 @@ SocketConn.prototype.Step=function(index)
 	//ws.send("8|"+index+"|");
 }
 
-SocketConn.prototype.SendEndMessage=function()
+SocketConn.prototype.SendEndMessage=function()//
 {
 	cc.log("send Endmsg==E||");
 	ws.send("E||");

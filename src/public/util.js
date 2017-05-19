@@ -58,31 +58,6 @@ function cutstr(str, len) {
     }
 }
 
-function resumeBgSound(){
-    cc.audioEngine.resumeMusic();
-}
-
-function pauseBgSound() {
-    cc.audioEngine.pauseMusic();
-}
-var musicFile = "res/sound/home_bg.mp3";
-function openBgSound(){
-    if(cc.audioEngine.isMusicPlaying()==true)
-    {
-        resumeBgSound();
-    }else{
-        cc.audioEngine.playMusic(musicFile,true);
-    }
-}
-function closeBgSound(){
-
-    cc.audioEngine.stopMusic(musicFile);
-}
-function isBgMusicPlaying() {
-
-    myObj.fun1FromAndroid("调用android本地方法fun1FromAndroid(String name)！！");
-    return cc.audioEngine.isMusicPlaying()==true;
-}
 function refreshUrl(seconds)
 {
     if(testFlag!=true){
@@ -283,7 +258,7 @@ var createClipRoundNode = cc.Node.extend({
     }
 
 });
-
+//
 var barInfoLayer = cc.Layer.extend({
     sprite:null,
     text:null,

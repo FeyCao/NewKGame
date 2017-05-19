@@ -285,10 +285,12 @@ var MatchEndInfoLayer= cc.Layer.extend({
 				var ratio=parseFloat(fields[2]);
 				if(ratio>0)
 				{
+					// playWinSound();
 					this.scoreLabel2.setColor(cc.color(249,27,27,255));
 				}
 				else if(ratio<0)
 				{
+					// playLoseSound();
 					this.scoreLabel2.setColor(cc.color(6,224,0,255));
 				}
 				else
@@ -298,9 +300,10 @@ var MatchEndInfoLayer= cc.Layer.extend({
 				this.scoreLabel2.setString(ratio.toFixed(2)+"%");
 				break;
 			}
-			case 3:
-			case 4:
-			case 1:
+			case 2://人机匹配
+			case 3://道具匹配
+			case 4://好友匹配
+			case 1://普通匹配
 			{
 				cc.log("MatchEndInfoLayer to parse json text");
 				// {"codeInfo":"600970(上证)#2006-07-27#2007-01-23","endInfoOfAllPlayers":[{"nickName":"开心的钱多多","ranking":2,"matchId":6231,"score":-34.99,"level":0,"exp":0},{"nickName":"唐齐安通道","ranking":1,"matchId":6231,"score":-1.76,"level":0,"exp":0}]}
@@ -313,11 +316,27 @@ var MatchEndInfoLayer= cc.Layer.extend({
 				for(var i=0;endInfoData!=null&&i<endInfoData.length;i++)
 				{
 					cc.log("showPlayerInfo playerData.userName="+endInfoData[i]["nickName"]);
-					if(userInfo.nickName==endInfoData[i]["nickName"])ratio=endInfoData[i]["score"];
+					if(userInfo.nickName==endInfoData[i]["nickName"])
+					{ratio=endInfoData[i]["score"];}
 					endInfoList.push(endInfoData[i]);
 				}
-				//按排名排序
+				var winFlag = 0;
+				if(endInfoData[0]["score"]>endInfoData[1]["score"]&&userInfo.nickName==endInfoData[0]["nickName"]){
+					winFlag = 1;
+				}else if(endInfoData[0]["score"]<endInfoData[1]["score"]&&userInfo.nickName==endInfoData[1]["nickName"]){
+					winFlag = 1;
+				}else if(endInfoData[0]["score"]!=endInfoData[1]["score"]){
+					winFlag = -1;
+				}else{
+					winFlag = 0;
+				}
+				if(winFlag==1){
+					playWinSound();
+				}else if(winFlag==-1){
+					playLoseSound();
+				}
 
+				//按排名排序
 				for(var i=0;i<endInfoList.length;i++)
 				{
 					for(var j=i;j<endInfoList.length-i-1;j++)
@@ -344,54 +363,54 @@ var MatchEndInfoLayer= cc.Layer.extend({
 				}
 				break;
 			}
-			case 2:
-			{
-
-				cc.log("MatchEndInfoLayer to parse json text");
-				// {"codeInfo":"600970(上证)#2006-07-27#2007-01-23","endInfoOfAllPlayers":[{"nickName":"开心的钱多多","ranking":2,"matchId":6231,"score":-34.99,"level":0,"exp":0},{"nickName":"唐齐安通道","ranking":1,"matchId":6231,"score":-1.76,"level":0,"exp":0}]}
-				var ratio=parseFloat(0);
-				var data=JSON.parse(content);
-				this.stockInfoLabel.setString(data["codeInfo"]);
-				var endInfoData = data["endInfoOfAllPlayers"];
-				var endInfoList = new Array()
-				// userInfo.endInfoOfAllPlayers=;
-				for(var i=0;endInfoData!=null&&i<endInfoData.length;i++)
-				{
-					cc.log("showPlayerInfo playerData.userName="+endInfoData[i]["nickName"]);
-					if(userInfo.nickName==endInfoData[i]["nickName"])ratio=endInfoData[i]["score"];
-					endInfoList.push(endInfoData[i]);
-				}
-				//按排名排序
-
-				for(var i=0;i<endInfoList.length;i++)
-				{
-					for(var j=i;j<endInfoList.length-i-1;j++)
-					{
-						if(endInfoList[j]["ranking"]>endInfoList[j+1]["ranking"])
-						{
-							var temp = endInfoList[j];
-							endInfoList[j] =endInfoList[j+1];
-							endInfoList[j+1] =temp;
-						}
-					}
-
-				}
-				// endInfoList.sort(function(a,b){return a["ranking"]>b["ranking"]?1:-1});
-				// alert(endInfoList);
-				if(userInfo.endInfoOfAllPlayers!=null)
-				{
-					userInfo.endInfoOfAllPlayers=[];
-				}
-				userInfo.endInfoOfAllPlayers = endInfoList;
-
-			if(this.tableView!=null)
-			{
-				this.tableView.reloadData();
-				// this.tableView.setVisible(true);
-			}
-
-				break;
-			}
+			// case 2:
+			// {
+            //
+			// 	cc.log("MatchEndInfoLayer to parse json text");
+			// 	// {"codeInfo":"600970(上证)#2006-07-27#2007-01-23","endInfoOfAllPlayers":[{"nickName":"开心的钱多多","ranking":2,"matchId":6231,"score":-34.99,"level":0,"exp":0},{"nickName":"唐齐安通道","ranking":1,"matchId":6231,"score":-1.76,"level":0,"exp":0}]}
+			// 	var ratio=parseFloat(0);
+			// 	var data=JSON.parse(content);
+			// 	this.stockInfoLabel.setString(data["codeInfo"]);
+			// 	var endInfoData = data["endInfoOfAllPlayers"];
+			// 	var endInfoList = new Array()
+			// 	// userInfo.endInfoOfAllPlayers=;
+			// 	for(var i=0;endInfoData!=null&&i<endInfoData.length;i++)
+			// 	{
+			// 		cc.log("showPlayerInfo playerData.userName="+endInfoData[i]["nickName"]);
+			// 		if(userInfo.nickName==endInfoData[i]["nickName"])ratio=endInfoData[i]["score"];
+			// 		endInfoList.push(endInfoData[i]);
+			// 	}
+			// 	//按排名排序
+            //
+			// 	for(var i=0;i<endInfoList.length;i++)
+			// 	{
+			// 		for(var j=i;j<endInfoList.length-i-1;j++)
+			// 		{
+			// 			if(endInfoList[j]["ranking"]>endInfoList[j+1]["ranking"])
+			// 			{
+			// 				var temp = endInfoList[j];
+			// 				endInfoList[j] =endInfoList[j+1];
+			// 				endInfoList[j+1] =temp;
+			// 			}
+			// 		}
+            //
+			// 	}
+			// 	// endInfoList.sort(function(a,b){return a["ranking"]>b["ranking"]?1:-1});
+			// 	// alert(endInfoList);
+			// 	if(userInfo.endInfoOfAllPlayers!=null)
+			// 	{
+			// 		userInfo.endInfoOfAllPlayers=[];
+			// 	}
+			// 	userInfo.endInfoOfAllPlayers = endInfoList;
+            //
+			// if(this.tableView!=null)
+			// {
+			// 	this.tableView.reloadData();
+			// 	// this.tableView.setVisible(true);
+			// }
+            //
+			// 	break;
+			// }
 			// case 3:
 			// {
 			// 	break;

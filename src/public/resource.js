@@ -1,6 +1,17 @@
 var res = {
  //字体
- FONT_TYPE:"res/fonts/Arial.ttf",//
+ FONT_TYPE:"fonts/Arial.ttf",//
+
+ //声音音乐"res/sound/home_bg.mp3","res/sound/button.mp3",
+
+ SOUND_HOME_BG:"res/sound/home_bg.mp3",
+ SOUND_BUY:"res/sound/button.mp3",
+ SOUND_SELL:"res/sound/button.mp3",
+ SOUND_LOSE:"res/sound/lose.mp3",
+ SOUND_WIN:"res/sound/win.mp3",
+
+
+
 
  //背景界面
  BG_mainMenu_png  : "res/mainMenu_bg.png",
@@ -129,7 +140,7 @@ var res = {
 
 
 };
-var g_resources =["res/bg_tittle.png","res/bg_select.png","res/bg_select0.png","res/sound/home_bg.mp3","res/sound/button.mp3","res/playerInfo_bg.png","res/rank_bg.png","res/rank1.png","res/rank2.png","res/rank3.png","res/ko.png","res/vs.png","res/zhanji_bg.png","res/close.png","res/line_bg.png","res/rotate.png","res/rotate_shadow.png","res/bg_control.png","res/bg_message.png","res/btn_download.png","res/btn_general.png","res/btn_hd.png","res/btn_hd1.png","res/btn_general1.png","res/selectedBar.png","res/matchMoreEnd.png","res/matchEnd.png","res/btnEnd.png","res/meBtnReplay.png","res/meBtnAgain.png","res/btnStart.png","res/meBtnShare.png","res/mainMenu_bg.png","res/btn_control.png","res/btn_zhanji.png","res/btn_paihang.png","res/btn_zhanji_disable.png","res/btn_paihang_disable.png","res/btn_help.png","res/xunzhang.png","res/btnRecord.png","res/home.png","res/select_1.png","res/select_2.png","res/select_3.png","res/select_4.png","res/select_60.png","res/select_120.png","res/select_180.png","res/select_240.png","res/select_bg.png","res/help/bg_help.png","res/help/bg_text.png","res/help/bg_slide.png","res/help/btn_slide.png","res/help/btn_know.png"];
+var g_resources =["res/bg_tittle.png","res/bg_select.png","res/bg_select0.png","res/playerInfo_bg.png","res/rank_bg.png","res/rank1.png","res/rank2.png","res/rank3.png","res/ko.png","res/vs.png","res/zhanji_bg.png","res/close.png","res/line_bg.png","res/rotate.png","res/rotate_shadow.png","res/bg_control.png","res/bg_message.png","res/btn_download.png","res/btn_general.png","res/btn_hd.png","res/btn_hd1.png","res/btn_general1.png","res/selectedBar.png","res/matchMoreEnd.png","res/matchEnd.png","res/btnEnd.png","res/meBtnReplay.png","res/meBtnAgain.png","res/btnStart.png","res/meBtnShare.png","res/mainMenu_bg.png","res/btn_control.png","res/btn_zhanji.png","res/btn_paihang.png","res/btn_zhanji_disable.png","res/btn_paihang_disable.png","res/btn_help.png","res/xunzhang.png","res/btnRecord.png","res/home.png","res/select_1.png","res/select_2.png","res/select_3.png","res/select_4.png","res/select_60.png","res/select_120.png","res/select_180.png","res/select_240.png","res/select_bg.png","res/help/bg_help.png","res/help/bg_text.png","res/help/bg_slide.png","res/help/btn_slide.png","res/help/btn_know.png"];
 for (var i in res) {
     g_resources.push(res[i]);
 }

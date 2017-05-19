@@ -74,13 +74,15 @@ var userInfo ={
     headSprite:null,	//头像
     // userName:null,
     // userPassword:null,
-// "winOfMatchForOne":0,"sumOfMatchForOne":3,"winOfMatchForMore":0,"sumOfMatchForMore":0,"winOfMatchForAI":8,"sumOfMatchForAI":11,"gainCumulation":"-6.223","sumOfAllMatch":3}
+// {"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":1,"sumOfMatchForOne":28,"winOfMatchForMore":37,"sumOfMatchForMore":67,"winOfMatchForAI":16,"sumOfMatchForAI":51,"gainCumulation":"-11.285","sumOfAllMatch":28,"winMatchFriend":5,"sumMatchFriend":8,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}
     winOfMatchForOne:0,//练习场胜利次数
     sumOfMatchForOne:0,//练习场总次数
     winOfMatchForMore:0,//多人赛胜利次数
     winOfMatchForMore:0,//多人赛总次数
     winOfMatchForAI:0,//人机赛胜利次数
     sumOfMatchForAI:0,//人机赛总次数
+    winMatchFriend:0,//人机赛胜利次数"winMatchFriend":5,"sumMatchFriend":8
+    sumMatchFriend:0,//人机赛总次数
     gainCumulation:0,//收益率
     sumOfAllMatch:0,//比赛总场数
 

@@ -89,7 +89,7 @@ var MainMenuScene =SceneBase.extend(
         var size = cc.director.getWinSize();
         var fXScale = size.width/1280;
         var fYScale = size.height/720;
-        var pButtonY = 520;
+        var pButtonY = 545;//var pButtonY = 550;
         var pButtonScale = cc.p(30*fXScale,55*fYScale);
 
 		var self=this;
@@ -127,7 +127,6 @@ var MainMenuScene =SceneBase.extend(
         // this.selfNameLabel.setPosition(cc.p(240*fXScale,520*fYScale));
         this.selfNameLabel.setPosition(cc.p(240,530));
         this.backgroundSprite.addChild(this.selfNameLabel,2);
-
 
         self.infoLabel=cc.LabelTTF.create("练习场:", "Arial",fontSize);
         // self.infoLabel.setScale(0.8);
@@ -191,15 +190,35 @@ var MainMenuScene =SceneBase.extend(
         self.sumMoreLabel.setPosition(cc.pAdd(self.winMoreLabel.getPosition(),cc.p(self.winMoreLabel.getContentSize().width,0)));
         this.backgroundSprite.addChild(self.sumMoreLabel,5);
 
+        self.infoLabelFriend=new cc.LabelTTF("好友战:", res.FONT_TYPE,fontSize);
+        self.infoLabelFriend.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
+        self.infoLabelFriend.setAnchorPoint(0,0.5);
+        self.infoLabelFriend.setPosition(cc.p(450,pButtonY-90));
+        this.backgroundSprite.addChild(self.infoLabelFriend,5);
+
+        self.winFriendLabel= new cc.LabelTTF("", res.FONT_TYPE,fontSize);
+        self.winFriendLabel.setAnchorPoint(0,0.5);
+        self.winFriendLabel.setColor(YellowColor);
+        self.winFriendLabel.setPosition(cc.pAdd(self.infoLabelFriend.getPosition(),cc.p(self.infoLabelFriend.getContentSize().width,0)));
+        this.backgroundSprite.addChild(self.winFriendLabel,5);
+        self.sumFriendLabel= new cc.LabelTTF("", res.FONT_TYPE,fontSize);
+        self.sumFriendLabel.setAnchorPoint(0,0.5);
+        self.sumFriendLabel.setColor(WhiteColor);
+        self.sumFriendLabel.setPosition(cc.pAdd(self.winFriendLabel.getPosition(),cc.p(self.winFriendLabel.getContentSize().width,0)));
+        this.backgroundSprite.addChild(self.sumFriendLabel,5);
+
         self.infoLabel.setVisible(userInfo.operationType==1);
         self.infoLabelAI.setVisible(userInfo.operationType==1);
         self.infoLabelMore.setVisible(userInfo.operationType==1);
+        self.infoLabelFriend.setVisible(userInfo.operationType==1);
         self.winAILabel.setVisible(userInfo.operationType==1);
         self.winMoreLabel.setVisible(userInfo.operationType==1);
         self.winOneLabel.setVisible(userInfo.operationType==1);
+        self.winFriendLabel.setVisible(userInfo.operationType==1);
         self.sumOneLabel.setVisible(userInfo.operationType==1);
         self.sumAILabel.setVisible(userInfo.operationType==1);
         self.sumMoreLabel.setVisible(userInfo.operationType==1);
+        self.sumFriendLabel.setVisible(userInfo.operationType==1);
 
         this.setButtonInfo();
         userInfo.matchBeginFlag=false;
@@ -794,12 +813,21 @@ var MainMenuScene =SceneBase.extend(
             self.sumMoreLabel.setString("/"+userInfo.sumOfMatchForMore);
             self.sumMoreLabel.setPosition(cc.pAdd(self.winMoreLabel.getPosition(),cc.p(self.winMoreLabel.getContentSize().width,0)));
         }
+        if(userInfo.winMatchFriend!=null&&self.winFriendLabel!=null)
+        {
+            cc.log("setDataforInfoF="+userInfo.winMatchFriend);
+            self.winFriendLabel.setPosition(cc.pAdd(self.infoLabelFriend.getPosition(),cc.p(self.infoLabelFriend.getContentSize().width,0)));
+            self.winFriendLabel.setString(userInfo.winMatchFriend);
+
+            self.sumFriendLabel.setString("/"+userInfo.sumMatchFriend);
+            self.sumFriendLabel.setPosition(cc.pAdd(self.winFriendLabel.getPosition(),cc.p(self.winFriendLabel.getContentSize().width,0)));
+        }
     },
     setMainMenuScenedata:function(jsonText)
     {
         var data=JSON.parse(jsonText);
         cc.log("setMainMenuScenedata jsonText parse over");
-        // "winOfMatchForOne":0,"sumOfMatchForOne":3,"winOfMatchForMore":0,"sumOfMatchForMore":0,"winOfMatchForAI":8,"sumOfMatchForAI":11,"gainCumulation":"-6.223","sumOfAllMatch":3}
+        // {"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":1,"sumOfMatchForOne":28,"winOfMatchForMore":37,"sumOfMatchForMore":67,"winOfMatchForAI":16,"sumOfMatchForAI":51,"gainCumulation":"-11.285","sumOfAllMatch":28,"winMatchFriend":5,"sumMatchFriend":8,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}
 
         userInfo.userId = data["uid"];
         userInfo.nickName=data["nickName"];
@@ -810,6 +838,8 @@ var MainMenuScene =SceneBase.extend(
         userInfo.sumOfMatchForMore=data["sumOfMatchForMore"];
         userInfo.winOfMatchForAI=data["winOfMatchForAI"];
         userInfo.sumOfMatchForAI=data["sumOfMatchForAI"];
+        userInfo.winMatchFriend =data["winMatchFriend"];
+        userInfo.sumMatchFriend =data["sumMatchFriend"];
         userInfo.gainCumulation=data["gainCumulation"];
         userInfo.sumOfAllMatch=data["sumOfAllMatch"];
 
