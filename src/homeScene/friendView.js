@@ -300,14 +300,17 @@ var FriendViewLayer = cc.Layer.extend({
         if(gMainMenuScene!=null)
         {
             if(gMainMenuScene==false)
-            {gMainMenuScene=new MainMenuScene();}//window.close();
+            {
+                gMainMenuScene=new MainMenuScene();
+                cc.director.runScene(gMainMenuScene);
+            }//window.close();
             if(userInfo.matchBeginFlag==true){
                 var errorInfo = "好友回大厅";
                 gSocketConn.SendEndErrorMessage(errorInfo);
             }
             gSocketConn.SendInfoMessage("UNMATCH","");
             gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
-            cc.director.runScene(gMainMenuScene);
+
             //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
             //window.location.href="clear.html";
         }
