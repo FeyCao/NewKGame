@@ -1,4 +1,4 @@
-﻿//﻿ JavaScript Document用来显示对局的信息和按钮等控件
+﻿//﻿//﻿ JavaScript Document用来显示对局的信息和按钮等控件
 var MatchInfoLayer = cc.Layer.extend({
     buyDisableSprite:null,		//买入按钮关闭图片
 	buyCloseDisableSprite:null,	//买入平仓按钮关闭图片

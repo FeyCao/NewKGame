@@ -613,6 +613,7 @@ var BaseGraphLayer= cc.Layer.extend({
 	//清除所有的内容，包括画的线和指标信息表示
 	clearAllContents:function()
 	{
+		// this.clearMaxAndMinValue();
 		if(this.graphArea!=null){
 			this.graphArea.clear();
 		}
@@ -621,7 +622,17 @@ var BaseGraphLayer= cc.Layer.extend({
 			this.taisInfoLabelArray[i].setVisible(false);
 		}
 	},
-	
+
+	clearKlineData:function () {
+		this.clearUpDownArrows();
+		this.klineData=null;
+		this.maxValue=null;
+		this.minValue=null;
+		this.klineDataPrev=null;
+		this.taisArray =null;			//当前指标，可能没有，也可能有多个
+		this.taisInfoLabelArray=null;//当前所有的指标Label
+	},
+
 	//判断某个指标是否是显示着的
 	isTaisEnabled:function(taisBriefName)
 	{
@@ -670,5 +681,10 @@ var BaseGraphLayer= cc.Layer.extend({
 	redrawExceptCandles:function()
 	{
 		
+	},
+
+	clearUpDownArrows:function()
+	{
+
 	},
 });

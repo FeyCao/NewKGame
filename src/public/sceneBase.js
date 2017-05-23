@@ -181,14 +181,6 @@ SceneBase = cc.Scene.extend(
 		this.addChildEx(this.errorLayer, 10);
 		this.addChildEx(this.progressLayer, 9);
 
-		if(this.emoticonViewLayer==null) {
-			this.emoticonViewLayer=new EmoticonViewLayer();
-		}
-
-		this.emoticonViewLayer.setVisible(false);
-		this.emoticonViewLayer.setPosition(gDesignResolutionWidth / 2, gDesignResolutionHeight / 2);
-		this.addChildEx(this.emoticonViewLayer,6);
-
 
 
 		this.messageBoxLayer.setVisible(false);

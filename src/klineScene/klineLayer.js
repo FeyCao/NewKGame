@@ -281,9 +281,7 @@ var KlineLayer= BaseGraphLayer.extend({
 		var posX_Needle=posX+this.candleWidth/2;
 		upArrowSprite.setPosition(posX_Needle,posY_I-upArrowSprite.height*2/3-duplicateCount*upArrowSprite.height);
 	},
-	
-	
-	
+
 	//clearUpArrow:function()
 	//{
 	//	this.upArrowSprite.setVisible(false);

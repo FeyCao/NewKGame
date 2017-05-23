@@ -2327,8 +2327,7 @@ var KLineScene = SceneBase.extend(
 			this.countDownTimeInfo.setColor(YellowColor);
 
 		}
-		// var posCenter = cc.p(gDesignResolutionWidth / 2+130, gDesignResolutionHeight-28);
-		var posCenter = cc.p(gDesignResolutionWidth / 2, 30);
+		var posCenter = cc.p(gDesignResolutionWidth / 2+130, gDesignResolutionHeight-28);
 		this.countDownInfo.setVisible(true);
 		this.countDownInfo.setPosition(posCenter);
 		this.countDownTimeInfo.setVisible(true);

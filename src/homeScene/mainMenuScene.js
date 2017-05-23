@@ -227,6 +227,8 @@ var MainMenuScene =SceneBase.extend(
             this.onEnteredFunction();
         }
 
+        gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
+
         this.setInfoBySource(userInfo.source);
         this.openSceneType();
         var loadTime=new Date().getTime();
@@ -972,13 +974,11 @@ var MainMenuScene =SceneBase.extend(
             }
             case "5"://K线数据
             {
-                if(gKlineScene==null){
-                    gKlineScene=new KLineScene();
-                }
+                gKlineScene=new KLineScene();
 
                 userInfo.matchBeginFlag=true;
                 gSocketConn.UnRegisterEvent("onmessage",gMainMenuScene.messageCallBack);
-                gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
+                // gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
                 if(gKlineScene!=null)
                 {
                     cc.log("call get kline data");

@@ -73,9 +73,7 @@ var VolumnTechLayer= BaseGraphLayer.extend({
 				}
 				start=0;
 			}
-			
-			
-			
+
 			for(var i=start;i<=end;i++)
 			{
 				if(this.klineData[i].v>this.maxValue)
@@ -87,7 +85,6 @@ var VolumnTechLayer= BaseGraphLayer.extend({
 			this.minValue=0;
 		}
 	},
-	
 	drawCandle:function(candleIndex)
 	{
 		//cc.log("---------------drawCandle for volumn candleIndex="+candleIndex);
