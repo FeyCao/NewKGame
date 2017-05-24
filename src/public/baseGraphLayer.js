@@ -459,12 +459,13 @@ var BaseGraphLayer= cc.Layer.extend({
 		// cc.log(".........指标位置this.getPositionX()="+this.getPositionX());
 		var labelIndex=0;		// if()
 		var leftXStart=10;
+		if(this.getPositionX()>0){
+			leftXStart=10;
+		}else{
+			leftXStart=10-this.getPositionX();
+		}
 		// if(userInfo.matchMode>0){
-		// 	if(this.getPositionX()>0){
-		// 		leftXStart=10;
-		// 	}else{
-		// 		leftXStart=80-this.getPositionX();
-		// 	}
+
 		// }else{
 		// 	leftXStart=10-this.getPositionX();
 		// }
