@@ -16,6 +16,7 @@ LoginManager.prototype.instance=null;
 //一种是通过URL地址传递参数登录
 LoginManager.prototype.Login=function(username,password,source,messageCallBackFunction,connectErrorCallBackFunction)
 {
+	cc.log("LoginManager.prototype.Login");
 	this.username=username;
 	this.password=password;
 	this.source=source;
@@ -40,6 +41,7 @@ LoginManager.prototype.QuickLogin=function(source,messageCallBackFunction,connec
 //登录和注册的两个按钮，以及通过URL登录都是走的这个函数
 LoginManager.prototype.ConnectServer=function()
 {
+	cc.log("LoginManager.prototype.ConnectServer");
 	if(gSocketConn==null)
 	{
 		gSocketConn=new SocketConn();
@@ -71,7 +73,7 @@ LoginManager.prototype.ErrorConnectCallBack=function()
 //连接成功
 LoginManager.prototype.ConnectedCallBack=function()
 {
-	cc.log("connectedCallBack");
+	cc.log("LoginManager.prototype.ConnectedCallBack");
 	var self=LoginManager.instance;
 	gSocketConn.UnRegisterEvent("onopen",self.ConnectedCallBack);
 	gSocketConn.UnRegisterEvent("onerror",self.ErrorConnectCallBack);
@@ -80,6 +82,7 @@ LoginManager.prototype.ConnectedCallBack=function()
 
 LoginManager.prototype.LoginOrQuickLogin=function()
 {
+	cc.log("LoginManager.prototype.LoginOrQuickLogin");
 	if(this.operationType==1 || this.operationType==2)
 	{
 		var self=this;
@@ -99,15 +102,22 @@ LoginManager.prototype.LoginOrQuickLogin=function()
 
 LoginManager.prototype.LoginOrQucikLoginMessageCallback=function(message)
 {
+	cc.log("LoginManager.prototype.LoginOrQucikLoginMessageCallback=="+message);
+
 	var packet=Packet.prototype.Parse(message);
 	if(packet==null) return;
+	cc.log("LoginManager message callback packet.msgType="+packet.msgType);
+	cc.log("LoginManager message callback packet.content="+packet.content);
+
 	var self=LoginManager.instance;
-	gSocketConn.UnRegisterEvent("onmessage",self.LoginOrQucikLoginMessageCallback);
+	// gSocketConn.RegisterEvent("onmessage",self.messageCallBackFunction);
 	if(self.messageCallBackFunction!=null)
 	{
 		if(packet.msgType=="1" || packet.msgType=="2" || packet.msgType=="B" || packet.msgType=="C")
 		{
 			self.messageCallBackFunction(packet);
+			gSocketConn.UnRegisterEvent("onmessage",self.LoginOrQucikLoginMessageCallback);//登陆成功后再注销回调
+
 		}
 	}
 }

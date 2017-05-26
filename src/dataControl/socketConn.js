@@ -26,7 +26,7 @@ SocketConn.prototype.Connect=function(url)
 			cc.log("onmessage==="+evt.data);
 			self.onmessageevent[i](evt.data);
 		}
-		cc.log("onmessage");
+		cc.log("onmessageeAll==="+evt.data);
 	};
 
 	// when the connection is established, this method is called

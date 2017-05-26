@@ -42,6 +42,7 @@ var MainMenuScene =SceneBase.extend(
     onEnteredFunction:null,	//OnEnter调用结束后的Function
 
 
+    playerNumLabel:null,
     _itemMenu:null,
 
     ctor: function ()
@@ -71,6 +72,8 @@ var MainMenuScene =SceneBase.extend(
         this.friendLayer=null;
         this.zhanjiInfoLayer=null;
        // this.klineScene=null;
+        this.playerNumLabel=null;
+
         this.onEnteredFunction=null;
     },
 	onEnter:function () 
@@ -127,6 +130,17 @@ var MainMenuScene =SceneBase.extend(
         // this.selfNameLabel.setPosition(cc.p(240*fXScale,520*fYScale));
         this.selfNameLabel.setPosition(cc.p(240,530));
         this.backgroundSprite.addChild(this.selfNameLabel,2);
+        // this.playerNumLabel = new cc.LabelTTF("", "Arial", fontSize);
+        // // this.selfNameLabel.setScale(0.8);
+        // this.playerNumLabel.setPosition(cc.p(gDesignResolutionWidth-50,gDesignResolutionHeight-20));
+        // this.backgroundSprite.addChild( this.playerNumLabel,10);
+        if(self.playerNumLabel==null){
+            self.playerNumLabel = new cc.LabelTTF("",res.FONT_TYPE,fontSize);
+            self.playerNumLabel.setPosition(self.backgroundSprite.getContentSize().width-100,self.backgroundSprite.getContentSize().height-20);
+            self.backgroundSprite.addChild(self.playerNumLabel,10);
+        }
+
+
 
         self.infoLabel=cc.LabelTTF.create("练习场:", "Arial",fontSize);
         // self.infoLabel.setScale(0.8);
@@ -1058,6 +1072,16 @@ var MainMenuScene =SceneBase.extend(
             //     gKlineScene.showMatchEndInfo(packet.content);
             //     break;
             // }
+            case "PLAYERNUM":
+            {
+                //接收到在线人数
+                cc.log("messageCallBack.mainScenepacket.msgType="+packet.msgType+"packet.content=="+ packet.content);
+                if(self.playerNumLabel!=null){
+                    self.playerNumLabel.setString("在线人数:"+packet.content);
+                }
+
+                break;
+            }
             case "G":
             {
                 if(gKlineScene==null)

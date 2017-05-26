@@ -78,7 +78,7 @@ var TempLoadScene = SceneBase.extend(
 		{
 			gLoginManager.QuickLogin(this.source,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
 		}
-		
+		// gSocketConn.RegisterEvent("onmessage",this.messageCallBack);
 		this.showProgress();
 		loadTime=new Date().getTime();
 	},
@@ -124,7 +124,9 @@ var TempLoadScene = SceneBase.extend(
 	
 	messageCallback:function(packet)
 	{
-		cc.log("login scene message callback packet="+packet.msgType);
+        //
+		// cc.log("login scene message callback packet.msgType="+packet.msgType);
+		// cc.log("login scene message callback packet.content="+packet.content);
 		var self=this;
 		if(packet.msgType=="1")
 		{
@@ -234,6 +236,20 @@ var TempLoadScene = SceneBase.extend(
 			//分享成功
 			this.stopProgress();
 			//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+		}
+		else if(packet.msgType=="PLAYERNUM")
+		{
+			//
+			this.stopProgress();
+			//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+		}
+		else if(packet.msgType=="S")
+		{
+			//分享成功
+			this.stopProgress();
+			//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+		}else {
+			cc.log("login scene message callback packet.msgType="+packet.msgType);
 		}
 	},
 	
