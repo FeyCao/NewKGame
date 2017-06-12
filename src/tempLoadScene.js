@@ -272,7 +272,7 @@ var TempLoadScene = SceneBase.extend(
 		this._super();
 		cc.eventManager.removeAllListeners();
 		if(gSocketConn!=null)
-			gSocketConn.UnRegisterEvent("onmessage",this.messageCallBack);
+			gSocketConn.UnRegisterEvent("onmessage",this.messageCallBack);+
 		this.removeAllChildrenWithCleanup(true);
 		//全部清除方法
 		for(var each in pageTimer){

@@ -252,6 +252,7 @@ var MainMenuScene =SceneBase.extend(
 
         switch(source){
             case "ZKQQ":{
+                this.fourthMode.setEnabled(false);
                 this.thirdMode.setEnabled(false);
                 this.paimingButton.setEnabled(false);
                 this.zhanjiButton.setEnabled(false);
