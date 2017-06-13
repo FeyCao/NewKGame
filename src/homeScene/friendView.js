@@ -214,12 +214,19 @@ var FriendViewLayer = cc.Layer.extend({
         this.opponentNameLabel.setPosition(660,posD-100);
         this.backgroundSprite.addChild(this.opponentNameLabel,2);
 
-        this.infoLabel =new cc.LabelTTF("抱歉，您目前还没有好友，请到东航金融账户页\n面好友列表进行添加。", res.FONT_TYPE, 30,cc.size(35*10,400));
-        this.infoLabel.setPosition(1100,bgSize.height/2+50);
-        this.infoLabel.enableStroke(ShadowColor, 2);
+        this.infoBg = new cc.Sprite(res.BG_FRIEND_NO_png);
+        this.infoBg.setPosition(1100,bgSize.height/2+100);
+        this.backgroundSprite.addChild(this.infoBg,2);
+        this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n请到东航金融“账户”的\n“好友列表”里添加。', res.FONT_TYPE, fontSize,cc.size(35*10,300));
+        this.infoLabel.setPosition(1100,bgSize.height/2);
+        // this.infoLabel.enableStroke(ShadowColor, 2);
+        this.infoLabel.setLineHeight(40);
+        this.infoLabel.setAnchorPoint(0.5,1);
+        // this.infoLabel.setColor(cc.color(18,122,272,55));
+        this.infoLabel.setColor(cc.color(18,122,186,55));
         this.infoLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
-        this.infoLabel.verticalAlign = cc.TEXT_ALIGNMENT_CENTER;
-        this.infoLabel.setAnchorPoint(0.5,0.5);
+        this.infoLabel.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_TOP;
+        // this.infoLabel.setAnchorPoint(0.5,0.5);
         this.backgroundSprite.addChild(this.infoLabel,2);
 
         if(userInfo.headSprite!=null)
