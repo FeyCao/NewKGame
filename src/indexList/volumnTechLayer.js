@@ -52,6 +52,7 @@ var VolumnTechLayer= BaseGraphLayer.extend({
 	//计算最大最小值，直到位置index
 	calculateMaxMinBetweenIndex:function(start,end)
 	{
+		cc.log("volumnTechLayer calculateMaxMinBetweenIndex 计算以前的 start="+start);
 		if(this.canVolumnShown()==true)
 		{
 			this.maxValue=0;

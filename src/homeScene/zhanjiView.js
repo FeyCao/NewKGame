@@ -22,16 +22,37 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
     setCellView:function(idx){
         cc.log("ZhanjiTableViewCell setCellView begin");
         var self = this;
+
+        var matchData=userInfo.MatchListData[idx];
+        var userInfoTemp = matchData.userInfo;
+        var length = userInfoTemp.length;
+        for(var i=0;i<length;i++){
+            userInfoTemp[i].score=parseFloat(userInfoTemp[i].score).toFixed(2);
+        }
+        console.info("排序前");
+        console.info(userInfoTemp);
+        userInfoTemp.sort(function (a,b) {
+            if(a["userName"]==userInfo.nickName){
+                return -1;
+            }else if(b["userName"]==userInfo.nickName){
+                return 1;
+            }else {
+                cc.log("得到的战绩信息有误！！！请核对");
+                return -1;
+            }
+        });
+        console.info("排序后");
+        console.info(userInfoTemp);
         touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
-        var size = touxiangSprite.getContentSize();
-        touxiangSprite.setScale(68/size.width,68/size.height);
+        touxiangSprite.setScale(0.6);
         touxiangSprite.setPosition(cc.p(80,40));
         this.addChild(touxiangSprite,2);
 
-        var url = userInfo.MatchListData[idx]["headPicture"];
+        var url = userInfoTemp[0]["headPicture"];
         cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
             if(err){
                 cc.log(err);
+                cc.log("战绩：fail loadImg="+url); // self.addChild(logo);
             }
             if(img){
                 cc.log("img!=null"+img);
@@ -49,52 +70,52 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
                 headSprite.setScale(66/size.width,66/size.height);
                 headSprite.setPosition(cc.p(80,40));
                 self.addChild(headSprite,2);
-                // self.touxiangSprite.setValue(false);
+                cc.log("战绩：success loadImg="+url); // self.addChild(logo); // self.touxiangSprite.setValue(false);
             }
-            cc.log("loadImg="+userInfo.headSprite); // self.addChild(logo);
         });
 
-        strNameText= userInfo.MatchListData[idx]["nickName"];
+        strNameText= userInfoTemp[0]["userName"];
         textNameLabel = new cc.LabelTTF(cutstr(strNameText,11), "Arial", 25.0);
         textNameLabel.setPosition(cc.p(150,20));
         textNameLabel.setAnchorPoint(0,0.5);
         this.addChild(textNameLabel);
+
         //设置收益
-        strScoreText= userInfo.MatchListData[idx]["score"]+"%";
-        textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 25.0);
+        strScoreText= userInfoTemp[0]["score"]+"%";
+        textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
         textScoreLabel.setPosition(cc.p(150,60));
         textScoreLabel.setAnchorPoint(0,0.5);
-        if(userInfo.MatchListData[idx]["score"]>0)
-        {
-            textScoreLabel.setColor(RedColor);
-        }
-        else if(userInfo.MatchListData[idx]["score"]<0)
-        {
-            textScoreLabel.setColor(GreenColor);
-        }
-        else
-        {
-            textScoreLabel.setColor(WhiteColor);
-        }
+        textScoreLabel.setColor(setLabelColor(userInfoTemp[0]["score"]));
+
+        // if(userInfoTemp["score"]>0)
+        // {
+        //     textScoreLabel.setColor(RedColor);
+        // }
+        // else if(userInfoTemp["score"]<0)
+        // {
+        //     textScoreLabel.setColor(GreenColor);
+        // }
+        // else
+        // {
+        //     textScoreLabel.setColor(WhiteColor);
+        // }
         this.addChild(textScoreLabel);
 
         //设置时间
-        strTimeText= userInfo.MatchListData[idx]["matchTime"];
-        textTimeLabel = new cc.LabelTTF(strTimeText, "Arial", 20.0);
+        strTimeText= matchData["matchTime"];
+        textTimeLabel = new cc.LabelTTF(strTimeText, "Arial", 25.0);
         textTimeLabel.setPosition(cc.p(880,70));
         textTimeLabel.setAnchorPoint(0.5,0.5);
         textTimeLabel.setColor(lightBlueColor);
         this.addChild(textTimeLabel);
 
-
-        //设置查看交易记录按钮
         //设置查看交易记录按钮
         recordButton=new Button("res/btnRecord.png");
         recordButton.setAnchorPoint(0.5,0.5);
         recordButton.setPosition(cc.p(880,30));
         this.spriteBg.addChild(recordButton);
-        var matchId = userInfo.MatchListData[idx]["matchId"];
-        var userId = userInfo.MatchListData[idx]["nickName"];
+        var matchId = matchData["matchId"];
+        var userId = userInfoTemp[0]["userName"];
         cc.log("recordButton ClickEvent userId["+idx+"] ="+userId+"||matchId="+matchId);
         recordButton.setClickEvent(function(){
 
@@ -103,23 +124,19 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
 
             };
             userInfo.matchMode=userInfo.recordMode;
-            gSocketConn.SendRecordMessage(userId,matchId);
+            gSocketConn.SendRecordMessage(matchId,userId);
             cc.director.runScene(klineSceneNext);
 
         });
 
-        // if(data["matchId"]!=undefined)
-        // {
-        //     userInfo.matchId=data["matchId"];
-        // }
         cc.log("ZhanjiTableViewCell setCellView middle");
-        var playerdata = userInfo.MatchListData[idx]["playerList"];
-        if(typeof(playerdata)!="undefined"&&playerdata.length>1)
+
+        if(typeof(userInfoTemp)!="undefined"&&userInfoTemp.length>1)
         {
             matchFlag =cc.Sprite.create("res/vs.png");
             matchFlag.setPosition(cc.p(420,40));
             this.addChild(matchFlag);
-            if(playerdata[0]["ranking"]==1)
+            if(userInfoTemp[0]["rank"]==1)
             {
                 matchFlag.setTexture("res/ko.png");
             }
@@ -133,7 +150,7 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
             // playerSprite.setPosition(cc.p(530,40));
             // this.addChild(playerSprite,2);
 
-            var url = playerdata[1]["headPicture"];
+            var url = userInfoTemp[1]["headPicture"];
             cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
                 if(err){
                     cc.log(err);
@@ -154,19 +171,19 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
                     self.addChild(headSpriteAI,2);
                     // self.touxiangSprite.setValue(false);
                 }
-                cc.log("loadImg="+userInfo.headSprite); // self.addChild(logo);
+                cc.log("loadImg="+url); // self.addChild(logo);
             });
-            playerNameText= playerdata[1]["userName"];
+            playerNameText= userInfoTemp[1]["userName"];
             playerNameLabel = new cc.LabelTTF(cutstr(playerNameText,11), "Arial", 25.0);
             playerNameLabel.setPosition(cc.p(570,20));
             playerNameLabel.setAnchorPoint(0,0.5);
             this.addChild(playerNameLabel);
             //设置收益
-            strScoreplayer= playerdata[1]["score"]+"%";
+            strScoreplayer= userInfoTemp[1]["score"]+"%";
             playerScoreLabel = new cc.LabelTTF(strScoreplayer, "Arial", 25.0);
             playerScoreLabel.setPosition(cc.p(570,60));
             playerScoreLabel.setAnchorPoint(0,0.5);
-            playerScoreLabel.setColor(setLabelColor(playerdata[1]["score"]));
+            playerScoreLabel.setColor(setLabelColor(userInfoTemp[1]["score"]));
 
             this.addChild(playerScoreLabel);
         }
@@ -182,24 +199,30 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
         if(userInfo.MatchListData!=null)
         {
 
+            var matchData=userInfo.MatchListData[idx];
+            var userInfoTemp = matchData.userInfo[0];
+            userInfoTemp.score=parseFloat(userInfoTemp.score).toFixed(2);
+            // userInfo.AvgGain=parseFloat(data["AvgGain"]).toFixed(2);
+
+            // this.setCellView(idx);
             //{"matchId":7661,"uid":3434343770,"nickName":"誓约者艾琳诺","score":"0.00","matchTime":"11-16 16:36","playerNum":1,"matchType":2,"playerList":[{"userName":"誓约者艾琳诺","score":"0.00","ranking":1},{"userName":"唐奇安通道","score":"-1.22","ranking":2}]}
             //设置用户名
             // strNameText= userInfo.MatchListData[idx]["uid"];
             switch (userInfo.recordMode)
             {
 
-                case 0:
+                case MatchType.Type_Practice_Match:
                 {
                     touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
                     touxiangSprite.setScale(0.6);
                     touxiangSprite.setPosition(cc.p(80,40));
                     this.addChild(touxiangSprite,2);
 
-                    var url = userInfo.MatchListData[idx]["headPicture"];
+                    var url = userInfoTemp["headPicture"];
                     cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
                         if(err){
                             cc.log(err);
-                            cc.log("战绩：fail loadImg="+userInfo.headSprite); // self.addChild(logo);
+                            cc.log("战绩：fail loadImg="+url); // self.addChild(logo);
                         }
                         if(img){
                             cc.log("img!=null"+img);
@@ -217,26 +240,26 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
                             headSprite.setScale(66/size.width,66/size.height);
                             headSprite.setPosition(cc.p(80,40));
                             self.addChild(headSprite,2);
-                            cc.log("战绩：success loadImg="+userInfo.headSprite); // self.addChild(logo); // self.touxiangSprite.setValue(false);
+                            cc.log("战绩：success loadImg="+url); // self.addChild(logo); // self.touxiangSprite.setValue(false);
                         }
                     });
 
-                    strNameText= userInfo.MatchListData[idx]["nickName"];
+                    strNameText= userInfoTemp["userName"];
                     textNameLabel = new cc.LabelTTF(cutstr(strNameText,11), "Arial", 25.0);
                     textNameLabel.setPosition(cc.p(150,40));
                     textNameLabel.setAnchorPoint(0,0.5);
                     this.addChild(textNameLabel);
 
                     //设置收益
-                    strScoreText= userInfo.MatchListData[idx]["score"]+"%";
+                    strScoreText= userInfoTemp["score"]+"%";
                     textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
                     textScoreLabel.setPosition(cc.p(400,40));
                     textScoreLabel.setAnchorPoint(0,0.5);
-                    if(userInfo.MatchListData[idx]["score"]>0)
+                    if(userInfoTemp["score"]>0)
                     {
                         textScoreLabel.setColor(RedColor);
                     }
-                    else if(userInfo.MatchListData[idx]["score"]<0)
+                    else if(userInfoTemp["score"]<0)
                     {
                         textScoreLabel.setColor(GreenColor);
                     }
@@ -247,22 +270,20 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
                     this.addChild(textScoreLabel);
 
                     //设置时间
-                    strTimeText= userInfo.MatchListData[idx]["matchTime"];
+                    strTimeText= matchData["matchTime"];
                     textTimeLabel = new cc.LabelTTF(strTimeText, "Arial", 25.0);
                     textTimeLabel.setPosition(cc.p(600,40));
                     textTimeLabel.setAnchorPoint(0,0.5);
                     textTimeLabel.setColor(WhiteColor);
                     this.addChild(textTimeLabel);
 
-
-                    //设置查看交易记录按钮
                     //设置查看交易记录按钮
                     recordButton=new Button("res/btnRecord.png");
                     recordButton.setAnchorPoint(0,0.5);
                     recordButton.setPosition(cc.p(800,40));
                     this.spriteBg.addChild(recordButton);
-                    var matchId = userInfo.MatchListData[idx]["matchId"];
-                    var userId = userInfo.MatchListData[idx]["nickName"];
+                    var matchId = matchData["matchId"];
+                    var userId = userInfoTemp["userName"];
                     cc.log("recordButton ClickEvent userId["+idx+"] ="+userId+"||matchId="+matchId);
                     recordButton.setClickEvent(function(){
 
@@ -271,29 +292,21 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
 
                         };
                         userInfo.matchMode=userInfo.recordMode;
-                        gSocketConn.SendRecordMessage(userId,matchId);
+                        gSocketConn.SendRecordMessage(matchId,userId);
                         cc.director.runScene(klineSceneNext);
 
                     });
                     break;
                 }
-                case 4:
-                case 1:
-                {
-                    this.setCellView(idx);
-                    // this.mode3Button.setDisabled(true);
-                    break;
-                }
-                case 2:
+                case MatchType.Type_PlainMultiplayer_Match:
+                case MatchType.Type_ArtificialMatch:
+                case MatchType.Type_Friend_Match:
                 {
                     this.setCellView(idx);
 
                     break;
                 }
-                // case 3:
-                // {
-                //     break;
-                // }
+
                 default:
                 {
                     cc.log("userInfo.recordMode=="+userInfo.recordMode);
@@ -453,7 +466,7 @@ var ZhanjiViewLayer = cc.Layer.extend({
             this.mode1Button.setPosition(cc.p(300,520));
             this.mode1Button.setClickEvent(function(){
                 cc.log("mode1Button ClickEvent");
-                userInfo.recordMode=0;
+                userInfo.recordMode=MatchType.Type_Practice_Match;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.zhanji();
@@ -467,7 +480,7 @@ var ZhanjiViewLayer = cc.Layer.extend({
             this.mode2Button.setPosition(cc.p(525,520));
             this.mode2Button.setClickEvent(function(){
                 cc.log("mode2Button ClickEvent");
-                userInfo.recordMode=2;
+                userInfo.recordMode=MatchType.Type_ArtificialMatch;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.zhanji();
@@ -482,7 +495,7 @@ var ZhanjiViewLayer = cc.Layer.extend({
             this.mode3Button.setPosition(cc.p(750,520));
             this.mode3Button.setClickEvent(function(){
                 cc.log("mode3Button ClickEvent");
-                userInfo.recordMode=1;
+                userInfo.recordMode=MatchType.Type_PlainMultiplayer_Match;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.zhanji();
@@ -496,7 +509,7 @@ var ZhanjiViewLayer = cc.Layer.extend({
             this.mode4Button.setPosition(cc.p(975,520));
             this.mode4Button.setClickEvent(function(){
                 cc.log("mode4Button ClickEvent");
-                userInfo.recordMode=4;
+                userInfo.recordMode=MatchType.Type_Friend_Match;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.zhanji();
@@ -509,14 +522,14 @@ var ZhanjiViewLayer = cc.Layer.extend({
         this.refreshZhanjiViewLayer();
     },
     setALLButtonStatus:function(){
-        this.mode1Button.setDisabled(userInfo.recordMode==0);
-        this.mode2Button.setDisabled(userInfo.recordMode==2);
-        this.mode3Button.setDisabled(userInfo.recordMode==1);
-        this.mode4Button.setDisabled(userInfo.recordMode==4);
-        this.mode1Button.setTextureByStatus(userInfo.recordMode==0);
-        this.mode2Button.setTextureByStatus(userInfo.recordMode==2);
-        this.mode3Button.setTextureByStatus(userInfo.recordMode==1);
-        this.mode4Button.setTextureByStatus(userInfo.recordMode==4);
+        this.mode1Button.setDisabled(userInfo.recordMode==MatchType.Type_Practice_Match);
+        this.mode2Button.setDisabled(userInfo.recordMode==MatchType.Type_ArtificialMatch);
+        this.mode3Button.setDisabled(userInfo.recordMode==MatchType.Type_PlainMultiplayer_Match);
+        this.mode4Button.setDisabled(userInfo.recordMode==MatchType.Type_Friend_Match);
+        this.mode1Button.setTextureByStatus(userInfo.recordMode==MatchType.Type_Practice_Match);
+        this.mode2Button.setTextureByStatus(userInfo.recordMode==MatchType.Type_ArtificialMatch);
+        this.mode3Button.setTextureByStatus(userInfo.recordMode==MatchType.Type_PlainMultiplayer_Match);
+        this.mode4Button.setTextureByStatus(userInfo.recordMode==MatchType.Type_Friend_Match);
     },
 
     toMainScene:function () {

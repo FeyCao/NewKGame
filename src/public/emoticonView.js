@@ -123,21 +123,22 @@ var EmoticonViewLayer = cc.LayerColor.extend({
 
         this.hideLayer();
         var userName = userInfo.nickName;
-        cc.log("FACE NAME=="+userName);
-        gSocketConn.SendFaceMessage(userName,1);
+        cc.log("FACE NAME1=="+userName+"|FaceType.Face_laugh="+FaceType.Face_laugh);
+        gSocketConn.SendFaceMessage(userName,FaceType.Face_laugh);
+        // gSocketConn.SendFaceMessage(userName,1);
 
     },
     sendFace2:function () {
         this.hideLayer();
         var userName = userInfo.nickName;
-        cc.log("FACE NAME=="+userName);
-        gSocketConn.SendFaceMessage(userName,2);
+        cc.log("FACE NAME2=="+userName+"|FaceType.Face_rage="+FaceType.Face_rage);
+        gSocketConn.SendFaceMessage(userName,FaceType.Face_rage);
     },
     sendFace3:function () {
         this.hideLayer();
         var userName = userInfo.nickName;
-        cc.log("FACE NAME=="+userName);
-        gSocketConn.SendFaceMessage(userName,3);
+        cc.log("FACE NAME3=="+userName+"|FaceType.Face_cry="+FaceType.Face_cry);
+        gSocketConn.SendFaceMessage(userName,FaceType.Face_cry);
     },
     hideLayer:function()
     {
@@ -283,13 +284,17 @@ var ToolsViewLayer = cc.LayerColor.extend({
         setTimeout(function(){gKlineScene.matchInfoLayer.ableToolButtons();},5000);
     },
 
+
+    // Tool_Cover=0;
+    // Tool_Ban_keyboard=1;
     sendTool1:function () {//red2green,cover,ban
 
         this.hideLayer();
         this.toolEnableCD();
         var toolName = "red2green";//红绿颠倒效果
         cc.log("TOOL NAME1=="+toolName);
-        gSocketConn.SendToolMessage(toolName);
+        // gSocketConn.SendToolMessage(toolName);
+        gSocketConn.SendToolMessage(ToolType.Tool_red2green);
     },
     sendTool2:function () {//遮盖效果
         this.hideLayer();
@@ -300,7 +305,8 @@ var ToolsViewLayer = cc.LayerColor.extend({
 
         var toolName = "cover";
         cc.log("TOOL NAME2=="+toolName);
-        gSocketConn.SendToolMessage(toolName);
+        // gSocketConn.SendToolMessage(toolName);
+        gSocketConn.SendToolMessage(ToolType.Tool_Cover);
     },
     sendTool3:function () {//禁止买卖操作
         this.hideLayer();
@@ -311,7 +317,8 @@ var ToolsViewLayer = cc.LayerColor.extend({
         }
         var toolName = "ban";
         cc.log("TOOL NAME3=="+toolName);
-        gSocketConn.SendToolMessage(toolName);
+        gSocketConn.SendToolMessage(ToolType.Tool_Ban_keyboard);
+        // gSocketConn.SendToolMessage(toolName);
     },
     hideLayer:function()
     {

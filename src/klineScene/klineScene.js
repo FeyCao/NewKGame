@@ -483,9 +483,14 @@ var KLineScene = SceneBase.extend(
 			cc.log("setPlayerInfo:function()");
 			this.playerInfoLayer.refreshScoresByData();
 		}
+		// case MatchType.Type_Practice_Match:
+		// case MatchType.Type_ArtificialMatch://人机匹配
+		// case MatchType.Type_Tool_Match://道具匹配
+		// case MatchType.Type_Friend_Match://好友匹配
+		// case MatchType.Type_PlainMultiplayer_Match://普通匹配
 		switch(userInfo.matchMode)
 		{
-			case 0:
+			case MatchType.Type_Practice_Match:
 			{
 				this.KlineWidth = 726;
 				this.KlinePosX = 5;
@@ -501,7 +506,7 @@ var KLineScene = SceneBase.extend(
 
 				break;
 			}
-			case 2:
+			case MatchType.Type_ArtificialMatch://人机匹配
 			{
 				// this.KlineWidth = this.size.width-120*this.fXScale;
 				// this.KlinePosX = 120*this.fXScale;
@@ -521,9 +526,9 @@ var KLineScene = SceneBase.extend(
 
 				break;
 			}
-			case 4:
-			case 3:
-			case 1:
+			case MatchType.Type_Tool_Match://道具匹配
+			case MatchType.Type_Friend_Match://好友匹配
+			case MatchType.Type_PlainMultiplayer_Match://普通匹配
 			{
 				// this.KlineWidth = this.size.width-120*this.fXScale;
 				// this.KlinePosX = 120*this.fXScale;
@@ -652,31 +657,51 @@ var KLineScene = SceneBase.extend(
 	
 	messageCallBack:function(message)
 	{
-		cc.log("KlineScene messageCallBack.begin..");
-		var packet=Packet.prototype.Parse(message);
-		var self=gKlineScene;
-		if(packet==null) return;
-		switch(packet.msgType)
-		{
-			case "8":
-			{
-				//收到对方买入的信息
-				//alert("8="+packet.content);
-				var buyOperationIndex=parseInt(packet.content.split("#")[1]);
-				self.opponentOperations.push(buyOperationIndex);
-				self.refreshScores();
-			}
 
-			case "9":
+		// var data = message.hisdataInfo;
+		cc.log("KlineScene messageCallBack.begin..");
+		// var packet=Packet.prototype.Parse(message);
+		var self=gKlineScene;
+		// if(packet==null) return;
+		if(message==null) return;
+		if(message.messageType==MessageType.Type_Warn){
+			cc.log("login scene message callback warnInfo msgType="+message.messageType);
+			self.showErrorBox("登录失败:"+message.warn.warnInfo,function(){self.errorBoxClosed();});
+		}
+		switch(message.messageType)
+		{
+			case MessageType.Type_Hall_Info://切换登录
 			{
-				//收到对方卖出的信息
+				if(self.loginViewLayer!=null){
+					self.LoginViewLayer_Close();
+				}
+
+				if(gMainMenuScene!=null){
+					gMainMenuScene.setMainMenuScenedata(message.hallInfo);
+				}
+
+				cc.log("get MainMenuScene passed");
+				self.stopProgress();
+
+
+				break;
+			}
+			case MessageType.Type_Score:
+			{
+				//收益信息
 				//alert("9="+packet.content);
-				var sellOperationIndex=parseInt(packet.content.split("#")[1]);
-				self.opponentOperations.push(-sellOperationIndex);
-				self.refreshScores();
+				var scoreInfo = message.score;
+				self.showPlayerInfoPb(scoreInfo);
 				break;
 			}
 
+			case MessageType.Type_End_Match_Info:
+			{
+				//接收到对局结束
+				//alert("接收到对局结束");
+				self.showMatchEndPbInfo(message.endMatchInfo);
+				break;
+			}
 			case "4":
 			{
 				//
@@ -685,12 +710,15 @@ var KLineScene = SceneBase.extend(
 				self.stopProgress();
 				break;
 			}
-			case "5":
+			case MessageType.Type_HisdataInfo:
 			{
 				//接收到了K线数据的消息we
 				userInfo.matchBeginFlag=true;
 				cc.log("jsonText parseK线数据over");
-				self.getklinedata(packet.content);
+				// self.getklinedata(packet.content);
+				var data = message.hisdataInfo;
+				userInfo.matchRecordFlag = false;
+				self.setklinePbdata(data);
 
 				self.stopProgress();
 				 // self.setDataForLlineLayerTest();
@@ -739,6 +767,38 @@ var KLineScene = SceneBase.extend(
 				cc.log("成功接收到了K线数据的分享数据");
 				break;
 			}
+			case MessageType.Type_Share:
+			{
+				//成功接收到了K线数据的分享数据
+				cc.log("MessageType.Type_Share线分享数据over");
+				var data = message.shareInfo;
+				userInfo.matchRecordFlag = true;
+				self.setklinePbdata(data);
+				self.advanceToMainKLine_Share();
+				cc.log("成功接收到了K线数据的分享数据");
+				break;
+			}
+			case "O"://观看记录
+			{
+				cc.log("begin to parse 观看记录json text");
+				userInfo.matchFlag = true;
+				self.getklinedata(packet.content);
+				self.advanceToMainKLine_Record();
+				cc.log("get 观看记录 passed");
+
+				break;
+			}
+			case MessageType.Type_Match_Record:
+			{
+				//成功接收到了K线数据的观看记录数据
+				cc.log("MessageType.Type_Match_Record数据r");
+				var data = message.matchRecord;
+				userInfo.matchRecordFlag = true;
+				self.setklinePbdata(data);
+				self.advanceToMainKLine_Record();
+				cc.log("成功接收到了K线数据的分享数据");
+				break;
+			}
 			case "I":
 			{
 				//接收到了K线数据的分享错误消息
@@ -754,6 +814,7 @@ var KLineScene = SceneBase.extend(
 				self.showMatchEndInfo(packet.content);
 				break;
 			}
+
 
 			// case "Z"://接收到战绩的数据
 			// {
@@ -773,16 +834,7 @@ var KLineScene = SceneBase.extend(
 				self.stopProgress();
 				break;
 			}
-			case "O"://观看记录
-			{
-				cc.log("begin to parse 观看记录json text");
-				userInfo.matchFlag = true;
-				self.getklinedata(packet.content);
-				self.advanceToMainKLine_Record();
-				cc.log("get 观看记录 passed");
 
-				break;
-			}
 			case "Y"://观看交易记录Match
 			{
 				cc.log("begin 观看交易记录Match");
@@ -892,7 +944,7 @@ var KLineScene = SceneBase.extend(
 				inviteInfo.code = packet.content.split("#")[0];
 				inviteInfo.friendName = packet.content.split("#")[1];
 				inviteInfo.picUrl = packet.content.split("#")[2];
-				userInfo.matchMode = 4;
+				userInfo.matchMode = MatchType.Type_Friend_Match;
 				// var self = this;
 				if(self.invitedViewLayer==null){
 					self.invitedViewLayer=new InvitedViewLayer();
@@ -926,13 +978,7 @@ var KLineScene = SceneBase.extend(
 				break;
 
 			}
-			// case "2":
-			// {
-			// 	//登录失败
-			// 	self.stopProgress();
-			// 	self.showErrorBox(packet.content,function(){self.errorBoxClosed();});
-			// 	break;
-			// }
+
 			case "FACE"://表情处理
 			{
 				//接收到对局结束
@@ -953,14 +999,83 @@ var KLineScene = SceneBase.extend(
 
 				break;
 			}
-            case "TOOL"://被使用了道具信息处理
+            case MessageType.Type_Face://表情处理
+			{
+				//接收到对局结束
+				//alert("接收到对局结束");
+				// // self.showMatchEndInfo(packet.content);
+				// var userNickName=packet.content.split("#")[0];
+				// var faceNum = packet.content.split("#")[1];
+				var data = message.faceInfo;
+				var userNickName=data.senderInfo["userName"];
+				var faceNum = data.faceType+1;//匹配表情图
+				cc.log("userNickName=="+userNickName+"||faceNum=="+faceNum);
+
+				if(null!=self.matchInfoLayer){
+					self.matchInfoLayer.showFaceSprite(userNickName,faceNum);
+				}
+
+				// userId:null,//
+				// 	deviceId:null,//设备号
+				// userInfo.username=gPlayerName;
+				// userInfo.password=packet.content.split("#")[1];
+
+				break;
+			}
+            case MessageType.Type_Tool://使用了道具信息处理
             {
-                //接收到对局结束
-                //alert("接收到对局结束");
-                // self.showMatchEndInfo(packet.content);
-               var toolType = packet.content;
+
+				var toolInfo = message.toolInfo;
+				var noticeInfo = toolInfo.broardcastInfo;//道具描述
+				gKlineScene.barInfo.setString(noticeInfo);
+				// gKlineScene.barInfo.setVisible(true);
+				gKlineScene.barSprite.setVisible(true);
+				pageTimer["hideBar"] = setTimeout(function(){gKlineScene.hideBarInfo();},5000);
+               var toolType = toolInfo.toolType;
                 // var faceNum = packet.content.split("#")[1];
                 cc.log("TOOLTYPE=="+toolType);
+
+				var senderFlag = toolInfo.senderInfo["userName"]==userInfo.nickName?true:false;
+				gKlineScene.setCountDownInfo();
+				switch(toolInfo.toolType){
+					case ToolType.Tool_red2green:{//红绿颠倒
+						gKlineScene.drawOppositeCandlePart(senderFlag);
+						// gKlineScene.setCountDownInfo();
+						break;
+					}
+					case ToolType.Tool_Cover:{//遮盖效果
+						// gKlineScene.setCountDownInfo();
+						gKlineScene.drawCoverCandlePart(senderFlag);
+						break;
+					}
+					case ToolType.Tool_Ban_keyboard:{//禁止买卖操作
+						gKlineScene.drawBanCandlePart(senderFlag);
+						break;
+					}
+					default:{//其它无效信息
+						cc.log("TOOLTYPE messageCallBack..default TOOL NAME."+toolType);
+						break;
+					}
+
+				}
+				cc.log("KlineScene messageCallBack..TOOL NAME."+message);
+
+
+                // userId:null,//
+                // 	deviceId:null,//设备号
+                // userInfo.username=gPlayerName;
+                // userInfo.password=packet.content.split("#")[1];
+
+                break;
+            }
+			case "TOOL"://被使用了道具信息处理
+			{
+				//接收到对局结束
+				//alert("接收到对局结束");
+				// self.showMatchEndInfo(packet.content);
+				var toolType = packet.content;
+				// var faceNum = packet.content.split("#")[1];
+				cc.log("TOOLTYPE=="+toolType);
 
 				gKlineScene.setCountDownInfo();
 				switch(toolType){
@@ -987,13 +1102,13 @@ var KLineScene = SceneBase.extend(
 				cc.log("KlineScene messageCallBack..TOOL NAME."+message);
 
 
-                // userId:null,//
-                // 	deviceId:null,//设备号
-                // userInfo.username=gPlayerName;
-                // userInfo.password=packet.content.split("#")[1];
+				// userId:null,//
+				// 	deviceId:null,//设备号
+				// userInfo.username=gPlayerName;
+				// userInfo.password=packet.content.split("#")[1];
 
-                break;
-            }
+				break;
+			}
 
 				// TNOTICE|坎坎坷坷6xcvd对5566使用了道具“键盘损坏”|
 			case "TNOTICE":
@@ -1055,6 +1170,19 @@ var KLineScene = SceneBase.extend(
 		this.matchEndInfoLayer.showLayer();
 		this.pauseLowerLayer();
 	},
+	showMatchEndPbInfo:function(endMatchInfo)
+	{
+		cc.log("showMatchEndInfo  visible = true");
+		var self=this;
+
+		this.matchEndInfoLayer.applyParamsFromPb(endMatchInfo);
+		//content的内容为:   总用户个数(假设为2)#用户名A#收益率A#得分A#用户名B#收益率B#得分B#品种名字#起始日期#终止日期
+		this.matchEndInfoLayer.againCallBackFunction=function(){self.matchEndInfoLayer_Again()};
+		this.matchEndInfoLayer.replayCallBackFunction=function(){self.matchEndInfoLayer_Replay()};
+		this.matchEndInfoLayer.shareCallBackFunction=function(){self.matchEndInfoLayer_Share()};
+		this.matchEndInfoLayer.showLayer();
+		this.pauseLowerLayer();
+	},
 	showPlayerInfo:function(content)
 	{
 		cc.log("showPlayerInfo  begin to parse json text");
@@ -1092,6 +1220,49 @@ var KLineScene = SceneBase.extend(
 		}
 		this.drawCandleStoped=false;
 	},
+	showPlayerInfoPb:function(score)
+	{
+		cc.log("showPlayerInfoPb  begin to parse json text");
+		/*message MatchUserInfo{
+
+		 required string userName=1;
+		 required double score=2;
+		 optional int32 ranking=3;
+		 required string headPicture=4;
+		 repeated int32 operationIndex=5;
+		 }*/
+		 var playerListData=score["playerInfo"];
+		userInfo.playerListData=[];
+		for(var i=0;playerListData!=null&&i<playerListData.length;i++)
+		{
+			var playerData=playerListData[i];
+			cc.log("showPlayerInfo playerData.userName="+playerData["userName"]);
+			userInfo.playerListData.push(playerData);
+		}
+
+		//把该用户信息排在第一位
+		for(var i=userInfo.playerListData.length-1;i>0;i--)
+		{
+			for(var j=i;j>0;j--)
+			{
+				if(userInfo.playerListData[j]["userName"]==userInfo.nickName)
+				{
+					var temp = userInfo.playerListData[j];
+					userInfo.playerListData[j] =userInfo.playerListData[j-1];
+					userInfo.playerListData[j-1] =temp;
+				}
+			}
+		}
+		cc.log("showPlayerInfo  this.playerInfoLayer.refreshScoresByData();");
+		this.playerInfoLayer.refreshScoresByData();
+
+		var indexFromServe = userInfo.playerListData[0]["currentIndex"];//加一修正
+		if(indexFromServe>this.currentCandleIndex-121){
+
+			this.drawHistoryCandlePartToIndex(121+indexFromServe);
+		}
+		this.drawCandleStoped=false;
+	},
 	matchEndInfoLayer_Replay:function()
 	{
 		if(gMainMenuScene!=null)
@@ -1125,8 +1296,25 @@ var KLineScene = SceneBase.extend(
 	matchEndInfoLayer_Share:function()
 	{
 		//分享
-		gSocketConn.SendShareMessage();
+
+		var content ="";
+		if(userInfo.score<100)
+		{
+			content = "取得收益"+userInfo.score+"%25%0a不服点我"
+		}
+		else
+		{
+			content = "取得收益"+userInfo.score+"%25%0a世界上不超过10人玩到100%25"
+		}
 		//分享函数
+		var url = "share.html?"+"tittle=share&userName="+userInfo.nickName+"&matchId="+userInfo.matchId+"&head="+"趋势突击&subtitle="+content+"subtitleEnd";
+		//share.html?userId=167&matchId=150
+//		var url = "WebSocketClient.html?"+"userId="+userId+"&matchId="+matchId;取得收益
+		cc.log(url);
+//		gSocketConn.ShareMessage(userID,matchID);
+//
+		window.open(url);
+		// window.location.href=url;
 		
 	},
 
@@ -1222,7 +1410,7 @@ var KLineScene = SceneBase.extend(
         var self=this;
         klineSceneNext.onEnteredFunction=function(){
             cc.log("klineSceneNext onEnteredFunction end");
-			if(userInfo.matchMode==4){
+			if(userInfo.matchMode==MatchType.Type_Friend_Match){
 				gSocketConn.BeginMatch("4");
 				gSocketConn.getFriendList();
 				if(gKlineScene.friendLayer==null){
@@ -1397,6 +1585,77 @@ var KLineScene = SceneBase.extend(
 		gKlineScene.setPlayerInfo();
 
 	},
+	setklinePbdata:function(data)
+	{
+		var self=this;
+		self.mainDataDayCount=data["handleDay"];
+
+		self.klineData=[];
+		// var dailyData=data["data"];
+		var klinePbData=data["oneDayInfo"];
+		var dayInfolengths = klinePbData.length;
+
+		self.prevDataDayCount=dayInfolengths-self.mainDataDayCount;
+		self.klineData=[];
+		for(var i=0;i<dayInfolengths;i++)
+		{
+			var dailyData = klinePbData[i];
+			self.klineData.push({o:dailyData["open"],x:dailyData["max"],i:dailyData["min"],c:dailyData["close"],v:dailyData["vol"]});
+		}
+
+		self.klinedataMain=[];
+		for(var i=self.prevDataDayCount;i<dayInfolengths;i++)
+		{
+			var dailyData = klinePbData[i];
+			self.klinedataMain.push({o:dailyData["open"],x:dailyData["max"],i:dailyData["min"],c:dailyData["close"],v:dailyData["vol"]});
+		}
+
+		self.prevKlineData=[];
+		for(var i=0;i<self.prevDataDayCount;i++)
+		{
+			var dailyData = klinePbData[i];
+			self.prevKlineData.push({o:dailyData["open"],x:dailyData["max"],i:dailyData["min"],c:dailyData["close"],v:dailyData["vol"]});
+		}
+		cc.log("setklinePbdata mainDataDayCount="+this.mainDataDayCount+" prevDataDayCount="+this.prevDataDayCount);
+		var playerListData=data["playerInfo"];
+		userInfo.playerListData=[];
+		for(var i=0;playerListData!=undefined&&i<playerListData.length;i++)
+		{
+			var playerData=playerListData[i];
+			cc.log("playerData.userName="+playerData["userName"]);
+			userInfo.playerListData.push(playerData);
+			//this.MatchListData.push({matchId:matchData["matchId"],matchTime:matchData["matchId"],playerNum:matchData["matchId"],score:matchData["matchId"],uid:matchData["matchId"]});
+		}
+		//把该用户信息排在第一位
+		for(var i=userInfo.playerListData.length-1;i>0;i--)
+		{
+			for(var j=i;j>0;j--)
+			{
+				cc.log("playerData.userName="+userInfo.playerListData[j]["userName"]+"userInfo.nickName"+userInfo.nickName);
+				if(userInfo.playerListData[j]["userName"]==userInfo.nickName)
+				{
+					var temp = userInfo.playerListData[j];
+					userInfo.playerListData[j] =userInfo.playerListData[j-1];
+					userInfo.playerListData[j-1] =temp;
+				}
+			}
+		}
+
+		if(userInfo.playerListData!=null){
+			this.buyInfo=userInfo.playerListData[0]["operationIndex"];
+			userInfo.headSprite = userInfo.playerListData[0]["headPicture"];
+		}
+
+		if(userInfo.matchMode==MatchType.Type_Practice_Match&&userInfo.playerListData!=null&&userInfo.playerListData.length>1){
+			userInfo.matchMode=MatchType.Type_PlainMultiplayer_Match;
+		}
+		if(data["score"]!=null){
+			this.buyScore=data["score"];
+		}
+
+		self.setPlayerInfo();
+
+	},
 
 	clearBuySellOperation:function()
 	{
@@ -1491,12 +1750,22 @@ var KLineScene = SceneBase.extend(
 
 		cc.log("setDataForLlineLayerTest:function()//比赛图 end");
 		this.mainLayerAnction();
+
+		// //清除最大值最小值
+		// this.klineLayerMain.calculateMaxMinBetweenIndex(this.currentCandleIndex);
+		// this.volumnTechLayerMain.calculateMaxMinBetweenIndex(this.currentCandleIndex);
+		// this.klineLayerMain.clearMaxAndMinValue();
+		// this.volumnTechLayerMain.clearMaxAndMinValue();
+		// this.klineLayerMain.calculateMaxMinBetweenIndex(this.currentCandleIndex-10,this.currentCandleIndex);
+		// this.volumnTechLayerMain.calculateMaxMinBetweenIndex(this.currentCandleIndex-10,this.currentCandleIndex);
         //依次画后面的K线
 		this.setCountBeginSprite();
 		// this.drawAllCandlesOneByOne();
 	},
     drawCandlesOneByOneForMatch:function()//匹配赛
     {
+		var self=this;
+		cc.log("drawCandlesOneByOneForMatch this.currentCandleIndex="+this.currentCandleIndex);
         if(this.drawCandleStoped==false)
         {
             this.drawCandleStoped=true;
@@ -1514,14 +1783,14 @@ var KLineScene = SceneBase.extend(
 				// clearTimeout(pageTimer["drawTimerMatch"]);
                 return;
             }
-            else
-            {
-                gSocketConn.Step(this.currentCandleIndex);
-            }
+            // else
+            // {
+            //     gSocketConn.Step(this.currentCandleIndex);
+            // }
 
             this.currentCandleIndex+=1;
         }
-        var self=this;
+
 		// pageTimer["drawMatchTimer"] = setTimeout(function(){self.drawCandlesOneByOneForMatch();},100);
         pageTimer["drawTimerMatch"] = setTimeout(function(){self.drawCandlesOneByOneForMatch();},self.currentCandleDrawInterval);
     },
@@ -1531,7 +1800,7 @@ var KLineScene = SceneBase.extend(
         if(this.drawCandleStoped==false)
         {
             // this.drawCandleStoped=true;
-			if(userInfo.matchMode==0){
+			if(userInfo.matchMode==MatchType.Type_Practice_Match){
 				this.refreshScores(this.currentCandleIndex);
 			}
             
@@ -1560,11 +1829,13 @@ var KLineScene = SceneBase.extend(
     },
 	drawAllCandlesOneByOne:function()
 	{
+		cc.log("drawAllCandlesOneByOne currentIndex before=="+this.currentCandleIndex);
+		var self=this;
 		if(this.drawCandleStoped==false)
 		{
 
 			// this.drawCandleStoped=true;
-			if(userInfo.matchMode==0){
+			if(userInfo.matchMode==MatchType.Type_Practice_Match){
 				this.refreshScores(this.currentCandleIndex);
 			}
 
@@ -1596,16 +1867,19 @@ var KLineScene = SceneBase.extend(
 			}
 			else
 			{
-                if(this.currentCandleIndex-120>-1){
+				if(userInfo.matchMode>1){//多人赛同步处理
+					this.drawCandleStoped=true;
+				}else if(this.currentCandleIndex-120>-1){
                     gSocketConn.Step(this.currentCandleIndex-120);
-                    if(userInfo.matchMode==1||userInfo.matchMode==3||userInfo.matchMode==4){//多人赛同步处理
-                        this.drawCandleStoped=true;
-                    }
                 }
 			}
-			this.currentCandleIndex+=1;
+			this.currentCandleIndex++;
+		}else{
+			cc.log("比赛结束了currentIndex =="+this.currentCandleIndex);
+			return;
 		}
-		var self=this;
+
+		cc.log("drawAllCandlesOneByOne currentIndex after=="+this.currentCandleIndex);
 		pageTimer["drawTimer"] = setTimeout(function(){self.drawAllCandlesOneByOne();},this.currentCandleDrawInterval);
 	},
 
@@ -1665,7 +1939,7 @@ var KLineScene = SceneBase.extend(
 			this.playerInfoLayer.refreshScoresByData();
 		}
 
-		if(userInfo.matchMode==1||userInfo.matchMode==3||userInfo.matchMode==4){
+		if(userInfo.matchMode==2||userInfo.matchMode==3||userInfo.matchMode==4){
 			if(gKlineScene!=null)
 			{
 				// gSocketConn.SendBeginMessage();
@@ -2011,9 +2285,9 @@ var KLineScene = SceneBase.extend(
 		// this.prevLayerAnction();
 
 		//设置主K线图的数据
-		this.klineLayerMain.setKLineData(this.klinedata,this.prevKlineData);
+		this.klineLayerMain.setKLineData(this.klineData,null);
 		//设置附图的数据
-		this.volumnTechLayerMain.setKLineData(this.klinedataMain,this.prevKlineData);
+		this.volumnTechLayerMain.setKLineData(this.klineData,null);
 		this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
 		this.addChild(this.volumnTechLayerMain,this.volumnTechLayerNumber,this.volumnTechLayerMain.getTag());
 
@@ -2026,7 +2300,7 @@ var KLineScene = SceneBase.extend(
 			this.matchInfoLayer.disableAllButtons();
 			this.matchInfoLayer.setButtonsToNoPosition();
 			//依次画后面的K线
-			if(userInfo.matchMode!=1){
+			if(userInfo.matchMode<2){//
 				this.matchInfoLayer.ableSpeedButtons();
                 this.drawCandlesOneByOne();
 			}else{
@@ -2098,9 +2372,9 @@ var KLineScene = SceneBase.extend(
             this.volumnTechLayerPrev.removeFromParent(false);
 
         //设置主K线图的数据
-        this.klineLayerPrev.setKLineData(this.klinedataMain,this.klineDataPrev);
+        this.klineLayerPrev.setKLineData(this.klinedataMain,this.prevKlineData);
         //设置附图的数据
-        this.volumnTechLayerPrev.setKLineData(this.klinedataMain,this.klineDataPrev);
+        this.volumnTechLayerPrev.setKLineData(this.klinedataMain,this.prevKlineData);
         this.addChild(this.klineLayerPrev,this.mainLayerNumber,this.klineLayerPrev.getTag());
         this.addChild(this.volumnTechLayerPrev,this.volumnTechLayerNumber,this.volumnTechLayerPrev.getTag());
 
@@ -2142,9 +2416,9 @@ var KLineScene = SceneBase.extend(
 		// this.volumnTechLayerPrev.setPosition(this.volumnTechLayerMain.getPosition());
 		// this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
 		//设置主K线图的数据
-		this.klineLayerPrev.setKLineData(this.klinedataMain,this.klineLayerPrev);
+		this.klineLayerPrev.setKLineData(this.klinedataMain,this.prevKlineData);
 		//设置附图的数据
-		this.volumnTechLayerPrev.setKLineData(this.klinedataMain,this.klineLayerPrev);
+		this.volumnTechLayerPrev.setKLineData(this.klinedataMain,this.prevKlineData);
 		this.addChild(this.klineLayerPrev,this.mainLayerNumber,this.klineLayerPrev.getTag());
 		this.addChild(this.volumnTechLayerPrev,this.volumnTechLayerNumber,this.volumnTechLayerPrev.getTag());
 		
@@ -2170,6 +2444,11 @@ var KLineScene = SceneBase.extend(
 			this.btnHome.setVisible(true);
 		}
 
+		if(this.playerInfoLayer!=null)
+		{
+			cc.log("setPlayerInfo:function()");
+			this.playerInfoLayer.refreshScoresByData();
+		}
         self.matchInfoLayer.startCallBackFunction=function(){self.matchInfoLayer_Start()};
 		//一次性画出当前数据图
 		this.drawCandlesAll();
@@ -2189,10 +2468,26 @@ var KLineScene = SceneBase.extend(
 		drawHistoryCandlePartToIndex:function(index)
 		{
 			cc.log("drawHistoryCandlePartToIndex:function(index) this.currentCandleIndex=="+this.currentCandleIndex+"||index=="+index);
+
 			this.phase2=true;
 			this.currentCandleIndex=index;
-			this.klineLayerMain.redrawCandlesToIndex(this.currentCandleIndex);
-			this.volumnTechLayerMain.redrawCandlesToIndex(this.currentCandleIndex);
+			// var ended=this.klineLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
+			// this.volumnTechLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
+			// cc.log("drawAllCandlesOneByOne currentIndex=="+this.currentCandleIndex);
+			// this.matchRunFlag=true;
+			if(this.currentCandleIndex==this.klineData.length)
+			{
+				cc.log("绘制结束");
+				this.matchRunFlag=false;
+				this.sendEndMessage();
+				this.matchEnd();
+				// clearTimeout(pageTimer["drawTimer"]);
+				return;
+			}else{
+				this.klineLayerMain.redrawCandlesToIndex(this.currentCandleIndex);
+				this.volumnTechLayerMain.redrawCandlesToIndex(this.currentCandleIndex);
+			}
+
 		},
 
 	drawHistoryCandlePart:function()
@@ -2242,7 +2537,7 @@ var KLineScene = SceneBase.extend(
                 // this.volumnTechLayerMain.drawOppositeSingleDayGraphInfos(i);
             }
         },
-        drawNormalCandlePart:function()
+        drawNormalCandlePart:function(flag)
         {
             this.phase2=true;
             if(this.klineLayerMain.graphArea!=null){
@@ -2270,11 +2565,11 @@ var KLineScene = SceneBase.extend(
         },
 
 
-		drawCoverCandlePart:function()
+		drawCoverCandlePart:function(flag)
 		{
 			this.phase2=true;
 			cc.log("遮盖效果显示");
-			if(this.coverSprite!=null){
+			if(this.coverSprite!=null&&flag!=true){
 
 				this.coverSprite.setVisible(true);
 				pageTimer["hideCover"] = setTimeout(function(){gKlineScene.coverSprite.setVisible(false);},5000);
@@ -2283,12 +2578,12 @@ var KLineScene = SceneBase.extend(
 			}
 		},
 
-		drawBanCandlePart:function()
+		drawBanCandlePart:function(flag)
 		{
 			this.phase2=true;
 			cc.log("禁止买卖操作效果显示");
 			this.matchInfoLayer.setEnableBuyOrSell(false);
-			if(this.banSprite!=null){
+			if(this.banSprite!=null&&flag!=true){
 				this.banSprite.setVisible(true);
 				pageTimer["hideBan"] = setTimeout(function(){gKlineScene.banSprite.setVisible(false);gKlineScene.matchInfoLayer.setEnableBuyOrSell(true);},5000);
 				// var act1 = this.createAnimation_ACT2();
@@ -2459,6 +2754,58 @@ var KLineScene = SceneBase.extend(
 		}
 	},
 
+		businessMatchInfo:function(buyInfo,score)
+		{
+			cc.log("businessMatchInfo:function() begin= ");
+			// if(this.phase2==false)return;
+			this.hidematchEndInfoLayer();
+			this.clearBuySellOperation();
+			var businessInfo = buyInfo;
+			this.selfOperations=[];
+			for (var i=0;i<businessInfo.length;i++)
+			{
+				cc.log("businessInfo[" + i + "] = " + businessInfo[i]);
+				this.selfOperations.push(businessInfo[i]);
+				if(businessInfo[i]>0)
+				{
+					this.klineLayerMain.setUpArrowIndex(Math.abs(businessInfo[i])+120,(this.selfOperations.length%2==1));
+				}else{
+					this.klineLayerMain.setDownArrowIndex(Math.abs(businessInfo[i])+120,(this.selfOperations.length%2==1));
+				}
+
+			}
+			cc.log("bbusinessMatchInfo:function() his.playerInfoLayer.refreshScoresByData();");
+			this.playerInfoLayer.refreshScoresByData();
+			this.playerInfoLayer.refreshScores(score);
+			if(this.playerInfoLayer!=null)
+			{
+				this.playerInfoLayer.ableInfoButtons();
+			}
+		},
+		businessMatchRecordInfo:function(buyInfo,score)
+		{
+			cc.log("businessMatchInfo:function() begin= ");
+
+			this.clearBuySellOperation();
+			var businessInfo = buyInfo;
+			this.selfOperations=[];
+			for (i=0;i<businessInfo.length;i++)
+			{
+				cc.log("businessInfo[" + i + "] = " + businessInfo[i]);
+				this.selfOperations.push(businessInfo[i]);
+				if(businessInfo[i]>0)
+				{
+					this.klineLayerPrev.setUpArrowIndex(Math.abs(businessInfo[i]),(this.selfOperations.length%2==1));
+				}else{
+					this.klineLayerPrev.setDownArrowIndex(Math.abs(businessInfo[i]),(this.selfOperations.length%2==1));
+				}
+
+			}
+			// if(this.phase2==false)return;
+
+			cc.log("businessMatchRecordInfo:function() his.playerInfoLayer.refreshScoresByData();");
+			this.playerInfoLayer.refreshScoresByData();
+		},
 	sendEndMessage:function()
 	{
 		if(gSocketConn!=null && gSocketConn!=undefined)
@@ -2471,38 +2818,48 @@ var KLineScene = SceneBase.extend(
 	{
 		cc.log("buyClick:function() begin");
 		if(this.phase2==false)return;
+
 		//注意：此处存入的买入操作的index不是从0开始，而是从120开始的
 		var lastCandleIndex=this.currentCandleIndex;
-		this.selfOperations.push(lastCandleIndex);
-		this.refreshScores(lastCandleIndex);
-		
-		this.klineLayerMain.setUpArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
-		
-		if(gSocketConn!=null && gSocketConn!=undefined)
-		{
-			if(this.matchRunFlag){
-				gSocketConn.Buy(lastCandleIndex-121>0?lastCandleIndex-121:0);//
-			}
+		if(lastCandleIndex<121){
+			return;
+		}else{
+			this.selfOperations.push(lastCandleIndex);
+			this.refreshScores(lastCandleIndex);
 
+			this.klineLayerMain.setUpArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
+
+			if(gSocketConn!=null && gSocketConn!=undefined)
+			{
+				if(this.matchRunFlag){
+					gSocketConn.Buy(lastCandleIndex-121>0?lastCandleIndex-121:0);//
+				}
+
+			}
 		}
+
 	},
 	
 	sellClick:function()
 	{
 		cc.log("sellClick:function() begin");
 		if(this.phase2==false)return;
-		//注意：此处存入的卖出操作的index不是从0开始，而是从1开始的
+		//注意：此处存入的卖出操作的index不是从0开始，而是从120开始的
 		var lastCandleIndex=this.currentCandleIndex;
-		this.selfOperations.push(-lastCandleIndex);
-		this.refreshScores(lastCandleIndex);
-		
-		this.klineLayerMain.setDownArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
-		if(gSocketConn!=null && gSocketConn!=undefined)
-		{
-			if(this.matchRunFlag){
-				gSocketConn.Sell(lastCandleIndex-121>0?lastCandleIndex-121:0);
+		if(lastCandleIndex<121){
+			return;
+		}else {
+			this.selfOperations.push(-lastCandleIndex);
+			this.refreshScores(lastCandleIndex);
+			this.klineLayerMain.setDownArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
+			if(gSocketConn!=null && gSocketConn!=undefined)
+			{
+				if(this.matchRunFlag){
+					gSocketConn.Sell(lastCandleIndex-121>0?lastCandleIndex-121:0);
+				}
 			}
 		}
+
 	},
 	
 				
@@ -2547,6 +2904,7 @@ var KLineScene = SceneBase.extend(
 
 			// var errorInfo = "";
 			// gSocketConn.SendEndErrorMessage(errorInfo);
+			gSocketConn.UnRegisterEvent("onmessage",gKlineScene.messageCallBack);
 			gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
 			gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
 			//cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));

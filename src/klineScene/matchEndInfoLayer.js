@@ -424,6 +424,127 @@ var MatchEndInfoLayer= cc.Layer.extend({
 
 		// cc.log(content);
 	},
+//根据pbContent的内容，解析后赋予参数
+	applyParamsFromPb:function(endMatchInfo)
+	{
+		cc.log("MatchEndInfoLayer to applyParamsFromPB");
+		/*enum MatchType{
+		 Type_Practice_Match=0;
+		 Type_ArtificialMatch=1;
+		 Type_PlainMultiplayer_Match=2;
+		 Type_Tool_Match=3;
+		 Type_Friend_Match=4;
+		 }*/
+		userInfo.matchId = endMatchInfo.matchId;
+		switch(userInfo.matchMode)
+		{
+			case MatchType.Type_Practice_Match:
+			{
+				var fields=endMatchInfo.codeInfo;
+				this.stockInfoLabel.setString(fields);
+				var playersInfo = endMatchInfo.playerInfo;
+
+				var ratio=parseFloat(playersInfo[0].score).toFixed(2);
+				userInfo.score = ratio;
+				if(ratio>0)
+				{
+					// playWinSound();
+					this.scoreLabel2.setColor(cc.color(249,27,27,255));
+				}
+				else if(ratio<0)
+				{
+					// playLoseSound();
+					this.scoreLabel2.setColor(cc.color(6,224,0,255));
+				}
+				else
+				{
+					this.scoreLabel2.setColor(cc.color(255,255,255,255));
+				}
+				this.scoreLabel2.setString(ratio+"%");
+				break;
+			}
+			//case MatchType.Type_Practice_Match:
+			case MatchType.Type_ArtificialMatch://人机匹配
+			case MatchType.Type_Tool_Match://道具匹配
+			case MatchType.Type_Friend_Match://好友匹配
+			case MatchType.Type_PlainMultiplayer_Match://普通匹配
+			{
+				cc.log("MatchEndInfoLayer to parse PB");
+
+				var fields=endMatchInfo.codeInfo;
+				this.stockInfoLabel.setString(fields);
+
+				this.stockInfoLabel.setString(fields);
+				var endInfoData = endMatchInfo.playerInfo;
+				var endInfoList = new Array()
+				// userInfo.endInfoOfAllPlayers=;
+				for(var i=0;endInfoData!=null&&i<endInfoData.length;i++)
+				{
+					cc.log("showPlayerInfo playerData.userName="+endInfoData[i]["userName"]);
+					if(userInfo.nickName==endInfoData[i]["userName"])
+					{
+						userInfo.score =endInfoData[i]["score"];
+					}
+					endInfoList.push(endInfoData[i]);
+				}
+				var winFlag = 0;
+				if(endInfoData[0]["score"]>endInfoData[1]["score"]&&userInfo.nickName==endInfoData[0]["userName"]){
+					winFlag = 1;
+				}else if(endInfoData[0]["score"]<endInfoData[1]["score"]&&userInfo.nickName==endInfoData[1]["userName"]){
+					winFlag = 1;
+				}else if(endInfoData[0]["score"]!=endInfoData[1]["score"]){
+					winFlag = -1;
+				}else{
+					winFlag = 0;
+				}
+				if(winFlag==1){
+					playWinSound();
+				}else if(winFlag==-1){
+					playLoseSound();
+				}
+
+				//按排名排序
+				for(var i=0;i<endInfoList.length;i++)
+				{
+					for(var j=i;j<endInfoList.length-i-1;j++)
+					{
+						if(endInfoList[j]["ranking"]>endInfoList[j+1]["ranking"])
+						{
+							var temp = endInfoList[j];
+							endInfoList[j] =endInfoList[j+1];
+							endInfoList[j+1] =temp;
+						}
+					}
+
+				}
+				if(userInfo.endInfoOfAllPlayers!=null)
+				{
+					userInfo.endInfoOfAllPlayers=[];
+				}
+				userInfo.endInfoOfAllPlayers = endInfoList;
+
+				//////////////////////
+
+				// if(gKlineScene.playerInfoLayer!=null){
+				// 	gKlineScene.setPlayerInfo();
+				// }
+				//
+				if(this.tableView!=null)
+				{
+					this.tableView.reloadData();
+					// this.tableView.setVisible(true);
+				}
+				break;
+			}
+			default:
+			{
+				cc.log("userInfo.matchMode ="+userInfo.matchMode);
+				break;
+			}
+		}
+
+		// cc.log(content);
+	},
 
 
 	scrollViewDidScroll:function (view) {
@@ -485,6 +606,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 	numberOfCellsInTableView:function (table) {
 		if(userInfo.endInfoOfAllPlayers!=null)
 		{
+			cc.log("userInfo.endInfoOfAllPlayers.length=="+userInfo.endInfoOfAllPlayers.length);
 			if(userInfo.endInfoOfAllPlayers.length>4)
 				return 4;
 			else
@@ -518,7 +640,7 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 			rankLabel.setAnchorPoint(0,0.5);
 			sprite.addChild(rankLabel);
 			//设置用户名
-			var strNameText= userInfo.endInfoOfAllPlayers[idx]["nickName"];
+			var strNameText= userInfo.endInfoOfAllPlayers[idx]["userName"];
 			var textNameLabel = new cc.LabelTTF(cutstr(strNameText,11), "Arial", 25.0);
 			textNameLabel.setPosition(cc.p(200,40));
 			// textNameLabel.setAnchorPoint(0,0.5);
@@ -527,7 +649,13 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 			//strText= "名字:"+userInfo.MatchListData[idx]["uid"]+"  收益:"+userInfo.MatchListData[idx]["score"]+"  "+userInfo.MatchListData[idx]["matchTime"];
 
 			//设置收益
-			var strScoreText= userInfo.endInfoOfAllPlayers[idx]["score"]+"%";
+			var buyInfo=[];
+			for(var i=0;userInfo.endInfoOfAllPlayers[idx]["operationIndex"]!=undefined&&i<userInfo.endInfoOfAllPlayers[idx]["operationIndex"].length;i++)
+			{
+				buyInfo.push(userInfo.endInfoOfAllPlayers[idx]["operationIndex"][i]);
+			}
+			var score = parseFloat(userInfo.endInfoOfAllPlayers[idx]["score"]).toFixed(2);
+			var strScoreText= score+"%";
 			var textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
 			textScoreLabel.setPosition(cc.p(500,40));
 			textScoreLabel.setAnchorPoint(0.5,0.5);
@@ -546,21 +674,21 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 			sprite.addChild(textScoreLabel);
 
 
+
+			cc.log("buyInfo=="+buyInfo);
 			//设置查看交易记录按钮
 			//设置查看交易记录按钮
 			var recordButton=new Button("res/btnRecord.png");
 			recordButton.setAnchorPoint(0,0.5);
 			recordButton.setPosition(cc.p(800,40));
 			sprite.addChild(recordButton);
-			var matchId = userInfo.endInfoOfAllPlayers[idx]["matchId"];
-			var userId = userInfo.endInfoOfAllPlayers[idx]["nickName"];
-            userInfo.matchId = matchId;
-			cc.log("PlayerInfoCell recordButton ClickEvent userId["+idx+"] ="+userId+"||matchId="+matchId);
+			// var matchId = userInfo.endInfoOfAllPlayers[idx]["matchId"];
+			var userName= userInfo.endInfoOfAllPlayers[idx]["userName"];
+            // userInfo.matchId = matchId;
+			cc.log("PlayerInfoCell recordButton ClickEvent userName["+idx+"] ="+userName+"||matchId="+userInfo.matchId);
 			recordButton.setClickEvent(function(){
+				gKlineScene.businessMatchInfo(buyInfo,score);
 				// gSocketConn.SendRecordMatchMessage(userId,matchId);
-				// cc.log("PlayerInfoCell ClickEvent userId["+idx+"] ="+userId+"||matchId="+matchId+"||recordButton="+recordButton.__instanceId);
-				// // cc.director.runScene(klineSceneNext);
-				gSocketConn.SendRecordMatchMessage(userId,matchId);
 
 			});
 		}

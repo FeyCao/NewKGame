@@ -53,7 +53,7 @@ var KlineLayer= BaseGraphLayer.extend({
 	calculateMaxMinBetweenIndex:function(start,end)
 	{
 		//重载
-		
+		cc.log("KlineLayer calculateMaxMinBetweenIndex 计算以前的 start="+start);
 		if(start<0)
 		{
 			start=this.klineDataPrev.length+start;
@@ -110,7 +110,7 @@ var KlineLayer= BaseGraphLayer.extend({
 	drawCandle:function(candleIndex)
 	{
 		//cc.log("drawCandle called index="+candleIndex);
-		
+
 		//开始画this.currentCandleIndex
 		var posX=this.getCandlePosX(candleIndex);
 		var posY_O=candleIndex<0?this.getCandlePosYByValue(this.klineDataPrev[this.klineDataPrev.length+candleIndex].o):this.getCandlePosYByValue(this.klineData[candleIndex].o);
@@ -228,7 +228,7 @@ var KlineLayer= BaseGraphLayer.extend({
 	},
 
 	///处理向上的箭头
-	setUpArrowIndex:function(index,isOpen)
+	setUpArrowIndex:function(index,isOpen)//买
 	{
 		 index=index-1;
 		 var upArrowSprite=null;
@@ -240,7 +240,7 @@ var KlineLayer= BaseGraphLayer.extend({
 		 {
 			 upArrowSprite=cc.Sprite.create("res/buyCloseTag.png");
 		 }
-		 
+
 		 upArrowSprite.setPosition(0,0);
 		 this.graphArea.addChild(upArrowSprite, 10);		
 		 
@@ -275,11 +275,24 @@ var KlineLayer= BaseGraphLayer.extend({
 				break;
 			}
 		}
-		
+		// if()
 		var posX=this.getCandlePosX(upArrowSpriteIndex);
 		var posY_I=this.getCandlePosYByValue(this.klineData[upArrowSpriteIndex].i);
+		var posY_X=this.getCandlePosYByValue(this.klineData[upArrowSpriteIndex].x);
 		var posX_Needle=posX+this.candleWidth/2;
-		upArrowSprite.setPosition(posX_Needle,posY_I-upArrowSprite.height*2/3-duplicateCount*upArrowSprite.height);
+		// upArrowSprite.setPosition(posX_Needle,posY_I-upArrowSprite.height*2/3-duplicateCount*upArrowSprite.height);
+		var posY_Needle=posY_I-upArrowSprite.height*2/3;
+
+		var klineDataThis=upArrowSpriteIndex<0?this.klineDataPrev[this.klineDataPrev.length+upArrowSpriteIndex]:this.klineData[upArrowSpriteIndex];
+		if(klineDataThis.c>klineDataThis.o)
+		{
+			upArrowSprite.setFlippedY(true);
+			// upArrowSprite.setRotation(180);
+			posY_Needle=posY_X+upArrowSprite.height*2/3;
+		}else {
+			// upArrowSprite.setRotation(0);
+		}
+		upArrowSprite.setPosition(posX_Needle,posY_Needle);
 	},
 
 	//clearUpArrow:function()
@@ -288,7 +301,7 @@ var KlineLayer= BaseGraphLayer.extend({
 	//},
 	
 	///处理向下的箭头
-	setDownArrowIndex:function(index,isOpen)
+	setDownArrowIndex:function(index,isOpen)//卖
 	{
 		 index=index-1;
 		 var downArrowSprite=null;
@@ -301,6 +314,8 @@ var KlineLayer= BaseGraphLayer.extend({
 			 downArrowSprite=cc.Sprite.create("res/sellCloseTag.png");
 		 }
 		 downArrowSprite.setPosition(0,0);
+
+
 		 this.graphArea.addChild(downArrowSprite, 10);		
 		 
 		 this.downArrowSprites.push(downArrowSprite);
@@ -333,11 +348,24 @@ var KlineLayer= BaseGraphLayer.extend({
 				break;
 			}
 		}
-		
+
 		var posX=this.getCandlePosX(downArrowSpriteIndex);
 		var posY_X=this.getCandlePosYByValue(this.klineData[downArrowSpriteIndex].x);
+		var posY_I=this.getCandlePosYByValue(this.klineData[downArrowSpriteIndex].i);
 		var posX_Needle=posX+this.candleWidth/2;
-		downArrowSprite.setPosition(posX_Needle,posY_X+downArrowSprite.height*2/3+duplicateCount*downArrowSprite.height);
+		var posY_Needle=posY_X+downArrowSprite.height*2/3;
+
+		var klineDataThis=downArrowSpriteIndex<0?this.klineDataPrev[this.klineDataPrev.length+downArrowSpriteIndex]:this.klineData[downArrowSpriteIndex];
+		if(klineDataThis.c<klineDataThis.o)
+		{
+			// downArrowSprite.setFlippedY(true);
+			downArrowSprite.setRotation(180);
+			posY_Needle=posY_I-downArrowSprite.height*2/3;
+		}else {
+			// downArrowSprite.setFlippedY(false);
+			downArrowSprite.setRotation(0);
+		}
+		downArrowSprite.setPosition(posX_Needle,posY_Needle);
 	},
 	
 	//重载，当重画后，可能需要重画除了K线，技术指标之外的其余内容，比如买入卖出标记等，给派生类自己实现

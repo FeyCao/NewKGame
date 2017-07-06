@@ -2,6 +2,8 @@ var res = {
  //字体
  FONT_TYPE:"fonts/Arial.ttf",//
 
+ PROTOBUFF_KGAME:"res/KgameMsg.proto",
+
  //声音音乐"res/sound/home_bg.mp3","res/sound/button.mp3",
 
  SOUND_HOME_BG:"res/sound/home_bg.mp3",
@@ -103,6 +105,7 @@ var res = {
  BG_FRIEND_HEAD_png:"res/friend/ff_head_friends.png",
  BG_FRIEND_HEAD_WAIT_png:"res/friend/ff_head_waiting.png",
  BG_FRIEND_HEAD_VS_png:"res/friend/ff_head_large.png",
+ BG_FRIEND_NO_png:"res/friend/non_friends.png",
  BTN_FRIEND_INVITE_png:"res/friend/ff_invite.png",
  STATUS_FRIEND_GAME_png:"res/friend/ff_status_itg.png",
  STATUS_FRIEND_MG_png:"res/friend/ff_status_mg.png",

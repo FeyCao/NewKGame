@@ -18,57 +18,49 @@ var RankTableViewCell = cc.TableViewCell.extend({
         // cc.log("RankTableViewCell onExit end");
     },
 
-    setCellData:function(idx){
-        var self =this;
-        cc.log("RankTableViewCell setCellData=="+idx);
+    setCellData:function(idx) {
+        var self = this;
+        cc.log("RankTableViewCell setCellData==" + idx);
         var sprite = new cc.Sprite("res/line_bg.png");
-        sprite.setPosition(cc.p(0,0));
-        sprite.setAnchorPoint(0,0);
+        sprite.setPosition(cc.p(0, 0));
+        sprite.setAnchorPoint(0, 0);
         this.addChild(sprite);
 
-        if(userInfo!=null&&userInfo.rankList!=null)
-        {
+        if (userInfo != null && userInfo.rankList != null) {
             //RANK|{"myRanking":{"rank":1,"playerInfo":{"uid":3434343770,"nickName":"誓约者艾琳诺","winOfMatchForOne":4,"sumOfMatchForOne":33,"winOfMatchForMore":0,"sumOfMatchForMore":0,"winOfMatchForAI":98,"sumOfMatchForAI":187,"gainCumulation":"-197.391","sumOfAllMatch":33}},"rankList":[{"rank":1,"playerInfo":{"uid":10000,"nickName":"誓约者艾琳诺","winOfMatchForOne":4,"sumOfMatchForOne":33,"winOfMatchForM
 
-            var rankInfo = userInfo.rankList[idx];
-            var playerInfo = rankInfo["playerInfo"];
+            var playerInfo = userInfo.rankList[idx];
+            // var playerInfo = rankInfo["playerInfo"];
 
-            var rank = rankInfo["rank"];
-            if(rank>3)
-            {
-                CellrankLabel = new cc.LabelTTF( rankInfo["rank"], "Arial", 35.0);
+            var rank = playerInfo["rank"];
+            if (rank > 3) {
+                CellrankLabel = new cc.LabelTTF(playerInfo["rank"], "Arial", 35.0);
                 // CellrankLabel.setAnchorPoint(0,0.5);
-                CellrankLabel.setPosition(cc.p(30,40));
+                CellrankLabel.setPosition(cc.p(30, 40));
                 CellrankLabel.setColor(RedColor);
                 this.addChild(CellrankLabel);
             }
-            else
-            {
+            else {
 
                 rankSprite = cc.Sprite.create("res/rank1.png");
                 // rankSprite.setScale(0.5);
-                rankSprite.setPosition(cc.p(30,40));
-                this.addChild(rankSprite,2);
-                switch (rank)
-                {
-                    case 1:
-                    {
+                rankSprite.setPosition(cc.p(30, 40));
+                this.addChild(rankSprite, 2);
+                switch (rank) {
+                    case 1: {
                         rankSprite.setTexture("res/rank1.png");
                         break;
                     }
-                    case 2:
-                    {
+                    case 2: {
                         rankSprite.setTexture("res/rank2.png");
                         break;
                     }
-                    case 3:
-                    {
+                    case 3: {
                         rankSprite.setTexture("res/rank3.png");
                         break;
                     }
-                    default:
-                    {
-                        cc.log("player rank="+rank);
+                    default: {
+                        cc.log("player rank=" + rank);
                         break;
                     }
 
@@ -77,17 +69,17 @@ var RankTableViewCell = cc.TableViewCell.extend({
 
             touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
             touxiangSprite.setScale(0.6);
-            touxiangSprite.setPosition(cc.p(100,40));
-            this.addChild(touxiangSprite,2);
+            touxiangSprite.setPosition(cc.p(100, 40));
+            this.addChild(touxiangSprite, 2);
 
             var url = playerInfo["headPicture"];
-            cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
-                if(err){
+            cc.loader.loadImg(url, {isCrossOrigin: false}, function (err, img) {
+                if (err) {
                     cc.log(err);
-                    cc.log("排行：fail loadImg="+userInfo.headSprite); // self.addChild(logo);
+                    cc.log("排行：fail loadImg=" + userInfo.headSprite); // self.addChild(logo);
                 }
-                if(img){
-                    cc.log("img!=null"+img);
+                if (img) {
+                    cc.log("img!=null" + img);
                     var headSprite = new cc.Sprite();
                     //     this.touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
                     // cc.textureCache.addImage(imgUrl);
@@ -96,131 +88,140 @@ var RankTableViewCell = cc.TableViewCell.extend({
                     texture2d.handleLoadedTexture();
                     headSprite.initWithTexture(texture2d);
                     var size = headSprite.getContentSize();
-                    headSprite.setScale(66/size.width,66/size.height);
-                    headSprite.setPosition(cc.p(100,40));
-                    self.addChild(headSprite,2);
-                    cc.log("排行：success loadImg="+userInfo.headSprite); // self.addChild(logo);
+                    headSprite.setScale(66 / size.width, 66 / size.height);
+                    headSprite.setPosition(cc.p(100, 40));
+                    self.addChild(headSprite, 2);
+                    cc.log("排行：success loadImg=" + userInfo.headSprite); // self.addChild(logo);
                     // self.touxiangSprite.setValue(false);
                 }
             });
 
-            CellnameLabel = new cc.LabelTTF( cutstr(playerInfo["nickName"],11), "Arial", 24.0);
-            CellnameLabel.setAnchorPoint(0,0.5);
+            CellnameLabel = new cc.LabelTTF(cutstr(playerInfo["userName"], 11), "Arial", 24.0);
+            CellnameLabel.setAnchorPoint(0, 0.5);
             CellnameLabel.setColor(WhiteColor);
-            CellnameLabel.setPosition(cc.pAdd(touxiangSprite.getPosition(),cc.p(touxiangSprite.getContentSize().width/2,0)));
+            CellnameLabel.setPosition(cc.pAdd(touxiangSprite.getPosition(), cc.p(touxiangSprite.getContentSize().width / 2, 0)));
             this.addChild(CellnameLabel);
 
 
-            sumInfoLabel=cc.LabelTTF.create("总场:", "Arial",28);
+            sumInfoLabel = cc.LabelTTF.create("总场:", "Arial", 28);
             sumInfoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-            sumInfoLabel.setAnchorPoint(0,0.5);
+            sumInfoLabel.setAnchorPoint(0, 0.5);
             sumInfoLabel.setColor(WhiteColor);
-            sumInfoLabel.setPosition(cc.p(330,40));
-            this.addChild(sumInfoLabel,5);
+            sumInfoLabel.setPosition(cc.p(330, 40));
+            this.addChild(sumInfoLabel, 5);
 
-            winInfoLabel=cc.LabelTTF.create("胜场:", "Arial",28);
+            winInfoLabel = cc.LabelTTF.create("胜场:", "Arial", 28);
             winInfoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-            winInfoLabel.setAnchorPoint(0,0.5);
-            winInfoLabel.setPosition(cc.p(480,40));
+            winInfoLabel.setAnchorPoint(0, 0.5);
+            winInfoLabel.setPosition(cc.p(480, 40));
             winInfoLabel.setColor(WhiteColor);
-            this.addChild(winInfoLabel,5);
+            this.addChild(winInfoLabel, 5);
 
 
-            avgGainReteInfoLabel=cc.LabelTTF.create("平均收益:","Arial",28);
+            avgGainReteInfoLabel = cc.LabelTTF.create("平均收益:", "Arial", 28);
             avgGainReteInfoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-            avgGainReteInfoLabel.setAnchorPoint(0,0.5);
+            avgGainReteInfoLabel.setAnchorPoint(0, 0.5);
             avgGainReteInfoLabel.setColor(WhiteColor);
-            avgGainReteInfoLabel.setPosition(cc.p(650,40));
-            this.addChild(avgGainReteInfoLabel,5);
+            avgGainReteInfoLabel.setPosition(cc.p(650, 40));
+            this.addChild(avgGainReteInfoLabel, 5);
 
 
-            sumLabel=cc.LabelTTF.create("", "Arial",28);
+            sumLabel = cc.LabelTTF.create("", "Arial", 28);
             sumLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-            sumLabel.setAnchorPoint(0,0.5);
+            sumLabel.setAnchorPoint(0, 0.5);
             sumLabel.setColor(YellowColor);
-            sumLabel.setPosition(cc.pAdd(sumInfoLabel.getPosition(),cc.p(sumInfoLabel.getContentSize().width,0)));
-            this.addChild(sumLabel,5);
+            sumLabel.setPosition(cc.pAdd(sumInfoLabel.getPosition(), cc.p(sumInfoLabel.getContentSize().width, 0)));
+            this.addChild(sumLabel, 5);
 
 
-            winLabel=cc.LabelTTF.create("", "Arial",28);
+            winLabel = cc.LabelTTF.create("", "Arial", 28);
             winLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-            winLabel.setAnchorPoint(0,0.5);
-            winLabel.setPosition(cc.pAdd(winInfoLabel.getPosition(),cc.p(winInfoLabel.getContentSize().width,0)));
+            winLabel.setAnchorPoint(0, 0.5);
+            winLabel.setPosition(cc.pAdd(winInfoLabel.getPosition(), cc.p(winInfoLabel.getContentSize().width, 0)));
             winLabel.setColor(YellowColor);
-            this.addChild(winLabel,5);
+            this.addChild(winLabel, 5);
 
 
-            avgGainReteLabel=cc.LabelTTF.create("","Arial",28);
+            avgGainReteLabel = cc.LabelTTF.create("", "Arial", 28);
             avgGainReteLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-            avgGainReteLabel.setAnchorPoint(0,0.5);
+            avgGainReteLabel.setAnchorPoint(0, 0.5);
             avgGainReteLabel.setColor(WhiteColor);
-            avgGainReteLabel.setPosition(cc.pAdd(avgGainReteInfoLabel.getPosition(),cc.p(avgGainReteInfoLabel.getContentSize().width,0)));
-            this.addChild(avgGainReteLabel,5);
+            avgGainReteLabel.setPosition(cc.pAdd(avgGainReteInfoLabel.getPosition(), cc.p(avgGainReteInfoLabel.getContentSize().width, 0)));
+            this.addChild(avgGainReteLabel, 5);
 
-            // {"myRanking":{"rank":3,"playerInfo":{"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":6,"sumOfMatchForOne":21,"winOfMatchForMore":77,"sumOfMatchForMore":131,"winOfMatchForAI":24,"sumOfMatchForAI":42,"gainCumulation":"-0.03","sumOfAllMatch":42,"winMatchFriend":0,"sumMatchFriend":0,"GainCumulationForFriend":0,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}}
-            switch (userInfo.recordMode)
-            {
 
-                case 0:
-                {
-                    //总场数
-                    sumLabel.setString(" "+playerInfo["sumOfMatchForOne"]);
-                    //胜场数
-                    winLabel.setString(" "+playerInfo["winOfMatchForOne"]);
-                    //平均收益率
-                    avgGainReteLabel.setString(""+playerInfo["gainCumulation"]+"%");
-                    avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
-                    break;
-                }
-                case 4:{
-                    // sumMatchFriend
-                    //总场数
-                    sumLabel.setString(" "+playerInfo["sumMatchFriend"]);
-                    //胜场数
-                    winLabel.setString(" "+playerInfo["winMatchFriend"]);
-                    //平均收益率
-                    avgGainReteLabel.setString(""+playerInfo["gainCumulation"]+"%");
-                    avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
-                    break;
-                }
-                case 1:
-                {
-                    //总场数
-                    sumLabel.setString(" "+playerInfo["sumOfMatchForMore"]);
-                    //胜场数
-                    winLabel.setString(" "+playerInfo["winOfMatchForMore"]);
-                    //平均收益率
-                    avgGainReteLabel.setString(""+playerInfo["gainCumulation"]+"%");
-                    avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
-                    break;
-                    // this.mode3Button.setDisabled(true);winOfMatchForMore"
-                }
-                case 2:
-                {
+            //总场数
+            sumLabel.setString(" "+playerInfo["sumMatch"]);
+            //胜场数
+            winLabel.setString(" "+playerInfo["winMatch"]);
+            //平均收益率
+            avgGainReteLabel.setString(""+playerInfo["AvgGain"]+"%");
+            avgGainReteLabel.setColor(setLabelColor(playerInfo["AvgGain"]));
 
-                    //总场数
-                    sumLabel.setString(" "+playerInfo["sumOfMatchForAI"]);
-                    //胜场数
-                    winLabel.setString(" "+playerInfo["winOfMatchForAI"]);
-                    //平均收益率
-                    avgGainReteLabel.setString(""+playerInfo["gainCumulation"]+"%");
-                    avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
-                    break;
-                }
-                // case 3:
-                // {
-                //     break;
-                // }
-                default:
-                {
-                    cc.log("userInfo.recordMode=="+userInfo.recordMode);
-                    break;
-                }
-            }
-
+            /////// {"myRanking":{"rank":3,"playerInfo":{"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":6,"sumOfMatchForOne":21,"winOfMatchForMore":77,"sumOfMatchForMore":131,"winOfMatchForAI":24,"sumOfMatchForAI":42,"gainCumulation":"-0.03","sumOfAllMatch":42,"winMatchFriend":0,"sumMatchFriend":0,"GainCumulationForFriend":0,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}}
+            //     switch (userInfo.recordMode)
+            //     {
+            //
+            //         case 0:
+            //         {
+            //             //总场数
+            //             sumLabel.setString(" "+playerInfo["sumOfMatchForOne"]);
+            //             //胜场数
+            //             winLabel.setString(" "+playerInfo["winOfMatchForOne"]);
+            //             //平均收益率
+            //             avgGainReteLabel.setString(""+playerInfo["gainCumulation"]+"%");
+            //             avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
+            //             break;
+            //         }
+            //         case 4:{
+            //             // sumMatchFriend
+            //             //总场数
+            //             sumLabel.setString(" "+playerInfo["sumMatchFriend"]);
+            //             //胜场数
+            //             winLabel.setString(" "+playerInfo["winMatchFriend"]);
+            //             //平均收益率
+            //             avgGainReteLabel.setString(""+playerInfo["gainCumulation"]+"%");
+            //             avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
+            //             break;
+            //         }
+            //         case 1:
+            //         {
+            //             //总场数
+            //             sumLabel.setString(" "+playerInfo["sumOfMatchForMore"]);
+            //             //胜场数
+            //             winLabel.setString(" "+playerInfo["winOfMatchForMore"]);
+            //             //平均收益率
+            //             avgGainReteLabel.setString(""+playerInfo["gainCumulation"]+"%");
+            //             avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
+            //             break;
+            //             // this.mode3Button.setDisabled(true);winOfMatchForMore"
+            //         }
+            //         case 2:
+            //         {
+            //
+            //             //总场数
+            //             sumLabel.setString(" "+playerInfo["sumOfMatchForAI"]);
+            //             //胜场数
+            //             winLabel.setString(" "+playerInfo["winOfMatchForAI"]);
+            //             //平均收益率
+            //             avgGainReteLabel.setString(""+playerInfo["gainCumulation"]+"%");
+            //             avgGainReteLabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
+            //             break;
+            //         }
+            //         // case 3:
+            //         // {
+            //         //     break;
+            //         // }
+            //         default:
+            //         {
+            //             cc.log("userInfo.recordMode=="+userInfo.recordMode);
+            //             break;
+            //         }
+            //     }
+            //
+            // }
         }
-    },
-
+    }
 });
 
 var RankViewLayer = cc.Layer.extend({
@@ -411,7 +412,7 @@ var RankViewLayer = cc.Layer.extend({
             this.mode1Button.setPosition(cc.p(300,520));
             this.mode1Button.setClickEvent(function(){
                 cc.log("mode1Button ClickEvent");
-                userInfo.recordMode=0;
+                userInfo.recordMode=MatchType.Type_Practice_Match;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.rank();
@@ -425,7 +426,7 @@ var RankViewLayer = cc.Layer.extend({
             this.mode2Button.setPosition(cc.p(525,520));
             this.mode2Button.setClickEvent(function(){
                 cc.log("mode2Button ClickEvent");
-                userInfo.recordMode=2;
+                userInfo.recordMode=MatchType.Type_ArtificialMatch;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.rank();
@@ -440,7 +441,7 @@ var RankViewLayer = cc.Layer.extend({
             this.mode3Button.setPosition(cc.p(750,520));
             this.mode3Button.setClickEvent(function(){
                 cc.log("mode3Button ClickEvent");
-                userInfo.recordMode=1;
+                userInfo.recordMode=MatchType.Type_PlainMultiplayer_Match;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.rank();
@@ -454,7 +455,7 @@ var RankViewLayer = cc.Layer.extend({
             this.mode4Button.setPosition(cc.p(975,520));
             this.mode4Button.setClickEvent(function(){
                 cc.log("mode4Button ClickEvent");
-                userInfo.recordMode=4;
+                userInfo.recordMode=MatchType.Type_Friend_Match;
                 if(gMainMenuScene!=null)
                 {
                     gMainMenuScene.rank();
@@ -466,14 +467,14 @@ var RankViewLayer = cc.Layer.extend({
 
     },
     setALLButtonStatus:function(){
-        this.mode1Button.setDisabled(userInfo.recordMode==0);
-        this.mode2Button.setDisabled(userInfo.recordMode==2);
-        this.mode3Button.setDisabled(userInfo.recordMode==1);
-        this.mode4Button.setDisabled(userInfo.recordMode==4);
-        this.mode1Button.setTextureByStatus(userInfo.recordMode==0);
-        this.mode2Button.setTextureByStatus(userInfo.recordMode==2);
-        this.mode3Button.setTextureByStatus(userInfo.recordMode==1);
-        this.mode4Button.setTextureByStatus(userInfo.recordMode==4);
+        this.mode1Button.setDisabled(userInfo.recordMode==MatchType.Type_Practice_Match);
+        this.mode2Button.setDisabled(userInfo.recordMode==MatchType.Type_ArtificialMatch);
+        this.mode3Button.setDisabled(userInfo.recordMode==MatchType.Type_PlainMultiplayer_Match);
+        this.mode4Button.setDisabled(userInfo.recordMode==MatchType.Type_Friend_Match);
+        this.mode1Button.setTextureByStatus(userInfo.recordMode==MatchType.Type_Practice_Match);
+        this.mode2Button.setTextureByStatus(userInfo.recordMode==MatchType.Type_ArtificialMatch);
+        this.mode3Button.setTextureByStatus(userInfo.recordMode==MatchType.Type_PlainMultiplayer_Match);
+        this.mode4Button.setTextureByStatus(userInfo.recordMode==MatchType.Type_Friend_Match);
     },
 
     toMainScene:function () {
@@ -559,86 +560,102 @@ var RankViewLayer = cc.Layer.extend({
         this.actionManager && this.actionManager.pauseTarget(this);
         cc.eventManager.pauseTarget(this,true);
     },
-    refreshRankViewLayer:function()
-    {
+    refreshRankViewLayer:function() {
         cc.log("refreshRankViewLayer begin");
+        /*message PlayerRanking{
+         optional int32 rank=1;
+         optional int32 sumMatch=2;
+         optional int32 winMatch=3;
+         optional double AvgGain=4;
+         optional string userName=5;
+         optional string headPicture=6;
+
+         }
+
+         message RankList{
+         required MatchType matchType=1;
+         optional PlayerRanking myInfo=2;
+         repeated PlayerRanking playerInfo=3;
+         }*/
         var self = this;
-        if(this.tableView!=null)
-        {
+        if (this.tableView != null) {
             this.tableView.reloadData();
         }
 
-        if(userInfo!=null&&userInfo.myRanking!=null)
-        {
+        if (userInfo != null && userInfo.myRanking != null) {
             //RANK|{"myRanking":{"rank":1,"playerInfo":{"uid":3434343770,"nickName":"誓约者艾琳诺","winOfMatchForOne":4,"sumOfMatchForOne":33,"winOfMatchForMore":0,"sumOfMatchForMore":0,"winOfMatchForAI":98,"sumOfMatchForAI":187,"gainCumulation":"-197.391","sumOfAllMatch":33}},"rankList":[{"rank":1,"playerInfo":{"uid":10000,"nickName":"誓约者艾琳诺","winOfMatchForOne":4,"sumOfMatchForOne":33,"winOfMatchForM
             var rankInfo = userInfo.myRanking;
-            var playerInfo = rankInfo["playerInfo"];
 
             self.rankLabel.setString(rankInfo["rank"]);
-            self.rankLabel.setPosition(cc.pAdd(self.text0Label.getPosition(),cc.p(self.text0Label.getContentSize().width,0)));
+            self.rankLabel.setPosition(cc.pAdd(self.text0Label.getPosition(), cc.p(self.text0Label.getContentSize().width, 0)));
 
             // this.setDisableAllmodeButton();
             // this.setAbleAllmodeButton();
             this.setALLButtonStatus();
-            switch (userInfo.recordMode)
-            {
+            //总场数
+            self.winOneLabel.setString(" " + rankInfo["sumMatch"]);
+            //胜场数
+            self.winAILabel.setString(" " + rankInfo["winMatch"]);
+            //
+            self.avgGainAILabel.setString("" + rankInfo["AvgGain"] + "%");
+            self.avgGainAILabel.setColor(setLabelColor(rankInfo["AvgGain"]));
 
-                case 0:
-                {
-                    // this.mode1Button.setDisabled(true);
-                    // this.mode1DisAbleSprite.setVisible(true);
 
-                    //总场数
-                    self.winOneLabel.setString(" "+playerInfo["sumOfMatchForOne"]);
-                    //胜场数
-                    self.winAILabel.setString(" "+playerInfo["winOfMatchForOne"]);
-                    //
-                    self.avgGainAILabel.setString(""+playerInfo["gainCumulation"]+"%");
-                    self.avgGainAILabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
-                    break;
-                }
-                case 3:
-                case 1:
-                {
-                    //总场数
-                    self.winOneLabel.setString(" "+playerInfo["sumOfMatchForMore"]);
-                    //胜场数
-                    self.winAILabel.setString(" "+playerInfo["winOfMatchForMore"]);
-                    //
-                    self.avgGainAILabel.setString(""+playerInfo["gainCumulation"]+"%");
-                    self.avgGainAILabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
-                    break;
-                }
-                case 2:
-                {
-                    //总场数
-                    self.winOneLabel.setString(" "+playerInfo["sumOfMatchForAI"]);
-                    //胜场数
-                    self.winAILabel.setString(" "+playerInfo["winOfMatchForAI"]);
-                    //
-                    self.avgGainAILabel.setString(""+playerInfo["gainCumulation"]+"%");
-                    self.avgGainAILabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
-                    break;
-                }
-                case 4:
-                {//winMatchFriend":0,"sumMatchFriend":0,"GainCumulationForFriend":0
-                    //总场数
-                    self.winOneLabel.setString(" "+playerInfo["sumMatchFriend"]);
-                    //胜场数
-                    self.winAILabel.setString(" "+playerInfo["winMatchFriend"]);
-                    //
-                    self.avgGainAILabel.setString(""+playerInfo["gainCumulation"]+"%");
-                    self.avgGainAILabel.setColor(setLabelColor(playerInfo["gainCumulation"]));
-                    break;
-                }
-                default:
-                {
-                    cc.log("userInfo.recordMode=="+userInfo.recordMode);
-                    break;
-                }
-            }
+            // switch (userInfo.recordMode) {
+            //
+            //     case MatchType.Type_Practice_Match: {
+            //         //总场数
+            //         self.winOneLabel.setString(" " + rankInfo["sumMatch"]);
+            //         //胜场数
+            //         self.winAILabel.setString(" " + rankInfo["winMatch"]);
+            //         //
+            //         self.avgGainAILabel.setString("" + rankInfo["AvgGain"] + "%");
+            //         self.avgGainAILabel.setColor(setLabelColor(rankInfo["AvgGain"]));
+            //         break;
+            //
+            //     }
+            //     case MatchType.Type_ArtificialMatch: {
+            //         //总场数
+            //         self.winOneLabel.setString(" " + rankInfo["sumMatch"]);
+            //         //胜场数
+            //         self.winAILabel.setString(" " + rankInfo["winMatch"]);
+            //         //
+            //         self.avgGainAILabel.setString("" + rankInfo["AvgGain"] + "%");
+            //         self.avgGainAILabel.setColor(setLabelColor(rankInfo["AvgGain"]));
+            //         break;
+            //     }
+            //     case  MatchType.Type_Tool_Match: {
+            //
+            //     }
+            //     case MatchType.Type_PlainMultiplayer_Match: {
+            //         //总场数
+            //         //总场数
+            //         self.winOneLabel.setString(" " + rankInfo["sumMatch"]);
+            //         //胜场数
+            //         self.winAILabel.setString(" " + rankInfo["winMatch"]);
+            //         //
+            //         self.avgGainAILabel.setString("" + rankInfo["AvgGain"] + "%");
+            //         self.avgGainAILabel.setColor(setLabelColor(rankInfo["AvgGain"]));
+            //         break;
+            //     }
+            //
+            //     case  MatchType.Type_Friend_Match: {
+            //         //总场数
+            //         self.winOneLabel.setString(" " + rankInfo["sumMatch"]);
+            //         //胜场数
+            //         self.winAILabel.setString(" " + rankInfo["winMatch"]);
+            //         //
+            //         self.avgGainAILabel.setString("" + rankInfo["AvgGain"] + "%");
+            //         self.avgGainAILabel.setColor(setLabelColor(rankInfo["AvgGain"]));
+            //         break;
+            //     }
+            //     default: {
+            //         cc.log("userInfo.recordMode==" + userInfo.recordMode);
+            //         break;
+            //     }
+            // }
+
         }
-
     }
 });
 

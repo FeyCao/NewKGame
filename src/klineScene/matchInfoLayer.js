@@ -563,17 +563,13 @@ var MatchInfoLayer = cc.Layer.extend({
 
 		this.statusFlag = 0;
 
-		if(userInfo.matchMode==1||userInfo.matchMode==3||userInfo.matchMode==4){
-			if(userInfo.matchMode==1||userInfo.matchMode==4){
-				this.ableAmoticonButtons();
-			}
-			if(userInfo.matchMode==3){
-				this.ableAmoticonButtons();
+		if(userInfo.matchMode<2){
+			this.ableSpeedButtons();
+		}else{
+			this.ableAmoticonButtons();
+			if(userInfo.matchMode==MatchType.Type_Tool_Match){//Type_Tool_Match
 				this.ableToolButtons();
 			}
-			cc.log("setButtonsToNoPosition 1");
-		}else{
-			this.ableSpeedButtons();
 		}
 		// this.buyCloseButton.setVisible(false);
 		// this.sellCloseButton.setVisible(false);
@@ -612,32 +608,39 @@ var MatchInfoLayer = cc.Layer.extend({
 	
 	buyClick:function()
 	{
-		if(userInfo.buttonSoundFlag==true)
-		{
-			cc.log("buyClick===== ");
-			playBuySound();
-			// cc.audioEngine.playEffect("res/sound/button.mp3",false);
-		}
+
 		var klineScene=this.parent.parent;
-		var i=klineScene.selfOperations.length;
-		if(i>0&&Math.abs(klineScene.selfOperations[i-1])>=klineScene.currentCandleIndex)
-		{
-			cc.log("selfOperations[" + i + "] = " + klineScene.selfOperations[i-1]);
-			cc.log("drawCandlesAll this.currentCandleIndex = ",klineScene.currentCandleIndex);
+		var lastCandleIndex=klineScene.currentCandleIndex;
+		if(lastCandleIndex<121){
 			return;
-		}	
-		else
-		{
-			klineScene.buyClick();
-			if(this.statusFlag==0)
+		}else{
+			if(userInfo.buttonSoundFlag==true)
 			{
-				this.setButtonsToBuyPosition();
+				cc.log("buyClick===== ");
+				playBuySound();
+				// cc.audioEngine.playEffect("res/sound/button.mp3",false);
+			}
+
+			var i=klineScene.selfOperations.length;
+			if(i>0&&Math.abs(klineScene.selfOperations[i-1])>=klineScene.currentCandleIndex)
+			{
+				cc.log("ERROR　selfOperations[" + i + "] = " + klineScene.selfOperations[i-1]);
+				cc.log(" this.currentCandleIndex = ",klineScene.currentCandleIndex);
+				return;
 			}
 			else
 			{
-				this.setButtonsToNoPosition();
-			}
+				klineScene.buyClick();
+				if(this.statusFlag==0)
+				{
+					this.setButtonsToBuyPosition();
+				}
+				else
+				{
+					this.setButtonsToNoPosition();
+				}
 
+			}
 		}
 	},
 	
@@ -651,31 +654,36 @@ var MatchInfoLayer = cc.Layer.extend({
 	
 	sellClick:function()
 	{
-		if(userInfo.buttonSoundFlag==true)
-		{
-			playSellSound();
-		}
 		var klineScene=this.parent.parent;
-		var i=klineScene.selfOperations.length;
-		if(i>0&&Math.abs(klineScene.selfOperations[i-1])>=klineScene.currentCandleIndex)
-		{
-			cc.log("selfOperations[" + i + "] = " + klineScene.selfOperations[i-1]);
-			cc.log("drawCandlesAll this.currentCandleIndex = ",klineScene.currentCandleIndex);
+		var lastCandleIndex=klineScene.currentCandleIndex;
+		if(lastCandleIndex<121){
 			return;
-		}	
-		else
-		{
-			klineScene.sellClick();
-			if(this.statusFlag==0)
+		}else{
+			if(userInfo.buttonSoundFlag==true)
 			{
-				this.setButtonsToSellPosition();
+				playSellSound();
+			}
+			var i=klineScene.selfOperations.length;
+			if(i>0&&Math.abs(klineScene.selfOperations[i-1])>=klineScene.currentCandleIndex)
+			{
+				cc.log("ERROR　selfOperations[" + i + "] = " + klineScene.selfOperations[i-1]);
+				cc.log("this.currentCandleIndex = ",klineScene.currentCandleIndex);
+				return;
 			}
 			else
 			{
-				this.setButtonsToNoPosition();
+				klineScene.sellClick();
+				if(this.statusFlag==0)
+				{
+					this.setButtonsToSellPosition();
+				}
+				else
+				{
+					this.setButtonsToNoPosition();
+				}
 			}
-
 		}
+
 		
 	},
 	

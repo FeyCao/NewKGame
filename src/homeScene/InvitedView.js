@@ -76,13 +76,13 @@ var InvitedViewLayer = cc.Layer.extend({
         this.backgroundSprite.addChild(this.opponentNameLabel,2);
 
 
-        if(inviteInfo.picUrl!=null)
+        if(inviteInfo.inviterPic!=null)
         {
-            var url = inviteInfo.picUrl;
+            var url = inviteInfo.inviterPic;
             cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
                 if(err){
                     cc.log(err);
-                    cc.log("fail loadImg="+inviteInfo.picUrl); // self.addChild(logo);
+                    cc.log("fail loadImg="+inviteInfo.inviterPic); // self.addChild(logo);
                 }
                 if(img)
                 {
@@ -96,13 +96,13 @@ var InvitedViewLayer = cc.Layer.extend({
                     headSprite.setScale(130/size.width,130/size.height);
                     headSprite.setPosition(self.selfBg.getPosition());
                     self.backgroundSprite.addChild(headSprite,1);
-                    cc.log("refreshMatchViewLayer success loadImg="+userInfo.headSprite); // self.addChild(logo);
+                    cc.log("refreshViewLayer inviteInfo success loadImg="+url); // self.addChild(logo);
                 }
             });
         }
-        if(inviteInfo.friendName!=null&&self.selfNameLabel!=null)
+        if(inviteInfo.inviterName!=null&&self.selfNameLabel!=null)
         {
-            self.selfNameLabel.setString(cutstr(inviteInfo.friendName,18));
+            self.selfNameLabel.setString(cutstr(inviteInfo.inviterName,18));
         }
 
 
@@ -175,16 +175,16 @@ var InvitedViewLayer = cc.Layer.extend({
     rejectFriend:function () {
         this.agreeButton.unselected();
         this.rejectButton.selected();
+        gSocketConn.ansInviteFriend(false,inviteInfo);
         this.toMainScene();
-        gSocketConn.ansInviteFriend(false,inviteInfo.code);
 
     },
 
     agreeFriend:function () {
         this.agreeButton.selected();
         this.rejectButton.unselected();
+        gSocketConn.ansInviteFriend(true,inviteInfo);
         this.toMainScene();
-        gSocketConn.ansInviteFriend(true,inviteInfo.code);
     },
     refreshViewLayer:function()
     {
