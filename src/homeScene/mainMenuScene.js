@@ -913,6 +913,7 @@ var MainMenuScene =SceneBase.extend(
 	messageCallBack:function(message)
 	{
 		var self=gMainMenuScene;
+        self.stopProgress();
 		// var packet=Packet.prototype.Parse(message);
         cc.log("messageCallBack mainScene message callback message=="+message.messageType);
 		if(message==null) return;
