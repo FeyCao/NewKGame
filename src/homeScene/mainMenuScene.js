@@ -307,7 +307,7 @@ var MainMenuScene =SceneBase.extend(
         var endTime=new Date().getTime();
         if(endTime-loadTime>5000)
         {
-            this.firstModeChanged();
+            self.firstModeChanged();
         }
         else
         {
