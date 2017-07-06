@@ -31,7 +31,8 @@ ShareManager.prototype.ConnectServer=function()
 {
 	if(gSocketConn==null)
 	{
-		gSocketConn=new SocketConn();
+		// gSocketConn=new SocketConn();
+		gSocketConn=new protoSocketConn();
 	}
 
 	if(gSocketConn.isconnected==false)
@@ -74,10 +75,10 @@ ShareManager.prototype.ShareMessage=function()
 	
 	//gSocketConn.UnRegisterEvent("onmessage");
 	var self=ShareManager.instance;
-	cc.log("userId4:"+self.userId);
-	cc.log("matchId4:"+self.matchId);
-	var aUserId = self.userId;
-	var aMatchId = self.matchId;
+	cc.log("userId4:"+userInfo.userId);
+	cc.log("matchId4:"+userInfo.matchId);
+	var aUserId = userInfo.userId;
+	var aMatchId = userInfo.matchId;
 	gSocketConn.RegisterEvent("onmessage",this.ShareMessageCallback);
 	gSocketConn.ShareMessage(aUserId,aMatchId);
 }
@@ -85,17 +86,22 @@ ShareManager.prototype.ShareMessage=function()
 ShareManager.prototype.ShareMessageCallback=function(message)
 {
 	
-	var packet=Packet.prototype.Parse(message);
-	if(packet==null) return;
+	// var packet=Packet.prototype.Parse(message);
+	if(message==null) return;
 	var self=ShareManager.instance;
 	gSocketConn.UnRegisterEvent("onmessage",self.ShareMessageCallback);
 	if(self.messageCallBackFunction!=null)
 	{
-		if(packet.msgType=="H" || packet.msgType=="I" || packet.msgType=="S")
-		{
-			self.messageCallBackFunction(packet);
-		}
+		self.messageCallBackFunction(message);
+		// gSocketConn.UnRegisterEvent("onmessage",self.LoginOrQucikLoginMessageCallback);//登陆成功后再注销回调
 	}
+	// if(self.messageCallBackFunction!=null)
+	// {
+	// 	if(packet.msgType=="H" || packet.msgType=="I" || packet.msgType=="S")
+	// 	{
+	// 		self.messageCallBackFunction(packet);
+	// 	}
+	// }
 }
 
 

@@ -1,0 +1,270 @@
+﻿enum MessageType{
+    Type_Hall_Info=0;
+    Type_Buy_Or_Sell=1;
+    Type_Fast_Lgoin=2;
+    Type_Use_DeviceId_Login=3;
+    Type_Mobile_Login=4;
+    Type_Warn=5;
+    Type_Request_Match=6;
+    Type_End_Match_Info=7;
+    Type_HisdataInfo=8;
+    Type_Score=9;
+    Type_New_Day=10;
+    Type_Start_Match=11;
+    Type_Operation_End=12;
+    Type_Home_In_Game=13;
+    Type_Matching_Success=14;
+	Type_Share=15;
+	Type_Ping=16;
+	Type_Pong=17;
+	Type_Face=18;
+	Type_UnMatch=19;
+	Type_Tool=20;
+	Type_FriendList=21;
+	Type_FriendList_Change=22;
+	Type_FriendMatch_Invit=23;
+	Type_FriendMatch_Answer=24;
+	Type_HistoryMatches=25;
+	Type_RankList=26;
+	Type_OnlineNum=27;
+	Type_Match_Record=28;
+}
+
+
+enum MatchType{
+    Type_Practice_Match=0;
+    Type_ArtificialMatch=1;
+    Type_PlainMultiplayer_Match=2;
+    Type_Tool_Match=3;
+    Type_Friend_Match=4;
+}
+
+enum FaceType{
+    Face_laugh=0;
+	Face_rage=1;
+	Face_cry=2;
+}
+
+enum ToolType{
+    Tool_Cover=0;
+	Tool_Ban_keyboard=1;
+}
+
+enum AiType{
+    Type_ThreeMA=0;
+    Type_DonChannel=1;
+    Type_ThreeRed=2;
+    Type_OneMA=3;
+    Type_BOLL=4;
+}
+
+
+message AiInfo{
+    required AiType aiType=1;
+	optional int32 arg1=2;//机器人参数
+
+}
+
+message Warn{
+    required int32 code=1;
+	optional string warnInfo=2;
+
+
+}
+
+message Share{
+   required int32 matchId=1;
+   repeated OneDayInfo oneDayInfo=2;
+   optional int32 handleDay=3;//供玩家操作的天数
+   repeated MatchUserInfo playerInfo=4;
+}
+
+message MatchRecord{
+   required int32 matchId=1;
+   repeated OneDayInfo oneDayInfo=2;
+   optional int32 handleDay=3;//供玩家操作的天数
+   repeated MatchUserInfo playerInfo=4;
+}
+
+message Face{
+    optional MatchUserInfo senderInfo=1;
+    required FaceType faceType=2;
+}
+
+message Tool{
+    optional MatchUserInfo senderInfo=1;
+    required ToolType toolType=2;
+	optional string broardcastInfo=3;
+}
+
+
+message HallInfo{
+   required string uid=1;//用户Id
+   optional string token=2;//授权token
+   optional int32 sumMatchOne=3;
+   optional int32 sumMatchMore=4;
+   optional int32 sumMatchAI=5;
+   optional int32 sumMatchMoreTool=6;
+   optional int32 sumMatchFriend=7;
+   optional int32 winMatchOne=8;
+   optional int32 winMatchMore=9;
+   optional int32 winMatchAI=10;
+   optional int32 winMatchMoreTool=11;
+   optional int32 winMatchFriend=12;
+   optional double GainCumulationForOne=13;
+   optional double GainCumulationForAI=14;
+   optional double GainCumulationForMore=15;
+   optional double GainCumulationForMoreTool=16;
+   optional double GainCumulationForFriend=17;
+   optional string userName=18;
+   optional string headPicture=19;
+   optional int32 onLineNum=20;
+}
+
+message HistoryMatches{
+   required MatchType matchType=1;
+   optional	int32  sumMatch=2;
+   optional double winRate=3;
+   optional double AvgGain=4;
+   repeated OneHistoryMatch matchInfo=5;
+}
+
+message OneHistoryMatch{
+   optional int32 matchId=1;
+   optional string	matchTime=2;
+   repeated	MatchUserInfo userInfo=3;
+}
+
+message PlayerRanking{
+   optional int32 rank=1;
+   optional int32 sumMatch=2;
+   optional int32 winMatch=3;
+   optional double AvgGain=4;
+   optional string userName=5;
+   optional string headPicture=6;
+   
+}
+
+message RankList{
+   required MatchType matchType=1;
+   optional PlayerRanking myInfo=2;
+   repeated PlayerRanking playerInfo=3;
+}
+
+
+message OneDayInfo{
+	required double open=1;
+	required double max=2;
+	required double min=3;
+	required double close=4;
+	required int32 vol=5;
+}
+
+message MatchUserInfo{
+
+required string userName=1;
+required double score=2;
+optional int32 ranking=3;
+required string headPicture=4;
+repeated int32 operationIndex=5;
+optional int32 currentIndex=6;
+}
+
+message HisdataInfo{
+
+   repeated OneDayInfo oneDayInfo=1;
+   required int32 handleDay=2;//供玩家操作的天数
+   repeated MatchUserInfo playerInfo=3;
+
+}
+
+message BuyOrSell{
+   required int32 lots=1;//手数
+   required bool isBuy=2;//是否是买
+}
+
+message Score{
+   repeated MatchUserInfo playerInfo=1;
+}
+
+
+message Fast_Lgoin{
+   required string source=1;//来源
+}
+
+message Matching_Success{
+   repeated MatchUserInfo playerInfo=1;
+}
+
+message Request_Match{
+   required MatchType matchType=1;
+   optional AiInfo aiInfo=2;
+   optional int32 handleDays=3;//供玩家操作的天数
+}
+
+message Use_DeviceId_Login{
+   required string uid=1;
+   required string deviceId=2;
+   optional string source=3;
+}
+
+message Mobile_Login{
+   required string mobile=1;
+   required string code=2;
+   optional string source=3;
+}
+
+message End_Match_Info{
+   required string codeInfo=1;
+   required int32 matchId=2;
+   repeated MatchUserInfo playerInfo=3;
+}
+
+message Friend_Status{
+   optional string userName=1;
+   optional string headPicture=2;
+   optional string status=3;
+}
+
+message FriendMatch_Invite{
+   required string inviteeName=1;//被邀请人
+   optional string inviterName=2;//邀请人
+   optional string inviterPic=3;//邀请人头像
+   optional string inviteCode=4;
+}
+
+message FriendMatch_Answer{
+    required bool agree=1;//同意
+	required string inviterName=2;//邀请人
+	optional string answerName=3;//被邀请者
+	optional string answerPic=4;//被邀请人头像
+	optional string inviteCode=5;
+
+}
+
+
+message Message{
+   required MessageType messageType=1;//消息类型
+   optional HallInfo hallInfo=2;//大厅信息
+   optional BuyOrSell buyOrSell=3;//买卖信息
+   optional Request_Match requestMatch=4;
+   optional Fast_Lgoin fastLogin=5;
+   optional Use_DeviceId_Login useDeviceIdLogin=6;
+   optional Mobile_Login mobileLogin=7;
+   optional Warn warn=8;
+   optional End_Match_Info endMatchInfo=9;
+   optional HisdataInfo hisdataInfo=10;
+   optional Score score=11;
+   optional Matching_Success matchingSuccess=12;
+   optional Share shareInfo=13;
+   optional Face faceInfo=14;
+   optional Tool toolInfo=15;
+   repeated Friend_Status friendList=16;
+   optional Friend_Status friendListChange=17;
+   optional FriendMatch_Invite friendMatchInvite=18;
+   optional FriendMatch_Answer friendMatchAnswer=19;
+   optional HistoryMatches historyMatches=20;
+   optional RankList rankList=21;
+   optional int32 onlineNum=22;
+   optional MatchRecord matchRecord=23;
+}

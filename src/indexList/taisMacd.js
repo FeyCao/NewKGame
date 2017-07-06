@@ -185,6 +185,7 @@ TaisMacd.prototype.drawCandle=function(candleIndex)
 //重载，需要计算指标的最大最小值，使最大最小值对称
 TaisMacd.prototype.calculateMaxMinAtIndex=function(index)
 {
+
 	//重载
 	var maxValue=this.getMaxValue();
 	var minValue=this.getMinValue();
@@ -237,6 +238,7 @@ TaisMacd.prototype.calculateMaxMinAtIndex=function(index)
 TaisMacd.prototype.calculateMaxMinBetweenIndex=function(start,end)
 {
 	//重载
+	cc.log("TaisMacd calculateMaxMinBetweenIndex 计算以前的 start="+start);
 	var maxValue=this.getMaxValue();
 	var minValue=this.getMinValue();
 	for(var i=0;i<this.taiArray.length;i++)

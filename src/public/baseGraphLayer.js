@@ -286,6 +286,9 @@ var BaseGraphLayer= cc.Layer.extend({
 	//根据参数的值，获取到该值在图像上的位置
 	getCandlePosYByValue:function(value)
 	{
+		if(value>this.maxValue||value<this.minValue){
+			cc.log("getCandlePosYByValue currentIndex=="+this.getHistoryCandleCountByPageIndex()+" this.Value="+value+" ,this.maxValue="+this.maxValue+", this.minValue="+this.minValue)
+		}
 		return (value-this.minValue)*this.graphArea.height/(this.maxValue-this.minValue);
 	},
 	
@@ -321,7 +324,7 @@ var BaseGraphLayer= cc.Layer.extend({
 			//再计算指标图的最大最小
 			this.calculateMaxMinAtIndexForAllTais(currentIndex);
 		}
-		
+
 		
 		if( lastmax!=this.maxValue  ||  lastmin!=this.minValue )
 		{
@@ -372,11 +375,29 @@ var BaseGraphLayer= cc.Layer.extend({
 
 		this.drawAreaBorder();
 		// var startIndex=this.getHistoryCandleIndexByPageIndex();
-		cc.log("redrawCandlesToIndex:function(index)......");
+		var lastmax=this.maxValue;
+		var lastmin=this.minValue;
+
 		var startIndex=(0>index-120?0:index-120);
+		// if(this.klineDataPrev!=null)
+		// {
+		// 	startIndex=this.getHistoryCandleIndexByPageIndex();
+		// }
+		this.calculateMaxMinBetweenIndex(startIndex,index);
+		//再计算指标图的最大最小
+		this.calculateMaxMinBetweenIndexForAllTais(startIndex,index);
+		this.redrawExceptCandles();
+		cc.log("redrawCandlesToIndex:function(index)="+index+"|this.maxValue="+this.maxValue+"|this.minValue="+this.minValue);
+		// var startIndex=(0>index-120?0:index-120);
 		for(var i=startIndex;i<index;i++)
 		{
 			this.drawSingleDayGraphInfos(i);
+		}
+		if( lastmax!=this.maxValue  ||  lastmin!=this.minValue )
+		{
+			//如果最大最小改变了，则需要重画之前所有的蜡烛图
+			cc.log("need redraw prev");
+			this.redrawExceptCandles();
 		}
 	},
 	

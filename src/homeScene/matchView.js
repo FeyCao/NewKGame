@@ -75,16 +75,23 @@ var MatchViewLayer = cc.Layer.extend({
     },
 
     generalMatch:function () {
-        userInfo.matchMode=1;
+        userInfo.matchMode=MatchType.Type_PlainMultiplayer_Match;
         this.propButton.unselected();
         this.generalButton.selected();
     },
 
     propMatch:function () {
-        userInfo.matchMode=3;
+        userInfo.matchMode=MatchType.Type_Tool_Match;
         this.propButton.selected();
         this.generalButton.unselected();
     },
+    /*enum MatchType{
+     Type_Practice_Match=0;
+     Type_ArtificialMatch=1;
+     Type_PlainMultiplayer_Match=2;
+     Type_Tool_Match=3;
+     Type_Friend_Match=4;
+     }*/
     beginMatch:function(){
         var self =this;
         var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
@@ -92,7 +99,7 @@ var MatchViewLayer = cc.Layer.extend({
         switch (userInfo.matchMode)
         {
 
-            case 0:
+            case MatchType.Type_Practice_Match:
             {
 
                 // var klineSceneNext=new KLineScene();
@@ -101,7 +108,7 @@ var MatchViewLayer = cc.Layer.extend({
                 //     // klineSceneNext.showProgress();
                 // };
                 // gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
-                gSocketConn.BeginMatch(matchInfoMessage);
+                gSocketConn.BeginMatch(userInfo.matchMode,userInfo.matchDayCount);
                 userInfo.matchBeginFlag=true;
                 //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
                 // cc.director.runScene(klineSceneNext);
@@ -109,7 +116,21 @@ var MatchViewLayer = cc.Layer.extend({
 
                 break;
             }
-            case 1:
+             case MatchType.Type_ArtificialMatch:
+            {
+
+                var aiInfo = new AiInfo();
+                aiInfo.setAiType(userInfo.matchAiMode);
+                gSocketConn.BeginMatch(userInfo.matchMode,userInfo.matchDayCount,aiInfo);
+                userInfo.matchBeginFlag=true;
+                //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
+                // cc.director.runScene(klineSceneNext);
+                // cc.log("klineSceneNext切换KGameScene场景调用完毕");
+
+                break;
+            }
+            case  MatchType.Type_Tool_Match:
+            case MatchType.Type_PlainMultiplayer_Match:
             {
 
                 self.unmatchButton.setVisible(true);
@@ -117,29 +138,29 @@ var MatchViewLayer = cc.Layer.extend({
                 self.textLabel.setVisible(true);
                 if(null!=gMainMenuScene)
                 {
-                    gSocketConn.BeginMatch("1");
+                    gSocketConn.BeginMatch(userInfo.matchMode);
                     this.timeBegin = new Date().getTime();
                     this.showHeadChange();
                 }
 
                 break;
             }
-            case 2:
-            {
-                // var klineSceneNext=new KLineScene();
-                // klineSceneNext.onEnteredFunction=function(){
-                //
-                //     // klineSceneNext.showProgress();
-                // };
-                // gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
-                gSocketConn.BeginMatch(matchInfoMessage);
-                userInfo.matchBeginFlag=true;
-                //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
-                // cc.director.runScene(klineSceneNext);
-                cc.log("klineSceneNext切换KGameScene场景调用完毕");
-                break;
-            }
-            case 3:
+            // case  MatchType.Type_Tool_Match:
+            // {
+            //     // var klineSceneNext=new KLineScene();
+            //     // klineSceneNext.onEnteredFunction=function(){
+            //     //
+            //     //     // klineSceneNext.showProgress();
+            //     // };
+            //     // gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
+            //     gSocketConn.BeginMatch(userInfo.matchMode);
+            //     userInfo.matchBeginFlag=true;
+            //     //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
+            //     // cc.director.runScene(klineSceneNext);
+            //     cc.log("klineSceneNext切换KGameScene场景调用完毕");
+            //     break;
+            // }
+            case  MatchType.Type_Friend_Match:
             {
 
                 self.unmatchButton.setVisible(true);
@@ -189,6 +210,7 @@ var MatchViewLayer = cc.Layer.extend({
     hideLayer:function()
     {
         this.setVisible(false);
+        this.stopHeadChange();
         this.scheduler.pauseTarget(this);
         this.actionManager && this.actionManager.pauseTarget(this);
         cc.eventManager.pauseTarget(this,true);
@@ -370,24 +392,33 @@ var MatchViewLayer = cc.Layer.extend({
 
             this.AiModeSelect = cc.Sprite.create("res/select_bg.png");
             // AiModeSelect.setScale(1.05);
+            // switch(userInfo.matchAiMode){
+            //     case AiType.Type_DonChannel:
+            //     case AiType.Type_ThreeMA:
+            //     case AiType.Type_OneMA:
+            //     case AiType.Type_BOLL:
+            //     case AiType.Type_ThreeRed:
+            // }
+
             switch(userInfo.matchAiMode)
             {
-                case "DON":
+                case AiType.Type_DonChannel:
                     this.AiModeSelect.setPosition(AiMode1Btn.getPosition());
                     break;
-                case "3MA":
+                case AiType.Type_ThreeMA:
                     this.AiModeSelect.setPosition(AiMode2Btn.getPosition());
                     break;
-                case "1MA":
+                case AiType.Type_OneMA:
                     this.AiModeSelect.setPosition(AiMode3Btn.getPosition());
                     break;
-                case "BOOL":
+                case AiType.Type_BOLL:
                     this.AiModeSelect.setPosition(AiMode4Btn.getPosition());
                     break;
-                case "3RED":
+                case AiType.Type_ThreeRed:
                     this.AiModeSelect.setPosition(AiMode5Btn.getPosition());
                     break;
                 default:
+                    cc.log("userInfo.matchAiMode="+userInfo.matchAiMode);
                     break;
             }
            // AiModeSelect.setPosition(AiMode1Btn.getPosition());
@@ -491,23 +522,28 @@ var MatchViewLayer = cc.Layer.extend({
     //     }
     // },
     setAiMode1:function(){
-        userInfo.matchAiMode = "DON";
+        // userInfo.matchAiMode = "DON";
+        userInfo.matchAiMode = AiType.Type_DonChannel;
         this.AiModeSelect.setPosition(AiMode1Btn.getPosition());
     },
     setAiMode2:function(){
-        userInfo.matchAiMode = "3MA";
+        // userInfo.matchAiMode = "3MA";
+        userInfo.matchAiMode = AiType.Type_ThreeMA;
         this.AiModeSelect.setPosition(AiMode2Btn.getPosition());
     },
     setAiMode3:function(){
-        userInfo.matchAiMode = "1MA";
+        // userInfo.matchAiMode = "1MA";
+        userInfo.matchAiMode = AiType.Type_OneMA;
         this.AiModeSelect.setPosition(AiMode3Btn.getPosition());
     },
     setAiMode4:function(){
-        userInfo.matchAiMode = "BOOL";
+        // userInfo.matchAiMode = "BOOL";
+        userInfo.matchAiMode = AiType.Type_BOLL;
         this.AiModeSelect.setPosition(AiMode4Btn.getPosition());
     },
     setAiMode5:function(){
-        userInfo.matchAiMode = "3RED";
+        // userInfo.matchAiMode = "3RED";
+        userInfo.matchAiMode = AiType.Type_ThreeRed;
         this.AiModeSelect.setPosition(AiMode5Btn.getPosition());
     },
 
@@ -687,7 +723,7 @@ var MatchViewLayer = cc.Layer.extend({
         this.PersonBattleView.setVisible(true);
         this.textLabel.setString("匹配中...");
 
-        if(userInfo.matchMode==1){
+        if(userInfo.matchMode!=MatchType.Type_Tool_Match){
             this.generalButton.selected();
             this.propButton.unselected();
         }else {
@@ -712,32 +748,32 @@ var MatchViewLayer = cc.Layer.extend({
 
 
 
-    refreshMatchViewLayer:function()
+    refreshMatchViewLayer:function()//
     {
         var self =this;
         cc.log( "refreshMatchViewLayer"+userInfo.headSprite);
         switch (userInfo.matchMode)
         {
 
-            case 0://练习场
+            case MatchType.Type_Practice_Match://练习场
             {
 
                 self.setPracticeBattleView();
                 break;
             }
-            case 1://人人大战
+            case MatchType.Type_PlainMultiplayer_Match://人人大战
             {
                 self.setPersonBattleView();
                 break;
                 // this.mode3Button.setDisabled(true);winOfMatchForMore"
             }
-            case 2://人机大战
+            case MatchType.Type_ArtificialMatch://人机大战
             {
                 self.setAiBattleView();
 
                 break;
             }
-            case 3://道具大战
+            case MatchType.Type_Tool_Match://道具大战
             {
                 self.setPersonBattleView();
                 break;
@@ -770,6 +806,81 @@ var MatchViewLayer = cc.Layer.extend({
         for(var i=userInfo.playerListData.length-1;i>0;i--)
         {
             cc.log("refreshMatchViewByData 2=="+content);
+            for(var j=i;j>0;j--)
+            {
+                // cc.log("refreshMatchViewByData 2=="+content);
+                if(userInfo.playerListData[j]["userName"]==userInfo.nickName)
+                {
+                    var temp = userInfo.playerListData[j];
+                    userInfo.playerListData[j] =userInfo.playerListData[j-1];
+                    userInfo.playerListData[j-1] =temp;
+                }
+            }
+        }
+
+        if(userInfo.playerListData[1]!=null)
+        {
+            cc.log("refreshMatchViewLayer 3 loadImg="); // self.addChild(logo);
+            var opponentData = userInfo.playerListData[1];
+            if(opponentData["userName"]!=null&&self.opponentNameLabel!=null)
+            {
+                cc.log("refreshMatchViewLayer userName=");
+                self.opponentNameLabel.setString(cutstr(opponentData["userName"],11));
+            }
+            var url = opponentData["headPicture"];
+            if(url!=null){
+                cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
+                    if(err){
+                        cc.log(err);
+                        cc.log("fail loadImg="+userInfo.headSprite); // self.addChild(logo);
+                    }
+                    if(img)
+                    {
+                        // var texture2d = new cc.Texture2D();
+                        // texture2d.initWithElement(img);
+                        // texture2d.handleLoadedTexture();
+                        // self.opponentSprite.initWithTexture(texture2d);
+                        //
+                        // var size = self.opponentSprite.getContentSize();
+                        // self.opponentSprite.setScale(135/size.width,135/size.height);
+                        var headSprite = new cc.Sprite();
+                        var texture2d = new cc.Texture2D();
+                        texture2d.initWithElement(img);
+                        texture2d.handleLoadedTexture();
+                        headSprite.initWithTexture(texture2d);
+
+                        var size = headSprite.getContentSize();
+                        headSprite.setScale(135/size.width,135/size.height);
+                        headSprite.setPosition(self.opponentBg.getPosition());
+                        self.backgroundSprite.addChild(headSprite,2);
+                        cc.log("refreshMatchViewLayer2 success loadImg="+userInfo.headSprite); // self.addChild(logo);
+                    }
+                });
+            }
+
+            this.textLabel.setString("匹配成功！");
+        }
+    },
+    refreshMatchViewByPBData:function(message)
+    {
+        cc.log("refreshMatchViewByPBData =="+message);//人人人对战信息Matching|"playerList":[{"userName":"caoyongfei","score":"0.00","ranking":0,"headPicture":"http://222.66.97.203/Kgame/img/kiiikIcon.png"},{"userName":"红莲安迪","score":"0.00","ranking":0,"headPicture":"http://ohfw64y24.bkt.clouddn.com/30"}]|###
+        // cc.log(content);
+        var self=this;
+        // var posD = 50;
+        var data=message;
+        var playerListData=message.playerInfo;
+        userInfo.playerListData=[];
+        for(var i=0;playerListData!=null&&i<playerListData.length;i++)
+        {
+            var playerData=playerListData[i];
+            cc.log("refreshMatchViewByPBData userName="+playerData["userName"]);
+            userInfo.playerListData.push(playerData);
+        }
+
+        //把该用户信息排在第一位
+        for(var i=userInfo.playerListData.length-1;i>0;i--)
+        {
+            cc.log("refreshMatchViewByPBData 2==");
             for(var j=i;j>0;j--)
             {
                 // cc.log("refreshMatchViewByData 2=="+content);

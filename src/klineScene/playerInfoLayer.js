@@ -108,7 +108,7 @@ var PlayerInfoLayer= cc.Node.extend({
 		// }
 		switch(userInfo.matchMode)
 		{
-			case 0://练习场比赛
+			case MatchType.Type_Practice_Match://练习场比赛
 			{
 				cc.log("PlayerInfoLayer setPlayerInfo:function()=0" );
 				// this.avatarSprite.setVisible(true);
@@ -116,7 +116,7 @@ var PlayerInfoLayer= cc.Node.extend({
 					this.nameSpritebg.setVisible(false);
 				}
 				if(this.selfNameLabel==null){
-					this.selfNameLabel=new cc.LabelTTF(cutstr(userInfo.nickName,11), "Arial", fontSize,cc.size(160,40));
+					this.selfNameLabel=new cc.LabelTTF(cutstr(userInfo.nickName,11), "Arial", fontSize);//,cc.size(160,40)
 					// this.selfNameLabel.setScale(this.fXScale,this.fYScale);
 					//this.selfNameLabel=cc.LabelTTF.create(gPlayerName, "Arial", 20);
 					this.selfNameLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
@@ -175,10 +175,11 @@ var PlayerInfoLayer= cc.Node.extend({
 				});
 				break;
 			}
-			case 2://人机
-			case 3://道具赛人人
-			case 4://好友赛人人
-			case 1://普通赛人人
+			// case MatchType.Type_Practice_Match:
+			case MatchType.Type_ArtificialMatch://人机匹配
+			case MatchType.Type_Tool_Match://道具匹配
+			case MatchType.Type_Friend_Match://好友匹配
+			case MatchType.Type_PlainMultiplayer_Match://普通匹配
 			{
 
 				if(this.nameSpritebg==null){
@@ -198,15 +199,19 @@ var PlayerInfoLayer= cc.Node.extend({
 						this.playerInfo_bg[i]=new cc.Sprite(res.BG_HEAD_PNG);
 						this.playerInfo_btn[i] = new cc.MenuItemImage(res.BLUE_BG_png,"", "", this);
 						this.playerInfo_btn[i].setContentSize(size);
-						this.playerNameLabel[i] = cc.LabelTTF.create(userInfo.nickName, "fonts/Arial.ttf", fontSize,cc.size(160,40));
+						this.playerNameLabel[i] = cc.LabelTTF.create(userInfo.nickName, "fonts/Arial.ttf", fontSize);//cc.size(160,40)
 						this.playerScoreLabel[i] = cc.LabelTTF.create("0.00%", "Arial", 50);
 
-						this.playerHead_Sprite[i] = new cc.Sprite(res.HEAD_0_PNG);
-						this.playerHead_Sprite[i].setContentSize(size);
+						this.playerHead_Sprite[i] = new cc.Sprite();
+						// this.playerHead_Sprite[i].setContentSize(size);
 						// this.playerHead_Sprite[i].setVisible(false);
 						this.playerHead_Select[i] = new cc.Sprite(res.BG_HEAD_SELECT_PNG);
 						this.playerHead_Select[i].setScale(0.6);
 						this.playerHead_Select[i].setVisible(false);
+
+//////////////////////////////////////
+///////////////////////////////////////
+
 						if (i==0)
 						{
 							this.playerNameLabel[i].setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
@@ -219,17 +224,40 @@ var PlayerInfoLayer= cc.Node.extend({
 							this.playerInfo_bg[i].setPosition(posX1,posY);
 							this.playerInfo_btn[i].setPosition(posX1,posY);
 							this.playerNameLabel[i].setString(userInfo.nickName);
-
 							this.playerHead_Sprite[i].setPosition(posX1,posY);
 							this.playerHead_Select[i].setPosition(posX1,posY);
 
-							this.playerInfo_btn[i].setCallback(function (){
-								cc.log("playerInfo_btn0 ClickEvent ");
-								var matchId = userInfo.matchId;
-								var userId = userInfo.playerListData[0]["userName"];
-								cc.log("playerInfo_btn0 ClickEvent userId[0] ="+userId+"||matchId="+userInfo.matchId);
 
-								gSocketConn.SendRecordMatchMessage(userId,matchId);
+
+							this.playerInfo_btn[i].setCallback(function (){
+								var userName = userInfo.playerListData[0]["userName"];
+								var playerInfo = new MatchUserInfo();
+								var buyInfo=[];
+								var score =0;
+                                if(userInfo.matchRecordFlag&&userInfo.playerListData[0]["operationIndex"]!=null){
+                                    playerInfo = userInfo.playerListData[0];
+                                    score = parseFloat(playerInfo["score"]).toFixed(2);
+                                    buyInfo=playerInfo["operationIndex"];
+                                    gKlineScene.businessMatchRecordInfo(buyInfo,score);
+                                }else{
+                                    for(var j=0;userInfo.endInfoOfAllPlayers!=null&&j<userInfo.endInfoOfAllPlayers.length;j++)
+                                    {
+                                        if(userInfo.endInfoOfAllPlayers[j]["userName"]==userName){
+                                            playerInfo = userInfo.endInfoOfAllPlayers[j];
+                                            score = parseFloat(playerInfo["score"]).toFixed(2);
+                                            buyInfo=playerInfo["operationIndex"];
+                                            // for(var k=0;playerInfo["operationIndex"]!=null&&k<playerInfo["operationIndex"].length;k++)
+                                            // {
+                                            // 	buyInfo.push(playerInfo["operationIndex"][j]);
+                                            // }
+                                            break;
+                                        }
+                                    }
+                                    cc.log("playerInfo_btn0 ClickEvent userId[0] ="+userName+"||matchId="+userInfo.matchId);
+                                    gKlineScene.businessMatchInfo(buyInfo,score);
+                                }
+
+								// gSocketConn.SendRecordMatchMessage(userId,matchId);
 							});
 
 						}
@@ -238,7 +266,6 @@ var PlayerInfoLayer= cc.Node.extend({
 							this.playerNameLabel[i].setHorizontalAlignment(cc.TEXT_ALIGNMENT_RIGHT);
 							this.playerScoreLabel[i].setHorizontalAlignment(cc.TEXT_ALIGNMENT_RIGHT);
 							this.playerNameLabel[i].setAnchorPoint(0,0.5);
-
 							this.playerNameLabel[i].setPosition(1280-namePosX,posY);
 							this.playerScoreLabel[i].setPosition(1280-scorePosX,posY);
 							this.playerInfo_bg[i].setPosition(1280-posX1,posY);
@@ -250,25 +277,45 @@ var PlayerInfoLayer= cc.Node.extend({
 							this.playerHead_Select[i].setPosition(1280-posX1,posY);
 
 							this.playerInfo_btn[i].setCallback(function () {
-								cc.log("playerInfo_btn1 ClickEvent ");
+								var userName = userInfo.playerListData[1]["userName"];
+								var playerInfo = new MatchUserInfo();
+								var buyInfo=[];
+								var score =0;
+                                if(userInfo.matchRecordFlag&&userInfo.playerListData[1]["operationIndex"]!=null){
+                                    playerInfo = userInfo.playerListData[1];
+                                    score = parseFloat(playerInfo["score"]).toFixed(2);
+                                    buyInfo=playerInfo["operationIndex"];
+                                    gKlineScene.businessMatchRecordInfo(buyInfo,score);
+                                }else{
+                                    for(var j=0;userInfo.endInfoOfAllPlayers!=null&&j<userInfo.endInfoOfAllPlayers.length;j++)
+                                    {
+                                        if(userInfo.endInfoOfAllPlayers[j]["userName"]==userName){
+                                            playerInfo = userInfo.endInfoOfAllPlayers[j];
+                                            score = parseFloat(playerInfo["score"]).toFixed(2);
+                                            buyInfo=playerInfo["operationIndex"];
+                                            // for(var k=0;playerInfo["operationIndex"]!=null&&k<playerInfo["operationIndex"].length;k++)
+                                            // {
+                                            // 	buyInfo.push(playerInfo["operationIndex"][j]);
+                                            // }
+                                            break;
+                                        }
+                                    }
+                                    cc.log("playerInfo_btn1 ClickEvent userId[1] ="+userName+"||matchId="+userInfo.matchId);
+                                    gKlineScene.businessMatchInfo(buyInfo,score);
+                                }
 
-								var matchId = userInfo.matchId;
-								var userId = userInfo.playerListData[1]["userName"];
-								cc.log("playerInfo_btn0 ClickEvent userId[1] =" + userId + "||matchId=" + userInfo.matchId);
-								gSocketConn.SendRecordMatchMessage(userId, matchId);
+
 							});
 							// this.playerInfo_bg[i].addChild(this.playerInfo_btn1);
 						}
+
+
 						this.playerInfo_btn[i].setVisible(false);
 
 						mu.addChild(this.playerInfo_btn[i],5);
 
-
-
-
 						this.backgroundSprite.addChild(this.playerHead_Sprite[i],5);
 						this.backgroundSprite.addChild(this.playerHead_Select[i],6);
-
 
 						// this.playerInfo_bg[i].addChild(mu);
 
@@ -328,8 +375,10 @@ var PlayerInfoLayer= cc.Node.extend({
 
 		var self = this;
 		self.setPlayerInfo();
+		var strName = cutstr(userInfo.nickName,11);
 		if(this.selfNameLabel!=null){
-			this.selfNameLabel.setString(cutstr(userInfo.nickName,11));
+			this.selfNameLabel.setString(strName);
+            this.selfNameLabel.setVisible(true);
 		}
 
 		if(this.headSprite==null){
@@ -364,7 +413,7 @@ var PlayerInfoLayer= cc.Node.extend({
 					var size = self.headSprite.getContentSize();
 					self.headSprite.setScale(80/size.width,80/size.height);
 				}
-				cc.log("refreshScoresByData1 loadImg="+userInfo.headSprite); // self.addChild(logo);
+				cc.log("playInfoLayer refreshScoresByData1 loadImg="+url); // self.addChild(logo);
 			});
             for(var i=0;i<userInfo.playerListData.length;i++)
             {
@@ -395,7 +444,7 @@ var PlayerInfoLayer= cc.Node.extend({
 							self.playerHead_Sprite[0].setScale(90/size.width,90/size.height);
 
 						}
-						cc.log("refreshScoresByData2 loadImg"+userInfo.headSprite); // self.addChild(logo);
+						cc.log("playInfoLayer refreshScoresByData2 loadImg"+url); // self.addChild(logo);
 					});
 				}
 				if(i==1&&i<self.playerInfo_bg.length)
@@ -413,13 +462,17 @@ var PlayerInfoLayer= cc.Node.extend({
 							var size = self.playerHead_Sprite[1].getContentSize();
 							self.playerHead_Sprite[1].setScale(90/size.width,90/size.height);
 						}
-						cc.log("refreshScoresByData3 loadImg"+userInfo.headSprite); // self.addChild(logo);
+						cc.log("playInfoLayer  refreshScoresByData3 loadImg"+url); // self.addChild(logo);
 					});
 				}
 
 				// this.playerInfo_btn[i].setTexture
                 if(this.playerNameLabel[i]!=null && this.playerNameLabel[i]!=undefined)
                 {
+                    if(this.selfNameLabel!=null){
+                        this.selfNameLabel.setVisible(false);
+                    }
+
 					score=parseFloat(userInfo.playerListData[i]["score"]);
 
                     this.playerNameLabel[i].setString(cutstr(userInfo.playerListData[i]["userName"],11));

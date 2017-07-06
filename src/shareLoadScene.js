@@ -2,9 +2,7 @@
 var ShareLoadScene = SceneBase.extend(
 {
 	backgroundLayer:null,		//背景层
-	
-	userId:null,
-	macthId:null,
+
 	titleSprite:null,
 	
 	loadTime:null,
@@ -34,11 +32,13 @@ var ShareLoadScene = SceneBase.extend(
 		var self=this;
 		this.showProgress();
 		loadTime=new Date().getTime();
-		self.userId=getQueryStringByName("userId");
-		self.matchId=getQueryStringByName("matchId");
+		userInfo.nickName=getQueryStringByName("userName");
+		userInfo.userId=getQueryStringByName("userId");
+		userInfo.matchId=getQueryStringByName("matchId");
         cc.log("userId:"+self.userId);
 		cc.log("matchId:"+self.matchId);
 
+		userInfo.nickName = decodeURI(userInfo.nickName);
 
 		if(gShareManager==null)
 		{
@@ -47,7 +47,7 @@ var ShareLoadScene = SceneBase.extend(
 		
 		//var self=this;
 		//if(self.userId!= && self.matchId!="")
-		if(self.matchId!=null &&self.userId!=null)
+		if(self.matchId!=null)
 		{
 			cc.log("userId2:"+self.userId);
 			cc.log("matchId2:"+self.matchId);
@@ -79,38 +79,78 @@ var ShareLoadScene = SceneBase.extend(
 		cc.log("服务器连接失败确认按钮。。。");
 		window.location.href="http://analyse.kiiik.com/";
 	},
-	messageCallback:function(packet)
+	// messageCallback:function(packet)
+	// {
+	// 	cc.log("login scene message callback packet.msgType="+packet.msgType);
+	// 	var self=this;
+	// 	if(packet.msgType=="1")
+	// 	{
+	// 		gPlayerName=packet.content;
+	// 		//登录成功
+	// 		cc.log(packet.content);
+	// 		this.OnLogined(packet.content);
+	// 	}
+	// 	else if(packet.msgType=="H")
+	// 	{
+	// 		//分享成功
+	// 		cc.log("获取分享数据成功");
+	// 		// cc.log("获取分享数据成功"+packet.content);
+	// 		this.stopProgress();
+	// 		this.moveToNextScene(packet.content);
+	// 		//cc.log(packet.content);
+	// 		//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+	// 	}
+	// 	else if(packet.msgType=="I")
+	// 	{
+	// 		//分享成功
+	// 		cc.log("获取分享数据失败"+packet.content);
+	// 		this.stopProgress();
+	// 		//this.moveToNextScene();
+	// 		//cc.log(packet.content);
+	// 		//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+	// 	}
+	// },
+	messageCallback:function(message)
 	{
-		cc.log("login scene message callback packet.msgType="+packet.msgType);
+		cc.log("Share scene message callback packet.msgType="+message.messageType);
+		// cc.log("login scene message callback packet.content="+packet.content);
 		var self=this;
-		if(packet.msgType=="1")
+		if(message.messageType==MessageType.Type_Share)
 		{
-			gPlayerName=packet.content;
-			//登录成功
-			cc.log(packet.content);
-			this.OnLogined(packet.content);
+			//成功
+			cc.log("分享成功 callback packet.msgType="+message.messageType);
+
+
+
+
+			if(gKlineScene==null)
+				gKlineScene=new KLineScene();
+			gKlineScene.onEnteredFunction=function(){
+				gKlineScene.showProgress();
+				cc.log("gKlineScene.onEnteredFunction=====");
+				gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
+				gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
+				gKlineScene.messageCallBack(message);
+			};
+
+
+			if(null==currentScene||currentScene!="gMainMenuScene"){
+				cc.director.runScene(gKlineScene);
+				currentScene = "gKlineScene";
+			}
+
+			// gPlayerName=packet.content;
+			// //登录成功
+			// this.OnLogined(packet.content);
+		}else if(message.messageType==MessageType.Type_Warn){
+			cc.log("share scene message callback warnInfo msgType="+message.messageType);
+			self.showErrorBox("获取分享数据失败:"+message.warn.warnInfo,function(){self.errorBoxClosed();});
+		}else{
+			cc.log("share scene message callback other msgType="+message.messageType);
 		}
-		else if(packet.msgType=="H")
-		{
-			//分享成功
-			cc.log("获取分享数据成功");
-			// cc.log("获取分享数据成功"+packet.content);
-			this.stopProgress();
-			this.moveToNextScene(packet.content);
-			//cc.log(packet.content);
-			//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
-		}
-		else if(packet.msgType=="I")
-		{
-			//分享成功
-			cc.log("获取分享数据失败"+packet.content);
-			this.stopProgress();
-			//this.moveToNextScene();
-			//cc.log(packet.content);
-			//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
-		}
+
 	},
-	
+
 	
 	moveToNextScene:function(content)
 	{

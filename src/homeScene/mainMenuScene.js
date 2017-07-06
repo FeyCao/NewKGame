@@ -241,7 +241,7 @@ var MainMenuScene =SceneBase.extend(
             this.onEnteredFunction();
         }
 
-        gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
+        // gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
 
         this.setInfoBySource(userInfo.source);
         this.openSceneType();
@@ -325,7 +325,7 @@ var MainMenuScene =SceneBase.extend(
         //     gKlineScene=new KLineScene();
         // }
 
-        userInfo.matchMode = 0;
+        userInfo.matchMode = MatchType.Type_Practice_Match;
         if(this.matchViewLayer==null){
             this.matchViewLayer=new MatchViewLayer();
             this.matchViewLayer.setVisible(false);
@@ -367,7 +367,7 @@ var MainMenuScene =SceneBase.extend(
 
         cc.log("Waiting for secondModeChanged");
         var self =gMainMenuScene;
-        userInfo.matchMode = 2;
+        userInfo.matchMode = MatchType.Type_ArtificialMatch;
         if(this.matchViewLayer==null){
             this.matchViewLayer=new MatchViewLayer();
             this.matchViewLayer.setVisible(false);
@@ -405,9 +405,9 @@ var MainMenuScene =SceneBase.extend(
 	{
         cc.log("Waiting for thirdModeChanged");
         var self = this;
-        userInfo.matchMode = 1;
+        userInfo.matchMode = MatchType.Type_PlainMultiplayer_Match;
         if(userInfo.operationType==2){
-            gSocketConn.BeginMatch("1");
+            gSocketConn.BeginMatch(userInfo.matchMode);
         }else{
             if(this.matchViewLayer==null){
                 this.matchViewLayer=new MatchViewLayer();
@@ -433,25 +433,26 @@ var MainMenuScene =SceneBase.extend(
 
         cc.log("Waiting for thirdModeChanged");
         var self = this;
-        userInfo.matchMode = 4;
-        if(userInfo.operationType==2){
-            gSocketConn.BeginMatch("1");
-        }else{
-            gSocketConn.BeginMatch("4");
-            gSocketConn.getFriendList();
-            if(this.friendLayer==null){
-                this.friendLayer=new FriendViewLayer();
-                this.friendLayer.setVisible(false);
-                this.friendLayer.setAnchorPoint(0,0);
-                this.friendLayer.setPosition(0,0);
-                this.otherMessageTipLayer.addChild(this.friendLayer, 1,this.friendLayer.getTag());
-                this.friendLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
-            }
-
-            // LISTFRIEND||
-            this.friendLayer.showLayer();
-            this.pauseLowerLayer();
-        }
+        userInfo.matchMode = MatchType.Type_Friend_Match;
+        gSocketConn.BeginMatch(userInfo.matchMode);
+        // if(userInfo.operationType==2){
+        //     gSocketConn.BeginMatch(userInfo.matchMode);
+        // }else{
+        //     gSocketConn.BeginMatch(userInfo.matchMode);
+        //     gSocketConn.getFriendList();
+        //     if(this.friendLayer==null){
+        //         this.friendLayer=new FriendViewLayer();
+        //         this.friendLayer.setVisible(false);
+        //         this.friendLayer.setAnchorPoint(0,0);
+        //         this.friendLayer.setPosition(0,0);
+        //         this.otherMessageTipLayer.addChild(this.friendLayer, 1,this.friendLayer.getTag());
+        //         this.friendLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+        //     }
+        //
+        //     // LISTFRIEND||
+        //     this.friendLayer.showLayer();
+        //     this.pauseLowerLayer();
+        // }
         cc.log("Waiting for thirdModeChanged");
 
 	},
@@ -775,7 +776,7 @@ var MainMenuScene =SceneBase.extend(
                     if(self.headSprite ==null){
                         self.headSprite = new cc.Sprite(res.HEAD_0_PNG);
                         self.headSprite.setPosition(cc.p(180,500));
-                        self.backgroundSprite.addChild(this.headSprite,2);
+                        self.backgroundSprite.addChild(self.headSprite,2);
                     }
 
                     var texture2d = new cc.Texture2D();
@@ -839,26 +840,67 @@ var MainMenuScene =SceneBase.extend(
             self.sumFriendLabel.setString("/"+userInfo.sumMatchFriend);
             self.sumFriendLabel.setPosition(cc.pAdd(self.winFriendLabel.getPosition(),cc.p(self.winFriendLabel.getContentSize().width,0)));
         }
-    },
-    setMainMenuScenedata:function(jsonText)
-    {
-        var data=JSON.parse(jsonText);
-        cc.log("setMainMenuScenedata jsonText parse over");
-        // {"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":1,"sumOfMatchForOne":28,"winOfMatchForMore":37,"sumOfMatchForMore":67,"winOfMatchForAI":16,"sumOfMatchForAI":51,"gainCumulation":"-11.285","sumOfAllMatch":28,"winMatchFriend":5,"sumMatchFriend":8,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}
 
+        if(self.playerNumLabel!=null&&userInfo.onlineNum!=null){
+           self.playerNumLabel.setString("在线人数："+userInfo.onlineNum)
+        }
+    },
+    setMainMenuScenedata:function(data)
+    {
+        // var data=JSON.parse(jsonText);
+        // cc.log("setMainMenuScenedata jsonText parse over");
+        // {"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":1,"sumOfMatchForOne":28,"winOfMatchForMore":37,"sumOfMatchForMore":67,"winOfMatchForAI":16,"sumOfMatchForAI":51,"gainCumulation":"-11.285","sumOfAllMatch":28,"winMatchFriend":5,"sumMatchFriend":8,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}
+        /*message HallInfo{
+        required string uid=1;//用户Id
+        optional string token=2;//授权token
+        optional int32 sumMatchOne=3;
+        optional int32 sumMatchMore=4;
+        optional int32 sumMatchAI=5;
+        optional int32 sumMatchMoreTool=6;
+        optional int32 sumMatchFriend=7;
+        optional int32 winMatchOne=8;
+        optional int32 winMatchMore=9;
+        optional int32 winMatchAI=10;
+        optional int32 winMatchMoreTool=11;
+        optional int32 winMatchFriend=12;
+        optional double GainCumulationForOne=13;
+        optional double GainCumulationForAI=14;
+        optional double GainCumulationForMore=15;
+        optional double GainCumulationForMoreTool=16;
+        optional double GainCumulationForFriend=17;
+        optional string userName=18;
+        optional string headPicture=19;
+    }*/
+
+        // userInfo.userId = data["uid"];
+        // userInfo.nickName=data["nickName"];
+        // userInfo.headSprite=data["headPicture"];
+        // userInfo.winOfMatchForOne=data["winOfMatchForOne"];
+        // userInfo.sumOfMatchForOne=data["sumOfMatchForOne"];
+        // userInfo.winOfMatchForMore=data["winOfMatchForMore"];
+        // userInfo.sumOfMatchForMore=data["sumOfMatchForMore"];
+        // userInfo.winOfMatchForAI=data["winOfMatchForAI"];
+        // userInfo.sumOfMatchForAI=data["sumOfMatchForAI"];
+        // userInfo.winMatchFriend =data["winMatchFriend"];
+        // userInfo.sumMatchFriend =data["sumMatchFriend"];
+        // userInfo.gainCumulation=data["gainCumulation"];
+        // userInfo.sumOfAllMatch=data["sumOfAllMatch"];
         userInfo.userId = data["uid"];
-        userInfo.nickName=data["nickName"];
+        userInfo.nickName=data["userName"];
         userInfo.headSprite=data["headPicture"];
-        userInfo.winOfMatchForOne=data["winOfMatchForOne"];
-        userInfo.sumOfMatchForOne=data["sumOfMatchForOne"];
-        userInfo.winOfMatchForMore=data["winOfMatchForMore"];
-        userInfo.sumOfMatchForMore=data["sumOfMatchForMore"];
-        userInfo.winOfMatchForAI=data["winOfMatchForAI"];
-        userInfo.sumOfMatchForAI=data["sumOfMatchForAI"];
+        userInfo.winOfMatchForOne=data["winMatchOne"];
+        userInfo.sumOfMatchForOne=data["sumMatchOne"];
+        userInfo.winOfMatchForMore=data["winMatchMore"];
+        userInfo.sumOfMatchForMore=data["sumMatchMore"];
+        userInfo.winOfMatchForAI=data["winMatchAI"];
+        userInfo.sumOfMatchForAI=data["sumMatchAI"];
         userInfo.winMatchFriend =data["winMatchFriend"];
         userInfo.sumMatchFriend =data["sumMatchFriend"];
         userInfo.gainCumulation=data["gainCumulation"];
         userInfo.sumOfAllMatch=data["sumOfAllMatch"];
+        userInfo.onlineNum = data["onLineNum"];
+
+        cc.log(" ,"+userInfo.winOfMatchForOne+" ,"+userInfo.winOfMatchForMore+" ,"+userInfo.winOfMatchForAI+" ,"+userInfo.winMatchFriend);
 
         if(this.backgroundSprite==null)
         {
@@ -871,63 +913,119 @@ var MainMenuScene =SceneBase.extend(
 	messageCallBack:function(message)
 	{
 		var self=gMainMenuScene;
-		var packet=Packet.prototype.Parse(message);
-        cc.log("messageCallBack mainScene message callback message");
-		if(packet==null) return;
-        switch(packet.msgType)
+		// var packet=Packet.prototype.Parse(message);
+        cc.log("messageCallBack mainScene message callback message=="+message.messageType);
+		if(message==null) return;
+
+// WARN_FOR_REMOTE_LOGIN(-400,"您的账号已在其他地方登陆，请确保密码安全"),
+//     WARN_FOR_GET_HISDATA(-401, "获取历史行情失败，请重新再试"),
+//     WARN_FOR_VISTOR_APP(-402,"更多功能，请登录东航金融APP"),
+//     WARN_FOR_VISTOR_WEB(-403,"更多功能，请下载东航金融APP"),
+//     WARN_FOR_REPEAT_MATCHING(-404,"重复匹配"),
+//     WARN_FOR_MATCHING_MATCHNOTFINSH(-405,"您有一场比赛尚未结束，请等待"),
+//     ERROR_LOGIN_DIVCODE(-406,"登录校验失败"),
+//     VERIFY_CODE_SEND_SUCCESS(-407,"验证码发送成功"),
+//     WARN_NO_SUCH_TOOL(-408,"尚未提供该种类类道具"),
+//     WARN_NO_SUCH_MATCH_TYPE(-409,"每局每种道具只能使用两次，请您下局再使用"),
+//     WARN_NOT_ENOUGH_MONEY(-410,"金币不足"),
+//     WARN_NOT_ENOUGH_POSITION(-411,"仓位不足"),
+//     WARN_NOT_MATCH_MOBILE_CODE(-412,"手机号验证码校验失败"),
+//     WARN_LOGIN_AGAIN(-413,"请重新登录");
+        if(message.messageType==MessageType.Type_Warn){
+
+            switch (message.warn.code){
+                case -400:{
+                    self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                    break;
+                }
+                case -401:{
+                    self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                    break;
+                }
+                case -402:{
+                    self.showMessageBox(message.warn.warnInfo,function(){self.messageBoxClosed();});
+                    break;
+                }
+                case -403:{
+                    self.showMessageBox(message.warn.warnInfo,function(){self.messageBoxClosed();});
+                    break;
+                }
+                case -404:{
+                    self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                    break;
+                }
+                case -405:{
+                    self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                    break;
+                }
+                default:{
+                    cc.log("MainScene messageCallBack default message.warn.code="+message.warn.code);
+                    self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                    break;
+                }
+            }
+
+        }
+        switch(message.messageType)
         {
-            case "1"://切换登录
+            case MessageType.Type_Hall_Info://切换登录
             {
-                cc.log("gMainMenuScene packet.msgType ="+packet.msgType);
                 if(self.loginViewLayer!=null){
                     self.LoginViewLayer_Close();
                 }
 
+                self.setMainMenuScenedata(message.hallInfo);
+                cc.log("get MainMenuScene passed");
+                self.stopProgress();
                 // userId:null,//
                 // 	deviceId:null,//设备号
                 // userInfo.username=gPlayerName;
                 // userInfo.password=packet.content.split("#")[1];
                 //更新用户信息
-                userInfo.userId=packet.content.split("#")[0];
-                userInfo.source=packet.content.split("#")[1];
-                userInfo.operationType=1;//登录方式记录为
+                // userInfo.userId=packet.content.split("#")[0];
+                // userInfo.source=packet.content.split("#")[1];
+                // userInfo.operationType=1;//登录方式记录为
                 // self.setMainMenuScenedata(packet.content);
                 // cc.log("get MainMenuScene passed");
                 // self.stopProgress();
-
                 break;
             }
-            case "P"://接收到了大厅数据的消息
-            {
-                cc.log("call get MainMenuScene data");
-                if(gMainMenuScene==false){
-                    gMainMenuScene==new MainMenuScene();
-                }
-                self.setMainMenuScenedata(packet.content);
-                cc.log("get MainMenuScene passed");
-                self.stopProgress();
-                break;
-            }
-
-            case "Z"://接收到战绩的数据
-            {
-                self.showZhanjiInfo(packet.content);
-                self.stopProgress();
-                break;
-            }
-
-            case "M"://人机对战结束信息
-            {
-                //收到对方买入的信息
-                // if(gKlineScene==null)
-                //     gKlineScene=new KLineScene();
-                // if(gKlineScene!=null) {
-                //     gKlineScene.showMatchEndInfo(packet.content);
-                // }
-                // self.stopProgress();
-                break;
-            }
-            case "Matching"://人人人对战信息Matching|"playerList":["http://7xpfdl.com1.z0.glb.clouddn.com/M1 E__1480588002710__166279_3596","http://ohfw64y24.bkt.clouddn.com/54"]|###
+            // case "P"://接收到了大厅数据的消息
+            // {
+            //     cc.log("call get MainMenuScene data");
+            //     if(gMainMenuScene==false){
+            //         gMainMenuScene==new MainMenuScene();
+            //     }
+            //     self.setMainMenuScenedata(packet.content);
+            //     cc.log("get MainMenuScene passed");
+            //     self.stopProgress();
+            //     break;
+            // }
+            // case "M"://人机对战结束信息
+            // {
+            //     //收到对方买入的信息
+            //     // if(gKlineScene==null)
+            //     //     gKlineScene=new KLineScene();
+            //     // if(gKlineScene!=null) {
+            //     //     gKlineScene.showMatchEndInfo(packet.content);
+            //     // }
+            //     // self.stopProgress();
+            //     break;
+            // }
+            // case "Matching"://人人人对战信息Matching|"playerList":["http://7xpfdl.com1.z0.glb.clouddn.com/M1 E__1480588002710__166279_3596","http://ohfw64y24.bkt.clouddn.com/54"]|###
+            // {
+            //     cc.log("gMainMenuScene 人人机对战信息");
+            //     if(self.matchViewLayer!=null) {
+            //
+            //         cc.log("gMainMenuScene 人人机对战信息2");
+            //         userInfo.matchBeginFlag=true;
+            //         self.matchViewLayer.stopHeadChange();
+            //         self.matchViewLayer.refreshMatchViewByData(packet.content);
+            //     }
+            //     // self.stopProgress();
+            //     break;
+            // }
+            case  MessageType.Type_Matching_Success://人人人对战信息Matching|"playerList":["http://7xpfdl.com1.z0.glb.clouddn.com/M1 E__1480588002710__166279_3596","http://ohfw64y24.bkt.clouddn.com/54"]|###
             {
                 cc.log("gMainMenuScene 人人机对战信息");
                 if(self.matchViewLayer!=null) {
@@ -935,11 +1033,12 @@ var MainMenuScene =SceneBase.extend(
                     cc.log("gMainMenuScene 人人机对战信息2");
                     userInfo.matchBeginFlag=true;
                     self.matchViewLayer.stopHeadChange();
-                    self.matchViewLayer.refreshMatchViewByData(packet.content);
+                    self.matchViewLayer.refreshMatchViewByPBData(message.matchingSuccess);
                 }
                 // self.stopProgress();
                 break;
             }
+
             // case "":
             // {
             //     cc.log("gMainMenuScene packet.msgType =''");
@@ -950,95 +1049,111 @@ var MainMenuScene =SceneBase.extend(
             //     cc.log("gMainMenuScene packet.msgType =''");
             //     break;
             // }
-            case "8":
+            // case "8":
+            // {
+            //     //收到对方买入的信息
+            //     if(gKlineScene==null)
+            //         gKlineScene=new KLineScene();
+            //     if(gKlineScene!=null) {
+            //         var buyOperationIndex=parseInt(packet.content.split("#")[1]);
+            //         gKlineScene.opponentOperations.push(buyOperationIndex);
+            //         gKlineScene.refreshScores();
+            //     }
+            //     //alert("8="+packet.content);
+            //
+            //
+            // }
+            //
+            // case "9":
+            // {
+            //     //收到对方卖出的信息
+            //     //alert("9="+packet.content);
+            //     if(gKlineScene==null)
+            //         gKlineScene=new KLineScene();
+            //     if(gKlineScene!=null) {
+            //         var sellOperationIndex=parseInt(packet.content.split("#")[1]);
+            //         gKlineScene.opponentOperations.push(-sellOperationIndex);
+            //         gKlineScene.refreshScores();
+            //     }
+            //     break;
+            // }
+            //
+            // case "4":
+            // {
+            //     //
+            //     //cc.director.runScene(cc.TransitionSlideInL.create(0.5,klineScene));
+            //     self.opponentsInfo.push(packet.content);
+            //     self.stopProgress();
+            //     break;
+            // }
+            case MessageType.Type_HisdataInfo://K线数据
             {
-                //收到对方买入的信息
-                if(gKlineScene==null)
+
+                if(gKlineScene==null){
                     gKlineScene=new KLineScene();
-                if(gKlineScene!=null) {
-                    var buyOperationIndex=parseInt(packet.content.split("#")[1]);
-                    gKlineScene.opponentOperations.push(buyOperationIndex);
-                    gKlineScene.refreshScores();
                 }
-                //alert("8="+packet.content);
-
-
-            }
-
-            case "9":
-            {
-                //收到对方卖出的信息
-                //alert("9="+packet.content);
-                if(gKlineScene==null)
-                    gKlineScene=new KLineScene();
-                if(gKlineScene!=null) {
-                    var sellOperationIndex=parseInt(packet.content.split("#")[1]);
-                    gKlineScene.opponentOperations.push(-sellOperationIndex);
-                    gKlineScene.refreshScores();
-                }
-                break;
-            }
-
-            case "4":
-            {
-                //
-                //cc.director.runScene(cc.TransitionSlideInL.create(0.5,klineScene));
-                self.opponentsInfo.push(packet.content);
-                self.stopProgress();
-                break;
-            }
-            case "5"://K线数据
-            {
-                gKlineScene=new KLineScene();
+                gKlineScene.onEnteredFunction=function(){
+                    gKlineScene.showProgress();
+                    cc.log("gKlineScene.onEnteredFunction=====");
+                    gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
+                    gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
+                    gKlineScene.messageCallBack(message);
+                    // gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
+                };
 
                 userInfo.matchBeginFlag=true;
-                gSocketConn.UnRegisterEvent("onmessage",gMainMenuScene.messageCallBack);
+                if(gMainMenuScene!=null){
+                    gSocketConn.UnRegisterEvent("onmessage",gMainMenuScene.messageCallBack);
+                }
+
                 // gSocketConn.RegisterEvent("onmessage",gKlineScene.messageCallBack);
                 if(gKlineScene!=null)
                 {
                     cc.log("call get kline data");
-                    if(userInfo.matchMode==1||userInfo.matchBeginFlag==true){
+                    if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchBeginFlag==true){
                         cc.log("get kline userInfo.matchMode==1 passed");
                         pageTimer["runScene"] = setTimeout(function(){cc.director.runScene(gKlineScene);},1000);
                     }
-                    if(userInfo.matchMode!=1){
+                    if(userInfo.matchMode!=MatchType.Type_PlainMultiplayer_Match){
                         cc.log("get kline userInfo.matchMode!=1 passed");
                         cc.director.runScene(gKlineScene);
                     }
                     cc.log("get kline passed");
                 }
                 // userInfo.matchBeginFlag=true;
-                gKlineScene.getklinedata(packet.content);
-                gKlineScene.setDataForLlineLayer();
-                self.stopProgress();
+                // gKlineScene.getklinedata(message);
+                // var data = message.hisdataInfo;
+                // gKlineScene.setklinePbdata(data);
+                // gKlineScene.setDataForLlineLayer();
+                // self.stopProgress();
                 break;
             }
-            case "S":
-            {
-                if(gKlineScene==null)
-                    gKlineScene=new KLineScene();
-                //接收到了K线数据的分享消息
-                gKlineScene.share(packet.content);
-                cc.log("get kline K线数据的分享消息passed"+packet.content);
-                break;
-            }
-            case "H":
-            {
-                //成功接收到了K线数据的分享数据
-                if(gKlineScene==null)
-                    gKlineScene=new KLineScene();
-                //接收到了分享的K线数据的消息
-                // gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
-                if(gKlineScene!=null)
-                {
-                    cc.log("call get kline data");
-                    gKlineScene.getShareKlinedata(packet.content);
-                    cc.log("get kline passed");
-                }
-                self.stopProgress();
-                cc.log("成功接收到了K线数据的分享数据");
-                break;
-            }
+            // case "S":
+            // {
+            //     if(gKlineScene==null)
+            //         gKlineScene=new KLineScene();
+            //     //接收到了K线数据的分享消息
+            //     gKlineScene.share(packet.content);
+            //     cc.log("get kline K线数据的分享消息passed"+packet.content);
+            //     break;
+            // }
+            // case "H":
+            // {
+            //     //成功接收到了K线数据的分享数据
+            //     if(gKlineScene==null)
+            //         gKlineScene=new KLineScene();
+            //     //接收到了分享的K线数据的消息
+            //     // gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
+            //     if(gKlineScene!=null)
+            //     {
+            //         cc.log("call get kline data");
+            //         gKlineScene.getShareKlinedata(packet.content);
+            //         cc.log("get kline passed");
+            //     }
+            //     self.stopProgress();
+            //     cc.log("成功接收到了K线数据的分享数据");
+            //     break;
+            // }
             case "O"://观看记录
             {
 
@@ -1073,12 +1188,23 @@ var MainMenuScene =SceneBase.extend(
             //     gKlineScene.showMatchEndInfo(packet.content);
             //     break;
             // }
-            case "PLAYERNUM":
+            // case "PLAYERNUM":
+            // {
+            //     //接收到在线人数
+            //     cc.log("messageCallBack.mainScenepacket.msgType="+packet.msgType+"packet.content=="+ packet.content);
+            //     if(self.playerNumLabel!=null){
+            //         self.playerNumLabel.setString("在线人数:"+packet.content);
+            //     }
+            //
+            //     break;
+            // }
+             case MessageType.Type_OnlineNum:
             {
                 //接收到在线人数
-                cc.log("messageCallBack.mainScenepacket.msgType="+packet.msgType+"packet.content=="+ packet.content);
+                cc.log("messageCallBack.mainScenepacket OnlineNum=="+ message.onlineNum);
+                userInfo.onlineNum = message.onlineNum;
                 if(self.playerNumLabel!=null){
-                    self.playerNumLabel.setString("在线人数:"+packet.content);
+                    self.playerNumLabel.setString("在线人数:"+userInfo.onlineNum );
                 }
 
                 break;
@@ -1090,13 +1216,48 @@ var MainMenuScene =SceneBase.extend(
                 gKlineScene.showPlayerInfo(packet.content);
                 break;
             }
-            case "RANK"://排名信息
+
+            // case "RANK"://排名信息
+            // {
+            //     // cc.log("messageCallBack.mainScene..packet.msgType="+packet.msgType);
+            //     self.showRankViewInfo(packet.content);
+            //     self.stopProgress();
+            //     break;
+            // }
+            // case "Z"://接收到战绩的数据
+            // {
+            //     self.showZhanjiInfo(packet.content);
+            //     self.stopProgress();
+            //     break;
+            // }
+            case MessageType.Type_RankList://排名信息
             {
                 // cc.log("messageCallBack.mainScene..packet.msgType="+packet.msgType);
-                self.showRankViewInfo(packet.content);
+                // self.showRankViewInfo(packet.content);
+                console.info(message.rankList);
+                if(message.rankList!=null){
+                    self.showRankViewPbInfo(message.rankList);
+                }else{
+                    cc.log("排名信息为空");
+                }
+
+
                 self.stopProgress();
                 break;
             }
+            case MessageType.Type_HistoryMatches://接收到战绩的数据
+            {
+                // self.showZhanjiInfo(packet.content);
+                console.info(message.historyMatches);
+                if(message.historyMatches!=null){
+                    self.showZhanjiPbInfo(message.historyMatches);
+                }else{
+                    cc.log("战绩信息为空");
+                }
+                self.stopProgress();
+                break;
+            }
+
 
             case "2":
             {
@@ -1193,7 +1354,7 @@ var MainMenuScene =SceneBase.extend(
             case "FRIENDCHANGE":
             {
 
-                cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
                 cc.log(userInfo.friendListData);
 
                 var friendName = packet.content.split("#")[0];
@@ -1203,13 +1364,6 @@ var MainMenuScene =SceneBase.extend(
                    if(userInfo.friendListData[i]["friendname"]==friendName){
                        userInfo.friendListData[i]["status"]=status;
                    }
-                }
-
-                for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
-                {
-                    if(userInfo.friendListData[i]["friendname"]==friendName){
-                        userInfo.friendListData[i]["status"]=status;
-                    }
                 }
 
                 userInfo.friendListData.sort(function (a,b) {
@@ -1240,11 +1394,12 @@ var MainMenuScene =SceneBase.extend(
             }
             case "INVITE":
             {
-                cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
                 inviteInfo.code = packet.content.split("#")[0];
                 inviteInfo.friendName = packet.content.split("#")[1];
                 inviteInfo.picUrl = packet.content.split("#")[2];
                 userInfo.matchMode = 4;
+                // userInfo.matchMode = AiType.Type_Friend_Match;
                 // var self = this;
                 if(self.invitedViewLayer==null){
                     self.invitedViewLayer=new InvitedViewLayer();
@@ -1263,9 +1418,146 @@ var MainMenuScene =SceneBase.extend(
                 break;
 
             }
+
+            case  MessageType.Type_FriendList:
+            {
+                cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+                userInfo.friendListData = [];
+                var data=message.friendList;
+                userInfo.friendListData  = data;
+                cc.log(userInfo.friendListData);
+                userInfo.friendListData.sort(function (a,b) {
+                    if(a["status"]=="在线"){
+                        return -1;
+                    }else if(b["status"]=="在线"){
+                        return 1;
+                    }else if(a["status"]=="组队中"){
+                        return -1;
+                    }else if(b["status"]=="组队中"){
+                        return 1;
+                    }else if(a["status"]=="比赛中"){
+                        return -1;
+                    }else if(b["status"]=="比赛中"){
+                        return 1;
+                    }else {
+                        return -1;
+                    }
+                });
+                if(self.friendLayer==null){
+                    self.friendLayer=new FriendViewLayer();
+                    self.friendLayer.setVisible(false);
+                    self.friendLayer.setAnchorPoint(0,0);
+                    self.friendLayer.setPosition(0,0);
+                    self.otherMessageTipLayer.addChild(self.friendLayer, 1,self.friendLayer.getTag());
+                    self.friendLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+                }
+
+                // LISTFRIEND||
+                self.friendLayer.showLayer();
+                self.pauseLowerLayer();
+                if(self.friendLayer!=null){
+                    self.friendLayer.refreshFriendViewLayer();
+                }
+
+                break;
+            }
+
+            case  MessageType.Type_FriendList_Change:
+            {
+                cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+                var data=message.friendListChange;
+                var friendName =data["userName"];
+                var status = data["status"];
+                for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
+                {
+                    if(userInfo.friendListData[i]["userName"]==friendName){
+                        userInfo.friendListData[i]["status"]=status;
+                    }
+                }
+
+                userInfo.friendListData.sort(function (a,b) {
+                    if(a["status"]=="在线"){
+                        return -1;
+                    }else if(b["status"]=="在线"){
+                        return 1;
+                    }else if(a["status"]=="组队中"){
+                        return -1;
+                    }else if(b["status"]=="组队中"){
+                        return 1;
+                    }else if(a["status"]=="比赛中"){
+                        return -1;
+                    }else if(b["status"]=="比赛中"){
+                        return 1;
+                    }else {
+                        return -1;
+                    }
+                });
+                cc.log(userInfo.friendListData);
+                // cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+
+                if(self.friendLayer!=null){
+                    self.friendLayer.refreshFriendViewLayer();
+                }
+                break;
+            }
+
+            case MessageType.Type_FriendMatch_Invit:
+            {
+                // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                /*message FriendMatch_Invite{
+                required string inviteeName=1;//被邀请人
+                optional string inviterName=2;//邀请人
+                optional string inviterPic=3;//邀请人头像
+                optional string inviteCode=4;
+            }*/
+                var data = message.friendMatchInvite;
+                // var inviteInfo = new FriendMatch_Invite();
+                inviteInfo.inviteCode = data["inviteCode"];
+                inviteInfo.inviterName = data["inviterName"];
+                inviteInfo.inviteeName = data["inviteeName"];
+                inviteInfo.inviterPic = data["inviterPic"];
+                // userInfo.matchMode = 4;
+                userInfo.matchMode = MatchType.Type_Friend_Match;
+                // var self = this;
+                if(self.invitedViewLayer==null){
+                    self.invitedViewLayer=new InvitedViewLayer();
+                    self.invitedViewLayer.setVisible(false);
+                    self.invitedViewLayer.setPosition(0,0);
+                    self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
+                    self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+                }
+
+                self.invitedViewLayer.showLayer();
+                self.pauseLowerLayer();
+
+                // if(self.friendLayer!=null){
+                //     self.friendLayer.refreshFriendViewLayer();
+                // }
+                break;
+
+            }
+             case MessageType.Type_FriendMatch_Answer:
+            {
+                // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                /*message FriendMatch_Answer{
+                 required bool agree=1;//同意
+                 optional string answerName=2;//回答者
+                 optional string answerPic=3;//回答者头像
+                 optional string inviteCode=4;
+                 }*/
+                var data = message.friendMatchAnswer;
+                var name = data["answerName"];
+                if(self.friendLayer!=null&&!data["agree"]){
+                    self.friendLayer.showMessageInfo(name+"拒绝了你的邀请！");
+                }else{
+                    ;
+                }
+                break;
+
+            }
             case "REJECT":
             {
-                cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
                 var name = packet.content.split("#")[0];
 
                 if(self.friendLayer!=null){
@@ -1281,7 +1573,8 @@ var MainMenuScene =SceneBase.extend(
                 // REJECT|张三|
             default:
             {
-                cc.log("messageCallBack.mainScene.default.packet.msgType="+packet.msgType+"=====");
+                // cc.log("gMainMenuScene packet.msgType ="+message.messageType);
+                cc.log("messageCallBack.mainScene.default.packet.msgType="+message.messageType+"=====");
                 break;
             }
         }
@@ -1324,6 +1617,64 @@ var MainMenuScene =SceneBase.extend(
         this.pauseLowerLayer();
 
     },
+    showZhanjiPbInfo:function(data)
+    {
+        cc.log("showZhanjiInfo  visible = true");
+        // cc.log(content);
+        var self=this;
+        /*message HistoryMatches{
+         required MatchType matchType=1;
+         optional	int32  sumMatch=2;
+         optional double winRate=3;
+         optional double AvgGain=4;
+         repeated OneHistoryMatch matchInfo=5;
+         }
+         message OneHistoryMatch{
+         optional int32 matchId=1;
+         optional string	matchTime=2;
+         repeated	MatchUserInfo userInfo=3;
+         }message MatchUserInfo{
+
+         required string userName=1;
+         required double score=2;
+         optional int32 ranking=3;
+         required string headPicture=4;
+         repeated int32 operationIndex=5;
+         optional int32 currentIndex=6;
+         }*/
+        userInfo.totalCount=data["sumMatch"];
+
+        // rankData["AvgGain"] = parseFloat(rankData["AvgGain"]).toFixed(2);
+        userInfo.winRate=parseFloat(data["winRate"]).toFixed(2);
+        userInfo.AvgGain=parseFloat(data["AvgGain"]).toFixed(2);
+        var historyMatchListData=data["matchInfo"];
+        cc.log("historyMatchListData="+historyMatchListData);
+        userInfo.MatchListData=[];
+        for(var i=0;i<historyMatchListData.length;i++)
+        {
+            var matchData=historyMatchListData[i];
+            // var userInfoTemp = matchData["userInfo"];
+            // userInfoTemp.score=parseFloat(userInfoTemp.score).toFixed(2);
+            // userInfo.AvgGain=parseFloat(data["AvgGain"]).toFixed(2);
+            cc.log("MatchListData.matchId="+matchData["matchId"]);
+            userInfo.MatchListData.push(matchData);
+        }
+
+
+        if(this.zhanjiInfoLayer==null){
+            this.zhanjiInfoLayer=new ZhanjiViewLayer();
+            this.zhanjiInfoLayer.setVisible(false);
+            this.zhanjiInfoLayer.setPosition(0,0);
+            this.otherMessageTipLayer.addChild(this.zhanjiInfoLayer, 1,this.zhanjiInfoLayer.getTag());
+            this.zhanjiInfoLayer.closeCallBackFunction=function(){self.zhanjiInfoLayer_Close()};
+            // this.zhanjiInfoLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
+        }
+        this.zhanjiInfoLayer.refreshZhanjiViewLayer();
+
+        this.zhanjiInfoLayer.showLayer();
+        this.pauseLowerLayer();
+
+    },
     zhanjiInfoLayer_Close:function()
     {
         //关闭战绩界面
@@ -1344,6 +1695,52 @@ var MainMenuScene =SceneBase.extend(
         for(var i=0;i<rankListData.length;i++)
         {
             var rankData=rankListData[i];
+            cc.log("rankListData.rank="+rankData["rank"]);
+            userInfo.rankList.push(rankData);
+        }
+
+        if(this.rankViewLayer==null){
+            this.rankViewLayer=new RankViewLayer();
+            this.rankViewLayer.setVisible(false);
+            this.rankViewLayer.setPosition(0,0);
+            this.otherMessageTipLayer.addChild(this.rankViewLayer, 1,this.rankViewLayer.getTag());
+            //this.zhanjiInfoLayer.applyParamsFromContent(content);
+            //content的内容为:   总用户个数(假设为2)#用户名A#收益率A#得分A#用户名B#收益率B#得分B#品种名字#起始日期#终止日期
+            this.rankViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+        }
+        pageTimer["rank"] = setTimeout(function(){self.rankrefreshRViewLayer();},100);
+    },
+    showRankViewPbInfo:function(data)
+    {
+        cc.log("showRankViewInfo  visible = true");
+        /*message PlayerRanking{
+         optional int32 rank=1;
+         optional int32 sumMatch=2;
+         optional int32 winMatch=3;
+         optional double AvgGain=4;
+         optional string userName=5;
+         optional string headPicture=6;
+
+         }
+
+         message RankList{
+         required MatchType matchType=1;
+         optional PlayerRanking myInfo=2;
+         repeated PlayerRanking playerInfo=3;
+         }*/
+        var self=this;
+        userInfo.recordMode = data["matchType"];
+        userInfo.myRanking = data["myInfo"];
+
+        userInfo.myRanking["AvgGain"] = parseFloat(userInfo.myRanking["AvgGain"]).toFixed(2);
+
+        var rankListData=data["playerInfo"];
+        // cc.log("rankListData="+rankListData);
+        userInfo.rankList=[];
+        for(var i=0;i<rankListData.length;i++)
+        {
+            var rankData=rankListData[i];
+            rankData["AvgGain"] = parseFloat(rankData["AvgGain"]).toFixed(2);
             cc.log("rankListData.rank="+rankData["rank"]);
             userInfo.rankList.push(rankData);
         }

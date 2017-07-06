@@ -2,6 +2,8 @@ var res = {
  //字体
  FONT_TYPE:"fonts/Arial.ttf",//
 
+ PROTOBUFF_KGAME:"res/KgameMsg.proto",
+
  //声音音乐"res/sound/home_bg.mp3","res/sound/button.mp3",
 
  SOUND_HOME_BG:"res/sound/home_bg.mp3",

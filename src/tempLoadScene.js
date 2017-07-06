@@ -38,7 +38,8 @@ var TempLoadScene = SceneBase.extend(
 
 		if(gLoginManager==null)
 		{
-			gLoginManager=new LoginManager();
+			// gLoginManager=new LoginManager();
+			gLoginManager=new LoginManagerProtoBuf();
 		}
 		
 		var self=this;
@@ -122,32 +123,163 @@ var TempLoadScene = SceneBase.extend(
 		self.showErrorBox("服务器连接失败，请稍候再试！",function(){self.errorBoxClosed();});
 	},
 	
-	messageCallback:function(packet)
+	// messageCallback:function(packet)
+	// {
+     //    //
+	// 	// cc.log("login scene message callback packet.msgType="+packet.msgType);
+	// 	// cc.log("login scene message callback packet.content="+packet.content);
+	// 	var self=this;
+	// 	if(packet.msgType=="1")
+	// 	{
+	// 		//登录成功
+	// 		gPlayerName=packet.content.split("#")[0];
+    //
+	// 		// userId:null,//
+	// 		// 	deviceId:null,//设备号
+	// 		// userInfo.username=gPlayerName;
+	// 		// userInfo.password=packet.content.split("#")[1];
+	// 		userInfo.userId=gPlayerName;
+	// 		userInfo.deviceId=packet.content.split("#")[1];
+    //
+	// 		//
+	// 		if(userInfo.source!='DHJK'&&userInfo.source!='ZKQQ'){//
+	// 			cc.log("userInfo.source before=="+userInfo.source);
+	// 			userInfo.source=packet.content.split("#")[2];
+	// 		}
+    //
+	// 		this.stopProgress();
+    //
+    //
+	// 		if(gMainMenuScene==null)
+	// 			gMainMenuScene=new MainMenuScene();
+	// 		gMainMenuScene.onEnteredFunction=function(){
+	// 			gMainMenuScene.showProgress();
+	// 			cc.log("gMainMenuScene.onEnteredFunction=====");
+	// 			gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
+	// 			gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
+	// 			gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
+	// 		};
+    //
+    //
+	// 		if(null==currentScene||currentScene!="gMainMenuScene"){
+	// 			cc.director.runScene(gMainMenuScene);
+	// 			currentScene = "gMainMenuScene";
+	// 		}
+    //
+	// 		// gPlayerName=packet.content;
+	// 		// //登录成功
+	// 		// this.OnLogined(packet.content);
+	// 	}
+     //    //else if(packet.msgType=="WEBL")
+     //    //{
+     //    //    //WEB登录成功
+     //    //    this.stopProgress();
+     //    //    this.showMessageBox("登录失败:"+packet.content,function(){self.messageBoxClosed();});
+     //    //}
+     //    //else if(packet.msgType=="APPL")
+     //    //{
+     //    //    //APP登录成功
+     //    //    this.stopProgress();
+     //    //    cc.director.runScene(new MainMenuScene());
+     //    //    //this.showMessageBox("登录失败:"+packet.content,function(){self.messageBoxClosed();});
+     //    //}
+	// 	else if(packet.msgType=="2")
+	// 	{
+	// 		//登录失败
+     //        self.stopProgress();
+     //        self.showErrorBox("登录失败:"+packet.content,function(){self.errorBoxClosed();});
+	// 	}
+	// 	else if(packet.msgType=="B")
+	// 	{
+	// 		//快速登录成功
+	// 		gPlayerName=packet.content.split("#")[0];
+    //
+	// 		// userId:null,//
+	// 		// 	deviceId:null,//设备号
+	// 		// userInfo.username=gPlayerName;
+	// 		// userInfo.password=packet.content.split("#")[1];
+	// 		userInfo.userId=gPlayerName;
+	// 		userInfo.deviceId=packet.content.split("#")[1];
+	// 		if(userInfo.source!='DHJK'&&userInfo.source!='ZKQQ'){
+     //            userInfo.source=packet.content.split("#")[2];
+     //        }
+	// 		// userInfo.source=packet.content.split("#")[2];
+	// 		this.stopProgress();
+    //
+    //
+	// 		if(gMainMenuScene==null)
+	// 			gMainMenuScene=new MainMenuScene();
+	// 		gMainMenuScene.onEnteredFunction=function(){
+	// 			gMainMenuScene.showProgress();
+	// 			cc.log("gMainMenuScene.onEnteredFunction=====");
+	// 			gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
+	// 			gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
+	// 			gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
+	// 		};
+    //
+	// 		if(null==currentScene||currentScene!="gMainMenuScene"){
+	// 			cc.director.runScene(gMainMenuScene);
+	// 			currentScene = "gMainMenuScene";
+	// 		}
+	// 		// gSocketConn.SendEHMessage(this.username,this.password);
+    //
+	// 		// gLoginManager.Login(this.username,this.password,this.source,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+	//
+	// 	}
+	// 	else if(packet.msgType=="C")
+	// 	{
+	// 		//注册失败
+     //        self.stopProgress();
+     //        self.showErrorBox("快速登录失败:"+packet.content,function(){self.errorBoxClosed();});
+	// 	}
+	// 	else if(packet.msgType=="S")
+	// 	{
+	// 		//分享成功
+	// 		this.stopProgress();
+	// 		//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+	// 	}
+	// 	else if(packet.msgType=="PLAYERNUM")
+	// 	{
+	// 		//
+	// 		this.stopProgress();
+	// 		//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+	// 	}
+	// 	else if(packet.msgType=="S")
+	// 	{
+	// 		//分享成功
+	// 		this.stopProgress();
+	// 		//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
+	// 	}else {
+	// 		cc.log("login scene message callback packet.msgType="+packet.msgType);
+	// 	}
+	// },
+	messageCallback:function(message)
 	{
-        //
-		// cc.log("login scene message callback packet.msgType="+packet.msgType);
+		//
+		cc.log("login scene message callback packet.msgType="+message.messageType);
 		// cc.log("login scene message callback packet.content="+packet.content);
 		var self=this;
-		if(packet.msgType=="1")
+		if(message.messageType==MessageType.Type_Hall_Info)
 		{
 			//登录成功
-			gPlayerName=packet.content.split("#")[0];
+			cc.log("登录成功 callback packet.msgType="+message.messageType);
 
+
+			var hallMessage = new HallInfo();
+			hallMessage = message.hallInfo;
 			// userId:null,//
 			// 	deviceId:null,//设备号
 			// userInfo.username=gPlayerName;
 			// userInfo.password=packet.content.split("#")[1];
-			userInfo.userId=gPlayerName;
-			userInfo.deviceId=packet.content.split("#")[1];
+			userInfo.userId=hallMessage.uid;
+			userInfo.deviceId=hallMessage.uid;;
 
 			//
 			if(userInfo.source!='DHJK'&&userInfo.source!='ZKQQ'){//
 				cc.log("userInfo.source before=="+userInfo.source);
-				userInfo.source=packet.content.split("#")[2];
+				userInfo.source='TEST';
 			}
-
 			this.stopProgress();
-
 
 			if(gMainMenuScene==null)
 				gMainMenuScene=new MainMenuScene();
@@ -156,7 +288,8 @@ var TempLoadScene = SceneBase.extend(
 				cc.log("gMainMenuScene.onEnteredFunction=====");
 				gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
 				gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
-				gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
+				gMainMenuScene.messageCallBack(message);
+				// gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
 			};
 
 
@@ -168,89 +301,19 @@ var TempLoadScene = SceneBase.extend(
 			// gPlayerName=packet.content;
 			// //登录成功
 			// this.OnLogined(packet.content);
-		}
-        //else if(packet.msgType=="WEBL")
-        //{
-        //    //WEB登录成功
-        //    this.stopProgress();
-        //    this.showMessageBox("登录失败:"+packet.content,function(){self.messageBoxClosed();});
-        //}
-        //else if(packet.msgType=="APPL")
-        //{
-        //    //APP登录成功
-        //    this.stopProgress();
-        //    cc.director.runScene(new MainMenuScene());
-        //    //this.showMessageBox("登录失败:"+packet.content,function(){self.messageBoxClosed();});
-        //}
-		else if(packet.msgType=="2")
-		{
-			//登录失败
-            self.stopProgress();
-            self.showErrorBox("登录失败:"+packet.content,function(){self.errorBoxClosed();});
-		}
-		else if(packet.msgType=="B")
-		{
-			//快速登录成功
-			gPlayerName=packet.content.split("#")[0];
-
-			// userId:null,//
-			// 	deviceId:null,//设备号
-			// userInfo.username=gPlayerName;
-			// userInfo.password=packet.content.split("#")[1];
-			userInfo.userId=gPlayerName;
-			userInfo.deviceId=packet.content.split("#")[1];
-			if(userInfo.source!='DHJK'&&userInfo.source!='ZKQQ'){
-                userInfo.source=packet.content.split("#")[2];
-            }
-			// userInfo.source=packet.content.split("#")[2];
-			this.stopProgress();
-
-
-			if(gMainMenuScene==null)
-				gMainMenuScene=new MainMenuScene();
-			gMainMenuScene.onEnteredFunction=function(){
-				gMainMenuScene.showProgress();
-				cc.log("gMainMenuScene.onEnteredFunction=====");
-				gSocketConn.UnRegisterEvent("onmessage",self.messageCallBack);
-				gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
-				gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
-			};
-
-			if(null==currentScene||currentScene!="gMainMenuScene"){
-				cc.director.runScene(gMainMenuScene);
-				currentScene = "gMainMenuScene";
+		}else if(message.messageType==MessageType.Type_Warn){
+			cc.log("login scene message callback warnInfo msgType="+message.messageType);
+			if(message.warn.code==-406){
+				self.showErrorBox("登录失败:"+message.warn.warnInfo,function(){self.errorBoxClosed();});
+			}else {
+				cc.log("login scene message message.warn.code="+message.warn.code);
 			}
-			// gSocketConn.SendEHMessage(this.username,this.password);
 
-			// gLoginManager.Login(this.username,this.password,this.source,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
-			
+		}else{
+			cc.log("login scene message callback other msgType="+message.messageType);
 		}
-		else if(packet.msgType=="C")
-		{
-			//注册失败
-            self.stopProgress();
-            self.showErrorBox("快速登录失败:"+packet.content,function(){self.errorBoxClosed();});
-		}
-		else if(packet.msgType=="S")
-		{
-			//分享成功
-			this.stopProgress();
-			//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
-		}
-		else if(packet.msgType=="PLAYERNUM")
-		{
-			//
-			this.stopProgress();
-			//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
-		}
-		else if(packet.msgType=="S")
-		{
-			//分享成功
-			this.stopProgress();
-			//gLoginManager.Login(this.username,this.password,null,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
-		}else {
-			cc.log("login scene message callback packet.msgType="+packet.msgType);
-		}
+
+
 	},
 	
 	OnLogined:function(content)
