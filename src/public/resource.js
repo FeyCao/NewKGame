@@ -1,6 +1,6 @@
 var res = {
  //字体
- FONT_TYPE:"fonts/Arial.ttf",//
+ FONT_TYPE:"res/fonts/Arial.ttf",//
 
  PROTOBUFF_KGAME:"res/KgameMsg.proto",
 

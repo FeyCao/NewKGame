@@ -75,12 +75,14 @@ var MatchViewLayer = cc.Layer.extend({
     },
 
     generalMatch:function () {
+        if(userInfo.matchBeginFlag==true){return;}
         userInfo.matchMode=MatchType.Type_PlainMultiplayer_Match;
         this.propButton.unselected();
         this.generalButton.selected();
     },
 
     propMatch:function () {
+        if(userInfo.matchBeginFlag==true){return;}
         userInfo.matchMode=MatchType.Type_Tool_Match;
         this.propButton.selected();
         this.generalButton.unselected();
@@ -139,6 +141,7 @@ var MatchViewLayer = cc.Layer.extend({
                 if(null!=gMainMenuScene)
                 {
                     gSocketConn.BeginMatch(userInfo.matchMode);
+                    userInfo.matchBeginFlag=true;
                     this.timeBegin = new Date().getTime();
                     this.showHeadChange();
                 }
@@ -168,7 +171,8 @@ var MatchViewLayer = cc.Layer.extend({
                 self.textLabel.setVisible(true);
                 if(null!=gMainMenuScene)
                 {
-                    gSocketConn.BeginMatch("3");
+                    gSocketConn.BeginMatch(MatchType.Type_Friend_Match);
+                    userInfo.matchBeginFlag=true;
                     this.timeBegin = new Date().getTime();
                     this.showHeadChange();
                 }
@@ -182,6 +186,7 @@ var MatchViewLayer = cc.Layer.extend({
             }
         }
 
+        cc.log("beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
         // if(this.closeCallBackFunction!=null){
         //     this.closeCallBackFunction();
         // }

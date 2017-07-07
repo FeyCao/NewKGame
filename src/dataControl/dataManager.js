@@ -84,6 +84,7 @@ var Share = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Share");
 var MatchRecord = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("MatchRecord");
 var Face = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Face");
 var Tool = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Tool");
+var Friend_Status = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Friend_Status");
 var FriendMatch_Invite = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("FriendMatch_Invite");
 var FriendMatch_Answer = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("FriendMatch_Answer");
 var HistoryMatches = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("HistoryMatches");

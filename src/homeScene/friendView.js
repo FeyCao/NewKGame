@@ -3,17 +3,19 @@
  */
 //tabelviewLayerLISTFRIEND|[{"uid":43562,"friendname":"坎坎坷坷6xcvd","headPicture":"http://www.baidu.com","status":"离线"},{"uid":3434343779,"friendname":"ss123","headPicture":"http://7xpfdl.com1.z0.glb.clouddn.com/KKKK.jpg","status":"离线"},{"uid":3434343756,"friendname":"jajtd","headPicture":"http://wx.qlogo.cn/mmopen/gzM6p3xTA7TnIrLHxXI6ib9wXoFXvjgUEKrPPMIoj2viaDjj3BcxO0kXX07C2ZibOudutb1zIdT7XFffwPv2oCuakqeP02ZseTr/0","status":"离线"},{"uid":46020,"friendname":"kacoyi哈哈哈哈哈哈","headPicture":"http://www.baidu.com","status":"离线"},{"uid":75,"friendname":"指引者艾丽斯","headPicture":"http://www.baidu.com","status":"离线"}]
 var FriendTableViewCell = cc.TableViewCell.extend({
+
+    friendInfo:null,
     draw:function (ctx) {
         this._super(ctx);
-
+        // this.friendInfo=new Friend_Status();
+        cc.log("FriendTableViewCell draw end");
     },
 
     onEnter:function () {
         this._super();
+
         this.spriteBg= new cc.LayerColor(cc.color(0,0,0,0),340,120);
         this.addChild(this.spriteBg,1);
-
-
 
         cc.log("FriendTableViewCell onEnter end");
     },
@@ -23,10 +25,17 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         cc.log("FriendTableViewCell onExit end");
     },
 
+    setFriendInfo:function (data) {
+        // this.friendInfo["userName"] = data["userName"];
+        // this.friendInfo["headPicture"] = data["headPicture"];
+        // this.friendInfo["status"] = data["status"];
+        this.friendInfo = data;
+    },
     setCellView:function(idx){
         cc.log("FriendTableViewCell setCellView begin");
         var self = this;
-
+        if(self.friendInfo==null){return;}
+        self.setCellData();
         var posBase = cc.p(70,60)
         self.headSprite = new cc.Sprite(res.BG_FRIEND_HEAD_WAIT_png);
         self.headSprite.setPosition(posBase);
@@ -37,49 +46,52 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         self.headSpriteBg.setPosition(posBase);
         self.addChild(self.headSpriteBg ,3);
 
+        var url = self.friendInfo["headPicture"];
+        cc.log("FriendTableViewCell loadCellImg beginloadImg["+idx+"]="+url);
+        cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
+            if(err){
+                cc.log("friend fail loadImg["+idx+"]="+url);
+                cc.log(err);
+            }
+            if(img){
+                cc.log("friendInfo img!=null");
+                var texture2d = new cc.Texture2D();
+                texture2d.initWithElement(img);
+                texture2d.handleLoadedTexture();
+                if(self.friendInfo["userName"]==userInfo.friendListData[idx]["userName"]){
+                    self.headSprite.initWithTexture(texture2d);
+                }
+
+                // this.touxiangSprite.setScale(fXScale,fYScale);
+                var size = self.headSprite.getContentSize();
+                self.headSprite.setScale(100/size.width,100/size.height);
+                console.info(self.friendInfo);
+                cc.log("friend success loadImg["+idx+"]="+url); // self.addChild(logo);
+            }
+
+        });
+        cc.log("FriendTableViewCell loadCellImg end");
+
+    },
+    setCellData:function () {
+        var self = this;
+        // if(self.friendnameLabel==null){
+        //
+        // }
         self.friendnameLabel = new cc.LabelTTF("", "Arial", 25.0);
         self.friendnameLabel.setPosition(cc.p(140,90));
         self.friendnameLabel.setAnchorPoint(0,0.5);
         self.addChild(this.friendnameLabel);
-
+        // if(self.statusSprite==null){
+        //
+        // }
         self.statusSprite = new cc.Sprite(res.STATUS_FRIEND_OFFLINE_png);
         self.addChild(this.statusSprite,2);
-        // self.statusSprite.setPosition(cc.p(140+self.statusSprite.getContentSize().width/2,30));
 
-        // self.invitedInfoLabel = new cc.LabelTTF("已邀请",res.FONT_TYPE, 18);
-        // // self.invitedInfoLabel.enableStroke(ShadowColor, 2);
-        // self.invitedInfoLabel.setVisible(false);
-        // self.invitedInfoLabel.setPosition(cc.p(140,30));
-        // self.invitedInfoLabel.setAnchorPoint(0,0.5);
-        // self.addChild( self.invitedInfoLabel,2);
-
-
-        var url = userInfo.friendListData[idx]["headPicture"];
-        cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
-            if(err){
-                cc.log(err);
-            }
-            if(img){
-                cc.log("img!=null"+img);
-
-                var texture2d = new cc.Texture2D();
-                texture2d.initWithElement(img);
-                texture2d.handleLoadedTexture();
-                self.headSprite.initWithTexture(texture2d);
-
-                // this.touxiangSprite.setScale(fXScale,fYScale);
-
-                var size = self.headSprite.getContentSize();
-                self.headSprite.setScale(100/size.width,100/size.height);
-            }
-            cc.log("loadImg="+userInfo.headSprite); // self.addChild(logo);
-        });
-
-        var username = userInfo.friendListData[idx]["userName"];
+        var username = self.friendInfo["userName"];
         self.friendnameLabel.setString(cutstr(username,17));
 
-
-        var stausFlag = userInfo.friendListData[idx]["status"];//在线or离线or组队中or比赛中
+        var stausFlag = self.friendInfo["status"];//在线or离线or组队中or比赛中
         var inviteFlag = false;
         switch (stausFlag){
             case "离线":{
@@ -127,7 +139,6 @@ var FriendTableViewCell = cc.TableViewCell.extend({
             // self.invitedInfoLabel.setVisible(true);
             gSocketConn.inviteFriend(username);
         });
-
         cc.log("FriendTableViewCell setCellView end");
     },
 
@@ -221,7 +232,7 @@ var FriendViewLayer = cc.Layer.extend({
             cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
                 if(err){
                     cc.log(err);
-                    cc.log("fail loadImg="+userInfo.headSprite); // self.addChild(logo);
+                    cc.log("fail loadImg="+url); // self.addChild(logo);
                 }
                 if(img)
                 {
@@ -235,7 +246,7 @@ var FriendViewLayer = cc.Layer.extend({
                     headSprite.setScale(130/size.width,130/size.height);
                     headSprite.setPosition(self.selfBg.getPosition());
                     self.backgroundSprite.addChild(headSprite,1);
-                    cc.log("refreshMatchViewLayer success loadImg="+userInfo.headSprite); // self.addChild(logo);
+                    cc.log("refreshMatchViewLayer success loadImg="+url); // self.addChild(logo);
                 }
             });
         }
@@ -275,10 +286,8 @@ var FriendViewLayer = cc.Layer.extend({
         this.messageLabelInfoShadow.setVisible(false);
         self.backgroundSprite.addChild(this.messageLabelInfoShadow,10);
 
-
-
         this.setScale(fXScale,fYScale);
-        this.refreshFriendViewLayer();
+        // this.refreshFriendViewLayer();
         return true;
     },
 
@@ -344,27 +353,19 @@ var FriendViewLayer = cc.Layer.extend({
 
         var self = this;
 
-        var strValue = idx.toFixed(0);
-        var label;
+        // var strValue = idx.toFixed(0);
+        // var label;
         var cell = table.dequeueCell();
-        if (!cell) {
+        if (cell==null) {
             cell = new FriendTableViewCell();
-            label = new cc.LabelTTF(strValue, "Arial", 30.0);
-            label.setPosition(cc.p(0,20));
-            label.setAnchorPoint(0,0);
-            label.setVisible(false);
-            label.tag = 123;
-            cell.addChild(label);
-            if(userInfo.friendListData!=null)
-            {
-                cell.setCellView(idx);
+        }
+        if(userInfo.friendListData!=null)
+        {
+            var data = userInfo.friendListData[idx];
+            if(data!=null){
+                cell.setFriendInfo(data);
             }
-
-        } else {
-            if(userInfo.friendListData!=null)
-            {
-                cell.setCellView(idx);
-            }
+            cell.setCellView(idx);
         }
         return cell;
         // setTimeout(function(){return cell;},100);

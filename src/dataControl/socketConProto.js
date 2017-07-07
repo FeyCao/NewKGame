@@ -428,7 +428,6 @@ protoSocketConn.prototype.SendEHMessage=function(userId,matchId)//进入大厅�
     // var ehMsg="P|"+userId+"#"+matchId+"|";
 
 
-
     var ahallInfo = new HallInfo();
     ahallInfo.setUid(userId);
     ahallInfo.setToken(matchId);
@@ -456,7 +455,6 @@ protoSocketConn.prototype.SendZhanjiMessage=function(userId,pageIdx,matchType)//
 {
     var ehMsg="Z|"+userId+"#"+pageIdx+"#"+matchType+"|";
     cc.log("send Z msg="+ehMsg);
-
 
     var  message = new Message();
     message.setMessageType(MessageType.Type_HistoryMatches);
