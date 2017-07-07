@@ -913,6 +913,7 @@ var MainMenuScene =SceneBase.extend(
 	messageCallBack:function(message)
 	{
 		var self=gMainMenuScene;
+        self.stopProgress();
 		// var packet=Packet.prototype.Parse(message);
         cc.log("messageCallBack mainScene message callback message=="+message.messageType);
 		if(message==null) return;
@@ -1425,7 +1426,6 @@ var MainMenuScene =SceneBase.extend(
                 userInfo.friendListData = [];
                 var data=message.friendList;
                 userInfo.friendListData  = data;
-                cc.log(userInfo.friendListData);
                 userInfo.friendListData.sort(function (a,b) {
                     if(a["status"]=="在线"){
                         return -1;
@@ -1443,6 +1443,25 @@ var MainMenuScene =SceneBase.extend(
                         return -1;
                     }
                 });
+
+                cc.log("after sort.....");
+                cc.log(userInfo.friendListData);
+                // var length = userInfo.friendListData.length;
+                // for(var i=0;i<length;i++){
+                //     var friendInfo = userInfo.friendListData[i];
+                //     var url = friendInfo["headPicture"];
+                //     cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
+                //         if(err){
+                //             cc.log("before friend fail loadImg["+i+"]="+url);
+                //             cc.log(err);
+                //         }
+                //         if(img){
+                //             cc.log("before friend success loadImg["+i+"]="+url); // self.addChild(logo);
+                //         }
+                //
+                //     });
+                // }
+
                 if(self.friendLayer==null){
                     self.friendLayer=new FriendViewLayer();
                     self.friendLayer.setVisible(false);

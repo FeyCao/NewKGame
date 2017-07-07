@@ -3,6 +3,7 @@
  */
 //tabelviewLayer
 var RankTableViewCell = cc.TableViewCell.extend({
+    rankInfo:null,
     draw:function (ctx) {
         this._super(ctx);
 
@@ -18,6 +19,9 @@ var RankTableViewCell = cc.TableViewCell.extend({
         // cc.log("RankTableViewCell onExit end");
     },
 
+    setRankInfoData:function (data) {
+        this.rankInfo = data;//userInfo.rankList[idx];
+    },
     setCellData:function(idx) {
         var self = this;
         cc.log("RankTableViewCell setCellData==" + idx);
@@ -26,10 +30,10 @@ var RankTableViewCell = cc.TableViewCell.extend({
         sprite.setAnchorPoint(0, 0);
         this.addChild(sprite);
 
-        if (userInfo != null && userInfo.rankList != null) {
+        if (self.rankInfo != null) {
             //RANK|{"myRanking":{"rank":1,"playerInfo":{"uid":3434343770,"nickName":"誓约者艾琳诺","winOfMatchForOne":4,"sumOfMatchForOne":33,"winOfMatchForMore":0,"sumOfMatchForMore":0,"winOfMatchForAI":98,"sumOfMatchForAI":187,"gainCumulation":"-197.391","sumOfAllMatch":33}},"rankList":[{"rank":1,"playerInfo":{"uid":10000,"nickName":"誓约者艾琳诺","winOfMatchForOne":4,"sumOfMatchForOne":33,"winOfMatchForM
 
-            var playerInfo = userInfo.rankList[idx];
+            var playerInfo = self.rankInfo;//userInfo.rankList[idx];
             // var playerInfo = rankInfo["playerInfo"];
 
             var rank = playerInfo["rank"];
@@ -80,18 +84,19 @@ var RankTableViewCell = cc.TableViewCell.extend({
                 }
                 if (img) {
                     cc.log("img!=null" + img);
-                    var headSprite = new cc.Sprite();
-                    //     this.touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
-                    // cc.textureCache.addImage(imgUrl);
-                    var texture2d = new cc.Texture2D();
-                    texture2d.initWithElement(img);
-                    texture2d.handleLoadedTexture();
-                    headSprite.initWithTexture(texture2d);
-                    var size = headSprite.getContentSize();
-                    headSprite.setScale(66 / size.width, 66 / size.height);
-                    headSprite.setPosition(cc.p(100, 40));
-                    self.addChild(headSprite, 2);
-                    cc.log("排行：success loadImg=" + userInfo.headSprite); // self.addChild(logo);
+                    if(self.rankInfo["userName"]==userInfo.rankList[idx]["userName"]){
+                        var headSprite = new cc.Sprite();
+                        var texture2d = new cc.Texture2D();
+                        texture2d.initWithElement(img);
+                        texture2d.handleLoadedTexture();
+                        headSprite.initWithTexture(texture2d);
+                        var size = headSprite.getContentSize();
+                        headSprite.setScale(66 / size.width, 66 / size.height);
+                        headSprite.setPosition(cc.p(100, 40));
+                        self.addChild(headSprite, 2);
+                        cc.log("排行：success loadImg=" + userInfo.headSprite); // self.addChild(logo);
+                    }
+
                     // self.touxiangSprite.setValue(false);
                 }
             });
@@ -512,24 +517,14 @@ var RankViewLayer = cc.Layer.extend({
         var textLabel;
         if (!cell) {
             cell = new RankTableViewCell();
-
-            //label = new cc.LabelTTF(strValue, "Arial", 30.0);
-            //label.setPosition(cc.p(0,20));
-            //label.setAnchorPoint(0,0);
-            //label.tag = 123;
-            //cell.addChild(label);
-            if(userInfo.rankList!=null)
-            {
-                cell.setCellData(idx);
-            }
-
-        } else {
-            //label = cell.getChildByTag(123);
-            //label.setString(strValue);
-            if(userInfo.rankList!=null)
-            {
-                cell.setCellData(idx);
-            }
+        }
+        if(userInfo.rankList!=null)
+        {
+            var data = userInfo.rankList[idx];
+            if(data!=null){
+                cell.setRankInfoData(data);
+            };
+            cell.setCellData(idx);
         }
 
         return cell;
