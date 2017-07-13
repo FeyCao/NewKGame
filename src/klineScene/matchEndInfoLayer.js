@@ -683,9 +683,9 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 			recordButton.setPosition(cc.p(800,40));
 			sprite.addChild(recordButton);
 			// var matchId = userInfo.endInfoOfAllPlayers[idx]["matchId"];
-			var userName= userInfo.endInfoOfAllPlayers[idx]["userName"];
+			userInfo.recordName= userInfo.endInfoOfAllPlayers[idx]["userName"];
             // userInfo.matchId = matchId;
-			cc.log("PlayerInfoCell recordButton ClickEvent userName["+idx+"] ="+userName+"||matchId="+userInfo.matchId);
+			cc.log("PlayerInfoCell recordButton ClickEvent userName["+idx+"] ="+userInfo.recordName+"||matchId="+userInfo.matchId);
 			recordButton.setClickEvent(function(){
 				gKlineScene.businessMatchInfo(buyInfo,score);
 				// gSocketConn.SendRecordMatchMessage(userId,matchId);

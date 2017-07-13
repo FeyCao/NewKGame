@@ -131,6 +131,8 @@ function checkUsername()
     return true;
 }
 
+
+
 //检查电话号是否合法
 function checkPhoneNumber(v)
 {
@@ -258,6 +260,23 @@ var createClipRoundNode = cc.Node.extend({
     }
 
 });
+// function bubbleSort(arr,compare) {
+//     var len=arr.length,j;
+//     var temp;
+//     while(len>0){
+//         for(j=0;j<len-1;j++){
+//             if(arr[j]>arr[j+1]){
+//                 temp=arr[j];
+//                 arr[j]=arr[j+1];
+//                 arr[j+1]=temp;
+//             }
+//         }
+//         i--;
+//     }
+//     return arr;
+//
+// }
+
 //
 var barInfoLayer = cc.Layer.extend({
     sprite:null,

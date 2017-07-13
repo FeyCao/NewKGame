@@ -718,6 +718,7 @@ var KLineScene = SceneBase.extend(
 				// self.getklinedata(packet.content);
 				var data = message.hisdataInfo;
 				userInfo.matchRecordFlag = false;
+				userInfo.recordName=null;
 				self.setklinePbdata(data);
 
 				self.stopProgress();
@@ -773,6 +774,7 @@ var KLineScene = SceneBase.extend(
 				cc.log("MessageType.Type_Share线分享数据over");
 				var data = message.shareInfo;
 				userInfo.matchRecordFlag = true;
+				userInfo.recordName=null;
 				self.setklinePbdata(data);
 				self.advanceToMainKLine_Share();
 				cc.log("成功接收到了K线数据的分享数据");
@@ -794,6 +796,7 @@ var KLineScene = SceneBase.extend(
 				cc.log("MessageType.Type_Match_Record数据r");
 				var data = message.matchRecord;
 				userInfo.matchRecordFlag = true;
+				userInfo.recordName=null;
 				self.setklinePbdata(data);
 				self.advanceToMainKLine_Record();
 				cc.log("成功接收到了K线数据的分享数据");

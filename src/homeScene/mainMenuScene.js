@@ -1334,7 +1334,7 @@ var MainMenuScene =SceneBase.extend(
                     }else if(b["status"]=="比赛中"){
                         return 1;
                     }else {
-                        return -1;
+                        return a["userName"]-b["userName"];
                     }
                 });
                 //
@@ -1426,6 +1426,7 @@ var MainMenuScene =SceneBase.extend(
                 userInfo.friendListData = [];
                 var data=message.friendList;
                 userInfo.friendListData  = data;
+
                 userInfo.friendListData.sort(function (a,b) {
                     if(a["status"]=="在线"){
                         return -1;
@@ -1440,10 +1441,11 @@ var MainMenuScene =SceneBase.extend(
                     }else if(b["status"]=="比赛中"){
                         return 1;
                     }else {
-                        return -1;
+                        // console.log(a["userName"].charCodeAt(0));
+                        // console.log(b["userName"].charCodeAt(0));
+                        return a["userName"].charCodeAt(0)-b["userName"].charCodeAt(0);
                     }
                 });
-
                 cc.log("after sort.....");
                 cc.log(userInfo.friendListData);
                 // var length = userInfo.friendListData.length;

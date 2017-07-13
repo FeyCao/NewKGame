@@ -192,8 +192,13 @@ var PlayerInfoLayer= cc.Node.extend({
 				this.nameSpritebg.setVisible(true);
 				 cc.log("PlayerInfoLayer setPlayerInfo:function()userInfo.playerListData="+userInfo.playerListData );// this.avatarSprite.setVisible(false);
 
+
 				for(var i=0;userInfo.playerListData!=null&&i<userInfo.playerListData.length;i++)
 				{
+					if(userInfo.recordName==null){
+						userInfo.recordName= userInfo.nickName;
+					}
+
 					if(this.playerInfo_bg[i] ==null)
 					{
 						this.playerInfo_bg[i]=new cc.Sprite(res.BG_HEAD_PNG);
@@ -207,7 +212,7 @@ var PlayerInfoLayer= cc.Node.extend({
 						// this.playerHead_Sprite[i].setVisible(false);
 						this.playerHead_Select[i] = new cc.Sprite(res.BG_HEAD_SELECT_PNG);
 						this.playerHead_Select[i].setScale(0.6);
-						this.playerHead_Select[i].setVisible(false);
+						// this.playerHead_Select[i].setVisible(false);
 
 //////////////////////////////////////
 ///////////////////////////////////////
@@ -224,13 +229,15 @@ var PlayerInfoLayer= cc.Node.extend({
 							this.playerInfo_bg[i].setPosition(posX1,posY);
 							this.playerInfo_btn[i].setPosition(posX1,posY);
 							this.playerNameLabel[i].setString(userInfo.nickName);
-							this.playerHead_Sprite[i].setPosition(posX1,posY);
-							this.playerHead_Select[i].setPosition(posX1,posY);
-
-
+							this.playerHead_Sprite[i].setPosition(posX1,posY);//头像
+							this.playerHead_Select[i].setPosition(posX1,posY);//头像选择框
+							// cc.log("this.playerHead_Select[0]x="+posX1+"y="+posY);
+							// cc.log(this.playerHead_Select[i].getPosition());
 
 							this.playerInfo_btn[i].setCallback(function (){
-								var userName = userInfo.playerListData[0]["userName"];
+
+								userInfo.recordName = userInfo.playerListData[0]["userName"];
+								cc.log("playerInfo_btn0 ClickEvent userId[0] ="+userInfo.recordName);
 								var playerInfo = new MatchUserInfo();
 								var buyInfo=[];
 								var score =0;
@@ -242,7 +249,7 @@ var PlayerInfoLayer= cc.Node.extend({
                                 }else{
                                     for(var j=0;userInfo.endInfoOfAllPlayers!=null&&j<userInfo.endInfoOfAllPlayers.length;j++)
                                     {
-                                        if(userInfo.endInfoOfAllPlayers[j]["userName"]==userName){
+                                        if(userInfo.endInfoOfAllPlayers[j]["userName"]==userInfo.recordName){
                                             playerInfo = userInfo.endInfoOfAllPlayers[j];
                                             score = parseFloat(playerInfo["score"]).toFixed(2);
                                             buyInfo=playerInfo["operationIndex"];
@@ -253,7 +260,7 @@ var PlayerInfoLayer= cc.Node.extend({
                                             break;
                                         }
                                     }
-                                    cc.log("playerInfo_btn0 ClickEvent userId[0] ="+userName+"||matchId="+userInfo.matchId);
+                                    cc.log("playerInfo_btn0 ClickEvent userId[0] ="+userInfo.recordName+"||matchId="+userInfo.matchId);
                                     gKlineScene.businessMatchInfo(buyInfo,score);
                                 }
 
@@ -276,8 +283,11 @@ var PlayerInfoLayer= cc.Node.extend({
 							this.playerHead_Sprite[i].setPosition(1280-posX1,posY);
 							this.playerHead_Select[i].setPosition(1280-posX1,posY);
 
+							// cc.log("this.playerHead_Select[1]x="+1280-posX1+"y="+posY);
+							// cc.log(this.playerHead_Select[i].getPosition());
 							this.playerInfo_btn[i].setCallback(function () {
-								var userName = userInfo.playerListData[1]["userName"];
+								userInfo.recordName = userInfo.playerListData[1]["userName"];
+								cc.log("playerInfo_btn1 ClickEvent userId[1] ="+userInfo.recordName);
 								var playerInfo = new MatchUserInfo();
 								var buyInfo=[];
 								var score =0;
@@ -289,7 +299,7 @@ var PlayerInfoLayer= cc.Node.extend({
                                 }else{
                                     for(var j=0;userInfo.endInfoOfAllPlayers!=null&&j<userInfo.endInfoOfAllPlayers.length;j++)
                                     {
-                                        if(userInfo.endInfoOfAllPlayers[j]["userName"]==userName){
+                                        if(userInfo.endInfoOfAllPlayers[j]["userName"]==userInfo.recordName){
                                             playerInfo = userInfo.endInfoOfAllPlayers[j];
                                             score = parseFloat(playerInfo["score"]).toFixed(2);
                                             buyInfo=playerInfo["operationIndex"];
@@ -300,7 +310,7 @@ var PlayerInfoLayer= cc.Node.extend({
                                             break;
                                         }
                                     }
-                                    cc.log("playerInfo_btn1 ClickEvent userId[1] ="+userName+"||matchId="+userInfo.matchId);
+                                    cc.log("playerInfo_btn1 ClickEvent userId[1] ="+userInfo.recordName+"||matchId="+userInfo.matchId);
                                     gKlineScene.businessMatchInfo(buyInfo,score);
                                 }
 
@@ -419,7 +429,7 @@ var PlayerInfoLayer= cc.Node.extend({
             {
 
 				// var InfoposX =60;
-				var selectflag =userInfo.playerListData[i]["userName"]==userInfo.nickName?true:false;
+				var selectflag =userInfo.playerListData[i]["userName"]==userInfo.recordName?true:false;
 				if(selectflag){
 					score=parseFloat(userInfo.playerListData[i]["score"]);
 					this.refreshScores(score);
@@ -479,7 +489,9 @@ var PlayerInfoLayer= cc.Node.extend({
                     this.playerScoreLabel[i].setString(score.toFixed(2)+"%");
 					this.playerScoreLabel[i].setColor(setLabelColor(score));
 					// this.playerHead_Sprite[i].setVisible();
+
 					this.playerHead_Select[i].setVisible(selectflag);
+					cc.log(this.playerHead_Select[i].getPosition(),userInfo.recordName);
                 }
 
             }

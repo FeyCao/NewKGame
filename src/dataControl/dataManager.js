@@ -113,6 +113,7 @@ var userInfo ={
 
     //
     nickName:"无名的游客",
+    recordName:null,
     headSprite:null,	//头像
     score:null,
     // userName:null,
