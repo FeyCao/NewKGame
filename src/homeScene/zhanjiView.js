@@ -104,7 +104,7 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
         //设置时间
         strTimeText= matchData["matchTime"];
         textTimeLabel = new cc.LabelTTF(strTimeText, "Arial", 25.0);
-        textTimeLabel.setPosition(cc.p(880,70));
+        textTimeLabel.setPosition(cc.p(880,65));
         textTimeLabel.setAnchorPoint(0.5,0.5);
         textTimeLabel.setColor(lightBlueColor);
         this.addChild(textTimeLabel);

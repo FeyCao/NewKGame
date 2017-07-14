@@ -13,6 +13,7 @@ var MatchViewLayer = cc.Layer.extend({
     AiBattleView:null,
 
     bgSprite:null,
+    bgTittle:null,
     AiMenu:null,
     AiModeSelect:null,
     // PracticeBattleView:null,
@@ -112,6 +113,7 @@ var MatchViewLayer = cc.Layer.extend({
                 // gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
                 gSocketConn.BeginMatch(userInfo.matchMode,userInfo.matchDayCount);
                 userInfo.matchBeginFlag=true;
+
                 //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
                 // cc.director.runScene(klineSceneNext);
                 // cc.log("klineSceneNext切换KGameScene场景调用完毕");
@@ -131,7 +133,22 @@ var MatchViewLayer = cc.Layer.extend({
 
                 break;
             }
-            case  MatchType.Type_Tool_Match:
+            case  MatchType.Type_Tool_Match:{
+
+                self.unmatchButton.setVisible(true);
+                self.beginButton.setVisible(false);
+                self.textLabel.setVisible(true);
+                if(null!=gMainMenuScene)
+                {
+                    gSocketConn.BeginMatch(userInfo.matchMode);
+                    userInfo.matchBeginFlag=true;
+                    this.generalButton.setEnabled(false);
+                    this.timeBegin = new Date().getTime();
+                    this.showHeadChange();
+                }
+
+                break;
+            }
             case MatchType.Type_PlainMultiplayer_Match:
             {
 
@@ -142,6 +159,7 @@ var MatchViewLayer = cc.Layer.extend({
                 {
                     gSocketConn.BeginMatch(userInfo.matchMode);
                     userInfo.matchBeginFlag=true;
+                    this.propButton.setEnabled(false);
                     this.timeBegin = new Date().getTime();
                     this.showHeadChange();
                 }
@@ -227,7 +245,10 @@ var MatchViewLayer = cc.Layer.extend({
             this.setAiBattleView();
         }
         if(this.AiBattleView !=null){
-            this.bgSprite.initWithFile("res/bg_select0.png");
+            this.bgSprite.initWithFile(res.BG_SELECT);
+            this.bgTittle.initWithFile(res.TITLE_TIME);
+            this.bgTittle.setVisible(true);
+
 
             var posX0 = 40;
             var spaceX = 140 ;
@@ -293,6 +314,10 @@ var MatchViewLayer = cc.Layer.extend({
             this.AiBattleView =new cc.LayerColor(cc.color(0,0,0,127),size.width,size.height);
             this.bgSprite=cc.Sprite.create("res/bg_control.png");
             bgSize = this.bgSprite.getContentSize();
+
+            this.bgTittle = new cc.Sprite(res.TITLE_TIME);
+            this.bgTittle.setPosition(cc.p(bgSize.width/2+10,bgSize.height-40));
+            this.bgSprite.addChild(this.bgTittle,3);
 
             this.bgSprite.initWithFile("res/bg_select.png");
             cc.log("MatchViewLayer backgroundSprite bgSize="+bgSize.width);
@@ -438,6 +463,8 @@ var MatchViewLayer = cc.Layer.extend({
         if(this.AiBattleView !=null){
             this.bgSprite.initWithFile("res/bg_select.png");
 
+            this.bgTittle.initWithFile(res.TITLE_TYPE);
+            this.bgTittle.setVisible(false);
 
             var posX0 = 120;
             var spaceX = 110 ;
@@ -665,6 +692,7 @@ var MatchViewLayer = cc.Layer.extend({
 
             this.generalButton=new cc.MenuItemImage(res.SELECT_NO_PNG, res.SELECT_OK_PNG, self.generalMatch, this);//new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
             this.generalButton.setPosition(cc.p(bgSize.width/2-200,macthButtonPosY));
+            this.generalButton.setEnabled(true);
             mu.addChild(this.generalButton);
 
             // this.generalLabel=cc.LabelTTF.create("普通模式", "fonts/Self.ttf",fontSize);
@@ -675,6 +703,7 @@ var MatchViewLayer = cc.Layer.extend({
 
             this.propButton=new cc.MenuItemImage(res.SELECT_NO_PNG, res.SELECT_OK_PNG, self.propMatch, this);//new CheckButton("res/btn_unmatch.png","res/btn_unmatch.png");//new Button("res/btn_mode1d.png");
             this.propButton.setPosition(cc.p(bgSize.width/2+100,macthButtonPosY));
+            this.propButton.setEnabled(true);
             // this.propButton.setVisible(false);
             mu.addChild(this.propButton);
 
