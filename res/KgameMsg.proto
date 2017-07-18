@@ -28,6 +28,8 @@
 	Type_RankList=26;
 	Type_OnlineNum=27;
 	Type_Match_Record=28;
+	Type_Server_Ping=29;
+	Type_Server_Pong=30;
 }
 
 
@@ -37,6 +39,7 @@ enum MatchType{
     Type_PlainMultiplayer_Match=2;
     Type_Tool_Match=3;
     Type_Friend_Match=4;
+	Type_DailyTrade_Match=5;
 }
 
 enum FaceType{
@@ -77,6 +80,7 @@ message Share{
    repeated OneDayInfo oneDayInfo=2;
    optional int32 handleDay=3;//供玩家操作的天数
    repeated MatchUserInfo playerInfo=4;
+   optional MatchType matchType=5;
 }
 
 message MatchRecord{
@@ -84,6 +88,7 @@ message MatchRecord{
    repeated OneDayInfo oneDayInfo=2;
    optional int32 handleDay=3;//供玩家操作的天数
    repeated MatchUserInfo playerInfo=4;
+   optional MatchType matchType=5;
 }
 
 message Face{
@@ -116,9 +121,12 @@ message HallInfo{
    optional double GainCumulationForMore=15;
    optional double GainCumulationForMoreTool=16;
    optional double GainCumulationForFriend=17;
-   optional string userName=18;
-   optional string headPicture=19;
-   optional int32 onLineNum=20;
+   optional int32 sumMatchDaily=18;
+   optional int32 winMatchDaily=19;
+   optional double GainCumulationForDaily=20;
+   optional string userName=21;
+   optional string headPicture=22;
+   optional int32 onLineNum=23;
 }
 
 message HistoryMatches{
@@ -158,7 +166,9 @@ message OneDayInfo{
 	required double min=3;
 	required double close=4;
 	required int32 vol=5;
+	optional double avg=6;
 }
+
 
 message MatchUserInfo{
 
@@ -175,6 +185,7 @@ message HisdataInfo{
    repeated OneDayInfo oneDayInfo=1;
    required int32 handleDay=2;//供玩家操作的天数
    repeated MatchUserInfo playerInfo=3;
+   optional MatchType matchType=4;
 
 }
 
@@ -239,6 +250,12 @@ message FriendMatch_Answer{
 	optional string answerName=3;//被邀请者
 	optional string answerPic=4;//被邀请人头像
 	optional string inviteCode=5;
+}
+
+message ServerPong{
+   required string ServerName=1;
+   required int32 serverAddr=2;
+   optional int32 threadNum=3;
 
 }
 
@@ -267,4 +284,5 @@ message Message{
    optional RankList rankList=21;
    optional int32 onlineNum=22;
    optional MatchRecord matchRecord=23;
+   optional ServerPong serverPong=24;
 }

@@ -108,6 +108,7 @@ var PlayerInfoLayer= cc.Node.extend({
 		// }
 		switch(userInfo.matchMode)
 		{
+            case MatchType.Type_DailyTrade_Match://分时比赛
 			case MatchType.Type_Practice_Match://练习场比赛
 			{
 				cc.log("PlayerInfoLayer setPlayerInfo:function()=0" );
@@ -120,16 +121,16 @@ var PlayerInfoLayer= cc.Node.extend({
 					// this.selfNameLabel.setScale(this.fXScale,this.fYScale);
 					//this.selfNameLabel=cc.LabelTTF.create(gPlayerName, "Arial", 20);
 					this.selfNameLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-					this.selfNameLabel.setAnchorPoint(1,0.5);
-					this.selfNameLabel.setPosition(namePosX,posY);
+					this.selfNameLabel.setAnchorPoint(0,0.5);
+					this.selfNameLabel.setPosition(posX1+60,posY+20);
 					this.backgroundSprite.addChild(this.selfNameLabel,5);
 				}
 
 				if(this.selfScoreLabel==null){
-					this.selfScoreLabel=cc.LabelTTF.create("0.00%", "Arial", 50);
+					this.selfScoreLabel=cc.LabelTTF.create("0.00%", "Arial", 40);
 					this.selfScoreLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-					// this.selfScoreLabel.setAnchorPoint(0,0.5);
-					this.selfScoreLabel.setPosition(scorePosX,posY);
+					this.selfScoreLabel.setAnchorPoint(0,0.5);
+					this.selfScoreLabel.setPosition(posX1+60,posY-20);
 					// this.selfScoreLabel.setPosition(cc.pAdd(this.selfNameLabel.getPosition(),cc.p(this.selfNameLabel.getContentSize().width+10,0)));
 					this.backgroundSprite.addChild(this.selfScoreLabel,5);
 				}
@@ -430,7 +431,10 @@ var PlayerInfoLayer= cc.Node.extend({
 					score=parseFloat(userInfo.playerListData[0]["score"]);
 					self.refreshScores(score);
 				}else if(length==2){
-					self.selfScoreLabel.setVisible(false);
+					if(self.selfScoreLabel!=null){
+						self.selfScoreLabel.setVisible(false);
+					}
+					//
 					for(var i=0;i<length;i++)
 					{
 

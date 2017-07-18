@@ -126,7 +126,7 @@ var res = {
  BG_SELECT  : "res/exercise/bg_exercise.png",
  TITLE_TIME  :"res/exercise/title_time.png",
  TITLE_TYPE  :"res/exercise/title_type.png",
- EXERCISE_NO  :"res/exercise/exercise_choose_on.png",
+ EXERCISE_CHOOSE  :"res/exercise/exercise_choose_on.png",
  EXERCISE_CHOOSE_TIME  :"res/exercise/exercise_choose1.png",
  EXERCISE_CHOOSE_DAY  :"res/exercise/exercise_choose2.png",
  EXERCISE_ARROW_DOWN  :"res/exercise/time_arrow_down.png",

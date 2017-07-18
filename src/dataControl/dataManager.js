@@ -149,7 +149,9 @@ var userInfo ={
      Type_PlainMultiplayer_Match=2;
      Type_Tool_Match=3;
      Type_Friend_Match=4;
-     }*/
+     Type_DailyTrade_Match=5;
+     }
+     */
     //matchMode
     matchMode:MatchType.Type_Practice_Match,//游戏模式0：练习场，1：多人战，2：人机战
     matchFlag:false,//false 比赛中，true 观看记录

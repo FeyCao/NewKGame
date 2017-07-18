@@ -562,15 +562,16 @@ var MatchInfoLayer = cc.Layer.extend({
 
 
 		this.statusFlag = 0;
-
-		if(userInfo.matchMode<2){
-			this.ableSpeedButtons();
-		}else{
-			this.ableAmoticonButtons();
-			if(userInfo.matchMode==MatchType.Type_Tool_Match){//Type_Tool_Match
-				this.ableToolButtons();
-			}
-		}
+        // if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchMode==MatchType.Type_Tool_Match||userInfo.matchMode==MatchType.Type_Friend_Match||userInfo.matchMode==MatchType.Type_ArtificialMatch)//多人
+        if(userInfo.matchMode==MatchType.Type_Practice_Match||userInfo.matchMode==MatchType.Type_DailyTrade_Match||userInfo.matchMode==MatchType.Type_ArtificialMatch){
+            this.ableSpeedButtons();
+        }
+        if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchMode==MatchType.Type_Tool_Match||userInfo.matchMode==MatchType.Type_Friend_Match){//匹配赛
+            this.ableAmoticonButtons();
+        }
+        if(userInfo.matchMode==MatchType.Type_Tool_Match){//Type_Tool_Match
+            this.ableToolButtons();
+        }
 		// this.buyCloseButton.setVisible(false);
 		// this.sellCloseButton.setVisible(false);
 	},
@@ -611,7 +612,7 @@ var MatchInfoLayer = cc.Layer.extend({
 
 		var klineScene=this.parent.parent;
 		var lastCandleIndex=klineScene.currentCandleIndex;
-		if(lastCandleIndex<121){
+        if(lastCandleIndex<121&&userInfo.matchMode!=MatchType.Type_DailyTrade_Match){
 			return;
 		}else{
 			if(userInfo.buttonSoundFlag==true)
@@ -656,7 +657,7 @@ var MatchInfoLayer = cc.Layer.extend({
 	{
 		var klineScene=this.parent.parent;
 		var lastCandleIndex=klineScene.currentCandleIndex;
-		if(lastCandleIndex<121){
+        if(lastCandleIndex<121&&userInfo.matchMode!=MatchType.Type_DailyTrade_Match){
 			return;
 		}else{
 			if(userInfo.buttonSoundFlag==true)

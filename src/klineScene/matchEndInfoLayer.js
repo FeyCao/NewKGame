@@ -58,7 +58,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		var posBtnY = 39;
 
 		var bgSize = cc.director.getWinSize();
-		if(userInfo.matchMode>0)//多人
+		if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchMode==MatchType.Type_Tool_Match||userInfo.matchMode==MatchType.Type_Friend_Match||userInfo.matchMode==MatchType.Type_ArtificialMatch)//多人
 		{
 
 			this.bgSprtie = cc.Sprite.create("res/matchMoreEnd.png");
@@ -438,6 +438,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		userInfo.matchId = endMatchInfo.matchId;
 		switch(userInfo.matchMode)
 		{
+			case MatchType.Type_DailyTrade_Match://分时比赛
 			case MatchType.Type_Practice_Match:
 			{
 				var fields=endMatchInfo.codeInfo;

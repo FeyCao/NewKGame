@@ -38,6 +38,7 @@ var MainMenuScene =SceneBase.extend(
     invitedViewLayer:null,
     helpViewLayer:null,
     matchViewLayer:null,
+    preMatchView:null,
     loadTime:null,
     onEnteredFunction:null,	//OnEnter调用结束后的Function
 
@@ -325,16 +326,16 @@ var MainMenuScene =SceneBase.extend(
         //     gKlineScene=new KLineScene();
         // }
 
-        userInfo.matchMode = MatchType.Type_Practice_Match;
-        if(this.matchViewLayer==null){
-            this.matchViewLayer=new MatchViewLayer();
-            this.matchViewLayer.setVisible(false);
-            this.matchViewLayer.setPosition(0,0);
-            this.otherMessageTipLayer.addChild(this.matchViewLayer, 1,this.matchViewLayer.getTag());
-            this.matchViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+        // userInfo.matchMode = MatchType.Type_Practice_Match;
+        if(this.preMatchView==null){
+            this.preMatchView=new preMatchView();
+            this.preMatchView.setVisible(false);
+            this.preMatchView.setPosition(0,0);
+            this.otherMessageTipLayer.addChild(this.preMatchView, 1,this.preMatchView.getTag());
+            this.preMatchView.closeCallBackFunction=function(){self.popViewLayer_Close()};
         }
-        this.matchViewLayer.refreshMatchViewLayer();
-        this.matchViewLayer.showLayer();
+        // this.matchViewLayer.refreshMatchViewLayer();
+        this.preMatchView.showLayer();
         this.pauseLowerLayer();
         // if(this.firstMode.isSelected==true)
         // {
@@ -552,6 +553,10 @@ var MainMenuScene =SceneBase.extend(
             this.helpViewLayer.hideLayer();
         }
 
+        //关闭prematchViewL界面
+        if(this.preMatchView!=null){
+            this.preMatchView.hideLayer();
+        }
 
         this.resumeLowerLayer();
     },

@@ -105,7 +105,7 @@ var KlineLayer= BaseGraphLayer.extend({
 		}
 		//cc.log("calculateMaxMinBetweenIndex start="+start+" end="+end+", this.maxValue="+this.maxValue+", this.minValue="+this.minValue);
 	},
-	
+
 	//重载
 	drawCandle:function(candleIndex)
 	{
@@ -118,17 +118,17 @@ var KlineLayer= BaseGraphLayer.extend({
 		var posY_X=candleIndex<0?this.getCandlePosYByValue(this.klineDataPrev[this.klineDataPrev.length+candleIndex].x):this.getCandlePosYByValue(this.klineData[candleIndex].x);
 		var posY_I=candleIndex<0?this.getCandlePosYByValue(this.klineDataPrev[this.klineDataPrev.length+candleIndex].i):this.getCandlePosYByValue(this.klineData[candleIndex].i);
 		var posX_Needle=posX+this.candleWidth/2;
-		
+
 		//cc.log("posx="+posX+" posY_O="+posY_O+" posY_C="+posY_C+" posY_X="+posY_X+" posY_I="+posY_I);
-		
+
 		var origin=cc.p(posX,posY_O<posY_C?posY_O:posY_C);
 		var destination=cc.p(origin.x+this.candleWidth,origin.y+Math.abs(posY_O-posY_C));
-		
+
 		var frameColor=cc.color(252,0,1,255);		//涨色
 		var innerColor=cc.color(252,0,1,255);
-		
+
 		var needleColor=cc.color(145,145,145,255);		//上下影线的颜色
-		
+
 		//cc.log("candleIndex="+candleIndex);
 		var klineDataThis=candleIndex<0?this.klineDataPrev[this.klineDataPrev.length+candleIndex]:this.klineData[candleIndex];
 		var klineDataPrev=null;
@@ -136,7 +136,7 @@ var KlineLayer= BaseGraphLayer.extend({
 		{
 			klineDataPrev=(candleIndex-1)<0?this.klineDataPrev[this.klineDataPrev.length+candleIndex-1]:this.klineData[candleIndex-1];
 		}
-		
+
 		if(klineDataThis.c<klineDataThis.o)
 		{
 			frameColor=cc.color(6,226,0,255);	//跌色
@@ -153,16 +153,56 @@ var KlineLayer= BaseGraphLayer.extend({
 				}
 			}
 		}
-		
-		
+
+
 		needleColor=frameColor;
-		
+
 		//cc.log("c="+this.klineData[candleIndex].c+" o="+this.klineData[candleIndex].o+" x="+this.klineData[candleIndex].x+" i="+this.klineData[candleIndex].i+" frameColor.r="+frameColor.r+" g="+frameColor.g+" b="+frameColor.b);
-		
-		
+
+
 		this.graphArea.drawSegment(cc.p(posX_Needle,posY_O>posY_C?posY_O:posY_C),cc.p(posX_Needle,posY_X),0.4,needleColor);//上影线
 		this.graphArea.drawSegment(cc.p(posX_Needle,posY_I),cc.p(posX_Needle,posY_O<posY_C?posY_O:posY_C),0.4,needleColor);//下影线
 		this.graphArea.drawRect(origin,destination,innerColor,1,frameColor);		//实体
+	},
+	//重载
+	drawDailyTradeLine:function(candleIndex)
+	{
+		//cc.log("drawDailyTradeLine called index="+candleIndex);
+		var lineColor=cc.color(255,255,11,255);	//黄色
+		var candleIndexPosXNeedle=this.getCandlePosX_Needle(candleIndex);
+		if(this.klineData[candleIndex].avg!=null)
+		{
+			var lastValue=null;
+			var thisValue=candleIndex<0?this.klineDataPrev[this.klineDataPrev.length+candleIndex].avg:this.klineData[candleIndex].avg;
+			var lastCandleIndexPosXNeedle=null;
+
+			if(candleIndex>=1)
+			{
+				lastValue=candleIndex<0?this.klineDataPrev[this.klineDataPrev.length+candleIndex-1].avg:this.klineData[candleIndex-1].avg;
+				lastCandleIndexPosXNeedle=this.getCandlePosX_Needle(candleIndex-1);
+			}
+
+			if(thisValue!=null)
+			{
+				var thisValueY=this.getCandlePosYByValue(thisValue);
+				var lastValueY=null;
+
+				//graphArea.drawDots([cc.p(candleIndexPosXNeedle,thisValueY)],1,tai.defaultColor);
+				if(lastValue==null)
+				{
+					//画点
+					this.graphArea.drawDots([cc.p(candleIndexPosXNeedle,thisValueY)],1,lineColor);
+				}
+				else
+				{
+					//画线
+					lastValueY=this.getCandlePosYByValue(lastValue);
+					//cc.log("lastValueY="+lastValueY.toFixed(2)+" thisValueY="+thisValueY.toFixed(2));
+					this.graphArea.drawSegment(cc.p(lastCandleIndexPosXNeedle,lastValueY),cc.p(candleIndexPosXNeedle,thisValueY),0.3,lineColor);
+				}
+			}
+		}
+
 	},
 
 	//画出相反色柱图

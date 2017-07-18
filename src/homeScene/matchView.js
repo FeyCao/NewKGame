@@ -76,14 +76,14 @@ var MatchViewLayer = cc.Layer.extend({
     },
 
     generalMatch:function () {
-        if(userInfo.matchBeginFlag==true){return;}
+        // if(userInfo.matchBeginFlag==true){return;}
         userInfo.matchMode=MatchType.Type_PlainMultiplayer_Match;
         this.propButton.unselected();
         this.generalButton.selected();
     },
 
     propMatch:function () {
-        if(userInfo.matchBeginFlag==true){return;}
+        // if(userInfo.matchBeginFlag==true){return;}
         userInfo.matchMode=MatchType.Type_Tool_Match;
         this.propButton.selected();
         this.generalButton.unselected();
@@ -1022,4 +1022,249 @@ var MatchViewLayer = cc.Layer.extend({
             cc.log("stopHeadChange= end");
         }
     },
+});
+var preMatchView = cc.Layer.extend({
+
+    closeCallBackFunction:null,
+
+    backgroundSprite:null,//
+
+    bgSprite:null,
+    bgTittle:null,
+    allMenu:null,
+
+
+    onEnter: function () {
+        this._super();
+        // this.setColor();
+        this.setOpacity(160);
+        var listener = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function (touch, event) {
+                return true;
+            }
+        });
+        cc.eventManager.addListener(listener, this);
+        this._listener = listener;
+    },
+
+    onExit: function () {
+        cc.eventManager.removeListener(this._listener);
+        this._super();
+    },
+    ctor:function () {
+        this._super();
+        // this.onEnter();
+        this.init();
+
+    },
+
+    init:function () {
+
+        var size = cc.director.getWinSize();
+        var fXScale = size.width/1280;
+        var fYScale = size.height/720;
+        var posY = 80;
+        var self = this;
+        this.bgView=new cc.LayerColor(cc.color(0,0,0,127),size.width,size.height);
+        this.addChild(this.bgView);
+        this.bgSprite = new cc.Sprite(res.BG_SELECT);
+        this.bgSprite.setScale(fXScale,fYScale);
+        this.bgSprite.setPosition(size.width/2,size.height/2);
+        bgSize = this.bgSprite.getContentSize();
+        this.bgView.addChild(this.bgSprite);
+
+        this.bgTittle = new cc.Sprite(res.TITLE_TYPE);
+        this.bgTittle.setPosition(cc.p(bgSize.width/2+10,bgSize.height-40));
+        this.bgSprite.addChild(this.bgTittle,3);
+
+        cc.log("preMatchView backgroundSprite bgSize="+bgSize.width);
+
+        var mu = new cc.Menu();
+        mu.x = 0;
+        mu.y = 0;
+        this.bgSprite.addChild(mu,3);
+        // closeBtn=new Button("res/close.png");
+        var closeBtn = new cc.MenuItemImage("res/close.png", "res/close.png", self.toMainScene, this);
+        closeBtn.setPosition(cc.p(bgSize.width-40,bgSize.height-40));
+        mu.addChild(closeBtn);
+        this.BeginButton=new cc.MenuItemImage("res/btn_begin.png", "res/btn_begin.png", self.beginMatch, this);//new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
+        this.BeginButton.setPosition(cc.p(bgSize.width/2,posY));
+        mu.addChild(this.BeginButton);
+
+        var posX0 = bgSize.width/2;
+        var spaceX = 260 ;
+        // var spaceY = 50 ;
+        if(this.timeBtn==null){
+            this.timeBtn =  new cc.MenuItemImage(res.EXERCISE_CHOOSE_TIME, res.EXERCISE_CHOOSE_TIME, self.dailyTradeMatch, this);
+            mu.addChild(this.timeBtn);
+        }
+        this.timeBtn.setPosition(cc.p(posX0-spaceX/2,bgSize.height/2));
+        this.timeBtn.setTag(101);
+
+        if(this.dayBtn==null){
+            this.dayBtn =  new cc.MenuItemImage(res.EXERCISE_CHOOSE_DAY, res.EXERCISE_CHOOSE_DAY, self.practiceMatch, this);
+            mu.addChild(this.dayBtn);
+        }
+        this.dayBtn.setPosition(cc.p(posX0+spaceX/2,bgSize.height/2));
+        this.dayBtn.setTag(102);
+        if(this.chooseSelect==null){
+            this.chooseSelect = new cc.Sprite(res.EXERCISE_CHOOSE);
+            this.bgSprite.addChild(this.chooseSelect,3);
+        }
+        userInfo.matchMode=MatchType.Type_DailyTrade_Match;
+        this.chooseSelect.setPosition(this.timeBtn.getPosition());
+        return true;
+    },
+
+    toMainScene:function () {
+        cc.log(" toMainScene:function () begin");
+        if(this.closeCallBackFunction!=null){
+            this.closeCallBackFunction();
+        }
+    },
+
+    dailyTradeMatch:function () {
+        // if(userInfo.matchBeginFlag==true){return;}
+        userInfo.matchMode=MatchType.Type_DailyTrade_Match;
+        this.chooseSelect.setPosition(this.timeBtn.getPosition());
+        // this.propButton.unselected();
+        // this.generalButton.selected();
+    },
+
+    practiceMatch:function () {
+        // if(userInfo.matchBeginFlag==true){return;}
+        userInfo.matchMode=MatchType.Type_Practice_Match;
+        this.chooseSelect.setPosition(this.dayBtn.getPosition());
+        // this.propButton.selected();
+        // this.generalButton.unselected();
+    },
+
+    beginMatch:function(){
+        var self =this;
+        var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
+        cc.log(" beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
+        switch (userInfo.matchMode)
+        {
+
+            case MatchType.Type_Practice_Match:
+            {
+                this.toMainScene();
+                if(null!=gMainMenuScene&&gMainMenuScene.matchViewLayer==null){
+                    gMainMenuScene.matchViewLayer=new MatchViewLayer();
+                    gMainMenuScene.matchViewLayer.setVisible(false);
+                    gMainMenuScene.matchViewLayer.setPosition(0,0);
+                    gMainMenuScene.otherMessageTipLayer.addChild(gMainMenuScene.matchViewLayer, 1,gMainMenuScene.matchViewLayer.getTag());
+                    gMainMenuScene.matchViewLayer.closeCallBackFunction=function(){gMainMenuScene.popViewLayer_Close()};
+                }
+                if(null!=gMainMenuScene){
+                    gMainMenuScene.matchViewLayer.refreshMatchViewLayer();
+                    gMainMenuScene.matchViewLayer.showLayer();
+                    gMainMenuScene.pauseLowerLayer();
+                }
+
+                break;
+            }
+            case MatchType.Type_DailyTrade_Match:
+            {
+                gSocketConn.BeginMatch(userInfo.matchMode,userInfo.matchDayCount);
+                userInfo.matchBeginFlag=true;
+                //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
+                // cc.director.runScene(klineSceneNext);
+                // cc.log("klineSceneNext切换KGameScene场景调用完毕");
+
+                break;
+            }
+            case  MatchType.Type_Tool_Match:{
+
+                self.unmatchButton.setVisible(true);
+                self.beginButton.setVisible(false);
+                self.textLabel.setVisible(true);
+                if(null!=gMainMenuScene)
+                {
+                    gSocketConn.BeginMatch(userInfo.matchMode);
+                    userInfo.matchBeginFlag=true;
+                    this.generalButton.setEnabled(false);
+                    this.timeBegin = new Date().getTime();
+                    this.showHeadChange();
+                }
+
+                break;
+            }
+            case MatchType.Type_PlainMultiplayer_Match:
+            {
+
+                self.unmatchButton.setVisible(true);
+                self.beginButton.setVisible(false);
+                self.textLabel.setVisible(true);
+                if(null!=gMainMenuScene)
+                {
+                    gSocketConn.BeginMatch(userInfo.matchMode);
+                    userInfo.matchBeginFlag=true;
+                    this.propButton.setEnabled(false);
+                    this.timeBegin = new Date().getTime();
+                    this.showHeadChange();
+                }
+
+                break;
+            }
+            // case  MatchType.Type_Tool_Match:
+            // {
+            //     // var klineSceneNext=new KLineScene();
+            //     // klineSceneNext.onEnteredFunction=function(){
+            //     //
+            //     //     // klineSceneNext.showProgress();
+            //     // };
+            //     // gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
+            //     gSocketConn.BeginMatch(userInfo.matchMode);
+            //     userInfo.matchBeginFlag=true;
+            //     //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
+            //     // cc.director.runScene(klineSceneNext);
+            //     cc.log("klineSceneNext切换KGameScene场景调用完毕");
+            //     break;
+            // }
+            case  MatchType.Type_Friend_Match:
+            {
+
+                self.unmatchButton.setVisible(true);
+                self.beginButton.setVisible(false);
+                self.textLabel.setVisible(true);
+                if(null!=gMainMenuScene)
+                {
+                    gSocketConn.BeginMatch(MatchType.Type_Friend_Match);
+                    userInfo.matchBeginFlag=true;
+                    this.timeBegin = new Date().getTime();
+                    this.showHeadChange();
+                }
+
+                break;
+            }
+            default:
+            {
+                cc.log("userInfo.recordMode=="+userInfo.recordMode);
+                break;
+            }
+        }
+
+        cc.log("beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
+        // if(this.closeCallBackFunction!=null){
+        //     this.closeCallBackFunction();
+        // }
+    },
+    showLayer:function()
+    {
+        this.setVisible(true);
+        this.scheduler.resumeTarget(this);
+        this.actionManager && this.actionManager.resumeTarget(this);
+        cc.eventManager.resumeTarget(this,true);
+    },
+    hideLayer:function()
+    {
+        this.setVisible(false);
+        this.scheduler.pauseTarget(this);
+        this.actionManager && this.actionManager.pauseTarget(this);
+        cc.eventManager.pauseTarget(this,true);
+    },
+
 });
