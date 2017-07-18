@@ -1895,7 +1895,9 @@ var KLineScene = SceneBase.extend(
 			{
 				if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchMode==MatchType.Type_Tool_Match||userInfo.matchMode==MatchType.Type_Friend_Match){//多人赛同步处理Type_PlainMultiplayer_Match
 					this.drawCandleStoped=true;
-				}else if(this.currentCandleIndex-120>-1){
+				}else if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+                    gSocketConn.Step(this.currentCandleIndex);
+                }else if(this.currentCandleIndex-120>-1){
                     gSocketConn.Step(this.currentCandleIndex-120);
                 }
 			}
