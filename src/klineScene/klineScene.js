@@ -1269,7 +1269,9 @@ var KLineScene = SceneBase.extend(
 		this.playerInfoLayer.refreshScoresByData();
 
 		var indexFromServe = userInfo.playerListData[0]["currentIndex"];//加一修正
-		if(indexFromServe>this.currentCandleIndex-121){
+		if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+			this.drawHistoryCandlePartToIndex(indexFromServe);
+		}else if(indexFromServe>this.currentCandleIndex-121){
 
 			this.drawHistoryCandlePartToIndex(121+indexFromServe);
 		}
@@ -1901,6 +1903,7 @@ var KLineScene = SceneBase.extend(
                     gSocketConn.Step(this.currentCandleIndex-120);
                 }
 			}
+			cc.log("比赛进度currentIndex =="+this.currentCandleIndex);
 			this.currentCandleIndex++;
 		}else{
 			cc.log("比赛结束了currentIndex =="+this.currentCandleIndex);
