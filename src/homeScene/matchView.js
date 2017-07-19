@@ -1145,23 +1145,24 @@ var preMatchView = cc.Layer.extend({
         var self =this;
         var matchInfoMessage =userInfo.matchMode+"#"+userInfo.matchAiMode+"#"+userInfo.matchDayCount;
         cc.log(" beginMatch:function() begin matchInfoMessage="+matchInfoMessage);
+        var parentView = self.parent.parent;;//.parent.parent;
         switch (userInfo.matchMode)
         {
 
             case MatchType.Type_Practice_Match:
             {
                 this.toMainScene();
-                if(null!=gMainMenuScene&&gMainMenuScene.matchViewLayer==null){
-                    gMainMenuScene.matchViewLayer=new MatchViewLayer();
-                    gMainMenuScene.matchViewLayer.setVisible(false);
-                    gMainMenuScene.matchViewLayer.setPosition(0,0);
-                    gMainMenuScene.otherMessageTipLayer.addChild(gMainMenuScene.matchViewLayer, 1,gMainMenuScene.matchViewLayer.getTag());
-                    gMainMenuScene.matchViewLayer.closeCallBackFunction=function(){gMainMenuScene.popViewLayer_Close()};
+                if(null!=parentView&&parentView.matchViewLayer==null){
+                    parentView.matchViewLayer=new MatchViewLayer();
+                    parentView.matchViewLayer.setVisible(false);
+                    parentView.matchViewLayer.setPosition(0,0);
+                    parentView.otherMessageTipLayer.addChild(parentView.matchViewLayer, 1,parentView.matchViewLayer.getTag());
+                    parentView.matchViewLayer.closeCallBackFunction=function(){parentView.popViewLayer_Close()};
                 }
-                if(null!=gMainMenuScene){
-                    gMainMenuScene.matchViewLayer.refreshMatchViewLayer();
-                    gMainMenuScene.matchViewLayer.showLayer();
-                    gMainMenuScene.pauseLowerLayer();
+                if(null!=parentView){
+                    parentView.matchViewLayer.refreshMatchViewLayer();
+                    parentView.matchViewLayer.showLayer();
+                    parentView.pauseLowerLayer();
                 }
 
                 break;

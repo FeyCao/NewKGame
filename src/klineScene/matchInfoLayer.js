@@ -42,6 +42,8 @@ var MatchInfoLayer = cc.Layer.extend({
     startCallBackFunction:null,
 	// menu:null,
 
+    dailyControlLayer:null,			//分时控制层
+
 	statusFlag:0,
 
 	ctor:function(width,height)
@@ -94,7 +96,7 @@ var MatchInfoLayer = cc.Layer.extend({
 		// this.btnStart.setClickEvent(function(){
 		//     self.start();
 		// });
-		//
+
 		// this.btnHome=new Button("res/home.png");
 		// this.btnHome.setPosition(cc.p(363,posY));
 		// this.btnHome.setClickEvent(function(){
@@ -152,7 +154,8 @@ var MatchInfoLayer = cc.Layer.extend({
 		// this.setEnableBuyOrSell(true);
 		// this.drawDisableButtons();
 
-
+        //分时区域设置
+        this.initDailyTradeControlArea();
 
 		this.faceSprites = [];
 		var posX = 85;
@@ -402,6 +405,72 @@ var MatchInfoLayer = cc.Layer.extend({
 		// this.speedControlLayer.addChild(this.scNormalCheckButton,1);
 		// this.speedControlLayer.addChild(this.scDoubleCheckButton,1);
 	},
+	initDailyTradeControlArea:function()
+	{
+		//设置变速信息的信息
+		var self=this;
+		// var size = cc.director.getWinSize();
+        var posX =48;
+		var posY = 78;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
+		this.dailyControlLayer=new cc.Sprite(res.EXERCISE_BOX_DEFAULT);
+        var bgSize = this.dailyControlLayer.getContentSize();
+        // this.dailyControlLayer.setAnchorPoint(0.5,1);
+		this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
+		this.dailyControlLayer.setScale(fXScale,fYScale);
+		this.addChild(this.dailyControlLayer,3);
+		var bgSize = this.dailyControlLayer.getContentSize();
+		cc.log("dailyControlLayer  bgSize.width=="+bgSize.width+"bgSize.height=="+bgSize.height);
+
+		var mu = new cc.Menu();
+		mu.x = 0;
+		mu.y = 0;
+		this.dailyControlLayer.addChild(mu, 2);
+
+        this.dailySelectButton=new cc.MenuItemImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);//new Button("res/home.png");
+        this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY/2));
+        // this.dailySelectButton.setVisible(false);
+        mu.addChild(this.dailySelectButton);//new CheckButton("res/btn_sc_a_double.png","res/btn_sc_d_double.png");
+		this.setDefaultDailyTradeControlArea();
+
+	},
+    setDefaultDailyTradeControlArea:function () {//设置默认分时模式
+		var self=this;
+		// var size = cc.director.getWinSize();
+		var posX =48;
+		var posY = 78;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
+
+        if(this.dailyControlLayer!=null){
+            this.dailyControlLayer.initWithFile(res.EXERCISE_BOX_DEFAULT);
+			var bgSize = this.dailyControlLayer.getContentSize();
+			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY/2));
+			// this.dailySelectButton.initWithNormalImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);
+			this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
+			this.dailySelectButton.unselected();
+			this.dailySelectButton.setCallback(self.setStretchDailyTradeControlArea, self);
+        }
+
+    },
+    setStretchDailyTradeControlArea:function () {//设置拉伸选择模式
+		var self=this;
+		// var size = cc.director.getWinSize();
+		var posX =48;
+		var posY = 78;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
+        if(this.dailyControlLayer!=null){
+            this.dailyControlLayer.initWithFile(res.EXERCISE_BOX_STRETCH);
+			var bgSize = this.dailyControlLayer.getContentSize();
+			this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
+			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY/2));
+			this.dailySelectButton.selected();
+			this.dailySelectButton.setCallback(self.setDefaultDailyTradeControlArea, self);
+			// this.dailySelectButton.initWithNormalImage(res.EXERCISE_ARROW_UP,res.EXERCISE_ARROW_DOWN, self.setDefaultDailyTradeControlArea, self);
+        }
+    },
 
 	setEnableBuyOrSell:function (flag) {
 

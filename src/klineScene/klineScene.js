@@ -1270,9 +1270,8 @@ var KLineScene = SceneBase.extend(
 
 		var indexFromServe = userInfo.playerListData[0]["currentIndex"];//加一修正
 		if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
-			this.drawHistoryCandlePartToIndex(indexFromServe);
+			this.drawHistoryCandlePartToIndex(indexFromServe+1);
 		}else if(indexFromServe>this.currentCandleIndex-121){
-
 			this.drawHistoryCandlePartToIndex(121+indexFromServe);
 		}
 		this.drawCandleStoped=false;
@@ -2961,6 +2960,10 @@ var KLineScene = SceneBase.extend(
 			//关闭好友界面
 			if(this.friendLayer!=null){
 				this.friendLayer.hideLayer();
+			}
+			//关闭preView界面
+			if(this.preMatchView!=null){
+				this.preMatchView.hideLayer();
 			}
 			this.resumeLowerLayer();
         },

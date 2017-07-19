@@ -893,8 +893,8 @@ var MainMenuScene =SceneBase.extend(
         userInfo.userId = data["uid"];
         userInfo.nickName=data["userName"];
         userInfo.headSprite=data["headPicture"];
-        userInfo.winOfMatchForOne=data["winMatchOne"];
-        userInfo.sumOfMatchForOne=data["sumMatchOne"];
+        userInfo.winOfMatchForOne=data["winMatchOne"]+data["winMatchDaily"];
+        userInfo.sumOfMatchForOne=data["sumMatchOne"]+data["sumMatchDaily"];
         userInfo.winOfMatchForMore=data["winMatchMore"];
         userInfo.sumOfMatchForMore=data["sumMatchMore"];
         userInfo.winOfMatchForAI=data["winMatchAI"];
@@ -904,6 +904,10 @@ var MainMenuScene =SceneBase.extend(
         userInfo.gainCumulation=data["gainCumulation"];
         userInfo.sumOfAllMatch=data["sumOfAllMatch"];
         userInfo.onlineNum = data["onLineNum"];
+
+        // userInfo.GainCumulationForDaily = data["GainCumulationForDaily"];
+        // userInfo.sumMatchDaily = data["sumMatchDaily"];
+
 
         cc.log(" ,"+userInfo.winOfMatchForOne+" ,"+userInfo.winOfMatchForMore+" ,"+userInfo.winOfMatchForAI+" ,"+userInfo.winMatchFriend);
 

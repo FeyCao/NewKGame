@@ -121,6 +121,8 @@ var userInfo ={
 // {"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":1,"sumOfMatchForOne":28,"winOfMatchForMore":37,"sumOfMatchForMore":67,"winOfMatchForAI":16,"sumOfMatchForAI":51,"gainCumulation":"-11.285","sumOfAllMatch":28,"winMatchFriend":5,"sumMatchFriend":8,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}
     winOfMatchForOne:0,//练习场胜利次数
     sumOfMatchForOne:0,//练习场总次数
+    winOfMatchForDaily:0,//分时练习胜利次数
+    sumMatchDaily:0,//分时练习总次数
     winOfMatchForMore:0,//多人赛胜利次数
     winOfMatchForMore:0,//多人赛总次数
     winOfMatchForAI:0,//人机赛胜利次数
