@@ -344,53 +344,6 @@ var BaseGraphLayer= cc.Layer.extend({
 		this.drawSingleDayGraphInfos(currentIndex);
 		return false;
 	},
-	///画位于CurrentIndex的分时线，如果大小变化了则需要重画
-	drawSingleDailyTradeLineByCurrentIndex:function(currentIndex)
-	{
-
-		var totalCandleCount=this.klineData.length;
-		cc.log("totalCandleCount=="+totalCandleCount+"currentIndex=="+currentIndex);
-		if(currentIndex>=totalCandleCount)
-		{
-			//表示已经结束了
-			return true;
-		}
-
-		var lastmax=this.maxValue;
-		var lastmin=this.minValue;
-		if(lastmax==null && lastmin==null)
-		{
-			var startIndex=(0>currentIndex-120?0:currentIndex-120);
-			// if(this.klineDataPrev!=null)
-			// {
-			// 	startIndex=this.getHistoryCandleIndexByPageIndex();
-			// }
-			this.calculateMaxMinBetweenIndex(startIndex,currentIndex);
-			//再计算指标图的最大最小
-			this.calculateMaxMinBetweenIndexForAllTais(startIndex,currentIndex);
-		}
-		else
-		{
-			//先计算非指标的最大最小，一般是蜡烛图，成交量图
-			this.calculateMaxMinAtIndex(currentIndex);
-			//再计算指标图的最大最小
-			this.calculateMaxMinAtIndexForAllTais(currentIndex);
-		}
-
-
-		if( lastmax!=this.maxValue  ||  lastmin!=this.minValue )
-		{
-			//如果最大最小改变了，则需要重画之前所有的分时图
-			cc.log("need redraw prev");
-			this.redrawDailyTradeLineToIndex(currentIndex);
-			this.redrawExceptDailyTradeLine();
-		}
-
-		//cc.log("drawSingleCandleLineByCurrentIndex called currentIndex="+currentIndex);
-		//绘制分时
-		this.drawSingleDailyTradeLineGraphInfos(currentIndex);
-		return false;
-	},
 	
 	calculateMaxMinAtIndexForAllTais:function(index)
 	{
@@ -667,6 +620,12 @@ var BaseGraphLayer= cc.Layer.extend({
 		}else if(this.lineType==1){
 			this.drawDailyTradeLine(candleIndex);
 
+		}else if(this.lineType==2){//1分钟K线
+			this.drawOneDailyTradeLine(candleIndex);
+
+		}else if(this.lineType==3){//5分钟K线
+			this.drawFiveDailyTradeLine(candleIndex);
+
 		}
 		this.drawCandleForAllTais(candleIndex);
 		this.drawTaisValueInfo(candleIndex);
@@ -797,6 +756,16 @@ var BaseGraphLayer= cc.Layer.extend({
 
 	//重载，在当前的位置画分时线，或者成交量，或者其他技术指标等
 	drawDailyTradeLine:function(candleIndex)
+	{
+
+	},
+	//重载，在当前的位置画分时线，或者成交量，或者其他技术指标等
+	drawOneDailyTradeLine:function(candleIndex)
+	{
+
+	},
+	//重载，在当前的位置画分时线，或者成交量，或者其他技术指标等
+	drawFiveDailyTradeLine:function(candleIndex)
 	{
 
 	},

@@ -67,8 +67,6 @@ var MatchInfoLayer = cc.Layer.extend({
 		var posY = 35;
 		// this.backgroundSprite=cc.Sprite.create("res/battle_bg.png");
 		// var bgSize = this.backgroundSprite.getContentSize();
-
-
 		// this.menuControlLayer = new cc.Layer();
 		// this.menuControlLayer.setScale(fXScale,fYScale);
 		// this.menuControlLayer.setPosition(0,0);
@@ -412,6 +410,7 @@ var MatchInfoLayer = cc.Layer.extend({
 		// var size = cc.director.getWinSize();
         var posX =48;
 		var posY = 78;
+		var fontSize = 25;
 		var fXScale = gDesignResolutionWidth/1280;
 		var fYScale = gDesignResolutionHeight/720;
 		this.dailyControlLayer=new cc.Sprite(res.EXERCISE_BOX_DEFAULT);
@@ -427,13 +426,53 @@ var MatchInfoLayer = cc.Layer.extend({
 		mu.x = 0;
 		mu.y = 0;
 		this.dailyControlLayer.addChild(mu, 2);
+		this.dailyControlLayer.setVisible(false);
 
         this.dailySelectButton=new cc.MenuItemImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);//new Button("res/home.png");
         this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY/2));
         // this.dailySelectButton.setVisible(false);
         mu.addChild(this.dailySelectButton);//new CheckButton("res/btn_sc_a_double.png","res/btn_sc_d_double.png");
+		var dailyLabel = new cc.LabelTTF("分时",res.FONT_TYPE,fontSize);
+		this.item1 = new cc.MenuItemLabel(dailyLabel, self.dailyLine, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+		// item1.setAnchorPoint(0,0.5);
+		mu.addChild(this.item1);
+		var onedailyLabel = new cc.LabelTTF("1分钟",res.FONT_TYPE,fontSize);
+		this.itemOne = new cc.MenuItemLabel(onedailyLabel, self.onedailyLine, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+		// itemOne.setAnchorPoint(0,0.5);
+		mu.addChild(this.itemOne);
+		var fivedailyLabel = new cc.LabelTTF("5分钟",res.FONT_TYPE,fontSize);
+		this.itemFive = new cc.MenuItemLabel(fivedailyLabel, self.fivedailyLine, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+		// itemFive.setAnchorPoint(0,0.5);
+		mu.addChild(this.itemFive);
+		this.item1.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2));
+		this.itemOne.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY));
+		this.itemFive.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2*3));
+
+
 		this.setDefaultDailyTradeControlArea();
 
+	},
+	dailyLine:function () {
+
+		var klineScene=this.parent.parent;
+		if(null!=klineScene){
+			klineScene.drawDailyView();
+		}
+		cc.log("dailyLine:function ()!!!");
+	},
+	onedailyLine:function () {
+		var klineScene=this.parent.parent;
+		if(null!=klineScene){
+			klineScene.drawOneDailyView();
+		}
+		cc.log("onedailyLine:function ()!!!");
+	},
+	fivedailyLine:function () {
+		var klineScene=this.parent.parent;
+		if(null!=klineScene){
+			klineScene.drawFiveDailyView();
+		}
+		cc.log("fivedailyLine:function ()!!!");
 	},
     setDefaultDailyTradeControlArea:function () {//设置默认分时模式
 		var self=this;
@@ -451,6 +490,11 @@ var MatchInfoLayer = cc.Layer.extend({
 			this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
 			this.dailySelectButton.unselected();
 			this.dailySelectButton.setCallback(self.setStretchDailyTradeControlArea, self);
+
+			this.item1.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2));
+			this.itemOne.setVisible(false);
+			this.itemFive.setVisible(false);
+
         }
 
     },
@@ -458,17 +502,21 @@ var MatchInfoLayer = cc.Layer.extend({
 		var self=this;
 		// var size = cc.director.getWinSize();
 		var posX =48;
-		var posY = 78;
+		var posY = 78/2;
 		var fXScale = gDesignResolutionWidth/1280;
 		var fYScale = gDesignResolutionHeight/720;
         if(this.dailyControlLayer!=null){
             this.dailyControlLayer.initWithFile(res.EXERCISE_BOX_STRETCH);
 			var bgSize = this.dailyControlLayer.getContentSize();
 			this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
-			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY/2));
+			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY));
 			this.dailySelectButton.selected();
 			this.dailySelectButton.setCallback(self.setDefaultDailyTradeControlArea, self);
-			// this.dailySelectButton.initWithNormalImage(res.EXERCISE_ARROW_UP,res.EXERCISE_ARROW_DOWN, self.setDefaultDailyTradeControlArea, self);
+			this.item1.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY));
+			this.itemOne.setVisible(true);
+			this.itemFive.setVisible(true);
+			this.itemOne.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height/2));
+			this.itemFive.setPosition(cc.p((bgSize.width-posX)/2,posY));
         }
     },
 
@@ -488,7 +536,6 @@ var MatchInfoLayer = cc.Layer.extend({
 	playCheckChanged:function()
 	{
         cc.log("playCheckChanged gKlineScene.drawCandleStoped=="+gKlineScene.drawCandleStoped);
-
 		// cc.log("playCheckChanged this.setEnableBuyOrSell(gKlineScene.drawCandleStoped)=="+gKlineScene.drawCandleStoped);
 		gKlineScene.drawCandleStoped=!gKlineScene.drawCandleStoped;
 		this.scPlayCheckButton.setVisible(gKlineScene.drawCandleStoped);
@@ -591,10 +638,12 @@ var MatchInfoLayer = cc.Layer.extend({
 		this.toolsButton.setVisible(false);
 
 		this.speedControlLayer.setVisible(false);
-		if(testFlag==true){
-			this.emoticonButton.setVisible(true);
-			this.toolsButton.setVisible(true);
-		}
+		this.dailyControlLayer.setVisible(false);
+		// if(testFlag==true){
+		// 	// this.emoticonButton.setVisible(true);
+		// 	// this.toolsButton.setVisible(true);
+		// 	this.dailyControlLayer.setVisible(true);
+		// }
 		cc.log("disableAllButtons ====setButtonsToNoPosition");
 	},
 	ableSpeedButtons:function()

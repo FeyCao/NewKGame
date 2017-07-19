@@ -14,7 +14,7 @@ var KLineScene = SceneBase.extend(
 	matchEndInfoLayer:null,		//对局结束后弹出的对话框
 
 	// klineLayer:null,		//跳动的K线图
-	klineLayerView:null,
+	klineView:null,//指标图
 	klineLayerMain:null,		//主要的持续跳动的K线图
 	klineLayerPrev:null,		//前期的K线，游戏一开始显示一下作为游戏时判断使用
 
@@ -309,18 +309,18 @@ var KLineScene = SceneBase.extend(
 
 
 
-        this.klineLayerPrev=new KlineLayer(this.KlineWidth-5,192);
-		this.klineLayerPrev.setPosition(cc.p(this.KlinePosX,170));
-		this.volumnTechLayerPrev=new VolumnTechLayer(this.KlineWidth-5,94);
-		this.volumnTechLayerPrev.setPosition(cc.p(this.KlinePosX,75));
-		this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
-
-		//需要设置指标
-		this.klineLayerPrev.addNewTais(new TaisMa([10,20,30],0));
-		this.volumnTechLayerPrev.addNewTais(new TaisMa([5,10],1));
-		var macdTais2=new TaisMacd(12,26,9);
-		macdTais2.isEnabled=false;
-		this.volumnTechLayerPrev.addNewTais(macdTais2);
+        // this.klineLayerPrev=new KlineLayer(this.KlineWidth-5,192);
+		// this.klineLayerPrev.setPosition(cc.p(this.KlinePosX,170));
+		// this.volumnTechLayerPrev=new VolumnTechLayer(this.KlineWidth-5,94);
+		// this.volumnTechLayerPrev.setPosition(cc.p(this.KlinePosX,75));
+		// this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
+        //
+		// //需要设置指标
+		// this.klineLayerPrev.addNewTais(new TaisMa([10,20,30],0));
+		// this.volumnTechLayerPrev.addNewTais(new TaisMa([5,10],1));
+		// var macdTais2=new TaisMacd(12,26,9);
+		// macdTais2.isEnabled=false;
+		// this.volumnTechLayerPrev.addNewTais(macdTais2);
 
 
 		// this.addChild(this.klineLayerMain,this.mainLayerNumber,this.klineLayerMain.getTag());
@@ -1879,7 +1879,14 @@ var KLineScene = SceneBase.extend(
 			// }
 
 			//var curentIndex = this.currentCandleIndex+120;
-			var ended=this.klineLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
+			var ended = false;
+			if(null!=this.klineLayerMain&&this.klineLayerMain.isVisible()){
+				ended=this.klineLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
+			}
+			if(null!=this.klineView&&this.klineView.isVisible()){
+				ended=this.klineView.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
+			}
+
 			this.volumnTechLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
 			cc.log("drawAllCandlesOneByOne currentIndex=="+this.currentCandleIndex);
 			this.matchRunFlag=true;
@@ -1904,11 +1911,7 @@ var KLineScene = SceneBase.extend(
 			}
 			cc.log("比赛进度currentIndex =="+this.currentCandleIndex);
 			this.currentCandleIndex++;
-		}else{
-			cc.log("比赛结束了currentIndex =="+this.currentCandleIndex);
-			return;
 		}
-
 		cc.log("drawAllCandlesOneByOne currentIndex after=="+this.currentCandleIndex);
 		pageTimer["drawTimer"] = setTimeout(function(){self.drawAllCandlesOneByOne();},this.currentCandleDrawInterval);
 	},
@@ -2094,6 +2097,13 @@ var KLineScene = SceneBase.extend(
 
 			}
 			gSocketConn.SendBeginMessage();//画线前请求比赛
+			if(this.matchInfoLayer!=null&&userInfo.matchMode==MatchType.Type_DailyTrade_Match)
+			{
+				if(null!=this.matchInfoLayer.dailyControlLayer){
+					this.matchInfoLayer.dailyControlLayer.setVisible(true);
+				}
+
+			}
 			//依次画后面的K线
 			this.drawAllCandlesOneByOne();
 			// clearTimeout(pageTimer["beginTimer"]);
@@ -2394,22 +2404,32 @@ var KLineScene = SceneBase.extend(
 		cc.log("advanceToMainKLine_Record:function()//观看记录 begin");
         if(this.klinedataMain==null || this.prevKlineData==null) return;
         this.phase2=false;
+		this.KlineWidth = 726;
+		this.KlinePosX = 5;
+		this.klineLayerPrev=new KlineLayer(this.KlineWidth-5,192);
+		this.klineLayerPrev.setPosition(cc.p(this.KlinePosX,170));
+		this.volumnTechLayerPrev=new VolumnTechLayer(this.KlineWidth-5,94);
+		this.volumnTechLayerPrev.setPosition(cc.p(this.KlinePosX,75));
+		this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
 
-		if(this.klineLayerMain!=null)
-			this.klineLayerMain.removeFromParent(true);
-		if(this.volumnTechLayerMain!=null)
-			this.volumnTechLayerMain.removeFromParent(true);
-        if(this.klineLayerPrev!=null)
-            this.klineLayerPrev.removeFromParent(false);
-        if(this.volumnTechLayerPrev!=null)
-            this.volumnTechLayerPrev.removeFromParent(false);
+		//需要设置指标
+		if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+			this.klineLayerPrev.lineType=1;
+			this.klineLayerPrev.addNewTais(new TaisMa([1],0));
+		}else {
+			this.klineLayerPrev.addNewTais(new TaisMa([10,20,30],0));
+		}
+		this.volumnTechLayerPrev.addNewTais(new TaisMa([5,10],1));
+		var macdTais2=new TaisMacd(12,26,9);
+		macdTais2.isEnabled=false;
+		this.volumnTechLayerPrev.addNewTais(macdTais2);
+		//设置主K线图的数据
+		this.klineLayerPrev.setKLineData(this.klinedataMain,this.prevKlineData);
+		//设置附图的数据
+		this.volumnTechLayerPrev.setKLineData(this.klinedataMain,this.prevKlineData);
+		this.addChild(this.klineLayerPrev,this.mainLayerNumber,this.klineLayerPrev.getTag());
+		this.addChild(this.volumnTechLayerPrev,this.volumnTechLayerNumber,this.volumnTechLayerPrev.getTag());
 
-        //设置主K线图的数据
-        this.klineLayerPrev.setKLineData(this.klinedataMain,this.prevKlineData);
-        //设置附图的数据
-        this.volumnTechLayerPrev.setKLineData(this.klinedataMain,this.prevKlineData);
-        this.addChild(this.klineLayerPrev,this.mainLayerNumber,this.klineLayerPrev.getTag());
-        this.addChild(this.volumnTechLayerPrev,this.volumnTechLayerNumber,this.volumnTechLayerPrev.getTag());
 
 		var self=this;
 		cc.log("advanceToMainKLine_Record:function()观看记录his.playerInfoLayer.refreshScoresByData();");
@@ -2430,24 +2450,26 @@ var KLineScene = SceneBase.extend(
 	{
 		if(this.klinedataMain==null || this.prevKlineData==null) return;
 		this.phase2=false;
+		this.KlineWidth = 726;
+		this.KlinePosX = 5;
+		this.klineLayerPrev=new KlineLayer(this.KlineWidth-5,192);
+		this.klineLayerPrev.setPosition(cc.p(this.KlinePosX,170));
+		this.volumnTechLayerPrev=new VolumnTechLayer(this.KlineWidth-5,94);
+		this.volumnTechLayerPrev.setPosition(cc.p(this.KlinePosX,75));
+		this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
 
-		if(this.klineLayerMain!=null)
-			this.klineLayerMain.removeFromParent(false);
-		if(this.volumnTechLayerMain!=null)
-			this.volumnTechLayerMain.removeFromParent(false);
+		//需要设置指标
+		if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+			this.klineLayerPrev.lineType=1;
+			this.klineLayerPrev.addNewTais(new TaisMa([1],0));
+		}else {
+			this.klineLayerPrev.addNewTais(new TaisMa([10,20,30],0));
+		}
+		this.volumnTechLayerPrev.addNewTais(new TaisMa([5,10],1));
+		var macdTais2=new TaisMacd(12,26,9);
+		macdTais2.isEnabled=false;
+		this.volumnTechLayerPrev.addNewTais(macdTais2);
 
-		if(this.klineLayerPrev!=null)
-			this.klineLayerPrev.removeFromParent(false);
-		if(this.volumnTechLayerPrev!=null)
-			this.volumnTechLayerPrev.removeFromParent(false);
-
-
-		// this.klineLayerPrev=new KlineLayer(this.klineLayerMain.width,this.klineLayerMain.height);
-		// this.klineLayerPrev.setPosition(this.klineLayerMain.getPosition());
-        //
-		// this.volumnTechLayerPrev=new VolumnTechLayer(this.volumnTechLayerMain.width,this.volumnTechLayerMain.height);
-		// this.volumnTechLayerPrev.setPosition(this.volumnTechLayerMain.getPosition());
-		// this.volumnTechLayerPrev.setClickEvent(function(){self.changeTechLayer();});
 		//设置主K线图的数据
 		this.klineLayerPrev.setKLineData(this.klinedataMain,this.prevKlineData);
 		//设置附图的数据
@@ -2537,7 +2559,7 @@ var KLineScene = SceneBase.extend(
 		}
 	},
 
-	
+
 	//SHARE_TEST 一次性画出用户数据图
 	drawCandlesAll:function()
 	{
@@ -2553,6 +2575,83 @@ var KLineScene = SceneBase.extend(
 		this.currentCandleIndex=this.klinedataMain.length;
 		this.stopProgress();
 		//cc.log("drawCandlesAll this.currentCandleIndex = ",this.currentCandleIndex);
+	},
+	//切换到分时图
+	drawDailyView:function()
+	{
+		// if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+		// 	this.klineLayerMain.lineType=1;
+		// 	this.klineLayerMain.addNewTais(new TaisMa([1],0));
+		// }
+		var self =this;
+		if(null!=this.klineLayerMain&&userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+			this.klineLayerMain.redrawCandlesToIndex(self.currentCandleIndex);
+			this.klineLayerMain.setVisible(true);
+		}
+		if(null!=this.klineView){
+			this.klineView.setVisible(false);
+		}
+
+
+	},
+	//切换到分时图
+	drawOneDailyView:function()
+	{
+		var self =this;
+		if(null!=this.klineLayerMain&&userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+			this.klineLayerMain.setVisible(false);
+		}
+		if(null==this.klineView&&userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+			// //  //设置K线图的区域
+			var kWidth = this.KlineWidth*2-10;
+			if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+				kWidth = this.KlineWidth-5;
+			}
+			this.klineView=new KlineLayer(kWidth,192);
+			this.klineView.setPosition(cc.p(this.KlinePosX,170));
+			this.addChild(this.klineView,this.mainLayerNumber,this.klineView.getTag());
+			this.klineView.addNewTais(new TaisMa([10,20,30],0));
+			if(null!=this.klineView){
+				this.klineView.setKLineData(gKlineScene.klineData);
+			}
+
+		}
+		if(null!=this.klineView){//画到当前位置
+			this.klineView.lineType=2;
+			this.klineView.redrawCandlesToIndex(self.currentCandleIndex);
+			this.klineView.setVisible(true);
+		}
+
+
+	},
+	//切换到分时图
+	drawFiveDailyView:function()
+	{
+		var self =this;
+		if(null!=this.klineLayerMain&&userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+			this.klineLayerMain.setVisible(false);
+		}
+		if(null==this.klineView&&userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+			// //  //设置K线图的区域
+			var kWidth = this.KlineWidth*2-10;
+			if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+				kWidth = this.KlineWidth-5;
+			}
+			this.klineView=new KlineLayer(kWidth,192);
+			this.klineView.setPosition(cc.p(this.KlinePosX,170));
+			this.addChild(this.klineView,this.mainLayerNumber,this.klineView.getTag());
+			this.klineView.addNewTais(new TaisMa([10,20,30],0));
+			if(null!=this.klineView){
+				this.klineView.setKLineData(gKlineScene.klineData);
+			}
+
+		}
+		if(null!=this.klineView){//画到当前位置
+			this.klineView.lineType=3;
+			this.klineView.redrawCandlesToIndex(self.currentCandleIndex);
+			this.klineView.setVisible(true);
+		}
+
 	},
 
         drawOppositeCandlePart:function()
