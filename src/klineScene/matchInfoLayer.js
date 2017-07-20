@@ -429,7 +429,7 @@ var MatchInfoLayer = cc.Layer.extend({
 		this.dailyControlLayer.setVisible(false);
 
         this.dailySelectButton=new cc.MenuItemImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);//new Button("res/home.png");
-        this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY/2));
+        this.dailySelectButton.setPosition(cc.p(bgSize.width-posX,bgSize.height-posY/2));
 		self.infoLabel = new cc.LabelTTF("分时",res.FONT_TYPE,fontSize);
 		self.infoLabel.enableStroke(ShadowColor, 2);
 		self.infoLabel.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2));
@@ -498,7 +498,7 @@ var MatchInfoLayer = cc.Layer.extend({
         if(this.dailyControlLayer!=null){
             this.dailyControlLayer.initWithFile(res.EXERCISE_BOX_DEFAULT);
 			var bgSize = this.dailyControlLayer.getContentSize();
-			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY/2));
+			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX,bgSize.height-posY/2));
 			// this.dailySelectButton.initWithNormalImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);
 			this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
 			this.dailySelectButton.unselected();
@@ -524,7 +524,7 @@ var MatchInfoLayer = cc.Layer.extend({
             this.dailyControlLayer.initWithFile(res.EXERCISE_BOX_STRETCH);
 			var bgSize = this.dailyControlLayer.getContentSize();
 			this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
-			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY));
+			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX,bgSize.height-posY));
 			this.dailySelectButton.selected();
 			this.dailySelectButton.setCallback(self.setDefaultDailyTradeControlArea, self);
 			this.item1.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY));
