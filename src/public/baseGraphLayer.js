@@ -167,12 +167,10 @@ var BaseGraphLayer= cc.Layer.extend({
 
 		var totalCandleCount=this.klineData.length;
 		cc.log("totalCandleCount=="+totalCandleCount);
-		if(totalCandleCount<240)
-		{
-			;
-		}else{
-			this.width *=totalCandleCount/240;
-		}
+		// if(totalCandleCount>240)
+		// {
+		// 	this.width *=totalCandleCount/240;
+		// }
 
 	},
 	

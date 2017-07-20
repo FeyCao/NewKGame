@@ -262,6 +262,7 @@ var KlineLayer= BaseGraphLayer.extend({
         this.graphArea.drawRect(origin,destination,innerColor,1,frameColor);		//实体
 	},
 	//重载
+	//重载
 	drawFiveDailyTradeLine:function(candleIndex)
 	{
 		cc.log("drawFiveDailyTradeLine called index="+candleIndex);

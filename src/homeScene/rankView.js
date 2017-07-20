@@ -30,6 +30,13 @@ var RankTableViewCell = cc.TableViewCell.extend({
         sprite.setAnchorPoint(0, 0);
         this.addChild(sprite);
 
+        var posX=100;
+        var infoNode = new cc.Node();
+        infoNode.setPosition(cc.p(posX,0));
+        this.addChild(infoNode);
+
+
+
         if (self.rankInfo != null) {
             //RANK|{"myRanking":{"rank":1,"playerInfo":{"uid":3434343770,"nickName":"誓约者艾琳诺","winOfMatchForOne":4,"sumOfMatchForOne":33,"winOfMatchForMore":0,"sumOfMatchForMore":0,"winOfMatchForAI":98,"sumOfMatchForAI":187,"gainCumulation":"-197.391","sumOfAllMatch":33}},"rankList":[{"rank":1,"playerInfo":{"uid":10000,"nickName":"誓约者艾琳诺","winOfMatchForOne":4,"sumOfMatchForOne":33,"winOfMatchForM
 
@@ -40,16 +47,16 @@ var RankTableViewCell = cc.TableViewCell.extend({
             if (rank > 3) {
                 CellrankLabel = new cc.LabelTTF(playerInfo["rank"], "Arial", 35.0);
                 // CellrankLabel.setAnchorPoint(0,0.5);
-                CellrankLabel.setPosition(cc.p(30, 40));
+                CellrankLabel.setPosition(cc.p(30-posX/2, 40));
                 CellrankLabel.setColor(RedColor);
-                this.addChild(CellrankLabel);
+                infoNode.addChild(CellrankLabel);
             }
             else {
 
                 rankSprite = cc.Sprite.create("res/rank1.png");
                 // rankSprite.setScale(0.5);
-                rankSprite.setPosition(cc.p(30, 40));
-                this.addChild(rankSprite, 2);
+                rankSprite.setPosition(cc.p(30-posX/2, 40));
+                infoNode.addChild(rankSprite, 2);
                 switch (rank) {
                     case 1: {
                         rankSprite.setTexture("res/rank1.png");
@@ -74,7 +81,7 @@ var RankTableViewCell = cc.TableViewCell.extend({
             touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
             touxiangSprite.setScale(0.6);
             touxiangSprite.setPosition(cc.p(100, 40));
-            this.addChild(touxiangSprite, 2);
+            infoNode.addChild(touxiangSprite, 2);
 
             var url = playerInfo["headPicture"];
             cc.loader.loadImg(url, {isCrossOrigin: false}, function (err, img) {
@@ -93,7 +100,7 @@ var RankTableViewCell = cc.TableViewCell.extend({
                         var size = headSprite.getContentSize();
                         headSprite.setScale(66 / size.width, 66 / size.height);
                         headSprite.setPosition(cc.p(100, 40));
-                        self.addChild(headSprite, 2);
+                        infoNode.addChild(headSprite, 2);
                         cc.log("排行：success loadImg=" + userInfo.headSprite); // self.addChild(logo);
                     }
 
@@ -105,22 +112,22 @@ var RankTableViewCell = cc.TableViewCell.extend({
             CellnameLabel.setAnchorPoint(0, 0.5);
             CellnameLabel.setColor(WhiteColor);
             CellnameLabel.setPosition(cc.pAdd(touxiangSprite.getPosition(), cc.p(touxiangSprite.getContentSize().width / 2, 0)));
-            this.addChild(CellnameLabel);
+            infoNode.addChild(CellnameLabel);
 
 
             sumInfoLabel = cc.LabelTTF.create("总场:", "Arial", 28);
             sumInfoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
             sumInfoLabel.setAnchorPoint(0, 0.5);
             sumInfoLabel.setColor(WhiteColor);
-            sumInfoLabel.setPosition(cc.p(330, 40));
-            this.addChild(sumInfoLabel, 5);
+            sumInfoLabel.setPosition(cc.p(330+posX/2, 40));
+            infoNode.addChild(sumInfoLabel, 5);
 
             winInfoLabel = cc.LabelTTF.create("胜场:", "Arial", 28);
             winInfoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
             winInfoLabel.setAnchorPoint(0, 0.5);
-            winInfoLabel.setPosition(cc.p(480, 40));
+            winInfoLabel.setPosition(cc.p(480+posX, 40));
             winInfoLabel.setColor(WhiteColor);
-            this.addChild(winInfoLabel, 5);
+            infoNode.addChild(winInfoLabel, 5);
 
 
             avgGainReteInfoLabel = cc.LabelTTF.create("平均收益:", "Arial", 28);
@@ -128,7 +135,8 @@ var RankTableViewCell = cc.TableViewCell.extend({
             avgGainReteInfoLabel.setAnchorPoint(0, 0.5);
             avgGainReteInfoLabel.setColor(WhiteColor);
             avgGainReteInfoLabel.setPosition(cc.p(650, 40));
-            this.addChild(avgGainReteInfoLabel, 5);
+            avgGainReteInfoLabel.setVisible(false);
+            infoNode.addChild(avgGainReteInfoLabel, 5);
 
 
             sumLabel = cc.LabelTTF.create("", "Arial", 28);
@@ -136,7 +144,7 @@ var RankTableViewCell = cc.TableViewCell.extend({
             sumLabel.setAnchorPoint(0, 0.5);
             sumLabel.setColor(YellowColor);
             sumLabel.setPosition(cc.pAdd(sumInfoLabel.getPosition(), cc.p(sumInfoLabel.getContentSize().width, 0)));
-            this.addChild(sumLabel, 5);
+            infoNode.addChild(sumLabel, 5);
 
 
             winLabel = cc.LabelTTF.create("", "Arial", 28);
@@ -144,7 +152,7 @@ var RankTableViewCell = cc.TableViewCell.extend({
             winLabel.setAnchorPoint(0, 0.5);
             winLabel.setPosition(cc.pAdd(winInfoLabel.getPosition(), cc.p(winInfoLabel.getContentSize().width, 0)));
             winLabel.setColor(YellowColor);
-            this.addChild(winLabel, 5);
+            infoNode.addChild(winLabel, 5);
 
 
             avgGainReteLabel = cc.LabelTTF.create("", "Arial", 28);
@@ -152,7 +160,7 @@ var RankTableViewCell = cc.TableViewCell.extend({
             avgGainReteLabel.setAnchorPoint(0, 0.5);
             avgGainReteLabel.setColor(WhiteColor);
             avgGainReteLabel.setPosition(cc.pAdd(avgGainReteInfoLabel.getPosition(), cc.p(avgGainReteInfoLabel.getContentSize().width, 0)));
-            this.addChild(avgGainReteLabel, 5);
+            infoNode.addChild(avgGainReteLabel, 5);
 
 
             //总场数
@@ -161,6 +169,7 @@ var RankTableViewCell = cc.TableViewCell.extend({
             winLabel.setString(" "+playerInfo["winMatch"]);
             //平均收益率
             avgGainReteLabel.setString(""+playerInfo["AvgGain"]+"%");
+            avgGainReteLabel.setVisible(false);
             avgGainReteLabel.setColor(setLabelColor(playerInfo["AvgGain"]));
 
             /////// {"myRanking":{"rank":3,"playerInfo":{"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":6,"sumOfMatchForOne":21,"winOfMatchForMore":77,"sumOfMatchForMore":131,"winOfMatchForAI":24,"sumOfMatchForAI":42,"gainCumulation":"-0.03","sumOfAllMatch":42,"winMatchFriend":0,"sumMatchFriend":0,"GainCumulationForFriend":0,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}}
@@ -296,9 +305,12 @@ var RankViewLayer = cc.Layer.extend({
         this.closeButton.setPosition(cc.p(830,460));
         this.addChild(this.closeButton);
 
-
         this.setButtonList();
 
+
+        var infoNode = new cc.Node();
+        infoNode.setPosition(cc.p(150,0));
+        this.addChild(infoNode);
 
         var infoPosY = 295;
 
@@ -306,76 +318,62 @@ var RankViewLayer = cc.Layer.extend({
         self.text0Label.setPosition(cc.p(-100,infoPosY));
         self.text0Label.setAnchorPoint(0,0.5);
         self.text0Label.setColor(WhiteColor);
-        this.addChild(self.text0Label);
+        infoNode.addChild(self.text0Label);
         this.rankLabel = new cc.LabelTTF( "", "Arial", 35);
         // this.rankLabel.setPosition(cc.pAdd(text0Label.getPosition(),cc.p(text0Label.getContentSize().width,0)));
         this.rankLabel.setAnchorPoint(0,0.5);
         this.rankLabel.setColor(RedColor);
-        this.addChild(this.rankLabel);
-
-        // sumInfoLabel=cc.LabelTTF.create("总场数:", "Arial",30);
-        // sumInfoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-        // sumInfoLabel.setAnchorPoint(0,0.5);
-        // sumInfoLabel.setColor(WhiteColor);
-        // this.addChild(sumInfoLabel,5);
-        //
-        // winInfoLabel=cc.LabelTTF.create("胜场数:", "Arial",30);
-        // winInfoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-        // winInfoLabel.setAnchorPoint(0,0.5);
-        // // infoLabelAI.setPosition(cc.p(600,40));
-        // winInfoLabel.setColor(WhiteColor);
-        // this.addChild(winInfoLabel,5);
-
-
-
+        infoNode.addChild(this.rankLabel);
 
         self.infoLabel=cc.LabelTTF.create("总场:", "Arial",28);
         self.infoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
         self.infoLabel.setAnchorPoint(0,0.5);
-        self.infoLabel.setPosition(cc.p(180,infoPosY));
-        self.addChild(self.infoLabel,5);
+        self.infoLabel.setPosition(cc.p(200,infoPosY));
+        infoNode.addChild(self.infoLabel,5);
 
         self.winOneLabel= cc.LabelTTF.create("", "Arial",28);
         self.winOneLabel.setAnchorPoint(0,0.5);
         self.winOneLabel.setColor(YellowColor);
         self.winOneLabel.setPosition(cc.pAdd(self.infoLabel.getPosition(),cc.p(self.infoLabel.getContentSize().width,0)));
-        this.addChild(self.winOneLabel,5);
+        infoNode.addChild(self.winOneLabel,5);
         self.sumOneLabel= cc.LabelTTF.create("", "Arial",28);
         self.sumOneLabel.setAnchorPoint(0,0.5);
         self.sumOneLabel.setColor(WhiteColor);
         self.sumOneLabel.setPosition(cc.pAdd(self.winOneLabel.getPosition(),cc.p(self.winOneLabel.getContentSize().width,0)));
-        this.addChild(self.sumOneLabel,5);
+        infoNode.addChild(self.sumOneLabel,5);
 
         self.infoLabelAI=cc.LabelTTF.create("胜场:", "Arial",28);
         // self.infoLabelAI.setScale(0.8);
         //this.zhanjiLabel=cc.LabelTTF.create(gPlayerName, "Arial", 20);
         self.infoLabelAI.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
         self.infoLabelAI.setAnchorPoint(0,0.5);
-        self.infoLabelAI.setPosition(cc.p(350,infoPosY));
-        self.addChild(self.infoLabelAI,5);
+        self.infoLabelAI.setPosition(cc.p(400,infoPosY));
+        infoNode.addChild(self.infoLabelAI,5);
 
         self.winAILabel= cc.LabelTTF.create("", "Arial",28);
         self.winAILabel.setAnchorPoint(0,0.5);
         self.winAILabel.setColor(YellowColor);
         self.winAILabel.setPosition(cc.pAdd(self.infoLabelAI.getPosition(),cc.p(self.infoLabelAI.getContentSize().width,0)));
-        this.addChild(self.winAILabel,5);
+        infoNode.addChild(self.winAILabel,5);
         self.sumAILabel= cc.LabelTTF.create("", "Arial",28);
         self.sumAILabel.setAnchorPoint(0,0.5);
         self.sumAILabel.setColor(WhiteColor);
         self.sumAILabel.setPosition(cc.pAdd(self.winAILabel.getPosition(),cc.p(self.winAILabel.getContentSize().width,0)));
-        this.addChild(self.sumAILabel,5);
+        infoNode.addChild(self.sumAILabel,5);
 
         self.infoLabelGain=cc.LabelTTF.create("平均收益:", "Arial",28);
         self.infoLabelGain.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
         self.infoLabelGain.setAnchorPoint(0,0.5);
         self.infoLabelGain.setPosition(cc.p(520,infoPosY));
-        self.addChild(self.infoLabelGain,5);
+        self.infoLabelGain.setVisible(false);
+        infoNode.addChild(self.infoLabelGain,5);
 
         self.avgGainAILabel= cc.LabelTTF.create("", "Arial",30);
         self.avgGainAILabel.setAnchorPoint(0,0.5);
         self.avgGainAILabel.setColor(WhiteColor);
         self.avgGainAILabel.setPosition(cc.pAdd(self.infoLabelGain.getPosition(),cc.p(self.infoLabelGain.getContentSize().width,0)));
-        this.addChild(self.avgGainAILabel,5);
+        self.avgGainAILabel.setVisible(false);
+        infoNode.addChild(self.avgGainAILabel,5);
 
 
 

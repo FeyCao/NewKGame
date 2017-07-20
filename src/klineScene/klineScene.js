@@ -22,6 +22,7 @@ var KLineScene = SceneBase.extend(
 	volumnTechLayerPrev:null,		//前期的一副图，游戏一开始显示一下作为游戏时判断使用
 
 	klineData:null,			//游戏界面K线图的数据，按照时间从小到大排序。
+	klineFiveData:null,			//游戏界面K线图的5倍数据，按照时间从小到大排序。
 	klinedataMain:null,			//游戏界面K线图的数据，按照时间从小到大排序。
 	prevKlineData:null,			//游戏界面前的K线图的数据，按照时间从小到大排序。
 
@@ -1625,7 +1626,21 @@ var KLineScene = SceneBase.extend(
 			var dailyData = klinePbData[i];
 			self.klineData.push({avg:dailyData["avg"],o:dailyData["open"],x:dailyData["max"],i:dailyData["min"],c:dailyData["close"],v:dailyData["vol"]});
 		}
+		self.klineFiveData=[];
+		for(var i=0;i<dayInfolengths/5;i++)
+		{
+			var min = self.klineData[5*i].i;
+			var max = self.klineData[5*i].x;
+			var vol=self.klineData[5*i].v;
+			for(var j=1;j<5;j++){
+				min = min<this.klineData[5*i+j].i?min:this.klineData[5*i+j].i;
+				max = max>this.klineData[5*i+j].x?max:this.klineData[5*i+j].x;
+				vol += this.klineData[5*i+j].v;
+			}
+			self.klineFiveData.push({avg:self.klineData[5*i].avg,o:self.klineData[5*i].o,x:max,i:min,c:self.klineData[5*i+4].c,v:vol});
+		}
 
+		cc.log(self.klineFiveData);
 		self.klinedataMain=[];
 		for(var i=self.prevDataDayCount;i<dayInfolengths;i++)
 		{
@@ -2591,7 +2606,10 @@ var KLineScene = SceneBase.extend(
 		if(null!=this.klineView){
 			this.klineView.setVisible(false);
 		}
-
+		// if(null!=this.volumnTechLayerMain){//画到当前位置
+		// 	this.volumnTechLayerMain.lineType=0;
+		// 	this.volumnTechLayerMain.redrawCandlesToIndex(self.currentCandleIndex);
+		// }
 
 	},
 	//切换到分时图
@@ -2611,9 +2629,7 @@ var KLineScene = SceneBase.extend(
 			this.klineView.setPosition(cc.p(this.KlinePosX,170));
 			this.addChild(this.klineView,this.mainLayerNumber,this.klineView.getTag());
 			this.klineView.addNewTais(new TaisMa([10,20,30],0));
-			if(null!=this.klineView){
-				this.klineView.setKLineData(gKlineScene.klineData);
-			}
+			this.klineView.setKLineData(gKlineScene.klineData);
 
 		}
 		if(null!=this.klineView){//画到当前位置
@@ -2621,7 +2637,10 @@ var KLineScene = SceneBase.extend(
 			this.klineView.redrawCandlesToIndex(self.currentCandleIndex);
 			this.klineView.setVisible(true);
 		}
-
+		// if(null!=this.volumnTechLayerMain){//画到当前位置
+		// 	this.volumnTechLayerMain.lineType=0;
+		// 	this.volumnTechLayerMain.redrawCandlesToIndex(self.currentCandleIndex);
+		// }
 
 	},
 	//切换到分时图
@@ -2641,16 +2660,19 @@ var KLineScene = SceneBase.extend(
 			this.klineView.setPosition(cc.p(this.KlinePosX,170));
 			this.addChild(this.klineView,this.mainLayerNumber,this.klineView.getTag());
 			this.klineView.addNewTais(new TaisMa([10,20,30],0));
-			if(null!=this.klineView){
-				this.klineView.setKLineData(gKlineScene.klineData);
-			}
+			this.klineView.setKLineData(gKlineScene.klineData);
 
 		}
 		if(null!=this.klineView){//画到当前位置
 			this.klineView.lineType=3;
+			// this.klineView.setKLineData(gKlineScene.klineFiveData);
 			this.klineView.redrawCandlesToIndex(self.currentCandleIndex);
 			this.klineView.setVisible(true);
 		}
+		// if(null!=this.volumnTechLayerMain){//画到当前位置
+		// 	this.volumnTechLayerMain.lineType=0;
+		// 	this.volumnTechLayerMain.redrawCandlesToIndex(self.currentCandleIndex);
+		// }
 
 	},
 
