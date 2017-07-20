@@ -58,7 +58,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		var posBtnY = 39;
 
 		var bgSize = cc.director.getWinSize();
-		if(userInfo.matchMode>0)//多人
+		if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchMode==MatchType.Type_Tool_Match||userInfo.matchMode==MatchType.Type_Friend_Match||userInfo.matchMode==MatchType.Type_ArtificialMatch)//多人
 		{
 
 			this.bgSprtie = cc.Sprite.create("res/matchMoreEnd.png");
@@ -438,6 +438,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		userInfo.matchId = endMatchInfo.matchId;
 		switch(userInfo.matchMode)
 		{
+			case MatchType.Type_DailyTrade_Match://分时比赛
 			case MatchType.Type_Practice_Match:
 			{
 				var fields=endMatchInfo.codeInfo;
@@ -683,9 +684,9 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 			recordButton.setPosition(cc.p(800,40));
 			sprite.addChild(recordButton);
 			// var matchId = userInfo.endInfoOfAllPlayers[idx]["matchId"];
-			var userName= userInfo.endInfoOfAllPlayers[idx]["userName"];
+			userInfo.recordName= userInfo.endInfoOfAllPlayers[idx]["userName"];
             // userInfo.matchId = matchId;
-			cc.log("PlayerInfoCell recordButton ClickEvent userName["+idx+"] ="+userName+"||matchId="+userInfo.matchId);
+			cc.log("PlayerInfoCell recordButton ClickEvent userName["+idx+"] ="+userInfo.recordName+"||matchId="+userInfo.matchId);
 			recordButton.setClickEvent(function(){
 				gKlineScene.businessMatchInfo(buyInfo,score);
 				// gSocketConn.SendRecordMatchMessage(userId,matchId);

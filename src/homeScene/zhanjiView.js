@@ -104,7 +104,7 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
         //设置时间
         strTimeText= matchData["matchTime"];
         textTimeLabel = new cc.LabelTTF(strTimeText, "Arial", 25.0);
-        textTimeLabel.setPosition(cc.p(880,70));
+        textTimeLabel.setPosition(cc.p(880,65));
         textTimeLabel.setAnchorPoint(0.5,0.5);
         textTimeLabel.setColor(lightBlueColor);
         this.addChild(textTimeLabel);
@@ -389,16 +389,22 @@ var ZhanjiViewLayer = cc.Layer.extend({
         this.addChild(this.closeButton);
 
 
+        var infoNode = new cc.Node();
+        infoNode.setPosition(cc.p(150,0));
+        this.addChild(infoNode);
+        var posX = 50;
         this.setButtonList();
 
         text1Label = new cc.LabelTTF( "平均收益:", "Arial", 25.0);
         text1Label.setPosition(cc.p(10,280));
         text1Label.setAnchorPoint(0,0);
         text1Label.setColor(WhiteColor);
-        this.addChild(text1Label);
+        infoNode.addChild(text1Label);
+        infoNode.setVisible(false);
 
         text2Label = new cc.LabelTTF( "总场:", "Arial", 25.0);
         text2Label.setPosition(cc.p(300,280));
+        text2Label.setPosition(cc.p(20,280));
         text2Label.setAnchorPoint(0,0);
         text2Label.setColor(WhiteColor);
         this.addChild(text2Label);
@@ -417,10 +423,11 @@ var ZhanjiViewLayer = cc.Layer.extend({
             this.avgGainLabel.setPosition(cc.p(150,280));
             this.avgGainLabel.setAnchorPoint(0,0);
             this.avgGainLabel.setColor(setLabelColor(userInfo.AvgGain));
-            this.addChild(this.avgGainLabel);
+            infoNode.addChild(this.avgGainLabel);
 
             this.totalCountLabel = new cc.LabelTTF( userInfo.totalCount, "Arial", 25.0);
             this.totalCountLabel.setPosition(cc.p(400,280));
+            this.totalCountLabel.setPosition(cc.p(120,280));
             this.totalCountLabel.setAnchorPoint(0,0);
             this.totalCountLabel.setColor(YellowColor);
             this.addChild(this.totalCountLabel);

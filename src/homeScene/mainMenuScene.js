@@ -38,6 +38,7 @@ var MainMenuScene =SceneBase.extend(
     invitedViewLayer:null,
     helpViewLayer:null,
     matchViewLayer:null,
+    preMatchView:null,
     loadTime:null,
     onEnteredFunction:null,	//OnEnter调用结束后的Function
 
@@ -325,16 +326,16 @@ var MainMenuScene =SceneBase.extend(
         //     gKlineScene=new KLineScene();
         // }
 
-        userInfo.matchMode = MatchType.Type_Practice_Match;
-        if(this.matchViewLayer==null){
-            this.matchViewLayer=new MatchViewLayer();
-            this.matchViewLayer.setVisible(false);
-            this.matchViewLayer.setPosition(0,0);
-            this.otherMessageTipLayer.addChild(this.matchViewLayer, 1,this.matchViewLayer.getTag());
-            this.matchViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+        // userInfo.matchMode = MatchType.Type_Practice_Match;
+        if(this.preMatchView==null){
+            this.preMatchView=new preMatchView();
+            this.preMatchView.setVisible(false);
+            this.preMatchView.setPosition(0,0);
+            this.otherMessageTipLayer.addChild(this.preMatchView, 1,this.preMatchView.getTag());
+            this.preMatchView.closeCallBackFunction=function(){self.popViewLayer_Close()};
         }
-        this.matchViewLayer.refreshMatchViewLayer();
-        this.matchViewLayer.showLayer();
+        // this.matchViewLayer.refreshMatchViewLayer();
+        this.preMatchView.showLayer();
         this.pauseLowerLayer();
         // if(this.firstMode.isSelected==true)
         // {
@@ -552,6 +553,10 @@ var MainMenuScene =SceneBase.extend(
             this.helpViewLayer.hideLayer();
         }
 
+        //关闭prematchViewL界面
+        if(this.preMatchView!=null){
+            this.preMatchView.hideLayer();
+        }
 
         this.resumeLowerLayer();
     },
@@ -888,8 +893,8 @@ var MainMenuScene =SceneBase.extend(
         userInfo.userId = data["uid"];
         userInfo.nickName=data["userName"];
         userInfo.headSprite=data["headPicture"];
-        userInfo.winOfMatchForOne=data["winMatchOne"];
-        userInfo.sumOfMatchForOne=data["sumMatchOne"];
+        userInfo.winOfMatchForOne=data["winMatchOne"]+data["winMatchDaily"];
+        userInfo.sumOfMatchForOne=data["sumMatchOne"]+data["sumMatchDaily"];
         userInfo.winOfMatchForMore=data["winMatchMore"];
         userInfo.sumOfMatchForMore=data["sumMatchMore"];
         userInfo.winOfMatchForAI=data["winMatchAI"];
@@ -899,6 +904,10 @@ var MainMenuScene =SceneBase.extend(
         userInfo.gainCumulation=data["gainCumulation"];
         userInfo.sumOfAllMatch=data["sumOfAllMatch"];
         userInfo.onlineNum = data["onLineNum"];
+
+        // userInfo.GainCumulationForDaily = data["GainCumulationForDaily"];
+        // userInfo.sumMatchDaily = data["sumMatchDaily"];
+
 
         cc.log(" ,"+userInfo.winOfMatchForOne+" ,"+userInfo.winOfMatchForMore+" ,"+userInfo.winOfMatchForAI+" ,"+userInfo.winMatchFriend);
 
@@ -1334,7 +1343,7 @@ var MainMenuScene =SceneBase.extend(
                     }else if(b["status"]=="比赛中"){
                         return 1;
                     }else {
-                        return -1;
+                        return a["userName"]-b["userName"];
                     }
                 });
                 //
@@ -1426,6 +1435,7 @@ var MainMenuScene =SceneBase.extend(
                 userInfo.friendListData = [];
                 var data=message.friendList;
                 userInfo.friendListData  = data;
+
                 userInfo.friendListData.sort(function (a,b) {
                     if(a["status"]=="在线"){
                         return -1;
@@ -1440,10 +1450,11 @@ var MainMenuScene =SceneBase.extend(
                     }else if(b["status"]=="比赛中"){
                         return 1;
                     }else {
-                        return -1;
+                        // console.log(a["userName"].charCodeAt(0));
+                        // console.log(b["userName"].charCodeAt(0));
+                        return a["userName"].charCodeAt(0)-b["userName"].charCodeAt(0);
                     }
                 });
-
                 cc.log("after sort.....");
                 cc.log(userInfo.friendListData);
                 // var length = userInfo.friendListData.length;

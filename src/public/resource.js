@@ -122,7 +122,17 @@ var res = {
  // STATUS_FRIEND_ONLINE_png:"res/friend/ff_status_online.png",
  // STATUS_FRIEND_OFFLINE_png:"res/friend/ff_status_offline.png",
 
-
+//分时练习资源
+ BG_SELECT  : "res/exercise/bg_exercise.png",
+ TITLE_TIME  :"res/exercise/title_time.png",
+ TITLE_TYPE  :"res/exercise/title_type.png",
+ EXERCISE_CHOOSE  :"res/exercise/exercise_choose_on.png",
+ EXERCISE_CHOOSE_TIME  :"res/exercise/exercise_choose1.png",
+ EXERCISE_CHOOSE_DAY  :"res/exercise/exercise_choose2.png",
+ EXERCISE_ARROW_DOWN  :"res/exercise/time_arrow_down.png",
+ EXERCISE_ARROW_UP  :"res/exercise/time_arrow_up.png",
+ EXERCISE_BOX_DEFAULT  :"res/exercise/box_time_default.png",//收缩
+ EXERCISE_BOX_STRETCH  :"res/exercise/box_time_unfold.png",//伸展
 
  BTN_HOME_png:"res/home.png",//"res/btn_open.png","res/btn_close.png",
  BTN_OPEN:"res/btn_open.png",

@@ -125,4 +125,37 @@ var VolumnTechLayer= BaseGraphLayer.extend({
 			this.graphArea.drawRect(origin,destination,barColor,1,barColor);		//实体
 		}
 	},
+	//重载
+	drawFiveDailyTradeLine:function(candleIndex)
+	{
+		cc.log("drawFiveDailyTradeLine called index="+candleIndex);
+		if(candleIndex%5+1!=5){
+			return;
+		}
+		var index = candleIndex/5;
+		if(this.canVolumnShown()==true)
+		{
+			var posX=this.getCandlePosX(candleIndex-3);//取第二个坐标为起始位置
+			var posY_V=0;
+			for(var i=0;i<5;i++){
+				posY_V += this.klineData[candleIndex-i].v;
+			}
+			var posX_Needle=this.getCandlePosX(candleIndex-2)+this.candleWidth/2;//中心为第三个柱子的中心
+			var origin=cc.p(posX,0);
+			var destination=cc.p(2*posX_Needle-posX+this.candleWidth/2,posY_V);
+
+			var barColor=cc.color(252,0,1,255);
+
+			var posY_O=this.getCandlePosYByValue(this.klineData[candleIndex-4].v);
+			var posY_C=this.getCandlePosYByValue(this.klineData[candleIndex].v);
+			if(posY_O<posY_C)
+			{
+				barColor=cc.color(6,226,0,255);	//跌色
+			}
+
+			this.graphArea.drawRect(origin,destination,barColor,1,barColor);		//实体
+		}
+
+	},
+
 });

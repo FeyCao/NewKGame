@@ -7,6 +7,7 @@ var BaseGraphLayer= cc.Layer.extend({
 	lblTaisInfos:null,			//指标的数值的区域，还有颜色信息等
 	candleWidth:null,			//蜡烛宽度
 	candleGapWidth:null,		//蜡烛间距离
+	dailyTradeGapWidth:null,		//分时线距离
 	barvsgapratio:1,			//蜡烛宽度和蜡烛间距离的比值
 	
 	klineData:null,				//K线数据，一个数组，数组中存放的是开高低收量
@@ -23,6 +24,7 @@ var BaseGraphLayer= cc.Layer.extend({
 	pageIndex:null,				//主游戏界面是分页的，这个表示当前是第几页
 	maxCandleCountPerPage:null,	//每一页上最多多少个蜡烛数
 	historyCandleCount:null,	//每一页上前面的历史蜡烛线的个数
+	lineType:0,//分时线为1,1k线为2,5k线为3
 
 	ctor:function(width,height)
 	{
@@ -165,12 +167,10 @@ var BaseGraphLayer= cc.Layer.extend({
 
 		var totalCandleCount=this.klineData.length;
 		cc.log("totalCandleCount=="+totalCandleCount);
-		if(totalCandleCount<240)
-		{
-			;
-		}else{
-			this.width *=totalCandleCount/240;
-		}
+		// if(totalCandleCount>240)
+		// {
+		// 	this.width *=totalCandleCount/240;
+		// }
 
 	},
 	
@@ -309,6 +309,9 @@ var BaseGraphLayer= cc.Layer.extend({
 		if(lastmax==null && lastmin==null)
 		{
 			var startIndex=(0>currentIndex-120?0:currentIndex-120);
+			if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+				startIndex=0;
+			}
 			// if(this.klineDataPrev!=null)
 			// {
 			// 	startIndex=this.getHistoryCandleIndexByPageIndex();
@@ -379,6 +382,9 @@ var BaseGraphLayer= cc.Layer.extend({
 		var lastmin=this.minValue;
 
 		var startIndex=(0>index-120?0:index-120);
+		if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
+			startIndex=0;
+		}
 		// if(this.klineDataPrev!=null)
 		// {
 		// 	startIndex=this.getHistoryCandleIndexByPageIndex();
@@ -400,7 +406,40 @@ var BaseGraphLayer= cc.Layer.extend({
 			this.redrawExceptCandles();
 		}
 	},
-	
+	redrawDailyTradeLineToIndex:function(index)
+	{
+		if(this.graphArea!=null){
+			this.graphArea.clear();
+		}
+
+		this.drawAreaBorder();
+		// var startIndex=this.getHistoryCandleIndexByPageIndex();
+		var lastmax=this.maxValue;
+		var lastmin=this.minValue;
+
+		var startIndex=0;
+		// if(this.klineDataPrev!=null)
+		// {
+		// 	startIndex=this.getHistoryCandleIndexByPageIndex();
+		// }
+		this.calculateMaxMinBetweenIndex(startIndex,index);
+		//再计算指标图的最大最小
+		this.calculateMaxMinBetweenIndexForAllTais(startIndex,index);
+		this.redrawExceptCandles();
+		cc.log("redrawCandlesToIndex:function(index)="+index+"|this.maxValue="+this.maxValue+"|this.minValue="+this.minValue);
+		// var startIndex=(0>index-120?0:index-120);
+		for(var i=startIndex;i<index;i++)
+		{
+			this.drawSingleDayGraphInfos(i);
+		}
+		if( lastmax!=this.maxValue  ||  lastmin!=this.minValue )
+		{
+			//如果最大最小改变了，则需要重画之前所有的蜡烛图
+			cc.log("need redraw prev");
+			this.redrawExceptCandles();
+		}
+	},
+
 	//立刻显示所有的蜡烛
 	drawAllCandlesAll:function()
 	{
@@ -574,7 +613,27 @@ var BaseGraphLayer= cc.Layer.extend({
 	drawSingleDayGraphInfos:function(candleIndex)
 	{
 		//cc.log("drawSingleDayGraphInfos candleIndex="+candleIndex);
-		this.drawCandle(candleIndex);
+		if(this.lineType==0){
+			this.drawCandle(candleIndex);
+		}else if(this.lineType==1){
+			this.drawDailyTradeLine(candleIndex);
+
+		}else if(this.lineType==2){//1分钟K线
+			this.drawOneDailyTradeLine(candleIndex);
+
+		}else if(this.lineType==3){//5分钟K线
+			this.drawFiveDailyTradeLine(candleIndex);
+
+		}
+		this.drawCandleForAllTais(candleIndex);
+		this.drawTaisValueInfo(candleIndex);
+
+	},
+	//在某个时刻，画所有图像内容的函数，包括画分时线，指标和其他内容
+	drawSingleDailyTradeLineGraphInfos:function(candleIndex)
+	{
+		//cc.log("drawSingleDayGraphInfos candleIndex="+candleIndex);
+		this.drawDailyTradeLine(candleIndex);
 		this.drawCandleForAllTais(candleIndex);
 		this.drawTaisValueInfo(candleIndex);
 
@@ -693,7 +752,23 @@ var BaseGraphLayer= cc.Layer.extend({
 			
 	},
 
-    //重载，在当前的位置画蜡烛图，或者成交量，或者其他技术指标等
+	//重载，在当前的位置画分时线，或者成交量，或者其他技术指标等
+	drawDailyTradeLine:function(candleIndex)
+	{
+
+	},
+	//重载，在当前的位置画分时线，或者成交量，或者其他技术指标等
+	drawOneDailyTradeLine:function(candleIndex)
+	{
+
+	},
+	//重载，在当前的位置画分时线，或者成交量，或者其他技术指标等
+	drawFiveDailyTradeLine:function(candleIndex)
+	{
+
+	},
+
+	//重载，在当前的位置画蜡烛图，或者成交量，或者其他技术指标等
 	drawOppositeCandle:function(candleIndex)
 	{
 
@@ -704,7 +779,11 @@ var BaseGraphLayer= cc.Layer.extend({
 	{
 		
 	},
+	//重载，当重画后，可能需要重画除了分时线，技术指标之外的其余内容，比如买入卖出标记，画的支撑压力线等，给派生类自己实现
+	redrawExceptDailyTradeLine:function()
+	{
 
+	},
 	clearUpDownArrows:function()
 	{
 

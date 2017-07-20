@@ -42,6 +42,8 @@ var MatchInfoLayer = cc.Layer.extend({
     startCallBackFunction:null,
 	// menu:null,
 
+    dailyControlLayer:null,			//分时控制层
+
 	statusFlag:0,
 
 	ctor:function(width,height)
@@ -65,8 +67,6 @@ var MatchInfoLayer = cc.Layer.extend({
 		var posY = 35;
 		// this.backgroundSprite=cc.Sprite.create("res/battle_bg.png");
 		// var bgSize = this.backgroundSprite.getContentSize();
-
-
 		// this.menuControlLayer = new cc.Layer();
 		// this.menuControlLayer.setScale(fXScale,fYScale);
 		// this.menuControlLayer.setPosition(0,0);
@@ -94,7 +94,7 @@ var MatchInfoLayer = cc.Layer.extend({
 		// this.btnStart.setClickEvent(function(){
 		//     self.start();
 		// });
-		//
+
 		// this.btnHome=new Button("res/home.png");
 		// this.btnHome.setPosition(cc.p(363,posY));
 		// this.btnHome.setClickEvent(function(){
@@ -152,7 +152,8 @@ var MatchInfoLayer = cc.Layer.extend({
 		// this.setEnableBuyOrSell(true);
 		// this.drawDisableButtons();
 
-
+        //分时区域设置
+        this.initDailyTradeControlArea();
 
 		this.faceSprites = [];
 		var posX = 85;
@@ -402,6 +403,139 @@ var MatchInfoLayer = cc.Layer.extend({
 		// this.speedControlLayer.addChild(this.scNormalCheckButton,1);
 		// this.speedControlLayer.addChild(this.scDoubleCheckButton,1);
 	},
+	initDailyTradeControlArea:function()
+	{
+		//设置变速信息的信息
+		var self=this;
+		// var size = cc.director.getWinSize();
+        var posX =48;
+		var posY = 78;
+		var fontSize = 25;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
+		this.dailyControlLayer=new cc.Sprite(res.EXERCISE_BOX_DEFAULT);
+        var bgSize = this.dailyControlLayer.getContentSize();
+        // this.dailyControlLayer.setAnchorPoint(0.5,1);
+		this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
+		this.dailyControlLayer.setScale(fXScale,fYScale);
+		this.addChild(this.dailyControlLayer,3);
+		var bgSize = this.dailyControlLayer.getContentSize();
+		cc.log("dailyControlLayer  bgSize.width=="+bgSize.width+"bgSize.height=="+bgSize.height);
+
+		var mu = new cc.Menu();
+		mu.x = 0;
+		mu.y = 0;
+		this.dailyControlLayer.addChild(mu, 2);
+		this.dailyControlLayer.setVisible(false);
+
+        this.dailySelectButton=new cc.MenuItemImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);//new Button("res/home.png");
+        this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY/2));
+		self.infoLabel = new cc.LabelTTF("分时",res.FONT_TYPE,fontSize);
+		self.infoLabel.enableStroke(ShadowColor, 2);
+		self.infoLabel.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2));
+		this.dailyControlLayer.addChild(self.infoLabel);
+        // this.dailySelectButton.setVisible(false);
+        mu.addChild(this.dailySelectButton);//new CheckButton("res/btn_sc_a_double.png","res/btn_sc_d_double.png");
+		self.dailyLabel = new cc.LabelTTF("分时",res.FONT_TYPE,fontSize);
+		this.item1 = new cc.MenuItemLabel(self.dailyLabel, self.dailyLine, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+		// item1.setAnchorPoint(0,0.5);
+		mu.addChild(this.item1);
+		self.onedailyLabel = new cc.LabelTTF("1分钟",res.FONT_TYPE,fontSize);
+		this.itemOne = new cc.MenuItemLabel(self.onedailyLabel, self.onedailyLine, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+		// itemOne.setAnchorPoint(0,0.5);
+		mu.addChild(this.itemOne);
+		self.fivedailyLabel = new cc.LabelTTF("5分钟",res.FONT_TYPE,fontSize);
+		this.itemFive = new cc.MenuItemLabel(self.fivedailyLabel, self.fivedailyLine, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+		// itemFive.setAnchorPoint(0,0.5);
+		mu.addChild(this.itemFive);
+		this.item1.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2));
+		this.itemOne.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY));
+		this.itemFive.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2*3));
+
+
+		this.setDefaultDailyTradeControlArea();
+
+	},
+	dailyLine:function () {
+
+		this.setDefaultDailyTradeControlArea();
+		this.infoLabel.setString("分时");
+		this.playCheckChanged(false);
+		var klineScene=this.parent.parent;
+		if(null!=klineScene){
+			klineScene.drawDailyView();
+		}
+		cc.log("dailyLine:function ()!!!");
+	},
+	onedailyLine:function () {
+		this.infoLabel.setString("1分钟");
+		this.setDefaultDailyTradeControlArea();
+		this.playCheckChanged(true);
+		var klineScene=this.parent.parent;
+		if(null!=klineScene){
+			klineScene.drawOneDailyView();
+		}
+		cc.log("onedailyLine:function ()!!!");
+	},
+	fivedailyLine:function () {
+		this.infoLabel.setString("5分钟");
+		this.setDefaultDailyTradeControlArea();
+		this.playCheckChanged(true);
+		var klineScene=this.parent.parent;
+		if(null!=klineScene){
+			klineScene.drawFiveDailyView();
+		}
+		cc.log("fivedailyLine:function ()!!!");
+	},
+    setDefaultDailyTradeControlArea:function () {//设置默认分时模式
+		var self=this;
+		// var size = cc.director.getWinSize();
+		var posX =48;
+		var posY = 78;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
+
+        if(this.dailyControlLayer!=null){
+            this.dailyControlLayer.initWithFile(res.EXERCISE_BOX_DEFAULT);
+			var bgSize = this.dailyControlLayer.getContentSize();
+			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY/2));
+			// this.dailySelectButton.initWithNormalImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);
+			this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
+			this.dailySelectButton.unselected();
+			this.dailySelectButton.setCallback(self.setStretchDailyTradeControlArea, self);
+
+			self.infoLabel.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2));
+			self.infoLabel.setVisible(true);
+			this.item1.setVisible(false);
+			this.itemOne.setVisible(false);
+			this.itemFive.setVisible(false);
+
+        }
+
+    },
+    setStretchDailyTradeControlArea:function () {//设置拉伸选择模式
+		var self=this;
+		// var size = cc.director.getWinSize();
+		var posX =48;
+		var posY = 78/2;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
+        if(this.dailyControlLayer!=null){
+            this.dailyControlLayer.initWithFile(res.EXERCISE_BOX_STRETCH);
+			var bgSize = this.dailyControlLayer.getContentSize();
+			this.dailyControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
+			this.dailySelectButton.setPosition(cc.p(bgSize.width-posX/2,bgSize.height-posY));
+			this.dailySelectButton.selected();
+			this.dailySelectButton.setCallback(self.setDefaultDailyTradeControlArea, self);
+			this.item1.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY));
+			this.item1.setVisible(true);
+			this.itemOne.setVisible(true);
+			this.itemFive.setVisible(true);
+			this.itemOne.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height/2));
+			this.itemFive.setPosition(cc.p((bgSize.width-posX)/2,posY));
+			self.infoLabel.setVisible(false);
+        }
+    },
 
 	setEnableBuyOrSell:function (flag) {
 
@@ -416,12 +550,29 @@ var MatchInfoLayer = cc.Layer.extend({
         }
 	},
 
-	playCheckChanged:function()
+	// playCheckChanged:function()
+	// {
+     //    cc.log("playCheckChanged gKlineScene.drawCandleStoped=="+gKlineScene.drawCandleStoped);
+	// 	// cc.log("playCheckChanged this.setEnableBuyOrSell(gKlineScene.drawCandleStoped)=="+gKlineScene.drawCandleStoped);
+	// 	gKlineScene.drawCandleStoped=!gKlineScene.drawCandleStoped;
+	// 	this.scPlayCheckButton.setVisible(gKlineScene.drawCandleStoped);
+	// 	this.scPauseCheckButton.setVisible(!gKlineScene.drawCandleStoped);
+	// },
+	playCheckChanged:function(flag)
 	{
-        cc.log("playCheckChanged gKlineScene.drawCandleStoped=="+gKlineScene.drawCandleStoped);
-
+		cc.log("playCheckChanged gKlineScene.drawCandleStoped=="+gKlineScene.drawCandleStoped);
+		cc.log(flag);
 		// cc.log("playCheckChanged this.setEnableBuyOrSell(gKlineScene.drawCandleStoped)=="+gKlineScene.drawCandleStoped);
-		gKlineScene.drawCandleStoped=!gKlineScene.drawCandleStoped;
+		if("undefined"===typeof flag){
+			gKlineScene.drawCandleStoped=!gKlineScene.drawCandleStoped;
+			// cc.log("playCheckChanged flag==undefined=="+gKlineScene.drawCandleStoped);
+		}else if("boolean"===typeof flag){
+			// cc.log("playCheckChanged flag!=undefined=="+flag);
+			gKlineScene.drawCandleStoped = flag;
+		}else{
+			gKlineScene.drawCandleStoped=!gKlineScene.drawCandleStoped;
+			// cc.log("playCheckChanged flag=="+typeof(flag));
+		}
 		this.scPlayCheckButton.setVisible(gKlineScene.drawCandleStoped);
 		this.scPauseCheckButton.setVisible(!gKlineScene.drawCandleStoped);
 	},
@@ -522,10 +673,12 @@ var MatchInfoLayer = cc.Layer.extend({
 		this.toolsButton.setVisible(false);
 
 		this.speedControlLayer.setVisible(false);
-		if(testFlag==true){
-			this.emoticonButton.setVisible(true);
-			this.toolsButton.setVisible(true);
-		}
+		this.dailyControlLayer.setVisible(false);
+		// if(testFlag==true){
+		// 	// this.emoticonButton.setVisible(true);
+		// 	// this.toolsButton.setVisible(true);
+		// 	this.dailyControlLayer.setVisible(true);
+		// }
 		cc.log("disableAllButtons ====setButtonsToNoPosition");
 	},
 	ableSpeedButtons:function()
@@ -562,15 +715,16 @@ var MatchInfoLayer = cc.Layer.extend({
 
 
 		this.statusFlag = 0;
-
-		if(userInfo.matchMode<2){
-			this.ableSpeedButtons();
-		}else{
-			this.ableAmoticonButtons();
-			if(userInfo.matchMode==MatchType.Type_Tool_Match){//Type_Tool_Match
-				this.ableToolButtons();
-			}
-		}
+        // if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchMode==MatchType.Type_Tool_Match||userInfo.matchMode==MatchType.Type_Friend_Match||userInfo.matchMode==MatchType.Type_ArtificialMatch)//多人
+        if(userInfo.matchMode==MatchType.Type_Practice_Match||userInfo.matchMode==MatchType.Type_DailyTrade_Match||userInfo.matchMode==MatchType.Type_ArtificialMatch){
+            this.ableSpeedButtons();
+        }
+        if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchMode==MatchType.Type_Tool_Match||userInfo.matchMode==MatchType.Type_Friend_Match){//匹配赛
+            this.ableAmoticonButtons();
+        }
+        if(userInfo.matchMode==MatchType.Type_Tool_Match){//Type_Tool_Match
+            this.ableToolButtons();
+        }
 		// this.buyCloseButton.setVisible(false);
 		// this.sellCloseButton.setVisible(false);
 	},
@@ -611,7 +765,7 @@ var MatchInfoLayer = cc.Layer.extend({
 
 		var klineScene=this.parent.parent;
 		var lastCandleIndex=klineScene.currentCandleIndex;
-		if(lastCandleIndex<121){
+        if(lastCandleIndex<121&&userInfo.matchMode!=MatchType.Type_DailyTrade_Match){
 			return;
 		}else{
 			if(userInfo.buttonSoundFlag==true)
@@ -656,7 +810,7 @@ var MatchInfoLayer = cc.Layer.extend({
 	{
 		var klineScene=this.parent.parent;
 		var lastCandleIndex=klineScene.currentCandleIndex;
-		if(lastCandleIndex<121){
+        if(lastCandleIndex<121&&userInfo.matchMode!=MatchType.Type_DailyTrade_Match){
 			return;
 		}else{
 			if(userInfo.buttonSoundFlag==true)
