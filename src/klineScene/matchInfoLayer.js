@@ -460,7 +460,7 @@ var MatchInfoLayer = cc.Layer.extend({
 
 		this.setDefaultDailyTradeControlArea();
 		this.infoLabel.setString("分时");
-		this.playCheckChanged(false);
+		// this.playCheckChanged(false);
 		var klineScene=this.parent.parent;
 		if(null!=klineScene){
 			klineScene.drawDailyView();
@@ -470,7 +470,7 @@ var MatchInfoLayer = cc.Layer.extend({
 	onedailyLine:function () {
 		this.infoLabel.setString("1分钟");
 		this.setDefaultDailyTradeControlArea();
-		this.playCheckChanged(true);
+		// this.playCheckChanged(true);
 		var klineScene=this.parent.parent;
 		if(null!=klineScene){
 			klineScene.drawOneDailyView();
@@ -480,7 +480,7 @@ var MatchInfoLayer = cc.Layer.extend({
 	fivedailyLine:function () {
 		this.infoLabel.setString("5分钟");
 		this.setDefaultDailyTradeControlArea();
-		this.playCheckChanged(true);
+		// this.playCheckChanged(true);
 		var klineScene=this.parent.parent;
 		if(null!=klineScene){
 			klineScene.drawFiveDailyView();

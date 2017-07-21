@@ -2982,6 +2982,10 @@ var KLineScene = SceneBase.extend(
 			this.refreshScores(lastCandleIndex);
 
 			this.klineLayerMain.setUpArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
+			if(null!=this.klineView){
+				this.klineView.setUpArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
+			}
+
 
 			if(gSocketConn!=null && gSocketConn!=undefined)
 			{
@@ -3006,6 +3010,9 @@ var KLineScene = SceneBase.extend(
 			this.selfOperations.push(-lastCandleIndex);
 			this.refreshScores(lastCandleIndex);
 			this.klineLayerMain.setDownArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
+			if(null!=this.klineView){
+				this.klineView.setDownArrowIndex(lastCandleIndex,(this.selfOperations.length%2==1));
+			}
 			if(gSocketConn!=null && gSocketConn!=undefined)
 			{
 				if(this.matchRunFlag){

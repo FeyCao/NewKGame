@@ -29,8 +29,8 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
         for(var i=0;i<length;i++){
             userInfoTemp[i].score=parseFloat(userInfoTemp[i].score).toFixed(2);
         }
-        console.info("排序前");
-        console.info(userInfoTemp);
+        // console.info("排序前");
+        // console.info(userInfoTemp);
         userInfoTemp.sort(function (a,b) {
             if(a["userName"]==userInfo.nickName){
                 return -1;
@@ -41,8 +41,8 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
                 return -1;
             }
         });
-        console.info("排序后");
-        console.info(userInfoTemp);
+        // console.info("排序后");
+        // console.info(userInfoTemp);
         touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
         touxiangSprite.setScale(0.6);
         touxiangSprite.setPosition(cc.p(80,40));
@@ -131,12 +131,12 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
 
         cc.log("ZhanjiTableViewCell setCellView middle");
 
-        if(typeof(userInfoTemp)!="undefined"&&userInfoTemp.length>1)
+        if("undefined"!=typeof(userInfoTemp)&&userInfoTemp.length>1)
         {
             matchFlag =cc.Sprite.create("res/vs.png");
             matchFlag.setPosition(cc.p(420,40));
             this.addChild(matchFlag);
-            if(userInfoTemp[0]["rank"]==1)
+            if(userInfoTemp[0]["ranking"]==1)
             {
                 matchFlag.setTexture("res/ko.png");
             }
