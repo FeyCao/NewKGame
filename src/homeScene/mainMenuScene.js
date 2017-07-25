@@ -724,7 +724,7 @@ var MainMenuScene =SceneBase.extend(
 
         // this.fourthMode=new CheckButton("res/btn_mode4_d.png","res/btn_mode4_u.png");
         // this.fourthMode.setScale(fXScale,fYScale);
-        this.fourthMode = new cc.MenuItemImage(res.BTN_MATCH_MODE4_U_png, res.BTN_MATCH_MODE4_D_png, self.fourthModeChanged, this);
+        this.fourthMode = new cc.MenuItemImage(res.BTN_MATCH_MODE4_U_png,"", res.BTN_MATCH_MODE4_D_png, self.fourthModeChanged, this);
         mu.addChild(this.fourthMode);
         this.fourthMode.setPosition(cc.p((190+3*pModeXdistance),pModeY));
         // this.fourthMode.setEnabled(false);
