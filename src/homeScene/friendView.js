@@ -145,8 +145,11 @@ var FriendTableViewCell = cc.TableViewCell.extend({
 });
 
 var FriendViewLayer = cc.Layer.extend({
-
     closeCallBackFunction:null,
+
+    bgNumber:1,		//底图层号
+    infoNumber:2,//信息层号
+    muNumber:10,//按钮层号
 
     onEnter: function () {
         this._super();
@@ -181,9 +184,11 @@ var FriendViewLayer = cc.Layer.extend({
         var size = cc.director.getWinSize();
         var fXScale = size.width/1280;
         var fYScale = size.height/720;
+        var titleSize = 30;
+
 
         this.backgroundSprite = new cc.LayerColor(cc.color(0,0,0,0),1280,720);
-        this.addChild(this.backgroundSprite,1);
+        this.addChild(this.backgroundSprite,this.bgNumber);
 
         this.bgLeftSprite=new cc.Sprite(res.BG_FRIEND_LEFT_png);
         this.bgLeftSprite.setAnchorPoint(0,0);
@@ -191,19 +196,45 @@ var FriendViewLayer = cc.Layer.extend({
         this.bgRightSprite=new cc.Sprite(res.BG_FRIEND_RIGHT_png);
         this.bgRightSprite.setAnchorPoint(0,0);
         this.bgRightSprite.setPosition(925,0);
+        this.bgRTopSprite=new cc.Sprite(res.BG_FRIEND_RTOP_png);
+        this.bgRTopSprite.setAnchorPoint(1,1);
+        this.bgRTopSprite.setPosition(1280,720);
+
+        var topPosY = this.bgRTopSprite.height/2;
 
         this.backgroundSprite.addChild(this.bgLeftSprite);
         this.backgroundSprite.addChild(this.bgRightSprite);
+        this.backgroundSprite.addChild(this.bgRTopSprite);
 
+        var bgSize = this.backgroundSprite.getContentSize();
         var mu = new cc.Menu();
         mu.x = 0;
         mu.y = 0;
-        this.backgroundSprite.addChild(mu, 2);
+        this.backgroundSprite.addChild(mu, this.muNumber);
         this.btnHome=new cc.MenuItemImage("res/home.png", "res/home.png", self.toMainScene, this);//new Button("res/home.png");
-        var bgSize = this.backgroundSprite.getContentSize();
-        this.btnHome.setPosition(cc.p(35,bgSize.height-35));
+        this.btnHome.setPosition(cc.p(35,bgSize.height-topPosY));
         this.btnHome.setScale(0.9);
         mu.addChild(this.btnHome);
+        this.btnAddFriend=new cc.MenuItemImage(res.BG_FRIEND_ADD, res.BG_FRIEND_ADD, self.sendFriendAdd, this);//new Button("res/home.png");
+        this.btnAddFriend.setPosition(bgSize.width-320,bgSize.height-topPosY);
+        // this.btnAddFriend.setScale(0.9);
+        mu.addChild(this.btnAddFriend);
+        this.btnBack=new cc.MenuItemImage(res.BG_FRIEND_BACK, res.BG_FRIEND_BACK, self.sendFriendAdd, this);//new Button("res/home.png");
+        this.btnBack.setPosition(bgSize.width-320,bgSize.height-topPosY);
+        this.btnBack.setVisible(false);
+        mu.addChild(this.btnBack);
+        this.btnListFriend=new cc.MenuItemImage(res.BG_FRIEND_LIST, res.BG_FRIEND_LIST, self.sendFriendList, this);//new Button("res/home.png");
+        this.btnListFriend.setPosition(bgSize.width-320,bgSize.height-topPosY);
+        this.btnListFriend.setVisible(false);
+        mu.addChild(this.btnListFriend);
+
+        this.infoTitle = new cc.LabelTTF("游戏好友", res.FONT_TYPE, titleSize,cc.size(140,45));
+        this.infoTitle.setPosition(bgSize.width-150,bgSize.height-topPosY);
+        this.backgroundSprite.addChild(this.infoTitle,5);
+
+
+
+
 
 
         // var sprite = new cc.Sprite(spriteFrame);
@@ -306,7 +337,6 @@ var FriendViewLayer = cc.Layer.extend({
     },
     toMainScene:function () {
 
-
         if(gMainMenuScene!=null)
         {
             if(gMainMenuScene==false)
@@ -405,6 +435,75 @@ var FriendViewLayer = cc.Layer.extend({
         this.actionManager && this.actionManager.pauseTarget(this);
         cc.eventManager.pauseTarget(this,true);
     },
+
+    sendFriendList:function () {
+        var self =this;
+        if(null!=self.infoTitle){
+            self.infoTitle.setString("游戏好友");
+        }
+        if(null!=self.btnAddFriend){
+            self.btnAddFriend.setVisible(true);
+        }
+        if(null!=self.btnBack){
+            self.btnBack.setVisible(false);
+        }
+        if(null!=self.btnListFriend){
+            self.btnListFriend.setVisible(false);
+        }
+        // userInfo.matchMode = MatchType.Type_Friend_Match;
+        // if(null!=gSocketConn){
+        //     gSocketConn.BeginMatch(userInfo.matchMode);
+        // }
+    },
+    sendFriendAdd:function () {
+        var self =this;
+        if(null!=self.infoTitle){
+            self.infoTitle.setString("添加好友");
+        }
+        if(null!=self.btnAddFriend){
+            self.btnAddFriend.setVisible(false);
+        }
+        if(null!=self.btnBack){
+            self.btnBack.setVisible(false);
+        }
+        if(null!=self.btnListFriend){
+            self.btnListFriend.setVisible(true);
+        }
+        // userInfo.matchMode = MatchType.Type_Friend_Match;
+        // if(null!=gSocketConn){
+        //     gSocketConn.BeginMatch(userInfo.matchMode);
+        // }
+    },
+    sendFriendSearch:function () {
+        var self =this;
+        if(null!=self.infoTitle){
+            self.infoTitle.setString("搜索好友");
+        }
+        if(null!=self.btnAddFriend){
+            self.btnAddFriend.setVisible(false);
+        }
+        if(null!=self.btnBack){
+            self.btnBack.setVisible(true);
+        }
+        if(null!=self.btnListFriend){
+            self.btnListFriend.setVisible(false);
+        }
+        // userInfo.matchMode = MatchType.Type_Friend_Match;
+        // if(null!=gSocketConn){
+        //     gSocketConn.BeginMatch(userInfo.matchMode);
+        // }
+    },
+
+    refreshAddFriendView:function(){
+
+        var self =this;
+
+    },
+    refreshSearchFriendView:function(){
+        var self =this;
+
+    },
+
     refreshFriendViewLayer:function()
     {
         if(this.tableView!=null)
@@ -429,7 +528,8 @@ var FriendViewLayer = cc.Layer.extend({
                     this.backgroundSprite.addChild(this.infoBg,2);
                 }
                 if(this.infoLabel==null){
-                    this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n请到东航金融“账户”的\n“好友列表”里添加。', res.FONT_TYPE, 24,cc.size(35*10,300));
+                    // this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n请到东航金融“账户”的\n“好友列表”里添加。', res.FONT_TYPE, 24,cc.size(35*10,300));
+                    this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n', res.FONT_TYPE, 24,cc.size(35*10,100));
                     this.infoLabel.setPosition(1100,360);
                     // this.infoLabel.enableStroke(ShadowColor, 2);
                     this.infoLabel.setLineHeight(40);

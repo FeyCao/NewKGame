@@ -101,18 +101,26 @@ var res = {
 
  //好友界面
  BG_FRIEND_LEFT_png:"res/friend/ff_bg_left.png",
+ BG_FRIEND_RTOP_png:"res/friend/ff_bg_r_top.png",
+ BG_FRIEND_ADD:"res/friend/ff_add_friends.png",
+ BG_FRIEND_LIST:"res/friend/ff_list_friends.png",
+ BG_FRIEND_SEARCH:"res/friend/search_friends.png",
+ BG_FRIEND_BACK:"res/friend/ff_back.png",
  BG_FRIEND_RIGHT_png:"res/friend/ff_bg_right.png",
  BG_FRIEND_HEAD_png:"res/friend/ff_head_friends.png",
  BG_FRIEND_HEAD_WAIT_png:"res/friend/ff_head_waiting.png",
  BG_FRIEND_HEAD_VS_png:"res/friend/ff_head_large.png",
  BG_FRIEND_NO_png:"res/friend/non_friends.png",
- BTN_FRIEND_INVITE_png:"res/friend/ff_invite.png",
+
  STATUS_FRIEND_GAME_png:"res/friend/ff_status_itg.png",
  STATUS_FRIEND_MG_png:"res/friend/ff_status_mg.png",
  STATUS_FRIEND_ONLINE_png:"res/friend/ff_status_online.png",
  STATUS_FRIEND_OFFLINE_png:"res/friend/ff_status_offline.png",
  STATUS_FRIEND_INVITED_png:"res/friend/ff_status_hin.png",
 
+ BTN_FRIEND_INVITE_png:"res/friend/ff_btn_invite.png",
+ BTN_FRIEND_ADD:"res/friend/ff_btn_af.png",
+ BTN_FRIEND_NON:"res/friend/ff_btn_non_af.png",
  BTN_REJECT:"res/friend/btn_refuse.png",
  BTN_AGREE:"res/friend/btn_agree.png",
  BG_FRIEND_ACCEPT_png:"res/friend/bg_accept_battle.png",

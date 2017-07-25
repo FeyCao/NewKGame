@@ -262,15 +262,66 @@ var KlineLayer= BaseGraphLayer.extend({
         this.graphArea.drawRect(origin,destination,innerColor,1,frameColor);		//实体
 	},
 	//重载
+	drawReFiveDailyTradeLine:function(candleIndex)
+	{
+		cc.log("drawFiveDailyTradeLine called index="+candleIndex);
+		this.graphAreaFive.clear();
+		if(candleIndex%5+1==5){
+			return;
+		}
+		var index = parseInt(candleIndex/5);//丢掉小数部分取整
+		cc.log("drawReFiveDailyTradeLine called index="+5*index);
+		var posX=this.getCandlePosX(5*index)+this.candleWidth/2;//取第1个坐标中心为起始位置
+		var posY_O=this.getCandlePosYByValue(this.klineData[5*index].o);
+		var posY_C=this.getCandlePosYByValue(this.klineData[candleIndex].c);
+		var min = this.klineData[5*index].i;
+		var max = this.klineData[5*index].x;
+		for(var i=5*index;i<candleIndex;i++){
+			min = min<this.klineData[i].i?min:this.klineData[i].i;
+			max = max>this.klineData[i].x?max:this.klineData[i].x;
+		}
+		var posY_X=this.getCandlePosYByValue(max);
+		var posY_I=this.getCandlePosYByValue(min);
+		var posX_Needle=this.getCandlePosX(5*index+2)+this.candleWidth/2;//中心为第三个柱子的中心
+
+		//cc.log("posx="+posX+" posY_O="+posY_O+" posY_C="+posY_C+" posY_X="+posY_X+" posY_I="+posY_I);
+
+		var origin=cc.p(posX,posY_O<posY_C?posY_O:posY_C);
+		var destination=cc.p(2*posX_Needle-posX,origin.y+Math.abs(posY_O-posY_C));
+
+		var frameColor=cc.color(252,0,1,255);		//涨色
+		var innerColor=cc.color(252,0,1,255);
+
+		var needleColor=cc.color(145,145,145,255);		//上下影线的颜色
+
+
+
+		if(posY_O<posY_C)
+		{
+			frameColor=cc.color(6,226,0,255);	//跌色
+			innerColor=cc.color(6,226,0,255);
+		}
+
+		needleColor=frameColor;
+
+		//cc.log("c="+this.klineData[candleIndex].c+" o="+this.klineData[candleIndex].o+" x="+this.klineData[candleIndex].x+" i="+this.klineData[candleIndex].i+" frameColor.r="+frameColor.r+" g="+frameColor.g+" b="+frameColor.b);
+
+
+		this.graphAreaFive.drawSegment(cc.p(posX_Needle,posY_O>posY_C?posY_O:posY_C),cc.p(posX_Needle,posY_X),0.4*3,needleColor);//上影线
+		this.graphAreaFive.drawSegment(cc.p(posX_Needle,posY_I),cc.p(posX_Needle,posY_O<posY_C?posY_O:posY_C),0.4*3,needleColor);//下影线
+		this.graphAreaFive.drawRect(origin,destination,innerColor,1,frameColor);		//实体
+
+	},
 	//重载
 	drawFiveDailyTradeLine:function(candleIndex)
 	{
-		cc.log("drawFiveDailyTradeLine called index="+candleIndex);
+		// cc.log("drawFiveDailyTradeLine called index="+candleIndex);
 		if(candleIndex%5+1!=5){
 			return;
 		}
 		var index = candleIndex/5;
-		var posX=this.getCandlePosX(candleIndex-3);//取第二个坐标为起始位置
+		var posX=this.getCandlePosX(candleIndex-4)+this.candleWidth/2;//取第1个坐标中心为起始位置
+		cc.log("drawFiveDailyTradeLine called index="+candleIndex-4);
 		var posY_O=this.getCandlePosYByValue(this.klineData[candleIndex-4].o);
 		var posY_C=this.getCandlePosYByValue(this.klineData[candleIndex].c);
 		var min = this.klineData[candleIndex].i;

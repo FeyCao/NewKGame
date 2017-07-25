@@ -2,6 +2,8 @@
 var BaseGraphLayer= cc.Layer.extend({
 		
 	graphArea:null,				//画线的区域，并非整个区域，上面还是指标数字等显示
+	graphAreaFive:null,				//5分钟变化K线区域
+
 	topIndexAreaHeight:20,		//顶部显示指标数组的区域的高度
 	
 	lblTaisInfos:null,			//指标的数值的区域，还有颜色信息等
@@ -50,6 +52,12 @@ var BaseGraphLayer= cc.Layer.extend({
 		this.graphArea.width=this.width;
 		this.graphArea.height=this.height-this.topIndexAreaHeight;
 		this.addChild(this.graphArea, 5);
+		this.graphAreaFive=new cc.DrawNodeCanvas();
+		//设置5分钟K线图的区域
+		this.graphAreaFive.setPosition(cc.p(0,0));
+		this.graphAreaFive.width=this.width;
+		this.graphAreaFive.height=this.height-this.topIndexAreaHeight;
+		this.addChild(this.graphAreaFive, 5);
 		this.drawAreaBorder();
 		
 		this.taisInfoLabelArray=[];
@@ -612,6 +620,7 @@ var BaseGraphLayer= cc.Layer.extend({
 	//在某个时刻，画所有图像内容的函数，包括画蜡烛线，指标和其他内容
 	drawSingleDayGraphInfos:function(candleIndex)
 	{
+
 		//cc.log("drawSingleDayGraphInfos candleIndex="+candleIndex);
 		if(this.lineType==0){
 			this.drawCandle(candleIndex);
@@ -622,9 +631,10 @@ var BaseGraphLayer= cc.Layer.extend({
 			this.drawOneDailyTradeLine(candleIndex);
 
 		}else if(this.lineType==3){//5分钟K线
+			this.drawReFiveDailyTradeLine(candleIndex);
 			this.drawFiveDailyTradeLine(candleIndex);
-
 		}
+		//指标线放在K线后面
 		this.drawCandleForAllTais(candleIndex);
 		this.drawTaisValueInfo(candleIndex);
 
@@ -764,6 +774,11 @@ var BaseGraphLayer= cc.Layer.extend({
 	},
 	//重载，在当前的位置画分时线，或者成交量，或者其他技术指标等
 	drawFiveDailyTradeLine:function(candleIndex)
+	{
+
+	},
+	//重载，在当前的位置画分时线，或者成交量，或者其他技术指标等
+	drawReFiveDailyTradeLine:function(candleIndex)
 	{
 
 	},
