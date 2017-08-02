@@ -25,22 +25,32 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         cc.log("FriendTableViewCell onExit end");
     },
 
-    setFriendInfo:function (data) {
+    setFriendInfo:function (data,type) {
         // this.friendInfo["userName"] = data["userName"];
         // this.friendInfo["headPicture"] = data["headPicture"];
         // this.friendInfo["status"] = data["status"];
         this.friendInfo = data;
+        this.friendType = type;//
     },
     setCellView:function(idx){
         cc.log("FriendTableViewCell setCellView begin");
         var self = this;
-        if(self.friendInfo==null){return;}
-        self.setCellData();
+        if(null==self.friendInfo){return;}
+        if(null!=userInfo.friendListData&&self.friendType==AddFriendType.Type_SendFriend_Request)
+        {
+            self.setFriendCellData();
+        }
+        else  if(null!=userInfo.friendAddData&&self.friendType==AddFriendType.Type_FindFriendRequest){
+            self.setNewFriendCellData();
+        }else if(null!=userInfo.friendAddData&&self.friendType==AddFriendType.Type_SelectAdd_NewFriend){
+            self.setSearchFriendCellData();
+        }
+
         var posBase = cc.p(70,60)
-        self.headSprite = new cc.Sprite(res.BG_FRIEND_HEAD_WAIT_png);
+        self.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
         self.headSprite.setPosition(posBase);
         var size = self.headSprite.getContentSize();
-        self.headSprite.setScale(114/size.width,114/size.height);
+        self.headSprite.setScale(100/size.width,100/size.height);
         self.addChild(this.headSprite,2);
         self.headSpriteBg = new cc.Sprite(res.BG_FRIEND_HEAD_png);
         self.headSpriteBg.setPosition(posBase);
@@ -58,10 +68,22 @@ var FriendTableViewCell = cc.TableViewCell.extend({
                 var texture2d = new cc.Texture2D();
                 texture2d.initWithElement(img);
                 texture2d.handleLoadedTexture();
-                if(self.friendInfo["userName"]==userInfo.friendListData[idx]["userName"]){
-                    self.headSprite.initWithTexture(texture2d);
-                }
 
+                if(null!=userInfo.friendListData&&self.friendType==AddFriendType.Type_SendFriend_Request)
+                {
+                    if(null!=self.friendInfo["userName"]&&self.friendInfo["userName"]==userInfo.friendListData[idx]["userName"]){
+                        self.headSprite.initWithTexture(texture2d);
+                    }
+                }
+                else  if(null!=userInfo.friendAddData&&self.friendType==AddFriendType.Type_FindFriendRequest){
+                    if(null!=self.friendInfo["nickName"]&&self.friendInfo["nickName"]==userInfo.friendNewListData[idx]["nickName"]){
+                        self.headSprite.initWithTexture(texture2d);
+                    }
+                }else if(null!=userInfo.friendAddData&&self.friendType==AddFriendType.Type_SelectAdd_NewFriend){
+                    if(null!=self.friendInfo["userName"]&&self.friendInfo["userName"]==userInfo.friendSearchListData[idx]["userName"]){
+                        self.headSprite.initWithTexture(texture2d);
+                    }
+                }
                 // this.touxiangSprite.setScale(fXScale,fYScale);
                 var size = self.headSprite.getContentSize();
                 self.headSprite.setScale(100/size.width,100/size.height);
@@ -73,7 +95,7 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         cc.log("FriendTableViewCell loadCellImg end");
 
     },
-    setCellData:function () {
+    setFriendCellData:function () {
         var self = this;
         // if(self.friendnameLabel==null){
         //
@@ -141,15 +163,179 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         });
         cc.log("FriendTableViewCell setCellView end");
     },
+    setNewFriendCellData:function () {
+        var self = this;
+        // if(self.friendnameLabel==null){
+        //
+        // }
+        self.friendnameLabel = new cc.LabelTTF("", "Arial", 25.0);
+        self.friendnameLabel.setPosition(cc.p(140,90));
+        self.friendnameLabel.setAnchorPoint(0,0.5);
+        self.addChild(this.friendnameLabel);
+
+        var username = self.friendInfo["nickName"];
+        self.friendnameLabel.setString(cutstr(username,17));
+
+
+        var posY = 40;
+        var stausFlag = self.friendInfo["type"];//1.接受，2.已添加，3.等待对方确认
+        var addFlag = false;
+        switch (stausFlag){
+            case 1:{
+                //设置同意按钮
+                addFlag = true;
+                self.agreeButton=new Button(res.BTN_FRIEND_ACCEPT);
+                self.agreeButton.setScale(0.9);
+                self.agreeButton.setPosition(cc.p(300,posY));
+                self.addChild(self.agreeButton);//INVITE|username|
+                self.agreeButton.setClickEvent(function(){
+
+                    var addFriendType = AddFriendType.Type_ReceiveFriendRequest//AddFriendType.Type_SelectAdd_NewFriend;AddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
+                    var content = new ReceiveFriendRequest();
+                    content.setToken(self.friendInfo["token"]);
+                    content.setFollowerId(self.friendInfo["followerId"]);//申请人的uid
+                    content.setComment(self.friendInfo["comment"]);//申请好友的备注
+
+                    // self.statusSprite.setVisible(false);
+                    // self.invitedInfoLabel.setVisible(true);
+                    gSocketConn.addFriend(addFriendType,content);
+                });
+                break;
+            }
+            case 2:{
+                addFlag = false;
+                self.decLabel = new cc.LabelTTF("已添加", res.FONT_TYPE, 23.0);
+                self.decLabel.setPosition(cc.p(300,posY));
+                self.decLabel.setColor(cc.color("#053f73"));
+                // self.friendnameLabel.setAnchorPoint(0,0.5);
+                self.addChild(self.decLabel);
+                break;
+            }
+            case 3:{
+                addFlag = false;
+                self.decLabel = new cc.LabelTTF("等待验证", res.FONT_TYPE, 23.0);
+                self.decLabel.setPosition(cc.p(300,posY));
+                self.decLabel.setColor(cc.color("#00dae2"));
+                // self.friendnameLabel.setAnchorPoint(0,0.5);
+                self.addChild(self.decLabel);
+                break;
+            }
+            default:{
+                cc.log("stausFlag default =="+stausFlag);
+                addFlag = false;
+                break;
+            }
+        }
+        var comment = self.friendInfo["comment"];
+        // new createClipRoundNode("xxx对xxx使用了道具xxx对",22,YellowColor,350,30);
+        if(GetLength(comment)>10&&addFlag == true){
+            self.commentLabel =  new createClipRoundNode(comment,19,cc.color("#0090e2"),100,30);
+            self.commentLabel.setPosition(cc.p(140,20));
+        }else{
+            self.commentLabel =  new cc.LabelTTF(cutstr(username,10), res.FONT_TYPE, 19.0,cc.size(100,25));
+            self.commentLabel.setPosition(cc.p(140,posY));
+        }
+        //new cc.LabelTTF(cutstr(comment,9), res.FONT_TYPE, 19.0);
+        self.commentLabel.setColor(cc.color("#0090e2"));
+        self.commentLabel.setAnchorPoint(0,0.5);
+        self.addChild(self.commentLabel);
+        cc.log("FriendTableViewCell setNewFriendCellData end");
+    },
+    setSearchFriendCellData:function () {
+        var self = this;
+        // if(self.friendnameLabel==null){
+        //
+        // }
+        self.friendnameLabel = new cc.LabelTTF("", "Arial", 25.0);
+        self.friendnameLabel.setPosition(cc.p(140,90));
+        self.friendnameLabel.setAnchorPoint(0,0.5);
+        self.addChild(this.friendnameLabel);
+        // if(self.statusSprite==null){
+        //
+        // }
+        self.statusSprite = new cc.Sprite(res.STATUS_FRIEND_OFFLINE_png);
+        self.addChild(this.statusSprite,2);
+
+        var username = self.friendInfo["userName"];
+        self.friendnameLabel.setString(cutstr(username,17));
+
+        var stausFlag = self.friendInfo["status"];//在线or离线or组队中or比赛中
+        var inviteFlag = false;
+        switch (stausFlag){
+            case "离线":{
+                self.statusSprite.initWithFile(res.STATUS_FRIEND_OFFLINE_png);
+                inviteFlag = false;
+                break;
+            }
+            case "在线":{
+                self.statusSprite.initWithFile(res.STATUS_FRIEND_ONLINE_png);
+                inviteFlag = true;
+                break;
+            }
+            case "组队中":{
+                self.statusSprite.initWithFile(res.STATUS_FRIEND_MG_png);
+                inviteFlag = false;
+                break;
+            }
+            case "比赛中":{
+                self.statusSprite.initWithFile(res.STATUS_FRIEND_GAME_png);
+                inviteFlag = false;
+                break;
+            }
+            default:{
+                cc.log("stausFlag default =="+stausFlag);
+                inviteFlag = false;
+                break;
+            }
+        }
+        self.statusSprite.setVisible(true);
+        self.statusSprite.setPosition(cc.p(140,30));
+        self.statusSprite.setAnchorPoint(0,0.5);
+        // self.statusSprite.setPosition(cc.p(140+self.statusSprite.getContentSize().width/2,30));
+        //设置添加按钮
+        var addButton=new Button(res.BTN_FRIEND_ADD);
+        addButton.setScale(0.9);
+        addButton.setPosition(cc.p(300,30));
+        // addButton.setVisible(inviteFlag);
+        self.addChild(addButton,2);//INVITE|username|
+
+        var comment = "我是"+userInfo.nickName;
+        addButton.setClickEvent(function(){
+
+            // var addFriendType = AddFriendType.Type_SendFriend_Request//AddFriendType.Type_SelectAdd_NewFriend;AddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
+            var content = new SendFriend_Request();//SendFriend_Request
+            content.setToken(self.friendInfo["token"]);
+            content.setFollowerId(self.friendInfo["uid"]);//申请人的uid
+            content.setComment(comment);//申请好友的备注
+
+            if(null!=gMainMenuScene){
+                gMainMenuScene.showAddFriendView();
+                if(null!=gMainMenuScene.addFriendViewLayer){
+                    gMainMenuScene.addFriendViewLayer.setFriendData(content);
+                }
+            }
+
+
+            // self.statusSprite.setVisible(false);
+            // self.invitedInfoLabel.setVisible(true);
+            // gSocketConn.addFriend(addFriendType,content);
+        });
+        cc.log("FriendTableViewCell setCellView end");
+    },
 
 });
 
 var FriendViewLayer = cc.Layer.extend({
     closeCallBackFunction:null,
+    _className: "FriendViewLayer",
 
     bgNumber:1,		//底图层号
     infoNumber:2,//信息层号
     muNumber:10,//按钮层号
+
+    friendListNode:null,//好友界面
+    friendAddNode:null,//添加好友界面新的好友界面
+    // friendSearchNode:null,//好友搜索界面
 
     onEnter: function () {
         this._super();
@@ -186,6 +372,10 @@ var FriendViewLayer = cc.Layer.extend({
         var fYScale = size.height/720;
         var titleSize = 30;
 
+        this.friendAddNode = new cc.Node();
+        this.friendListNode = new cc.Node();
+        this.friendSearchNode = new cc.Node();
+
 
         this.backgroundSprite = new cc.LayerColor(cc.color(0,0,0,0),1280,720);
         this.addChild(this.backgroundSprite,this.bgNumber);
@@ -206,6 +396,12 @@ var FriendViewLayer = cc.Layer.extend({
         this.backgroundSprite.addChild(this.bgRightSprite);
         this.backgroundSprite.addChild(this.bgRTopSprite);
 
+        this.backgroundSprite.addChild(this.friendListNode);
+        this.backgroundSprite.addChild(this.friendAddNode);
+        this.backgroundSprite.addChild(this.friendSearchNode);
+
+
+
         var bgSize = this.backgroundSprite.getContentSize();
         var mu = new cc.Menu();
         mu.x = 0;
@@ -219,6 +415,10 @@ var FriendViewLayer = cc.Layer.extend({
         this.btnAddFriend.setPosition(bgSize.width-320,bgSize.height-topPosY);
         // this.btnAddFriend.setScale(0.9);
         mu.addChild(this.btnAddFriend);
+        this.btnAdd=new cc.MenuItemImage(res.BTN_FRIEND_ADD, res.BTN_FRIEND_ADD, self.sendFriendAdd, this);//new Button("res/home.png");
+        this.btnAdd.setPosition(bgSize.width-180,bgSize.height/2-topPosY);//(1100,360)
+        this.btnAdd.setVisible(false);
+        mu.addChild(this.btnAdd);
         this.btnBack=new cc.MenuItemImage(res.BG_FRIEND_BACK, res.BG_FRIEND_BACK, self.sendFriendAdd, this);//new Button("res/home.png");
         this.btnBack.setPosition(bgSize.width-320,bgSize.height-topPosY);
         this.btnBack.setVisible(false);
@@ -227,14 +427,18 @@ var FriendViewLayer = cc.Layer.extend({
         this.btnListFriend.setPosition(bgSize.width-320,bgSize.height-topPosY);
         this.btnListFriend.setVisible(false);
         mu.addChild(this.btnListFriend);
+        this.btnSearchFriend=new cc.MenuItemImage(res.BTN_FRIEND_SEARCH, res.BTN_FRIEND_SEARCH, self.sendFriendSearch, this);//new Button("res/home.png");
+        this.btnSearchFriend.setPosition(bgSize.width-320,bgSize.height-topPosY*3);
+        this.btnSearchFriend.setVisible(false);
+        mu.addChild(this.btnSearchFriend);
+        this.searchBg = new cc.Sprite(res.BG_FRIEND_SEARCH);
+        this.searchBg.setPosition(bgSize.width-180,bgSize.height-topPosY*3);
+        this.searchBg.setVisible(false);
+        this.backgroundSprite.addChild(this.searchBg,this.infoNumber);
 
         this.infoTitle = new cc.LabelTTF("游戏好友", res.FONT_TYPE, titleSize,cc.size(140,45));
         this.infoTitle.setPosition(bgSize.width-150,bgSize.height-topPosY);
         this.backgroundSprite.addChild(this.infoTitle,5);
-
-
-
-
 
 
         // var sprite = new cc.Sprite(spriteFrame);
@@ -286,22 +490,64 @@ var FriendViewLayer = cc.Layer.extend({
             self.selfNameLabel.setString(cutstr(userInfo.nickName,11));
         }
 
-        this.tableView = new cc.TableView(this, cc.size(350, 660));
-        this.tableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
+        //好友列表
+        this.tableViewFriend = new cc.TableView(this, cc.size(350, 660));
+        this.tableViewFriend.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
         //tableView.setAnchorPoint(0,1);
         //cc.log(-winSize.width/2,-40);this
-        this.tableView.setPosition(925,0);
+        this.tableViewFriend.setPosition(925,0);
         //tableView.setPosition(0,0);
         //tableView.x = winSize.width/2;
         //tableView.y = winSize.height / 2 - 150;
         //this.tableView.setScale(fXScale,fYScale);
-        this.tableView.setDelegate(this);
-        this.tableView.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
-        self.backgroundSprite.addChild(this.tableView,3);
-        this.tableView.reloadData();
+        this.tableViewFriend.setDelegate(this);
+        this.tableViewFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+        this.friendListNode.addChild(this.tableViewFriend,3);
+        this.tableViewFriend.reloadData();
+
+        //新的好友列表
+        this.tableViewNewFriend = new cc.TableView(this, cc.size(350, 600));
+        this.tableViewNewFriend.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
+        //tableView.setAnchorPoint(0,1);
+        //cc.log(-winSize.width/2,-40);this
+        this.tableViewNewFriend.setPosition(925,0);
+        //tableView.setPosition(0,0);
+        //tableView.x = winSize.width/2;
+        //tableView.y = winSize.height / 2 - 150;
+        //this.tableView.setScale(fXScale,fYScale);
+        this.tableViewNewFriend.setDelegate(this);
+        this.tableViewNewFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+        this.friendAddNode.addChild(this.tableViewNewFriend,3);
+        // this.tableViewNewFriend.reloadData();
+
+        // (size, normal9SpriteBg, press9SpriteBg, disabled9SpriteBg)
+        // var normal9SpriteBg=new cc.Scale9Sprite(res.BLUE_BG_png);
+        var normal9SpriteBg=new cc.Scale9Sprite(res.LESS_BG_png);
+        // var press9SpriteBg=new cc.Scale9Sprite(res.LOGIN_BG2_png);
+        // var disabled9SpriteBg=new cc.Scale9Sprite(res.LOGIN_BG1_png);
+        // var fontSize = 30;
+        // this._userName = new cc.EditBox(cc.size(300, 45),normal9SpriteBg,press9SpriteBg,disabled9SpriteBg );
+        this._userName = new cc.EditBox(cc.size(280, 45),normal9SpriteBg);
+        this._userName.x = bgSize.width-150;
+        this._userName.y = bgSize.height-topPosY*3;
+        this._userName.setFontSize(fontSize);
+        this._userName.setDelegate(this);
+        this._userName.setMaxLength(15);
+        this._userName.setPlaceholderFontSize(fontSize);
+        this._userName.setPlaceHolder("手机号/昵称");
+        this._userName.setPlaceholderFontColor(fontBlueColor);
+        this._userName.setInputMode(cc.EDITBOX_INPUT_MODE_PHONENUMBER);
+        // this._userName.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);//修改为使用密文
+        this._userName.setFontColor(fontBlueColor);
+        this.friendAddNode.addChild(this._userName,this.infoNumber);
+        this.friendAddNode.setVisible(false);
 
 
-        this.messageLabelInfo=new cc.LabelTTF("", "Arial", 40);//好友是否接受邀请提示信息
+
+
+
+
+        this.messageLabelInfo=new cc.LabelTTF("", res.FONT_TYPE, 40);//好友是否接受邀请提示信息
         this.messageLabelInfo.setColor(BlueColor);
         this.messageLabelInfo.setPosition(bgSize.width / 2,bgSize.height/2);
         this.messageLabelInfo.textAlign = cc.TEXT_ALIGNMENT_CENTER;//设置文本位置
@@ -309,7 +555,7 @@ var FriendViewLayer = cc.Layer.extend({
         this.messageLabelInfo.setVisible(false);
         self.backgroundSprite.addChild(this.messageLabelInfo,10);
 
-        this.messageLabelInfoShadow=new cc.LabelTTF("", "Arial", 40);//好友是否接受邀请提示信息
+        this.messageLabelInfoShadow=new cc.LabelTTF("", res.FONT_TYPE, 40);//好友是否接受邀请提示信息
         this.messageLabelInfoShadow.setColor(WhiteColor);
         this.messageLabelInfoShadow.setPosition(bgSize.width / 2+2,bgSize.height/2-2);
         this.messageLabelInfoShadow.textAlign = cc.TEXT_ALIGNMENT_CENTER;//设置文本位置
@@ -389,14 +635,36 @@ var FriendViewLayer = cc.Layer.extend({
         if (cell==null) {
             cell = new FriendTableViewCell();
         }
-        if(userInfo.friendListData!=null)
+        var data =null;
+        if(userInfo.friendListData!=null&&this.friendListNode.isVisible()==true)
         {
-            var data = userInfo.friendListData[idx];
+            data = userInfo.friendListData[idx];
             if(data!=null){
-                cell.setFriendInfo(data);
+                cell.setFriendInfo(data,AddFriendType.Type_SendFriend_Request);
             }
             cell.setCellView(idx);
         }
+        else  if(this.friendAddNode.isVisible()==true)
+        {
+            if(null!=userInfo.friendAddData&&userInfo.friendAddData.addFriendType==AddFriendType.Type_FindFriendRequest){
+                // return userInfo.friendNewListData.length;
+                data = userInfo.friendNewListData[idx];
+                if(data!=null){
+                    cell.setFriendInfo(data,AddFriendType.Type_FindFriendRequest);
+                }
+                cell.setCellView(idx);
+            }else if(null!=userInfo.friendAddData&&userInfo.friendAddData.addFriendType==AddFriendType.Type_SelectAdd_NewFriend){
+                // return userInfo.friendSearchListData.length;
+                data = userInfo.friendSearchListData[idx];
+                if(data!=null){
+                    cell.setFriendInfo(data,AddFriendType.Type_SelectAdd_NewFriend);
+                }
+                cell.setCellView(idx);
+            }
+
+        }
+
+
         return cell;
         // setTimeout(function(){return cell;},100);
         // for(var each in pageTimer){
@@ -407,12 +675,21 @@ var FriendViewLayer = cc.Layer.extend({
     },
 
     numberOfCellsInTableView:function (table) {
-        if(userInfo.friendListData!=null)
+        if(userInfo.friendListData!=null&&this.friendListNode.isVisible()==true)
         {
-            if(userInfo.friendListData.length>20)
-                return 20;
-            else
+            // if(userInfo.friendListData.length>20)
+            //     return 20;
+            // else
             return userInfo.friendListData.length;
+        }
+        else  if(this.friendAddNode.isVisible()==true)
+        {
+            if(null!=userInfo.friendAddData&&userInfo.friendAddData.addFriendType==AddFriendType.Type_FindFriendRequest){
+                return userInfo.friendNewListData.length;
+            }else if(null!=userInfo.friendAddData&&userInfo.friendAddData.addFriendType==AddFriendType.Type_SelectAdd_NewFriend){
+                return userInfo.friendSearchListData.length;
+            }
+
         }
         else {
             return 0;
@@ -444,40 +721,78 @@ var FriendViewLayer = cc.Layer.extend({
         if(null!=self.btnAddFriend){
             self.btnAddFriend.setVisible(true);
         }
+        if(null!=self.friendListNode){
+            self.friendListNode.setVisible(true);
+            // this.tableViewFriend.reloadData();
+        }
         if(null!=self.btnBack){
             self.btnBack.setVisible(false);
+        }
+        if(null!=self.btnSearchFriend){
+            self.btnSearchFriend.setVisible(false);
         }
         if(null!=self.btnListFriend){
             self.btnListFriend.setVisible(false);
         }
+        if(null!=self.searchBg){
+            self.searchBg.setVisible(false);
+        }
+        if(null!=self.friendAddNode){
+            self.friendAddNode.setVisible(false);
+        }
+
         // userInfo.matchMode = MatchType.Type_Friend_Match;
-        // if(null!=gSocketConn){
-        //     gSocketConn.BeginMatch(userInfo.matchMode);
-        // }
+        if(null!=gSocketConn){
+            gSocketConn.getFriendList(userInfo.matchMode);
+        }
     },
     sendFriendAdd:function () {
         var self =this;
         if(null!=self.infoTitle){
             self.infoTitle.setString("添加好友");
         }
+        if(null!=self.btnSearchFriend){
+            self.btnSearchFriend.setVisible(true);
+        }
         if(null!=self.btnAddFriend){
             self.btnAddFriend.setVisible(false);
+        }
+        if(null!=this.btnAdd){
+            this.btnAdd.setVisible(false);
         }
         if(null!=self.btnBack){
             self.btnBack.setVisible(false);
         }
+        self.disableFriendList();
         if(null!=self.btnListFriend){
             self.btnListFriend.setVisible(true);
         }
+       if(null!=self.friendListNode){
+           self.friendListNode.setVisible(false);
+        }
+       if(null!=self.friendAddNode){
+           self.friendAddNode.setVisible(true);
+           self.tableViewNewFriend.reloadData();
+        }
+        if(null!=self.searchBg){
+            self.searchBg.setVisible(true);
+        }
+
+        var addFriendType = AddFriendType.Type_FindFriendRequest//AddFriendType.Type_SelectAdd_NewFriend;ddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
+        var content = new FindFriend_Request();
+        content.setToken(userInfo.token);
         // userInfo.matchMode = MatchType.Type_Friend_Match;
-        // if(null!=gSocketConn){
-        //     gSocketConn.BeginMatch(userInfo.matchMode);
-        // }
+        if(null!=gSocketConn){
+            gSocketConn.addFriend(addFriendType,content);
+        }
     },
     sendFriendSearch:function () {
         var self =this;
         if(null!=self.infoTitle){
             self.infoTitle.setString("搜索好友");
+        }
+        if(null!=self.btnSearchFriend){
+            self.btnSearchFriend.setVisible(true);
         }
         if(null!=self.btnAddFriend){
             self.btnAddFriend.setVisible(false);
@@ -485,30 +800,80 @@ var FriendViewLayer = cc.Layer.extend({
         if(null!=self.btnBack){
             self.btnBack.setVisible(true);
         }
+        self.disableFriendList();
+        if(null!=this.btnAdd){
+            this.btnAdd.setVisible(false);
+        }
+        if(null!=self.friendAddNode){
+            self.friendAddNode.setVisible(true);
+        }
+        if(null!=self.searchBg){
+            self.searchBg.setVisible(true);
+        }
+        // if(null!=self.friendSearchNode){
+        //     self.friendSearchNode.setVisible(true);
+        // }
+        var addFriendType = AddFriendType.Type_SelectAdd_NewFriend//AddFriendType.Type_SelectAdd_NewFriend;ddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
+        var content = new SelectAdd_NewFriend();
+        content.setToken(userInfo.token);
+        if(null!=self._userName){
+            cc.log("查询的好友名字：",self._userName.getString());
+            content.setUserName(self._userName.getString());
+        }
+
+        // userInfo.matchMode = MatchType.Type_Friend_Match;
+        if(null!=gSocketConn){
+            gSocketConn.addFriend(addFriendType,content);
+        }
+    },
+     sendAddFriend:function () {
+        var self =this;
+        var addFriendType = AddFriendType.Type_SendFriend_Request//AddFriendType.Type_SelectAdd_NewFriend;AddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
+        var content = new SendFriend_Request();
+        content.setToken(userInfo.token);
+        content.setFollowerId("");//申请人的uid
+        content.setComment("");//申请好友的备注
+
+        // userInfo.matchMode = MatchType.Type_Friend_Match;
+        if(null!=gSocketConn){
+            gSocketConn.addFriend(addFriendType,content);
+        }
+    },
+    disableFriendList:function () {
+        var self =this;
         if(null!=self.btnListFriend){
             self.btnListFriend.setVisible(false);
         }
-        // userInfo.matchMode = MatchType.Type_Friend_Match;
-        // if(null!=gSocketConn){
-        //     gSocketConn.BeginMatch(userInfo.matchMode);
-        // }
+        if(null!=self.friendListNode){
+            self.friendListNode.setVisible(false);
+        }
+        if(null!=this.btnAdd){
+            this.btnAdd.setVisible(false);
+        }
     },
 
     refreshAddFriendView:function(){
-
         var self =this;
+        if(self.tableViewNewFriend!=null)
+        {
+            this.tableViewNewFriend.reloadData();
+        }
 
     },
     refreshSearchFriendView:function(){
         var self =this;
+        if(self.tableViewNewFriend!=null)
+        {
+            this.tableViewNewFriend.reloadData();
+        }
 
     },
 
     refreshFriendViewLayer:function()
     {
-        if(this.tableView!=null)
+        if(this.tableViewFriend!=null)
         {
-            this.tableView.reloadData();
+            this.tableViewFriend.reloadData();
         }
         if(userInfo.friendListData!=null)
         {
@@ -520,17 +885,21 @@ var FriendViewLayer = cc.Layer.extend({
                 if(this.infoBg!=null){
                     this.infoBg.setVisible(false);
                 }
+                if(null!=this.btnAdd){
+                    this.btnAdd.setVisible(false);
+                }
 
             }else{
                 if(this.infoBg == null){
                     this.infoBg = new cc.Sprite(res.BG_FRIEND_NO_png);
                     this.infoBg.setPosition(1100,460);
-                    this.backgroundSprite.addChild(this.infoBg,2);
+                    this.friendListNode.addChild(this.infoBg,2);
                 }
                 if(this.infoLabel==null){
                     // this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n请到东航金融“账户”的\n“好友列表”里添加。', res.FONT_TYPE, 24,cc.size(35*10,300));
                     this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n', res.FONT_TYPE, 24,cc.size(35*10,100));
                     this.infoLabel.setPosition(1100,360);
+                    this.infoLabel.setPosition(1100,400);
                     // this.infoLabel.enableStroke(ShadowColor, 2);
                     this.infoLabel.setLineHeight(40);
                     this.infoLabel.setAnchorPoint(0.5,1);
@@ -539,7 +908,10 @@ var FriendViewLayer = cc.Layer.extend({
                     this.infoLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
                     this.infoLabel.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_TOP;
                     // this.infoLabel.setAnchorPoint(0.5,0.5);
-                    this.backgroundSprite.addChild(this.infoLabel,2);
+                    this.friendListNode.addChild(this.infoLabel,2);
+                }
+                if(null!=this.btnAdd){
+                    this.btnAdd.setVisible(true);
                 }
                 this.infoBg.setVisible(true);
                 this.infoLabel.setVisible(true);
@@ -549,7 +921,7 @@ var FriendViewLayer = cc.Layer.extend({
             if(this.infoBg == null){
                 this.infoBg = new cc.Sprite(res.BG_FRIEND_NO_png);
                 this.infoBg.setPosition(1100,460);
-                this.backgroundSprite.addChild(this.infoBg,2);
+                this.friendListNode.addChild(this.infoBg,2);
             }
             if(this.infoLabel==null){
                 this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n请到东航金融“账户”的\n“好友列表”里添加。', res.FONT_TYPE, 24,cc.size(35*10,300));
@@ -562,7 +934,10 @@ var FriendViewLayer = cc.Layer.extend({
                 this.infoLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
                 this.infoLabel.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_TOP;
                 // this.infoLabel.setAnchorPoint(0.5,0.5);
-                this.backgroundSprite.addChild(this.infoLabel,2);
+                this.friendListNode.addChild(this.infoLabel,2);
+            }
+            if(null!=this.btnAdd){
+                this.btnAdd.setVisible(true);
             }
             this.infoBg.setVisible(true);
             this.infoLabel.setVisible(true);

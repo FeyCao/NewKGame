@@ -144,11 +144,11 @@ var PlayerInfoLayer= cc.Node.extend({
 
 
 				if(this.headSprite==null){
-					this.headSprite = new cc.Sprite(res.HEAD_0_PNG);
+                    this.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
+                    var sizeHead = this.headSprite.getContentSize();
+                    this.headSprite.setScale(90/sizeHead.width,90/sizeHead.height);
 					this.headSprite.setPosition(posX1,posY);
 					this.backgroundSprite.addChild(this.headSprite,2);
-					// var size = self.headSprite.getContentSize();
-					// self.headSprite.setScale(80/size.width,80/size.height);
 				}
 
 
@@ -393,7 +393,9 @@ var PlayerInfoLayer= cc.Node.extend({
 		}
 
 		if(this.headSprite==null){
-			this.headSprite = new cc.Sprite(res.HEAD_0_PNG);
+            this.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
+            var sizeHead = this.headSprite.getContentSize();
+            this.headSprite.setScale(90/sizeHead.width,90/sizeHead.height);
 			this.headSprite.setPosition(160,670);
 			this.backgroundSprite.addChild(this.headSprite,2);
 		}

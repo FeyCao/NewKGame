@@ -2,6 +2,7 @@
 'use strict';
 var MainMenuScene =SceneBase.extend(
 {
+    _className: "MainMenuScene",
 	klineScene:null,
 
     userId:null,
@@ -36,6 +37,7 @@ var MainMenuScene =SceneBase.extend(
 
     controlViewLayer:null,
     invitedViewLayer:null,
+    addFriendViewLayer:null,
     helpViewLayer:null,
     matchViewLayer:null,
     preMatchView:null,
@@ -118,8 +120,10 @@ var MainMenuScene =SceneBase.extend(
         this.backgroundSprite.addChild(this.headSpritebg,3);
 
         if(this.headSprite ==null){
-            this.headSprite = new cc.Sprite(res.HEAD_0_PNG);
+            this.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
             this.headSprite.setPosition(cc.p(180,500));
+            var sizeHead = this.headSprite.getContentSize();
+            this.headSprite.setScale(90/sizeHead.width,90/sizeHead.height);
             this.backgroundSprite.addChild(this.headSprite,2);
         }
 
@@ -532,6 +536,10 @@ var MainMenuScene =SceneBase.extend(
         if(this.invitedViewLayer!=null){
             this.invitedViewLayer.hideLayer();
         }
+        //关闭应邀请求界面
+        if(this.addFriendViewLayer!=null){
+            this.addFriendViewLayer.hideLayer();
+        }
         //关闭控制界面
         if(this.controlViewLayer!=null){
             this.controlViewLayer.hideLayer();
@@ -558,6 +566,16 @@ var MainMenuScene =SceneBase.extend(
             this.preMatchView.hideLayer();
         }
 
+        this.resumeLowerLayer();
+    },
+    addViewLayer_Close:function()
+    {
+
+        //关闭应邀请求界面
+        if(this.addFriendViewLayer!=null){
+            this.addFriendViewLayer.hideLayer();
+        }
+        this.addFriendViewLayer =null;
         this.resumeLowerLayer();
     },
     // helpViewLayer_Close:function()
@@ -779,8 +797,10 @@ var MainMenuScene =SceneBase.extend(
                     //     this.touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
                     // cc.textureCache.addImage(imgUrl);
                     if(self.headSprite ==null){
-                        self.headSprite = new cc.Sprite(res.HEAD_0_PNG);
+                        self.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
                         self.headSprite.setPosition(cc.p(180,500));
+                        var sizeHead = this.headSprite.getContentSize();
+                        self.headSprite.setScale(90/sizeHead.width,90/sizeHead.height);
                         self.backgroundSprite.addChild(self.headSprite,2);
                     }
 
@@ -1429,7 +1449,71 @@ var MainMenuScene =SceneBase.extend(
 
             }
 
-            case  MessageType.Type_FriendList:
+            case  MessageType.Type_AddFriend:
+            {
+                cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+                userInfo.friendListData = [];
+                var data=message.addFriend;
+                userInfo.friendAddData = data;
+                userInfo.friendNewListData  = data.findFriendRequest;
+                userInfo.friendSearchListData  = data.selectAddNewFriend;
+                /*comment:"我是yaco"
+                followerId:"43562"
+                headPicture:"http://qiniu.kiiik.com/12AA6F6D-F5E7-FC51-FBE9-ED07E3A89A9720170531095532.jpg"
+                nickName:"海军测试"
+                status:1
+                token:"1bd9e33acc154ec099a9447aea559e61"
+                type:2
+                */
+                /* enum AddFriendType{
+    Type_SelectAdd_NewFriend=0;//搜索好友
+    Type_SendFriend_Request=1;//好友申请
+    Type_FindFriendRequest=2;//新的朋友列表
+    }*/
+                // userInfo.friendListData.sort(function (a,b) {
+                //     if(a["status"]=="在线"){
+                //         return -1;
+                //     }else if(b["status"]=="在线"){
+                //         return 1;
+                //     }else if(a["status"]=="组队中"){
+                //         return -1;
+                //     }else if(b["status"]=="组队中"){
+                //         return 1;
+                //     }else if(a["status"]=="比赛中"){
+                //         return -1;
+                //     }else if(b["status"]=="比赛中"){
+                //         return 1;
+                //     }else {
+                //         return a["userName"].charCodeAt(0)-b["userName"].charCodeAt(0);
+                //     }
+                // });
+                // cc.log("after sort.....");
+                // cc.log(userInfo.friendListData);
+                if(self.friendLayer==null){
+                    return;
+                }else {
+                    // LISTFRIEND||
+                    self.friendLayer.showLayer();
+                    self.pauseLowerLayer();
+                    if(data.addFriendType==AddFriendType.Type_FindFriendRequest){
+                        self.friendLayer.refreshAddFriendView();
+                    }
+                    if(data.addFriendType==AddFriendType.Type_SelectAdd_NewFriend){
+                        self.friendLayer.refreshSearchFriendView();
+                    }
+                    if(data.addFriendType==AddFriendType.Type_SendFriend_Request&&null!=data.sendFriendRequest){
+                        userInfo.token = data.sendFriendRequest["token"];
+                        self.friendLayer.sendFriendList();
+                    }
+                    if(data.addFriendType==AddFriendType.Type_ReceiveFriendRequest&&null!=data.receiveFriendRequest){
+                        userInfo.token = data.receiveFriendRequest["token"];
+                        self.friendLayer.sendFriendList();
+                    }
+                }
+
+                break;
+            }
+           case  MessageType.Type_FriendList:
             {
                 cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
                 userInfo.friendListData = [];
@@ -1794,6 +1878,18 @@ var MainMenuScene =SceneBase.extend(
         this.pauseLowerLayer();
     },
 
+    showAddFriendView:function () {
+        var self = this;
+        if(self.addFriendViewLayer==null){
+            self.addFriendViewLayer=new addFriendView();
+            self.addFriendViewLayer.setVisible(false);
+            self.addFriendViewLayer.setPosition(0,0);
+            self.otherMessageTipLayer.addChild(self.addFriendViewLayer,1,self.addFriendViewLayer.getTag());
+            self.addFriendViewLayer.closeCallBackFunction=function(){self.addViewLayer_Close()};
+        }
+        self.addFriendViewLayer.showLayer();
+        self.pauseLowerLayer();
+    },
 
     toHome:function()
     {

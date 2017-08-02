@@ -30,6 +30,7 @@
 	Type_Match_Record=28;
 	Type_Server_Ping=29;
 	Type_Server_Pong=30;
+	Type_AddFriend=31;
 }
 
 
@@ -59,6 +60,14 @@ enum AiType{
     Type_ThreeRed=2;
     Type_OneMA=3;
     Type_BOLL=4;
+}
+
+enum AddFriendType{
+    Type_SelectAdd_NewFriend=0;
+	Type_SendFriend_Request=1;
+	Type_FindFriendRequest=2;
+	Type_ReceiveFriendRequest=3;
+
 }
 
 
@@ -256,7 +265,49 @@ message ServerPong{
    required string ServerName=1;
    required int32 serverAddr=2;
    optional int32 threadNum=3;
+}
 
+message SelectAdd_NewFriend{
+    required string userName=1;
+	required string token=2;
+	optional string headPicture=3;
+	optional string status=4;
+	optional string uid=5;//被查询人的uid
+}
+message SendFriend_Request{ 
+    required string followerId=1;//被申请人的uid
+	required string token=2;
+    optional string comment=3;//申请好友的备注
+}
+
+message FindFriend_Request{
+   required string token=1;
+   optional string followerId=2;//被邀请人
+   optional string nickName=3;
+   optional string headPicture=4;
+   optional int32 type=5;//1.接受，2.已添加，3.等待对方确认
+   optional int32 status=6;
+   optional string comment=7;//评论
+   
+}
+
+message ReceiveFriendRequest{
+   required string followerId=1;
+   optional string comment=2;
+   required string token=3;
+
+
+}
+
+
+message AddFriend{
+    required AddFriendType addFriendType=1;
+    repeated SelectAdd_NewFriend selectAddNewFriend=2;//查询好友
+	optional SendFriend_Request sendFriendRequest=3;//好友申请
+	repeated FindFriend_Request findFriendRequest=4;//新的好友申请列表
+	optional ReceiveFriendRequest receiveFriendRequest=5;//接受好友请求
+	optional bool isOK=6;//操作成功
+    
 }
 
 
@@ -268,6 +319,7 @@ message Message{
    optional Fast_Lgoin fastLogin=5;
    optional Use_DeviceId_Login useDeviceIdLogin=6;
    optional Mobile_Login mobileLogin=7;
+   
    optional Warn warn=8;
    optional End_Match_Info endMatchInfo=9;
    optional HisdataInfo hisdataInfo=10;
@@ -285,4 +337,5 @@ message Message{
    optional int32 onlineNum=22;
    optional MatchRecord matchRecord=23;
    optional ServerPong serverPong=24;
+   optional AddFriend addFriend=25;
 }

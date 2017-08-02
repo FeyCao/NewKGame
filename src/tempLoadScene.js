@@ -46,6 +46,7 @@ var TempLoadScene = SceneBase.extend(
         userInfo.userId=getQueryStringByName("userId");
         userInfo.deviceId=getQueryStringByName("deviceId");
         userInfo.source=getQueryStringByName("source");
+        userInfo.token=getQueryStringByName("token");
 
         cc.log("userId="+userInfo.userId+"deviceId="+userInfo.deviceId+"source="+userInfo.source);
 

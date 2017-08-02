@@ -37,7 +37,10 @@ var res = {
  Emoticon_BTN2_png:"res/public/btn_2.png",
  Emoticon_BTN3_png:"res/public/btn_3.png",
  BLUE_BG_png:"res/public/blue_bg.png",
+ BLUE_BG_BTN:"res/public/btn_blue_bg.png",
  LESS_BG_png:"res/public/less_bg.png",
+
+    BTN_CONFIRM  :"res/btn_confirm.png",
 
 //登录界面
  LOGIN_BG_png  :"res/login/bg_login.png",
@@ -104,13 +107,14 @@ var res = {
  BG_FRIEND_RTOP_png:"res/friend/ff_bg_r_top.png",
  BG_FRIEND_ADD:"res/friend/ff_add_friends.png",
  BG_FRIEND_LIST:"res/friend/ff_list_friends.png",
- BG_FRIEND_SEARCH:"res/friend/search_friends.png",
  BG_FRIEND_BACK:"res/friend/ff_back.png",
  BG_FRIEND_RIGHT_png:"res/friend/ff_bg_right.png",
  BG_FRIEND_HEAD_png:"res/friend/ff_head_friends.png",
  BG_FRIEND_HEAD_WAIT_png:"res/friend/ff_head_waiting.png",
  BG_FRIEND_HEAD_VS_png:"res/friend/ff_head_large.png",
  BG_FRIEND_NO_png:"res/friend/non_friends.png",
+ BG_FRIEND_SEARCH:"res/friend/search_friends_bg.png",
+ BG_FRIEND_ACCEPT:"res/friend/bg_accept_battle.png",
 
  STATUS_FRIEND_GAME_png:"res/friend/ff_status_itg.png",
  STATUS_FRIEND_MG_png:"res/friend/ff_status_mg.png",
@@ -121,9 +125,10 @@ var res = {
  BTN_FRIEND_INVITE_png:"res/friend/ff_btn_invite.png",
  BTN_FRIEND_ADD:"res/friend/ff_btn_af.png",
  BTN_FRIEND_NON:"res/friend/ff_btn_non_af.png",
+ BTN_FRIEND_SEARCH:"res/friend/search_friends.png",
  BTN_REJECT:"res/friend/btn_refuse.png",
  BTN_AGREE:"res/friend/btn_agree.png",
- BG_FRIEND_ACCEPT_png:"res/friend/bg_accept_battle.png",
+ BTN_FRIEND_ACCEPT:"res/friend/ff_btn_accept.png",
  // BTN_FRIEND_INVITE_png:"res/friend/ff_invite.png",
  // STATUS_FRIEND_GAME_png:"res/friend/ff_status_itg.png",
  // STATUS_FRIEND_MG_png:"res/friend/ff_status_mg.png",
@@ -156,6 +161,7 @@ var res = {
 
  BG_HEAD_PNG : "res/bg_touxiang.png",
  HEAD_0_PNG : "res/touxiang_0.png",
+ HEAD_NO_PNG : "res/head_no.png",
  BG_HEAD_SELECT_PNG : "res/touxiang_select.png",
  BG_VS_NAME_PNG:"res/vs_name.png"
 

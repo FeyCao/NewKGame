@@ -59,6 +59,9 @@ var YellowColor=cc.color(255,217,0,255);//黄色
 var GreenColor=cc.color(6,224,0,255);//绿色
 var WhiteColor=cc.color(255,255,255,255);//白色
 var BlueColor=cc.color(7,64,111,255);//蓝色
+var fontBlueColor=cc.color("#1075b0");//蓝色
+// var fontBlueColor=cc.color(16,117,116,255);//蓝色
+var fontBlueBgColor=cc.color("#03284b");//蓝色#03284b
 var lightBlueColor=cc.color(22,95,146,100);//浅蓝色
 var BlackColor=cc.color(0,0,0,255);//黑色
 var ShadowColor=cc.color(0,133,200,255);//描边
@@ -74,6 +77,7 @@ var MatchType =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("MatchType");
 var AiType =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("AiType");
 var FaceType = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("FaceType");
 var ToolType = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("ToolType");
+var AddFriendType = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("AddFriendType");
 
 //message
 var Message =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Message");
@@ -89,6 +93,11 @@ var FriendMatch_Invite = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Frie
 var FriendMatch_Answer = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("FriendMatch_Answer");
 var HistoryMatches = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("HistoryMatches");
 var RankList = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("RankList");
+var AddFriend = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("AddFriend");
+var FindFriend_Request = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("FindFriend_Request");
+var SendFriend_Request = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("SendFriend_Request");
+var ReceiveFriendRequest = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("ReceiveFriendRequest");
+var SelectAdd_NewFriend = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("SelectAdd_NewFriend");
 // var FriendMatch_Answer =
 
 
@@ -109,6 +118,7 @@ var userInfo ={
     userId:null,//
     deviceId:null,//设备号
     source:null,
+    token:"",
     operationType:0,//1为登录，2为快速登录
 
     //
@@ -143,6 +153,10 @@ var userInfo ={
 
     playerListData:null,//玩家列表
     friendListData:null,//好友列表
+    friendNewListData:null,//新的好友列表
+    friendSearchListData:null,//搜索到的好友列表
+    friendAddData:null,//搜索到的好友列表
+
 
 
     /*enum MatchType{

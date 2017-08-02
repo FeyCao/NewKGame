@@ -46,6 +46,8 @@ protoSocketConn.prototype.Connect=function(url)
             // self.onmessageevent[i](evt.data);
             var data = evt.data;
             var MessageInfo = Message.decode(data);
+            console.info("收到的数据：["+i+"]");
+            console.info(MessageInfo);
             if(MessageInfo.messageType == MessageType.Type_Ping){
                 var  message = new Message();
                 message.setMessageType(MessageType.Type_Pong);
@@ -56,8 +58,6 @@ protoSocketConn.prototype.Connect=function(url)
                 console.info(message);
 
             }
-            console.info("收到的数据：["+i+"]");
-            console.info(MessageInfo);
             self.onmessageevent[i](MessageInfo);
         }
     };
@@ -564,8 +564,56 @@ protoSocketConn.prototype.SendToolMessage=function(name)//TOOL|name#emojiNum|red
 
 protoSocketConn.prototype.getFriendList=function(mode)
 {
-    cc.log("send LISTFRIEND|"+mode+"|");
-    ws.send("LISTFRIEND||");
+    cc.log("send getFriendList|"+mode+"|");//Type_FriendList
+    var  message = new Message();
+    // var messageSend = new FriendMatch_Invite();
+    // messageSend.setAgree(boolean);
+    // messageSend.setInviteeName(userName);
+    message.setMessageType(MessageType.Type_FriendList);
+    // message.setFriendMatchInvite(messageSend);
+    var arrayBuf =  message.toArrayBuffer();
+    arrayBuf.valueOf();
+    ws.send(arrayBuf);
+    console.info("发送获取好友信息请求：");
+    console.info(message);
+    // ws.send("LISTFRIEND||");
+}
+protoSocketConn.prototype.addFriend=function(addFriendType,content)
+{
+    cc.log("send addFriendList||");//Type_FriendList
+    /* enum AddFriendType{
+    Type_SelectAdd_NewFriend=0;//搜索好友
+    Type_SendFriend_Request=1;//好友申请
+    Type_FindFriendRequest=2;//新的朋友列表
+    }*/
+
+var  message = new Message();
+    var messageSend = new AddFriend();
+    messageSend.setAddFriendType(addFriendType);
+
+    if(addFriendType==AddFriendType.Type_SelectAdd_NewFriend){
+        console.info("发送查询好友信息的请求：");
+        messageSend.setSelectAddNewFriend(new Array(content));
+    }else if(addFriendType==AddFriendType.Type_SendFriend_Request){
+        console.info("发送添加好友信息的请求：");
+        messageSend.setSendFriendRequest(content);
+    }else if(addFriendType==AddFriendType.Type_FindFriendRequest){
+        console.info("发送新的好友列表信息的请求：");
+        messageSend.setFindFriendRequest(new Array(content));
+    }else if(addFriendType==AddFriendType.Type_ReceiveFriendRequest){
+        console.info("接受好友信息的请求：");
+        messageSend.setReceiveFriendRequest(content);
+    }else{
+        console.info("好友请求信息错误！！！");
+    }
+    message.setMessageType(MessageType.Type_AddFriend);
+    message.setAddFriend(messageSend);
+    var arrayBuf =  message.toArrayBuffer();
+    arrayBuf.valueOf();
+    ws.send(arrayBuf);
+
+    console.info(message);
+    // ws.send("LISTFRIEND||");
 }
 
 protoSocketConn.prototype.inviteFriend=function(userName)

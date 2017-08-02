@@ -411,6 +411,7 @@ var MatchInfoLayer = cc.Layer.extend({
         var posX =48;
 		var posY = 78;
 		var fontSize = 25;
+        var labelSize = cc.size(100,70);
 		var fXScale = gDesignResolutionWidth/1280;
 		var fYScale = gDesignResolutionHeight/720;
 		this.dailyControlLayer=new cc.Sprite(res.EXERCISE_BOX_DEFAULT);
@@ -422,29 +423,39 @@ var MatchInfoLayer = cc.Layer.extend({
 		var bgSize = this.dailyControlLayer.getContentSize();
 		cc.log("dailyControlLayer  bgSize.width=="+bgSize.width+"bgSize.height=="+bgSize.height);
 
+
+
 		var mu = new cc.Menu();
 		mu.x = 0;
 		mu.y = 0;
 		this.dailyControlLayer.addChild(mu, 2);
-		this.dailyControlLayer.setVisible(false);
+		// this.dailyControlLayer.setVisible(false);
 
         this.dailySelectButton=new cc.MenuItemImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);//new Button("res/home.png");
         this.dailySelectButton.setPosition(cc.p(bgSize.width-posX,bgSize.height-posY/2));
-		self.infoLabel = new cc.LabelTTF("分时",res.FONT_TYPE,fontSize);
+		self.infoLabel = new cc.LabelTTF("分时",res.FONT_TYPE,fontSize,labelSize);
+        self.infoLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+		self.infoLabel.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
 		self.infoLabel.enableStroke(ShadowColor, 2);
 		self.infoLabel.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2));
 		this.dailyControlLayer.addChild(self.infoLabel);
         // this.dailySelectButton.setVisible(false);
         mu.addChild(this.dailySelectButton);//new CheckButton("res/btn_sc_a_double.png","res/btn_sc_d_double.png");
-		self.dailyLabel = new cc.LabelTTF("分时",res.FONT_TYPE,fontSize);
+		self.dailyLabel = new cc.LabelTTF("分时",res.FONT_TYPE,fontSize,labelSize);
+        self.dailyLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+        self.dailyLabel.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
 		this.item1 = new cc.MenuItemLabel(self.dailyLabel, self.dailyLine, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
 		// item1.setAnchorPoint(0,0.5);
 		mu.addChild(this.item1);
-		self.onedailyLabel = new cc.LabelTTF("1分钟",res.FONT_TYPE,fontSize);
+		self.onedailyLabel = new cc.LabelTTF("1分钟",res.FONT_TYPE,fontSize,labelSize);
+        self.onedailyLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+        self.onedailyLabel.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
 		this.itemOne = new cc.MenuItemLabel(self.onedailyLabel, self.onedailyLine, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
 		// itemOne.setAnchorPoint(0,0.5);
 		mu.addChild(this.itemOne);
-		self.fivedailyLabel = new cc.LabelTTF("5分钟",res.FONT_TYPE,fontSize);
+		self.fivedailyLabel = new cc.LabelTTF("5分钟",res.FONT_TYPE,fontSize,labelSize);
+        self.fivedailyLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+        self.fivedailyLabel.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
 		this.itemFive = new cc.MenuItemLabel(self.fivedailyLabel, self.fivedailyLine, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
 		// itemFive.setAnchorPoint(0,0.5);
 		mu.addChild(this.itemFive);
