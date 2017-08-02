@@ -263,41 +263,6 @@ var createClipRoundNode = cc.Node.extend({
     }
 
 });
-var showTextNode = cc.Node.extend({
-    _text:null,
-    _fontSize:null,
-    _color:null,
-    _width:null,
-    _height:null,
-    _cliper:null,
-    _bg:null,
-    ctor: function (txt,fontsize,color,width,height) {
-        var self = this;
-        cc.Node.prototype.ctor.call(self);
-        self._text = new cc.LabelTTF(txt,"Arial",fontsize);
-        self._text.setColor(color?color:cc.color.BLUE);
-        var cliper = new cc.ClippingNode();
-        var drawNode = new cc.DrawNode();
-        drawNode.drawRect(cc.p(0,0),cc.p(width,height),cc.color.BLUE);
-        cliper.setStencil(drawNode);
-        cliper.anchorX = 0.5;
-        cliper.anchorY = 0.5;
-        self._text.y = height/2;
-        cliper.addChild(self._text);
-        self._text.x = width+fontsize;
-        self._text.runAction(cc.repeatForever(cc.sequence(
-            cc.moveTo(self._text.width/width*5,cc.p(-self._text.width,self._text.y)),
-            cc.callFunc(function(){
-                self._text.x = width+fontsize;
-            }))));
-        self.addChild(cliper);
-    },
-    setString:function (txt) {
-        this._text.setString(txt);
-    }
-
-
-});
 // function bubbleSort(arr,compare) {
 //     var len=arr.length,j;
 //     var temp;
