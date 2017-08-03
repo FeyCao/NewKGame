@@ -114,6 +114,8 @@ var res = {
  BG_FRIEND_HEAD_VS_png:"res/friend/ff_head_large.png",
  BG_FRIEND_NO_png:"res/friend/non_friends.png",
  BG_FRIEND_SEARCH:"res/friend/search_friends_bg.png",
+ BG_FRIEND_SEARCH_L:"res/friend/search_friends_bg_l.png",
+ BG_FRIEND_SEARCH_S:"res/friend/search_friends_bg_s.png",
  BG_FRIEND_ACCEPT:"res/friend/bg_accept_battle.png",
 
  STATUS_FRIEND_GAME_png:"res/friend/ff_status_itg.png",

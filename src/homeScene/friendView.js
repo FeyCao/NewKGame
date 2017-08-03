@@ -363,19 +363,19 @@ var FriendViewLayer = cc.Layer.extend({
     },
 
     init:function () {
-        var winSize = cc.director.getWinSize();
         var self=this;
         this.infoBg=null;
         this.infoLabel=null;
         var size = cc.director.getWinSize();
         var fXScale = size.width/1280;
         var fYScale = size.height/720;
-        var titleSize = 30;
+
+        // var titleSize = 30;
+        var fontSize = 25;
 
         this.friendAddNode = new cc.Node();
         this.friendListNode = new cc.Node();
         this.friendSearchNode = new cc.Node();
-
 
         this.backgroundSprite = new cc.LayerColor(cc.color(0,0,0,0),1280,720);
         this.addChild(this.backgroundSprite,this.bgNumber);
@@ -389,7 +389,6 @@ var FriendViewLayer = cc.Layer.extend({
         this.bgRTopSprite=new cc.Sprite(res.BG_FRIEND_RTOP_png);
         this.bgRTopSprite.setAnchorPoint(1,1);
         this.bgRTopSprite.setPosition(1280,720);
-
         var topPosY = this.bgRTopSprite.height/2;
 
         this.backgroundSprite.addChild(this.bgLeftSprite);
@@ -411,42 +410,12 @@ var FriendViewLayer = cc.Layer.extend({
         this.btnHome.setPosition(cc.p(35,bgSize.height-topPosY));
         this.btnHome.setScale(0.9);
         mu.addChild(this.btnHome);
-        this.btnAddFriend=new cc.MenuItemImage(res.BG_FRIEND_ADD, res.BG_FRIEND_ADD, self.sendFriendAdd, this);//new Button("res/home.png");
-        this.btnAddFriend.setPosition(bgSize.width-320,bgSize.height-topPosY);
-        // this.btnAddFriend.setScale(0.9);
-        mu.addChild(this.btnAddFriend);
-        this.btnAdd=new cc.MenuItemImage(res.BTN_FRIEND_ADD, res.BTN_FRIEND_ADD, self.sendFriendAdd, this);//new Button("res/home.png");
-        this.btnAdd.setPosition(bgSize.width-180,bgSize.height/2-topPosY);//(1100,360)
-        this.btnAdd.setVisible(false);
-        mu.addChild(this.btnAdd);
-        this.btnBack=new cc.MenuItemImage(res.BG_FRIEND_BACK, res.BG_FRIEND_BACK, self.sendFriendAdd, this);//new Button("res/home.png");
-        this.btnBack.setPosition(bgSize.width-320,bgSize.height-topPosY);
-        this.btnBack.setVisible(false);
-        mu.addChild(this.btnBack);
-        this.btnListFriend=new cc.MenuItemImage(res.BG_FRIEND_LIST, res.BG_FRIEND_LIST, self.sendFriendList, this);//new Button("res/home.png");
-        this.btnListFriend.setPosition(bgSize.width-320,bgSize.height-topPosY);
-        this.btnListFriend.setVisible(false);
-        mu.addChild(this.btnListFriend);
-        this.btnSearchFriend=new cc.MenuItemImage(res.BTN_FRIEND_SEARCH, res.BTN_FRIEND_SEARCH, self.sendFriendSearch, this);//new Button("res/home.png");
-        this.btnSearchFriend.setPosition(bgSize.width-320,bgSize.height-topPosY*3);
-        this.btnSearchFriend.setVisible(false);
-        mu.addChild(this.btnSearchFriend);
-        this.searchBg = new cc.Sprite(res.BG_FRIEND_SEARCH);
-        this.searchBg.setPosition(bgSize.width-180,bgSize.height-topPosY*3);
-        this.searchBg.setVisible(false);
-        this.backgroundSprite.addChild(this.searchBg,this.infoNumber);
-
-        this.infoTitle = new cc.LabelTTF("游戏好友", res.FONT_TYPE, titleSize,cc.size(140,45));
-        this.infoTitle.setPosition(bgSize.width-150,bgSize.height-topPosY);
-        this.backgroundSprite.addChild(this.infoTitle,5);
-
 
         // var sprite = new cc.Sprite(spriteFrame);
         var posD = 400;
         this.selfBg = new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);
         this.selfBg.setPosition(270,posD);
         this.backgroundSprite.addChild(this.selfBg,2);
-        var fontSize = 25;
 
         this.opponentBg = new cc.Sprite(res.BG_FRIEND_HEAD_WAIT_png);
         this.opponentBg.setPosition(660,posD);
@@ -489,64 +458,6 @@ var FriendViewLayer = cc.Layer.extend({
         {
             self.selfNameLabel.setString(cutstr(userInfo.nickName,11));
         }
-
-        //好友列表
-        this.tableViewFriend = new cc.TableView(this, cc.size(350, 660));
-        this.tableViewFriend.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
-        //tableView.setAnchorPoint(0,1);
-        //cc.log(-winSize.width/2,-40);this
-        this.tableViewFriend.setPosition(925,0);
-        //tableView.setPosition(0,0);
-        //tableView.x = winSize.width/2;
-        //tableView.y = winSize.height / 2 - 150;
-        //this.tableView.setScale(fXScale,fYScale);
-        this.tableViewFriend.setDelegate(this);
-        this.tableViewFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
-        this.friendListNode.addChild(this.tableViewFriend,3);
-        this.tableViewFriend.reloadData();
-
-        //新的好友列表
-        this.tableViewNewFriend = new cc.TableView(this, cc.size(350, 600));
-        this.tableViewNewFriend.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
-        //tableView.setAnchorPoint(0,1);
-        //cc.log(-winSize.width/2,-40);this
-        this.tableViewNewFriend.setPosition(925,0);
-        //tableView.setPosition(0,0);
-        //tableView.x = winSize.width/2;
-        //tableView.y = winSize.height / 2 - 150;
-        //this.tableView.setScale(fXScale,fYScale);
-        this.tableViewNewFriend.setDelegate(this);
-        this.tableViewNewFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
-        this.friendAddNode.addChild(this.tableViewNewFriend,3);
-        // this.tableViewNewFriend.reloadData();
-
-        // (size, normal9SpriteBg, press9SpriteBg, disabled9SpriteBg)
-        // var normal9SpriteBg=new cc.Scale9Sprite(res.BLUE_BG_png);
-        var normal9SpriteBg=new cc.Scale9Sprite(res.LESS_BG_png);
-        // var press9SpriteBg=new cc.Scale9Sprite(res.LOGIN_BG2_png);
-        // var disabled9SpriteBg=new cc.Scale9Sprite(res.LOGIN_BG1_png);
-        // var fontSize = 30;
-        // this._userName = new cc.EditBox(cc.size(300, 45),normal9SpriteBg,press9SpriteBg,disabled9SpriteBg );
-        this._userName = new cc.EditBox(cc.size(280, 45),normal9SpriteBg);
-        this._userName.x = bgSize.width-150;
-        this._userName.y = bgSize.height-topPosY*3;
-        this._userName.setFontSize(fontSize);
-        this._userName.setDelegate(this);
-        this._userName.setMaxLength(15);
-        this._userName.setPlaceholderFontSize(fontSize);
-        this._userName.setPlaceHolder("手机号/昵称");
-        this._userName.setPlaceholderFontColor(fontBlueColor);
-        this._userName.setInputMode(cc.EDITBOX_INPUT_MODE_PHONENUMBER);
-        // this._userName.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);//修改为使用密文
-        this._userName.setFontColor(fontBlueColor);
-        this.friendAddNode.addChild(this._userName,this.infoNumber);
-        this.friendAddNode.setVisible(false);
-
-
-
-
-
-
         this.messageLabelInfo=new cc.LabelTTF("", res.FONT_TYPE, 40);//好友是否接受邀请提示信息
         this.messageLabelInfo.setColor(BlueColor);
         this.messageLabelInfo.setPosition(bgSize.width / 2,bgSize.height/2);
@@ -562,12 +473,205 @@ var FriendViewLayer = cc.Layer.extend({
         this.messageLabelInfoShadow.verticalAlign = cc.TEXT_ALIGNMENT_CENTER;
         this.messageLabelInfoShadow.setVisible(false);
         self.backgroundSprite.addChild(this.messageLabelInfoShadow,10);
+        this.setFriendListNode();
+        this.setFriendAddNode();
+        this.setFriendSearchNode();
 
+       this.disableAllFriend();
+       this.friendListNode.setVisible(true);
         this.setScale(fXScale,fYScale);
         // this.refreshFriendViewLayer();
         return true;
     },
+    setFriendListNode:function () {
+        var self = this;
+        var titleSize = 30;
+        // var fontSize = 25;
+        var topPosY = this.bgRTopSprite.height/2;
+        var bgSize = this.backgroundSprite.getContentSize();
+        var infoTitle = new cc.LabelTTF("游戏好友", res.FONT_TYPE, titleSize,cc.size(140,45));
+        infoTitle.setPosition(bgSize.width-150,bgSize.height-topPosY);
+        this.friendListNode.addChild(infoTitle,5);
+        var mu = new cc.Menu();
+        mu.x = 0;
+        mu.y = 0;
+        this.friendListNode.addChild(mu, this.muNumber);
+        this.btnAddFriend=new cc.MenuItemImage(res.BG_FRIEND_ADD, res.BG_FRIEND_ADD, self.sendFriendAdd, this);//new Button("res/home.png");
+        this.btnAddFriend.setPosition(bgSize.width-320,bgSize.height-topPosY);
+        // this.btnAddFriend.setScale(0.9);
+        mu.addChild(this.btnAddFriend);
+        this.btnAdd=new cc.MenuItemImage(res.BTN_FRIEND_ADD, res.BTN_FRIEND_ADD, self.sendFriendAdd, this);//new Button("res/home.png");
+        this.btnAdd.setPosition(bgSize.width-180,bgSize.height/2-topPosY);//(1100,360)
+        // this.btnAdd.setVisible(false);
+        mu.addChild(this.btnAdd);
 
+        //好友列表
+        this.tableViewFriend = new cc.TableView(this, cc.size(350, 660));
+        this.tableViewFriend.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
+        //tableView.setAnchorPoint(0,1);
+        //cc.log(-winSize.width/2,-40);this
+        this.tableViewFriend.setPosition(925,0);
+        //tableView.setPosition(0,0);
+        //tableView.x = winSize.width/2;
+        //tableView.y = winSize.height / 2 - 150;
+        //this.tableView.setScale(fXScale,fYScale);
+        this.tableViewFriend.setDelegate(this);
+        this.tableViewFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+        this.friendListNode.addChild(this.tableViewFriend,3);
+        this.tableViewFriend.reloadData();
+    },
+    setFriendAddNode:function () {
+        var self = this;
+        var titleSize = 30;
+        var fontSize = 25;
+        var bgSize = this.backgroundSprite.getContentSize();
+        var topPosY = this.bgRTopSprite.height/2;
+        var infoTitle = new cc.LabelTTF("添加好友", res.FONT_TYPE, titleSize,cc.size(140,45));
+        infoTitle.setPosition(bgSize.width-150,bgSize.height-topPosY);
+        this.friendAddNode.addChild(infoTitle,5);
+
+        var mu = new cc.Menu();
+        mu.x = 0;
+        mu.y = 0;
+        this.friendAddNode.addChild(mu, this.muNumber);
+        this.btnListFriend=new cc.MenuItemImage(res.BG_FRIEND_LIST, res.BG_FRIEND_LIST, self.sendFriendList, this);//new Button("res/home.png");
+        this.btnListFriend.setPosition(bgSize.width-320,bgSize.height-topPosY);
+        // this.btnListFriend.setVisible(false);
+        mu.addChild(this.btnListFriend);
+        var searchBg = new cc.Sprite(res.BG_FRIEND_SEARCH_L);
+        searchBg.setPosition(bgSize.width-180,bgSize.height-topPosY*3);
+        // searchBg.setVisible(false);
+        this.friendAddNode.addChild(searchBg,self.infoNumber);
+
+        this.btnSearchFriend=new cc.MenuItemImage(res.BTN_FRIEND_SEARCH, res.BTN_FRIEND_SEARCH, self.sendFriendSearch, this);//new Button("res/home.png");
+        this.btnSearchFriend.setPosition(bgSize.width-320,bgSize.height-topPosY*3);
+        mu.addChild(this.btnSearchFriend);
+
+        //新的好友列表
+        this.tableViewNewFriend = new cc.TableView(this, cc.size(350, 580));
+        this.tableViewNewFriend.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
+        this.tableViewNewFriend.setPosition(925,0);
+        this.tableViewNewFriend.setDelegate(this);
+        this.tableViewNewFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+        this.friendAddNode.addChild(this.tableViewNewFriend,3);
+        this.tableViewNewFriend.reloadData();
+
+        // (size, normal9SpriteBg, press9SpriteBg, disabled9SpriteBg)
+        // var normal9SpriteBg=new cc.Scale9Sprite(res.BLUE_BG_png);
+        var normal9SpriteBg=new cc.Scale9Sprite(res.LESS_BG_png);
+        // var press9SpriteBg=new cc.Scale9Sprite(res.BLACK_BG);
+        // var disabled9SpriteBg=new cc.Scale9Sprite(res.LOGIN_BG1_png);
+        // var fontSize = 30;
+        // this._userName = new cc.EditBox(cc.size(300, 45),normal9SpriteBg,press9SpriteBg,disabled9SpriteBg );
+        this._showName = new cc.EditBox(cc.size(270, 45),normal9SpriteBg);
+        this._showName.setName("showName");
+        this._showName.x = bgSize.width-160;
+        this._showName.y = bgSize.height-topPosY*3;
+        this._showName.setFontSize(fontSize);
+        this._showName.setDelegate(this);
+        this._showName.setMaxLength(20);
+        this._showName.setPlaceholderFontSize(fontSize);
+        this._showName.setPlaceHolder("手机号/昵称");
+        this._showName.setPlaceholderFontColor(fontBlueColor);
+        this._showName.setInputMode(cc.EDITBOX_INPUT_MODE_PHONENUMBER);
+        // this._userName.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);//修改为使用密文
+        this._showName.setFontColor(cc.color.WHITE);
+        this.friendAddNode.addChild(this._showName,this.infoNumber);
+
+    },
+    setFriendSearchNode:function () {
+        var self = this;
+        var titleSize = 30;
+        var fontSize = 25;
+        var topPosY = this.bgRTopSprite.height/2;
+        var bgSize = this.backgroundSprite.getContentSize();
+        var posX = 30;
+        var infoTitle = new cc.LabelTTF("搜索好友", res.FONT_TYPE, titleSize,cc.size(140,45));
+        infoTitle.setPosition(bgSize.width-150,bgSize.height-topPosY);
+        this.friendSearchNode.addChild(infoTitle,5);
+        var mu = new cc.Menu();
+        mu.x = 0;
+        mu.y = 0;
+        this.friendSearchNode.addChild(mu, this.muNumber);
+        this.btnBack=new cc.MenuItemImage(res.BG_FRIEND_BACK, res.BG_FRIEND_BACK, self.sendFriendAdd, this);//new Button("res/home.png");
+        this.btnBack.setPosition(bgSize.width-320,bgSize.height-topPosY);
+        // this.btnBack.setVisible(false);
+        mu.addChild(this.btnBack);
+        var searchBg = new cc.Sprite(res.BG_FRIEND_SEARCH_S);
+        searchBg.setPosition(bgSize.width-180-posX,bgSize.height-topPosY*3);
+        // searchBg.setVisible(false);
+        this.friendSearchNode.addChild(searchBg,self.infoNumber);
+        this.btnSearchFriend=new cc.MenuItemImage(res.BTN_FRIEND_SEARCH, res.BTN_FRIEND_SEARCH, self.sendFriendSearch, this);//new Button("res/home.png");
+        this.btnSearchFriend.setPosition(bgSize.width-320,bgSize.height-topPosY*3);
+        mu.addChild(this.btnSearchFriend);
+        self.searchLabel = new cc.LabelTTF("搜索",res.FONT_TYPE,28,cc.size(100,70));
+        self.searchLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+        self.searchLabel.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
+        this.searchBtn = new cc.MenuItemLabel(self.searchLabel, self.sendFriendSearch, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+        this.searchBtn.setPosition(bgSize.width-50,bgSize.height-topPosY*3);
+        mu.addChild(this.searchBtn);
+
+
+        //搜索到的好友列表
+        this.tableViewSearchFriend = new cc.TableView(this, cc.size(350, 580));
+        this.tableViewSearchFriend.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
+        this.tableViewSearchFriend.setPosition(925,0);
+        this.tableViewSearchFriend.setDelegate(this);
+        this.tableViewSearchFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+        this.friendSearchNode.addChild(this.tableViewSearchFriend,3);
+        this.tableViewSearchFriend.reloadData();
+        // (size, normal9SpriteBg, press9SpriteBg, disabled9SpriteBg)
+        // var normal9SpriteBg=new cc.Scale9Sprite(res.BLUE_BG_png);
+        var normal9SpriteBg=new cc.Scale9Sprite(res.LESS_BG_png);
+        // var press9SpriteBg=new cc.Scale9Sprite(res.BLACK_BG);
+        // var disabled9SpriteBg=new cc.Scale9Sprite(res.LOGIN_BG1_png);
+        // var fontSize = 30;
+        // this._userName = new cc.EditBox(cc.size(300, 45),normal9SpriteBg,press9SpriteBg,disabled9SpriteBg );
+        this._userName = new cc.EditBox(cc.size(200, 45),normal9SpriteBg);
+        this._userName.setName("userName");
+        this._userName.x = bgSize.width-160-posX;
+        this._userName.y = bgSize.height-topPosY*3;
+        this._userName.setFontSize(fontSize);
+        this._userName.setDelegate(this);
+        this._userName.setMaxLength(20);
+        this._userName.setPlaceholderFontSize(fontSize);
+        this._userName.setPlaceHolder("手机号/昵称");
+        this._userName.setPlaceholderFontColor(fontBlueColor);
+        this._userName.setInputMode(cc.EDITBOX_INPUT_MODE_PHONENUMBER);
+        // this._userName.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);//修改为使用密文
+        this._userName.setFontColor(cc.color.WHITE);
+        this.friendSearchNode.addChild(this._userName,this.infoNumber);
+
+    },
+    editBoxEditingDidBegin: function (editBox) {
+        cc.log("editBox " + editBox.getName() + " DidBegin !");
+        if("showName"==editBox.getName()){
+            this.refreshSearchFriendView();
+        }
+        // this.sendFriendSearch();
+    },
+
+    editBoxEditingDidEnd: function (editBox) {
+        cc.log("editBox " + editBox.getName() + " DidEnd !");
+        // this.sendFriendSearch();
+    },
+
+    editBoxTextChanged: function (editBox, text) {
+        // if("showName"==editBox.getName()){
+        //     this.refreshSearchFriendView();
+        // }
+        cc.log("editBox " + editBox.getName() + ", TextChanged, text: " + text);
+    },
+
+    editBoxReturn: function (editBox) {
+        cc.log("editBox " + editBox.getName() + " was returned !");
+        // if("showName"==editBox.getName()){
+        //     this.refreshSearchFriendView();
+        // }
+        if("userName"==editBox.getName()){
+            this.sendFriendSearch();
+        }
+    },
     showMessageInfo:function(msg)
     {
         var self = this;
@@ -664,7 +768,6 @@ var FriendViewLayer = cc.Layer.extend({
 
         }
 
-
         return cell;
         // setTimeout(function(){return cell;},100);
         // for(var each in pageTimer){
@@ -682,20 +785,15 @@ var FriendViewLayer = cc.Layer.extend({
             // else
             return userInfo.friendListData.length;
         }
-        else  if(this.friendAddNode.isVisible()==true)
+        else  if(null!=userInfo.friendNewListData&&this.friendAddNode.isVisible()==true)
         {
-            if(null!=userInfo.friendAddData&&userInfo.friendAddData.addFriendType==AddFriendType.Type_FindFriendRequest){
-                return userInfo.friendNewListData.length;
-            }else if(null!=userInfo.friendAddData&&userInfo.friendAddData.addFriendType==AddFriendType.Type_SelectAdd_NewFriend){
-                return userInfo.friendSearchListData.length;
-            }
-
-        }
-        else {
+            return userInfo.friendNewListData.length;
+        }else if(null!=userInfo.friendSearchListData&&this.friendSearchNode.isVisible()==true){
+            return userInfo.friendSearchListData.length;
+        } else {
             return 0;
         }
     },
-
 
     showLayer:function()
     {
@@ -714,71 +812,17 @@ var FriendViewLayer = cc.Layer.extend({
     },
 
     sendFriendList:function () {
-        var self =this;
-        if(null!=self.infoTitle){
-            self.infoTitle.setString("游戏好友");
-        }
-        if(null!=self.btnAddFriend){
-            self.btnAddFriend.setVisible(true);
-        }
-        if(null!=self.friendListNode){
-            self.friendListNode.setVisible(true);
-            // this.tableViewFriend.reloadData();
-        }
-        if(null!=self.btnBack){
-            self.btnBack.setVisible(false);
-        }
-        if(null!=self.btnSearchFriend){
-            self.btnSearchFriend.setVisible(false);
-        }
-        if(null!=self.btnListFriend){
-            self.btnListFriend.setVisible(false);
-        }
-        if(null!=self.searchBg){
-            self.searchBg.setVisible(false);
-        }
-        if(null!=self.friendAddNode){
-            self.friendAddNode.setVisible(false);
-        }
-
         // userInfo.matchMode = MatchType.Type_Friend_Match;
+        userInfo.friendListData = null;
+        this.refreshFriendViewLayer();
         if(null!=gSocketConn){
             gSocketConn.getFriendList(userInfo.matchMode);
         }
     },
     sendFriendAdd:function () {
-        var self =this;
-        if(null!=self.infoTitle){
-            self.infoTitle.setString("添加好友");
-        }
-        if(null!=self.btnSearchFriend){
-            self.btnSearchFriend.setVisible(true);
-        }
-        if(null!=self.btnAddFriend){
-            self.btnAddFriend.setVisible(false);
-        }
-        if(null!=this.btnAdd){
-            this.btnAdd.setVisible(false);
-        }
-        if(null!=self.btnBack){
-            self.btnBack.setVisible(false);
-        }
-        self.disableFriendList();
-        if(null!=self.btnListFriend){
-            self.btnListFriend.setVisible(true);
-        }
-       if(null!=self.friendListNode){
-           self.friendListNode.setVisible(false);
-        }
-       if(null!=self.friendAddNode){
-           self.friendAddNode.setVisible(true);
-           self.tableViewNewFriend.reloadData();
-        }
-        if(null!=self.searchBg){
-            self.searchBg.setVisible(true);
-        }
-
-        var addFriendType = AddFriendType.Type_FindFriendRequest//AddFriendType.Type_SelectAdd_NewFriend;ddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
+        // userInfo.friendNewListData = null;
+        this.refreshAddFriendView();
+        var addFriendType = AddFriendType.Type_FindFriendRequest;//AddFriendType.Type_SelectAdd_NewFriend;ddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
         var content = new FindFriend_Request();
         content.setToken(userInfo.token);
         // userInfo.matchMode = MatchType.Type_Friend_Match;
@@ -787,32 +831,9 @@ var FriendViewLayer = cc.Layer.extend({
         }
     },
     sendFriendSearch:function () {
-        var self =this;
-        if(null!=self.infoTitle){
-            self.infoTitle.setString("搜索好友");
-        }
-        if(null!=self.btnSearchFriend){
-            self.btnSearchFriend.setVisible(true);
-        }
-        if(null!=self.btnAddFriend){
-            self.btnAddFriend.setVisible(false);
-        }
-        if(null!=self.btnBack){
-            self.btnBack.setVisible(true);
-        }
-        self.disableFriendList();
-        if(null!=this.btnAdd){
-            this.btnAdd.setVisible(false);
-        }
-        if(null!=self.friendAddNode){
-            self.friendAddNode.setVisible(true);
-        }
-        if(null!=self.searchBg){
-            self.searchBg.setVisible(true);
-        }
-        // if(null!=self.friendSearchNode){
-        //     self.friendSearchNode.setVisible(true);
-        // }
+        var self = this;
+        // userInfo.friendSearchListData = null;
+        this.refreshSearchFriendView();
         var addFriendType = AddFriendType.Type_SelectAdd_NewFriend//AddFriendType.Type_SelectAdd_NewFriend;ddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
         var content = new SelectAdd_NewFriend();
         content.setToken(userInfo.token);
@@ -820,40 +841,32 @@ var FriendViewLayer = cc.Layer.extend({
             cc.log("查询的好友名字：",self._userName.getString());
             content.setUserName(self._userName.getString());
         }
-
         // userInfo.matchMode = MatchType.Type_Friend_Match;
         if(null!=gSocketConn){
             gSocketConn.addFriend(addFriendType,content);
         }
     },
-     sendAddFriend:function () {
-        var self =this;
+    sendAddFriend:function () {
         var addFriendType = AddFriendType.Type_SendFriend_Request//AddFriendType.Type_SelectAdd_NewFriend;AddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
         var content = new SendFriend_Request();
         content.setToken(userInfo.token);
         content.setFollowerId("");//申请人的uid
         content.setComment("");//申请好友的备注
-
         // userInfo.matchMode = MatchType.Type_Friend_Match;
         if(null!=gSocketConn){
             gSocketConn.addFriend(addFriendType,content);
         }
     },
-    disableFriendList:function () {
-        var self =this;
-        if(null!=self.btnListFriend){
-            self.btnListFriend.setVisible(false);
-        }
-        if(null!=self.friendListNode){
-            self.friendListNode.setVisible(false);
-        }
-        if(null!=this.btnAdd){
-            this.btnAdd.setVisible(false);
-        }
-    },
 
+    disableAllFriend:function () {
+        this.friendListNode.setVisible(false);
+        this.friendSearchNode.setVisible(false);
+        this.friendAddNode.setVisible(false);
+    },
     refreshAddFriendView:function(){
         var self =this;
+        this.disableAllFriend();
+        this.friendAddNode.setVisible(true);
         if(self.tableViewNewFriend!=null)
         {
             this.tableViewNewFriend.reloadData();
@@ -862,15 +875,17 @@ var FriendViewLayer = cc.Layer.extend({
     },
     refreshSearchFriendView:function(){
         var self =this;
-        if(self.tableViewNewFriend!=null)
+        this.disableAllFriend();
+        this.friendSearchNode.setVisible(true);
+        if(self.tableViewSearchFriend!=null)
         {
-            this.tableViewNewFriend.reloadData();
+            this.tableViewSearchFriend.reloadData();
         }
 
     },
-
-    refreshFriendViewLayer:function()
-    {
+    refreshFriendViewLayer:function() {
+        this.disableAllFriend();
+        this.friendListNode.setVisible(true);
         if(this.tableViewFriend!=null)
         {
             this.tableViewFriend.reloadData();

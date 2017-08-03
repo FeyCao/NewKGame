@@ -271,17 +271,18 @@ var addFriendView = cc.Layer.extend({
         this._commentInfo.setMaxLength(20);
         this._commentInfo.setPlaceholderFontSize(fontSize);
         this._commentInfo.setPlaceHolder(commentInfo);
-
         this._commentInfo.setPlaceholderFontColor(cc.color("#FFFFFF"));
         this._commentInfo.setPlaceholderFontColor(fontBlueColor);
         this._commentInfo.setInputMode(cc.EDITBOX_INPUT_MODE_PHONENUMBER);
         // this._userName.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);//修改为使用密文
         // this._commentInfo.setFontName(commentInfo);
         this._commentInfo.setFontColor(cc.color.WHITE);
-        this._commentInfo.setFontColor(fontBlueColor);
+        // this._commentInfo.setFontColor(fontBlueColor);
         // this._commentInfo.
         this._commentInfo.setAnchorPoint(0,0.5);
         this.backgroundSprite.addChild(this._commentInfo,3);
+
+
 
 
         var mu = new cc.Menu();
