@@ -568,20 +568,20 @@ var FriendViewLayer = cc.Layer.extend({
         // mu.addChild(this.searchBtn);
 
         var normal9SpriteBg=new cc.Scale9Sprite(res.LESS_BG_png);
-        this._showName = new cc.EditBox(cc.size(270, 45),normal9SpriteBg);
-        this._showName.setName("showName");
-        this._showName.x = bgSize.width-160;
-        this._showName.y = bgSize.height-topPosY*3;
-        this._showName.setFontSize(fontSize);
-        this._showName.setDelegate(this);
-        this._showName.setMaxLength(20);
-        this._showName.setPlaceholderFontSize(fontSize);
-        this._showName.setPlaceHolder("手机号/昵称");
-        this._showName.setPlaceholderFontColor(fontBlueColor);
-        this._showName.setInputMode(cc.EDITBOX_INPUT_MODE_PHONENUMBER);
+        var _showName = new cc.EditBox(cc.size(270, 45),normal9SpriteBg);
+        _showName.setName("showName");
+        _showName.x = bgSize.width-160;
+        _showName.y = bgSize.height-topPosY*3;
+        _showName.setFontSize(fontSize);
+        _showName.setDelegate(this);
+        _showName.setMaxLength(20);
+        _showName.setPlaceholderFontSize(fontSize);
+        _showName.setPlaceHolder("手机号/昵称");
+        _showName.setPlaceholderFontColor(fontBlueColor);
+        _showName.setInputMode(cc.EDITBOX_INPUT_MODE_PHONENUMBER);
         // this._userName.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);//修改为使用密文
-        this._showName.setFontColor(cc.color.WHITE);
-        this.friendAddNode.addChild(this._showName,this.infoNumber);
+        _showName.setFontColor(cc.color.WHITE);
+        this.friendAddNode.addChild(_showName,this.infoNumber);
 
     },
     setFriendSearchNode:function () {
@@ -667,11 +667,11 @@ var FriendViewLayer = cc.Layer.extend({
     },
 
     editBoxReturn: function (editBox) {
-        cc.log("editBox " + editBox.getName() + " was returned !");
+        cc.log("editBox " + editBox.getName() + " was returned !editBox.getString()=="+ editBox.getString());
         // if("showName"==editBox.getName()){
         //     this.refreshSearchFriendView();
         // }
-        if("userName"==editBox.getName()){
+        if("userName"==editBox.getName()&&null!=editBox.getString()&&''!=editBox.getString()){
             this.sendFriendSearch();
             cc.log("sendFriendSearch");
         }
@@ -862,14 +862,20 @@ var FriendViewLayer = cc.Layer.extend({
 
     disableAllFriend:function () {
         this.friendListNode.setVisible(false);
-        this.friendSearchNode.setVisible(false);
+        this.tableViewFriend.setVisible(false);
+
         this.friendAddNode.setVisible(false);
+        this.tableViewNewFriend.setVisible(false);
+
+        this.friendSearchNode.setVisible(false);
+        this.tableViewSearchFriend.setVisible(false);
     },
     refreshAddFriendView:function(){
         var self =this;
         this.disableAllFriend();
         this.friendAddNode.setVisible(true);
-        if(self.tableViewNewFriend!=null)
+        this.tableViewNewFriend.setVisible(true);
+        if(self.tableViewNewFriend!=null&&null!=userInfo.friendNewListData)
         {
             cc.log("refreshAddFriendViewLayer:function()");
             this.tableViewNewFriend.reloadData();
@@ -881,7 +887,8 @@ var FriendViewLayer = cc.Layer.extend({
         var self =this;
         this.disableAllFriend();
         this.friendSearchNode.setVisible(true);
-        if(self.tableViewSearchFriend!=null)
+        this.tableViewSearchFriend.setVisible(true);
+        if(self.tableViewSearchFriend!=null&&null!=userInfo.friendSearchListData)
         {
             cc.log("refreshSearchFriendView:function()");
             this.tableViewSearchFriend.reloadData();
@@ -892,7 +899,8 @@ var FriendViewLayer = cc.Layer.extend({
     refreshFriendViewLayer:function() {
         this.disableAllFriend();
         this.friendListNode.setVisible(true);
-        if(this.tableViewFriend!=null)
+        this.tableViewFriend.setVisible(true);
+        if(this.tableViewFriend!=null&&null!=userInfo.friendListData)
         {
             cc.log("refreshFriendViewLayer:function()");
             this.tableViewFriend.reloadData();
