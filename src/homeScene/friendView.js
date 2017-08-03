@@ -502,7 +502,7 @@ var FriendViewLayer = cc.Layer.extend({
         mu.addChild(this.btnAddFriend);
         this.btnAdd=new cc.MenuItemImage(res.BTN_FRIEND_ADD, res.BTN_FRIEND_ADD, self.sendFriendAdd, this);//new Button("res/home.png");
         this.btnAdd.setPosition(bgSize.width-180,bgSize.height/2-topPosY);//(1100,360)
-        // this.btnAdd.setVisible(false);
+        this.btnAdd.setVisible(false);
         mu.addChild(this.btnAdd);
 
         //好友列表
@@ -518,6 +518,7 @@ var FriendViewLayer = cc.Layer.extend({
         this.tableViewFriend.setDelegate(this);
         this.tableViewFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
         this.friendListNode.addChild(this.tableViewFriend,3);
+        cc.log("setFriendList:function()");
         this.tableViewFriend.reloadData();
     },
     setFriendAddNode:function () {
@@ -554,15 +555,19 @@ var FriendViewLayer = cc.Layer.extend({
         this.tableViewNewFriend.setDelegate(this);
         this.tableViewNewFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
         this.friendAddNode.addChild(this.tableViewNewFriend,3);
+        cc.log("setNewFriend:function()");
         this.tableViewNewFriend.reloadData();
 
-        // (size, normal9SpriteBg, press9SpriteBg, disabled9SpriteBg)
-        // var normal9SpriteBg=new cc.Scale9Sprite(res.BLUE_BG_png);
+
+        // self.searchLabel = new cc.LabelTTF("手机号/昵称",res.FONT_TYPE,fontSize,cc.size(300,50));
+        // self.searchLabel.setColor(fontBlueColor);
+        // self.searchLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;//居左显示
+        // self.searchLabel.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
+        // this.searchBtn = new cc.MenuItemLabel(self.searchLabel, self.refreshSearchFriendView, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+        // this.searchBtn.setPosition(bgSize.width-160,bgSize.height-topPosY*3);
+        // mu.addChild(this.searchBtn);
+
         var normal9SpriteBg=new cc.Scale9Sprite(res.LESS_BG_png);
-        // var press9SpriteBg=new cc.Scale9Sprite(res.BLACK_BG);
-        // var disabled9SpriteBg=new cc.Scale9Sprite(res.LOGIN_BG1_png);
-        // var fontSize = 30;
-        // this._userName = new cc.EditBox(cc.size(300, 45),normal9SpriteBg,press9SpriteBg,disabled9SpriteBg );
         this._showName = new cc.EditBox(cc.size(270, 45),normal9SpriteBg);
         this._showName.setName("showName");
         this._showName.x = bgSize.width-160;
@@ -619,6 +624,7 @@ var FriendViewLayer = cc.Layer.extend({
         this.tableViewSearchFriend.setDelegate(this);
         this.tableViewSearchFriend.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
         this.friendSearchNode.addChild(this.tableViewSearchFriend,3);
+        cc.log("setFriendSearchNode:function()");
         this.tableViewSearchFriend.reloadData();
         // (size, normal9SpriteBg, press9SpriteBg, disabled9SpriteBg)
         // var normal9SpriteBg=new cc.Scale9Sprite(res.BLUE_BG_png);
@@ -645,10 +651,7 @@ var FriendViewLayer = cc.Layer.extend({
     },
     editBoxEditingDidBegin: function (editBox) {
         cc.log("editBox " + editBox.getName() + " DidBegin !");
-        if("showName"==editBox.getName()){
-            this.refreshSearchFriendView();
-        }
-        // this.sendFriendSearch();
+        this.refreshSearchFriendView();
     },
 
     editBoxEditingDidEnd: function (editBox) {
@@ -670,6 +673,7 @@ var FriendViewLayer = cc.Layer.extend({
         // }
         if("userName"==editBox.getName()){
             this.sendFriendSearch();
+            cc.log("sendFriendSearch");
         }
     },
     showMessageInfo:function(msg)
@@ -732,7 +736,6 @@ var FriendViewLayer = cc.Layer.extend({
         cc.log("cell tableCellAtIndex index: "+idx);
 
         var self = this;
-
         // var strValue = idx.toFixed(0);
         // var label;
         var cell = table.dequeueCell();
@@ -748,24 +751,20 @@ var FriendViewLayer = cc.Layer.extend({
             }
             cell.setCellView(idx);
         }
-        else  if(this.friendAddNode.isVisible()==true)
-        {
-            if(null!=userInfo.friendAddData&&userInfo.friendAddData.addFriendType==AddFriendType.Type_FindFriendRequest){
-                // return userInfo.friendNewListData.length;
-                data = userInfo.friendNewListData[idx];
-                if(data!=null){
-                    cell.setFriendInfo(data,AddFriendType.Type_FindFriendRequest);
-                }
-                cell.setCellView(idx);
-            }else if(null!=userInfo.friendAddData&&userInfo.friendAddData.addFriendType==AddFriendType.Type_SelectAdd_NewFriend){
-                // return userInfo.friendSearchListData.length;
-                data = userInfo.friendSearchListData[idx];
-                if(data!=null){
-                    cell.setFriendInfo(data,AddFriendType.Type_SelectAdd_NewFriend);
-                }
-                cell.setCellView(idx);
+        else  if(null!=userInfo.friendAddData&&this.friendAddNode.isVisible()==true){
+            // return userInfo.friendNewListData.length;
+            data = userInfo.friendNewListData[idx];
+            if(data!=null){
+                cell.setFriendInfo(data,AddFriendType.Type_FindFriendRequest);
             }
-
+            cell.setCellView(idx);
+        }else if(null!=userInfo.friendAddData&&this.friendSearchNode.isVisible()==true){
+            // return userInfo.friendSearchListData.length;
+            data = userInfo.friendSearchListData[idx];
+            if(data!=null){
+                cell.setFriendInfo(data,AddFriendType.Type_SelectAdd_NewFriend);
+            }
+            cell.setCellView(idx);
         }
 
         return cell;
@@ -778,19 +777,21 @@ var FriendViewLayer = cc.Layer.extend({
     },
 
     numberOfCellsInTableView:function (table) {
+
         if(userInfo.friendListData!=null&&this.friendListNode.isVisible()==true)
         {
-            // if(userInfo.friendListData.length>20)
-            //     return 20;
-            // else
+            cc.log("numberOfCellsInTableView:function (table)1");
             return userInfo.friendListData.length;
         }
         else  if(null!=userInfo.friendNewListData&&this.friendAddNode.isVisible()==true)
         {
+            cc.log("numberOfCellsInTableView:function (table)2");
             return userInfo.friendNewListData.length;
         }else if(null!=userInfo.friendSearchListData&&this.friendSearchNode.isVisible()==true){
+            cc.log("numberOfCellsInTableView:function (table)3");
             return userInfo.friendSearchListData.length;
         } else {
+            cc.log("numberOfCellsInTableView:function (table)4");
             return 0;
         }
     },
@@ -831,6 +832,7 @@ var FriendViewLayer = cc.Layer.extend({
         }
     },
     sendFriendSearch:function () {
+        cc.log("sendFriendSearch:function");
         var self = this;
         // userInfo.friendSearchListData = null;
         this.refreshSearchFriendView();
@@ -841,12 +843,12 @@ var FriendViewLayer = cc.Layer.extend({
             cc.log("查询的好友名字：",self._userName.getString());
             content.setUserName(self._userName.getString());
         }
-        // userInfo.matchMode = MatchType.Type_Friend_Match;
         if(null!=gSocketConn){
             gSocketConn.addFriend(addFriendType,content);
         }
     },
     sendAddFriend:function () {
+        cc.log("sendAddFriend");
         var addFriendType = AddFriendType.Type_SendFriend_Request//AddFriendType.Type_SelectAdd_NewFriend;AddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
         var content = new SendFriend_Request();
         content.setToken(userInfo.token);
@@ -869,18 +871,22 @@ var FriendViewLayer = cc.Layer.extend({
         this.friendAddNode.setVisible(true);
         if(self.tableViewNewFriend!=null)
         {
+            cc.log("refreshAddFriendViewLayer:function()");
             this.tableViewNewFriend.reloadData();
         }
 
     },
     refreshSearchFriendView:function(){
+
         var self =this;
         this.disableAllFriend();
         this.friendSearchNode.setVisible(true);
         if(self.tableViewSearchFriend!=null)
         {
+            cc.log("refreshSearchFriendView:function()");
             this.tableViewSearchFriend.reloadData();
         }
+
 
     },
     refreshFriendViewLayer:function() {
@@ -888,6 +894,7 @@ var FriendViewLayer = cc.Layer.extend({
         this.friendListNode.setVisible(true);
         if(this.tableViewFriend!=null)
         {
+            cc.log("refreshFriendViewLayer:function()");
             this.tableViewFriend.reloadData();
         }
         if(userInfo.friendListData!=null)
@@ -939,7 +946,7 @@ var FriendViewLayer = cc.Layer.extend({
                 this.friendListNode.addChild(this.infoBg,2);
             }
             if(this.infoLabel==null){
-                this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n请到东航金融“账户”的\n“好友列表”里添加。', res.FONT_TYPE, 24,cc.size(35*10,300));
+                this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n', res.FONT_TYPE, 24,cc.size(35*10,100));
                 this.infoLabel.setPosition(1100,360);
                 // this.infoLabel.enableStroke(ShadowColor, 2);
                 this.infoLabel.setLineHeight(40);
