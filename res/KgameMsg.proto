@@ -80,8 +80,7 @@ message AiInfo{
 message Warn{
     required int32 code=1;
 	optional string warnInfo=2;
-
-
+	optional string token=3;
 }
 
 message Share{

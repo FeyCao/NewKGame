@@ -878,7 +878,7 @@ var FriendViewLayer = cc.Layer.extend({
         this.disableAllFriend();
         this.friendAddNode.setVisible(true);
         this.tableViewNewFriend.setVisible(true);
-        if(self.tableViewNewFriend!=null&&null!=userInfo.friendNewListData)
+        if(self.tableViewNewFriend!=null)
         {
             cc.log("refreshAddFriendViewLayer:function()");
             this.tableViewNewFriend.reloadData();
@@ -891,7 +891,7 @@ var FriendViewLayer = cc.Layer.extend({
         this.disableAllFriend();
         this.friendSearchNode.setVisible(true);
         this.tableViewSearchFriend.setVisible(true);
-        if(self.tableViewSearchFriend!=null&&null!=userInfo.friendSearchListData)
+        if(self.tableViewSearchFriend!=null)
         {
             cc.log("refreshSearchFriendView:function()");
             this.tableViewSearchFriend.reloadData();
@@ -903,7 +903,7 @@ var FriendViewLayer = cc.Layer.extend({
         this.disableAllFriend();
         this.friendListNode.setVisible(true);
         this.tableViewFriend.setVisible(true);
-        if(this.tableViewFriend!=null&&null!=userInfo.friendListData)
+        if(this.tableViewFriend!=null)
         {
             cc.log("refreshFriendViewLayer:function()");
             this.tableViewFriend.reloadData();

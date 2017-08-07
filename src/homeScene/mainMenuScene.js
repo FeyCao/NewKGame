@@ -962,6 +962,9 @@ var MainMenuScene =SceneBase.extend(
 //     WARN_NOT_MATCH_MOBILE_CODE(-412,"手机号验证码校验失败"),
 //     WARN_LOGIN_AGAIN(-413,"请重新登录");
         if(message.messageType==MessageType.Type_Warn){
+            if(null!=message.warn.token){
+                userInfo.token = message.warn.token;
+            }
 
             switch (message.warn.code){
                 case -400:{
