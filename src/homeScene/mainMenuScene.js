@@ -1496,9 +1496,11 @@ var MainMenuScene =SceneBase.extend(
                     self.friendLayer.showLayer();
                     self.pauseLowerLayer();
                     if(data.addFriendType==AddFriendType.Type_FindFriendRequest){
+                        userInfo.token = data.findFriendRequest[0]["token"];
                         self.friendLayer.refreshAddFriendView();
                     }
                     if(data.addFriendType==AddFriendType.Type_SelectAdd_NewFriend){
+                        userInfo.token = data.selectAddNewFriend[0]["token"];
                         self.friendLayer.refreshSearchFriendView();
                     }
                     if(data.addFriendType==AddFriendType.Type_SendFriend_Request&&null!=data.sendFriendRequest){

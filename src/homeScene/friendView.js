@@ -651,6 +651,9 @@ var FriendViewLayer = cc.Layer.extend({
     },
     editBoxEditingDidBegin: function (editBox) {
         cc.log("editBox " + editBox.getName() + " DidBegin !");
+        if(null!=userInfo.friendSearchListData){
+            userInfo.friendSearchListData=null;
+        }
         this.refreshSearchFriendView();
     },
 

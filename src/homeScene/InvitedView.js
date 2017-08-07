@@ -277,6 +277,7 @@ var addFriendView = cc.Layer.extend({
         // this._userName.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);//修改为使用密文
         // this._commentInfo.setFontName(commentInfo);
         this._commentInfo.setFontColor(cc.color.WHITE);
+        this._commentInfo.setString(commentInfo);
         // this._commentInfo.setFontColor(fontBlueColor);
         // this._commentInfo.
         this._commentInfo.setAnchorPoint(0,0.5);
@@ -301,7 +302,33 @@ var addFriendView = cc.Layer.extend({
 
         return true;
     },
+    editBoxEditingDidBegin: function (editBox) {
+        cc.log("editBox " + editBox.getName() + " DidBegin !");
+        this._commentInfo.setString("我是");
+    },
 
+    editBoxEditingDidEnd: function (editBox) {
+        cc.log("editBox " + editBox.getName() + " DidEnd !");
+        // this.sendFriendSearch();
+    },
+
+    editBoxTextChanged: function (editBox, text) {
+        // if("showName"==editBox.getName()){
+        //     this.refreshSearchFriendView();
+        // }
+        cc.log("editBox " + editBox.getName() + ", TextChanged, text: " + text);
+    },
+
+    editBoxReturn: function (editBox) {
+        cc.log("editBox " + editBox.getName() + " was returned !editBox.getString()=="+ editBox.getString());
+        // if("showName"==editBox.getName()){
+        //     this.refreshSearchFriendView();
+        // }
+        if("userName"==editBox.getName()&&null!=editBox.getString()&&''!=editBox.getString()){
+            this.sendFriendSearch();
+            cc.log("sendFriendSearch");
+        }
+    },
     toMainScene:function () {
 
         this.hideLayer();
