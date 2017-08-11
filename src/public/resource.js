@@ -39,6 +39,7 @@ var res = {
  BLUE_BG_png:"res/public/blue_bg.png",
  BLUE_BG_BTN:"res/public/btn_blue_bg.png",
  LESS_BG_png:"res/public/less_bg.png",
+ BG_INCOME_INFO:"res/public/icome_bg.png",
 
     BTN_CONFIRM  :"res/btn_confirm.png",
 

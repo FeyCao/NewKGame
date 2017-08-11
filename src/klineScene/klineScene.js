@@ -6,7 +6,7 @@
 // for(var each in pageTimer){
 // 	clearInterval(pageTimer[each]);
 // }
-var faceSprite = {};
+// var faceSprite = {};
 var KLineScene = SceneBase.extend(
 {
 	backgroundLayer:null,		//背景层
@@ -63,6 +63,9 @@ var KLineScene = SceneBase.extend(
 	countDownTimeInfo:null,
 	countDownTime:null,
 
+	specialFlag:false,
+	incomeFlag:[false,false,false,false,false,false],//六种
+	priceFlag:[false,false,false,false,false,false],
 
 	ctor: function ()
 	{
@@ -227,12 +230,26 @@ var KLineScene = SceneBase.extend(
 
 		// this.barInfo.setString("使用了道具使用了道具使用了道具使用了道具");
 		this.barSprite.addChild(this.barInfo);
+        gKlineScene.barSprite.setVisible(false);
 
 
-		// this.barInfo.setPosition(cc.p(gDesignResolutionWidth / 3-20, gDesignResolutionHeight-80));
-		// // gKlineScene.barInfo.setVisible(false);
-		gKlineScene.barSprite.setVisible(false);
-		// this.addChild(this.barInfo,11);
+		//收益特效恭喜你获得了超过10%的收益，超过了多数玩家，再接再厉哦哦！
+//         恭喜你获得了超过20%的收益，超过了大多数玩家，继续保持状态哦！
+// 恭喜你获得了超过50%的收益，已经拥有了大神的状态！
+// 收益受损超过了10%，多注意行情变化哦。
+// 收益受损超过了20%，别灰心快点调整状态哦。
+// 收益受损超过了50%，赔惨了，尝试换个策略吧。
+
+		this.inComeSprite = new cc.Sprite(res.BG_INCOME_INFO);
+        this.inComeSprite.setPosition(cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight-80));
+        this.inComeSprite.setScale(this.fXScale,this.fYScale);
+		this.addChild(this.inComeSprite,10);
+		this.inComeInfo= new createClipRoundNode("恭喜你获得了超过50%的收益，已经拥有了大神的状态!",24,WhiteColor,500,30);// cc.LabelTTF.create("xxx对xxx使用了道具","Arial",25);//createClipRoundText = function(txt,fontsize,color,width,height)
+
+		this.inComeInfo.setPosition(25,25);//.text.setString();
+        this.inComeSprite.addChild(this.inComeInfo);
+
+		gKlineScene.inComeSprite.setVisible(false);
 
 
 		this.warnInfo= cc.LabelTTF.create("警告信息：","Arial",30);
@@ -712,14 +729,14 @@ var KLineScene = SceneBase.extend(
 				self.showMatchEndPbInfo(message.endMatchInfo);
 				break;
 			}
-			case "4":
-			{
-				//
-				//cc.director.runScene(cc.TransitionSlideInL.create(0.5,klineScene));
-				self.opponentsInfo.push(packet.content);
-				self.stopProgress();
-				break;
-			}
+			// case "4":
+			// {
+			// 	//
+			// 	//cc.director.runScene(cc.TransitionSlideInL.create(0.5,klineScene));
+			// 	self.opponentsInfo.push(packet.content);
+			// 	self.stopProgress();
+			// 	break;
+			// }
 			case MessageType.Type_HisdataInfo:
 			{
 				//接收到了K线数据的消息we
@@ -741,43 +758,42 @@ var KLineScene = SceneBase.extend(
                 break;
             }
 
-
-            case "Matching"://人人人对战信息Matching|"playerList":["http://7xpfdl.com1.z0.glb.clouddn.com/M1 E__1480588002710__166279_3596","http://ohfw64y24.bkt.clouddn.com/54"]|###
-            {
-                cc.log("gKLineScene 人人机对战信息");
-                if(self.matchViewLayer!=null) {
-
-                    cc.log("gMainMenuScene 人人机对战信息2");
-                    userInfo.matchBeginFlag=true;
-                    self.matchViewLayer.stopHeadChange();
-                    self.matchViewLayer.refreshMatchViewByData(packet.content);
-                }
-                // self.stopProgress();
-                break;
-            }
-			case "G":
-			{
-				// if(gKlineScene==null)
-				// 	gKlineScene=new KLineScene();
-				self.showPlayerInfo(packet.content);
-				break;
-			}
-			case "S":
-			{
-				//接收到了K线数据的分享消息
-				self.share(packet.content);
-				cc.log("get kline K线数据的分享消息passed"+packet.content);
-				break;
-			}
-			case "H":
-			{
-				//成功接收到了K线数据的分享数据
-				cc.log("jsonText parseK线分享数据over");
-				self.getklinedata(packet.content);
-				self.advanceToMainKLine_Share();
-				cc.log("成功接收到了K线数据的分享数据");
-				break;
-			}
+            // case "Matching"://人人人对战信息Matching|"playerList":["http://7xpfdl.com1.z0.glb.clouddn.com/M1 E__1480588002710__166279_3596","http://ohfw64y24.bkt.clouddn.com/54"]|###
+            // {
+            //     cc.log("gKLineScene 人人机对战信息");
+            //     if(self.matchViewLayer!=null) {
+            //
+            //         cc.log("gMainMenuScene 人人机对战信息2");
+            //         userInfo.matchBeginFlag=true;
+            //         self.matchViewLayer.stopHeadChange();
+            //         self.matchViewLayer.refreshMatchViewByData(packet.content);
+            //     }
+            //     // self.stopProgress();
+            //     break;
+            // }
+			// case "G":
+			// {
+			// 	// if(gKlineScene==null)
+			// 	// 	gKlineScene=new KLineScene();
+			// 	self.showPlayerInfo(packet.content);
+			// 	break;
+			// }
+			// case "S":
+			// {
+			// 	//接收到了K线数据的分享消息
+			// 	self.share(packet.content);
+			// 	cc.log("get kline K线数据的分享消息passed"+packet.content);
+			// 	break;
+			// }
+			// case "H":
+			// {
+			// 	//成功接收到了K线数据的分享数据
+			// 	cc.log("jsonText parseK线分享数据over");
+			// 	self.getklinedata(packet.content);
+			// 	self.advanceToMainKLine_Share();
+			// 	cc.log("成功接收到了K线数据的分享数据");
+			// 	break;
+			// }
 			case MessageType.Type_Share:
 			{
 				//成功接收到了K线数据的分享数据
@@ -790,16 +806,16 @@ var KLineScene = SceneBase.extend(
 				cc.log("成功接收到了K线数据的分享数据");
 				break;
 			}
-			case "O"://观看记录
-			{
-				cc.log("begin to parse 观看记录json text");
-				userInfo.matchFlag = true;
-				self.getklinedata(packet.content);
-				self.advanceToMainKLine_Record();
-				cc.log("get 观看记录 passed");
-
-				break;
-			}
+			// case "O"://观看记录
+			// {
+			// 	cc.log("begin to parse 观看记录json text");
+			// 	userInfo.matchFlag = true;
+			// 	self.getklinedata(packet.content);
+			// 	self.advanceToMainKLine_Record();
+			// 	cc.log("get 观看记录 passed");
+            //
+			// 	break;
+			// }
 			case MessageType.Type_Match_Record:
 			{
 				//成功接收到了K线数据的观看记录数据
@@ -812,206 +828,201 @@ var KLineScene = SceneBase.extend(
 				cc.log("成功接收到了K线数据的分享数据");
 				break;
 			}
-			case "I":
-			{
-				//接收到了K线数据的分享错误消息
-				cc.log("call get kline data");
-				//self.share(packet.content);
-				cc.log("get kline passed"+packet.content);
-				break;
-			}
-			case "F":
-			{
-				//接收到对局结束
-				//alert("接收到对局结束");
-				self.showMatchEndInfo(packet.content);
-				break;
-			}
-
-
+			// case "I":
+			// {
+			// 	//接收到了K线数据的分享错误消息
+			// 	cc.log("call get kline data");
+			// 	//self.share(packet.content);
+			// 	cc.log("get kline passed"+packet.content);
+			// 	break;
+			// }
+			// case "F":
+			// {
+			// 	//接收到对局结束
+			// 	//alert("接收到对局结束");
+			// 	self.showMatchEndInfo(packet.content);
+			// 	break;
+			// }
 			// case "Z"://接收到战绩的数据
 			// {
 			// 	self.showZhanjiInfo(packet.content);
 			// 	self.stopProgress();
 			// 	break;
 			// }
-
-			case "M"://人机对战结束信息
-			{
-				//收到对方买入的信息
-				if(gKlineScene==null)
-					gKlineScene=new KLineScene();
-				if(gKlineScene!=null) {
-					gKlineScene.showMatchEndInfo(packet.content);
-				}
-				self.stopProgress();
-				break;
-			}
-
-			case "Y"://观看交易记录Match
-			{
-				cc.log("begin 观看交易记录Match");
-				// self.getklinedata(packet.content);
-				// self.advanceToMainKLine_Record();
-				var data=JSON.parse(packet.content);
-				self.advanceToMainKLine_RecordMatch(data);
-
-				cc.log("jsonText parse 观看记录over");
-				// self.toSetklinedata(data);
-
-				cc.log("get 观看交易记录Match");
-
-				break;
-			}
-			case "LISTFRIEND":
-			{
-
-				cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
-				userInfo.friendListData = [];
-				var data=JSON.parse(packet.content);
-				userInfo.friendListData  = data;
-				cc.log(userInfo.friendListData);
-				userInfo.friendListData.sort(function (a,b) {
-					if(a["status"]=="在线"){
-						return -1;
-					}else if(b["status"]=="在线"){
-						return 1;
-					}else if(a["status"]=="组队中"){
-						return -1;
-					}else if(b["status"]=="组队中"){
-						return 1;
-					}else if(a["status"]=="比赛中"){
-						return -1;
-					}else if(b["status"]=="比赛中"){
-						return 1;
-					}else {
-						return -1;
-					}
-				});
-				//
-				//     var arrSimple2=new Array(1,8,7,6);
-				//     arrSimple2.sort(function(a,b){
-				//         return b-a});
-				// 解释：a,b表示数组中的任意两个元素，若return > 0 b前a后；reutrn < 0 a前b后；a=b时存在浏览器兼容
-				//     简化一下：a-b输出从小到大排序，b-a输出从大到小排序。
-				// cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
-
-				if(self.friendLayer!=null){
-					self.friendLayer.refreshFriendViewLayer();
-				}
-
-				break;
-
-			}
-			case "FRIENDCHANGE":
-			{
-
-				cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
-				cc.log(userInfo.friendListData);
-
-				var friendName = packet.content.split("#")[0];
-				var status = packet.content.split("#")[1];
-				for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
-				{
-					if(userInfo.friendListData[i]["friendname"]==friendName){
-						userInfo.friendListData[i]["status"]=status;
-					}
-				}
-
-				for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
-				{
-					if(userInfo.friendListData[i]["friendname"]==friendName){
-						userInfo.friendListData[i]["status"]=status;
-					}
-				}
-
-				userInfo.friendListData.sort(function (a,b) {
-					if(a["status"]=="在线"){
-						return -1;
-					}else if(b["status"]=="在线"){
-						return 1;
-					}else if(a["status"]=="组队中"){
-						return -1;
-					}else if(b["status"]=="组队中"){
-						return 1;
-					}else if(a["status"]=="比赛中"){
-						return -1;
-					}else if(b["status"]=="比赛中"){
-						return 1;
-					}else {
-						return -1;
-					}
-				});
-				cc.log(userInfo.friendListData);
-				// cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
-
-				if(self.friendLayer!=null){
-					self.friendLayer.refreshFriendViewLayer();
-				}
-				break;
-
-			}
-			case "INVITE":
-			{
-				cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
-				inviteInfo.code = packet.content.split("#")[0];
-				inviteInfo.friendName = packet.content.split("#")[1];
-				inviteInfo.picUrl = packet.content.split("#")[2];
-				userInfo.matchMode = MatchType.Type_Friend_Match;
-				// var self = this;
-				if(self.invitedViewLayer==null){
-					self.invitedViewLayer=new InvitedViewLayer();
-					self.invitedViewLayer.setVisible(false);
-					self.invitedViewLayer.setPosition(0,0);
-					self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
-					self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
-				}
-
-				self.invitedViewLayer.showLayer();
-				self.pauseLowerLayer();
-
-				// if(self.friendLayer!=null){
-				//     self.friendLayer.refreshFriendViewLayer();
-				// }
-				break;
-
-			}
-			case "REJECT":
-			{
-				cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
-				var name = packet.content.split("#")[0];
-
-				if(self.friendLayer!=null){
-					self.friendLayer.showMessageInfo(name+"拒绝了你的邀请！");
-				}
-
-				// if(self.friendLayer!=null){
-				//     self.friendLayer.refreshFriendViewLayer();
-				// }
-				break;
-
-			}
-
-			case "FACE"://表情处理
-			{
-				//接收到对局结束
-				//alert("接收到对局结束");
-				// self.showMatchEndInfo(packet.content);
-				var userNickName=packet.content.split("#")[0];
-				var faceNum = packet.content.split("#")[1];
-				cc.log("userNickName=="+userNickName+"||faceNum=="+faceNum);
-
-				if(null!=self.matchInfoLayer){
-					self.matchInfoLayer.showFaceSprite(userNickName,faceNum);
-				}
-
-				// userId:null,//
-				// 	deviceId:null,//设备号
-				// userInfo.username=gPlayerName;
-				// userInfo.password=packet.content.split("#")[1];
-
-				break;
-			}
+			// case "M"://人机对战结束信息
+			// {
+			// 	//收到对方买入的信息
+			// 	if(gKlineScene==null)
+			// 		gKlineScene=new KLineScene();
+			// 	if(gKlineScene!=null) {
+			// 		gKlineScene.showMatchEndInfo(packet.content);
+			// 	}
+			// 	self.stopProgress();
+			// 	break;
+			// }
+			// case "Y"://观看交易记录Match
+			// {
+			// 	cc.log("begin 观看交易记录Match");
+			// 	// self.getklinedata(packet.content);
+			// 	// self.advanceToMainKLine_Record();
+			// 	var data=JSON.parse(packet.content);
+			// 	self.advanceToMainKLine_RecordMatch(data);
+            //
+			// 	cc.log("jsonText parse 观看记录over");
+			// 	// self.toSetklinedata(data);
+            //
+			// 	cc.log("get 观看交易记录Match");
+            //
+			// 	break;
+			// }
+			// case "LISTFRIEND":
+			// {
+            //
+			// 	cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+			// 	userInfo.friendListData = [];
+			// 	var data=JSON.parse(packet.content);
+			// 	userInfo.friendListData  = data;
+			// 	cc.log(userInfo.friendListData);
+			// 	userInfo.friendListData.sort(function (a,b) {
+			// 		if(a["status"]=="在线"){
+			// 			return -1;
+			// 		}else if(b["status"]=="在线"){
+			// 			return 1;
+			// 		}else if(a["status"]=="组队中"){
+			// 			return -1;
+			// 		}else if(b["status"]=="组队中"){
+			// 			return 1;
+			// 		}else if(a["status"]=="比赛中"){
+			// 			return -1;
+			// 		}else if(b["status"]=="比赛中"){
+			// 			return 1;
+			// 		}else {
+			// 			return -1;
+			// 		}
+			// 	});
+			// 	//
+			// 	//     var arrSimple2=new Array(1,8,7,6);
+			// 	//     arrSimple2.sort(function(a,b){
+			// 	//         return b-a});
+			// 	// 解释：a,b表示数组中的任意两个元素，若return > 0 b前a后；reutrn < 0 a前b后；a=b时存在浏览器兼容
+			// 	//     简化一下：a-b输出从小到大排序，b-a输出从大到小排序。
+			// 	// cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+            //
+			// 	if(self.friendLayer!=null){
+			// 		self.friendLayer.refreshFriendViewLayer();
+			// 	}
+            //
+			// 	break;
+            //
+			// }
+			// case "FRIENDCHANGE":
+			// {
+            //
+			// 	cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+			// 	cc.log(userInfo.friendListData);
+            //
+			// 	var friendName = packet.content.split("#")[0];
+			// 	var status = packet.content.split("#")[1];
+			// 	for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
+			// 	{
+			// 		if(userInfo.friendListData[i]["friendname"]==friendName){
+			// 			userInfo.friendListData[i]["status"]=status;
+			// 		}
+			// 	}
+            //
+			// 	for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
+			// 	{
+			// 		if(userInfo.friendListData[i]["friendname"]==friendName){
+			// 			userInfo.friendListData[i]["status"]=status;
+			// 		}
+			// 	}
+            //
+			// 	userInfo.friendListData.sort(function (a,b) {
+			// 		if(a["status"]=="在线"){
+			// 			return -1;
+			// 		}else if(b["status"]=="在线"){
+			// 			return 1;
+			// 		}else if(a["status"]=="组队中"){
+			// 			return -1;
+			// 		}else if(b["status"]=="组队中"){
+			// 			return 1;
+			// 		}else if(a["status"]=="比赛中"){
+			// 			return -1;
+			// 		}else if(b["status"]=="比赛中"){
+			// 			return 1;
+			// 		}else {
+			// 			return -1;
+			// 		}
+			// 	});
+			// 	cc.log(userInfo.friendListData);
+			// 	// cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+            //
+			// 	if(self.friendLayer!=null){
+			// 		self.friendLayer.refreshFriendViewLayer();
+			// 	}
+			// 	break;
+            //
+			// }
+			// case "INVITE":
+			// {
+			// 	cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+			// 	inviteInfo.code = packet.content.split("#")[0];
+			// 	inviteInfo.friendName = packet.content.split("#")[1];
+			// 	inviteInfo.picUrl = packet.content.split("#")[2];
+			// 	userInfo.matchMode = MatchType.Type_Friend_Match;
+			// 	// var self = this;
+			// 	if(self.invitedViewLayer==null){
+			// 		self.invitedViewLayer=new InvitedViewLayer();
+			// 		self.invitedViewLayer.setVisible(false);
+			// 		self.invitedViewLayer.setPosition(0,0);
+			// 		self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
+			// 		self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+			// 	}
+            //
+			// 	self.invitedViewLayer.showLayer();
+			// 	self.pauseLowerLayer();
+            //
+			// 	// if(self.friendLayer!=null){
+			// 	//     self.friendLayer.refreshFriendViewLayer();
+			// 	// }
+			// 	break;
+            //
+			// }
+			// case "REJECT":
+			// {
+			// 	cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+			// 	var name = packet.content.split("#")[0];
+            //
+			// 	if(self.friendLayer!=null){
+			// 		self.friendLayer.showMessageInfo(name+"拒绝了你的邀请！");
+			// 	}
+            //
+			// 	// if(self.friendLayer!=null){
+			// 	//     self.friendLayer.refreshFriendViewLayer();
+			// 	// }
+			// 	break;
+            //
+			// }
+			// case "FACE"://表情处理
+			// {
+			// 	//接收到对局结束
+			// 	//alert("接收到对局结束");
+			// 	// self.showMatchEndInfo(packet.content);
+			// 	var userNickName=packet.content.split("#")[0];
+			// 	var faceNum = packet.content.split("#")[1];
+			// 	cc.log("userNickName=="+userNickName+"||faceNum=="+faceNum);
+            //
+			// 	if(null!=self.matchInfoLayer){
+			// 		self.matchInfoLayer.showFaceSprite(userNickName,faceNum);
+			// 	}
+            //
+			// 	// userId:null,//
+			// 	// 	deviceId:null,//设备号
+			// 	// userInfo.username=gPlayerName;
+			// 	// userInfo.password=packet.content.split("#")[1];
+            //
+			// 	break;
+			// }
             case MessageType.Type_Face://表情处理
 			{
 				//接收到对局结束
@@ -1269,6 +1280,10 @@ var KLineScene = SceneBase.extend(
 		cc.log("showPlayerInfo  this.playerInfoLayer.refreshScoresByData();");
 		this.playerInfoLayer.refreshScoresByData();
 
+		if(this.specialFlag==false){
+			this.isSpecialRun();
+		}
+		this.isSpecialRun();
 		var indexFromServe = userInfo.playerListData[0]["currentIndex"];//加一修正
 		if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
 			this.drawHistoryCandlePartToIndex(indexFromServe+1);
@@ -3105,5 +3120,108 @@ var KLineScene = SceneBase.extend(
 		}
 
 	},
+
+	isSpecialRun:function()
+	{
+
+		var currentScore = 0;
+		if(null!=userInfo.playerListData){
+            currentScore =  parseFloat(userInfo.playerListData[0]["score"]);
+		}
+		if(userInfo.matchMode != MatchType.Type_DailyTrade_Match&&!this.specialFlag){
+            if(currentScore>50&&!this.incomeFlag[0]){
+                this.incomeFlag[0] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("恭喜你获得了超过50%的收益，已经拥有了大神的状态！");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+                cc.log("isSpecialRun1");
+			}else if(currentScore>20&&!this.incomeFlag[1]){
+                this.incomeFlag[1] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("恭喜你获得了超过20%的收益，超过了大多数玩家，继续保持状态哦！");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+                cc.log("isSpecialRun2");
+
+			}else if(currentScore>10&&!this.incomeFlag[2]){
+                this.incomeFlag[2] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("恭喜你获得了超过10%的收益，超过了多数玩家，再接再厉哦哦！");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+                cc.log("isSpecialRun3");
+
+			}else if(currentScore<-10&&!this.incomeFlag[3]){
+                this.incomeFlag[3] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("收益受损超过了10%，多注意行情变化哦。");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+                cc.log("isSpecialRun4");
+
+			}else if(currentScore<-20&&!this.incomeFlag[4]){
+                this.incomeFlag[4] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("收益受损超过了20%，别灰心快点调整状态哦。");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+                cc.log("isSpecialRun5");
+
+			}else if(currentScore<-50&&!this.incomeFlag[5]){
+                this.incomeFlag[5] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("收益受损超过了50%，赔惨了，尝试换个策略吧。");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+                cc.log("isSpecialRun6");
+			}
+		}else if(!this.specialFlag){
+            if(currentScore>5&&!this.incomeFlag[0]){
+                this.incomeFlag[0] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("恭喜你获得了超过5%的收益，已经拥有了大神的状态！");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+            }else if(currentScore>2&&!this.incomeFlag[1]){
+                this.incomeFlag[1] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("恭喜你获得了超过2%的收益，超过了大多数玩家，继续保持状态哦！");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+
+            }else if(currentScore>1&&!this.incomeFlag[2]){
+                this.incomeFlag[2] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("恭喜你获得了超过1%的收益，超过了多数玩家，再接再厉哦哦！");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+
+            }else if(currentScore<-1&&!this.incomeFlag[3]){
+                this.incomeFlag[3] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("收益受损超过了1%，多注意行情变化哦。");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+
+            }else if(currentScore<-2&&!this.incomeFlag[4]){
+                this.incomeFlag[4] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("收益受损超过了2%，别灰心快点调整状态哦。");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+
+            }else if(currentScore<-5&&!this.incomeFlag[5]){
+                this.incomeFlag[5] = true;
+                this.specialFlag = true;
+                this.inComeInfo.setString("收益受损超过了5%，赔惨了，尝试换个策略吧。");
+                gKlineScene.inComeSprite.setVisible(true);
+                pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.inComeSprite.setVisible(false);gKlineScene.specialFlag=false;},5000);
+            }
+		}
+		// return false;
+	},
+
+
 
 });

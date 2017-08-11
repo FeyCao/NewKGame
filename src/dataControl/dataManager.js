@@ -169,7 +169,7 @@ var userInfo ={
      }
      */
     //matchMode
-    matchMode:MatchType.Type_Practice_Match,//游戏模式0：练习场，1：多人战，2：人机战
+    matchMode:MatchType.Type_Practice_Match,//游戏模式0：练习场，1：多人战，2：人机战,分时战
     matchFlag:false,//false 比赛中，true 观看记录
     matchDayCount:120,
     // matchAiMode:"DON",//游戏模式0：练习场，1：多人战，2：人机战3|matchType#aiType#mainDayCount|
