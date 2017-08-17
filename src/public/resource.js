@@ -40,8 +40,14 @@ var res = {
  BLUE_BG_BTN:"res/public/btn_blue_bg.png",
  LESS_BG_png:"res/public/less_bg.png",
  BG_INCOME_INFO:"res/public/icome_bg.png",
+ BG_EFFECT_FALL:"res/public/effect_fall_bg.png",
+ WORDS_EFFECT_FALL:"res/public/effect_fall_words.png",
+ BG_EFFECT_RISE:"res/public/effect_rise_bg.png",
+ WORDS_EFFECT_RISE:"res/public/effect_rise_words.png",
 
-    BTN_CONFIRM  :"res/btn_confirm.png",
+    EFFECT_NUM_PNG : "res/public/effect_num.png",
+    EFFECT_NUM_PLIST : "res/public/effect_num.plist",
+ BTN_CONFIRM  :"res/btn_confirm.png",
 
 //登录界面
  LOGIN_BG_png  :"res/login/bg_login.png",
@@ -161,6 +167,7 @@ var res = {
  //头像plist
  touxiang_png : "res/touxiang/touxiang.png",
  touxiang_plist : "res/touxiang/touxiang.plist",
+    //
 
  BG_HEAD_PNG : "res/bg_touxiang.png",
  HEAD_0_PNG : "res/touxiang_0.png",

@@ -65,7 +65,7 @@ var KLineScene = SceneBase.extend(
 
 	specialFlag:false,
 	incomeFlag:[false,false,false,false,false,false],//六种
-	priceFlag:[false,false,false,false,false,false],
+	priceFlag:[false,false],//涨跌是两种
 
 	ctor: function ()
 	{
@@ -245,11 +245,29 @@ var KLineScene = SceneBase.extend(
         this.inComeSprite.setScale(this.fXScale,this.fYScale);
 		this.addChild(this.inComeSprite,10);
 		this.inComeInfo= new createClipRoundNode("恭喜你获得了超过50%的收益，已经拥有了大神的状态!",24,WhiteColor,500,30);// cc.LabelTTF.create("xxx对xxx使用了道具","Arial",25);//createClipRoundText = function(txt,fontsize,color,width,height)
-
 		this.inComeInfo.setPosition(25,25);//.text.setString();
         this.inComeSprite.addChild(this.inComeInfo);
-
 		gKlineScene.inComeSprite.setVisible(false);
+
+        // var frameName = "touxiang_"+(Math.round(Math.random()*100)%9+1)+".png";
+        // var spriteFrame = cc.spriteFrameCache.getSpriteFrame(frameName);effect_fall_wp.png
+
+		this.priceSprite = new cc.Sprite(res.BG_EFFECT_FALL);
+        this.priceSprite.setPosition(cc.p(gDesignResolutionWidth / 2, gDesignResolutionHeight/2+80));
+        this.priceSprite.setScale(this.fXScale,this.fYScale);
+		this.addChild(this.priceSprite,10);
+		this.priceInfo1=new cc.Sprite(res.WORDS_EFFECT_FALL);//222*88
+		var priceSpriteSize = this.priceSprite.getContentSize();
+        cc.spriteFrameCache.addSpriteFrames(res.EFFECT_NUM_PLIST);
+		this.priceInfo1.setPosition(priceSpriteSize.width/2,priceSpriteSize.height/2);//.text.setString();
+        this.priceSprite.addChild(this.priceInfo1);
+		this.priceInfo2=new cc.Sprite( cc.spriteFrameCache.getSpriteFrame("effect_fall_wp.png"));//
+		this.priceInfo2.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(120,15)));//.text.setString();
+        this.priceSprite.addChild(this.priceInfo2);
+        this.priceNum=new cc.Sprite( cc.spriteFrameCache.getSpriteFrame("effect_fall_w7.png"));//
+		this.priceNum.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(92,15)));//.text.setString();
+        this.priceSprite.addChild(this.priceNum);
+		gKlineScene.priceSprite.setVisible(false);
 
 
 		this.warnInfo= cc.LabelTTF.create("警告信息：","Arial",30);
@@ -1283,7 +1301,7 @@ var KLineScene = SceneBase.extend(
 		if(this.specialFlag==false){
 			this.isSpecialRun();
 		}
-		this.isSpecialRun();
+		// this.isSpecialRun();
 		var indexFromServe = userInfo.playerListData[0]["currentIndex"];//加一修正
 		if(userInfo.matchMode==MatchType.Type_DailyTrade_Match){
 			this.drawHistoryCandlePartToIndex(indexFromServe+1);
@@ -1902,6 +1920,9 @@ var KLineScene = SceneBase.extend(
 			 	this.moveByPos();
 			}
 
+            if(this.specialFlag==false){
+                this.isRiseOrFall();
+            }
 			// if(this.currentCandleIndex>240)
 			// {
 			// 	cc.log("drawAllCandlesOneByOne绘制120");
@@ -3221,6 +3242,89 @@ var KLineScene = SceneBase.extend(
 		}
 		// return false;
 	},
+		isRiseOrFall:function () {
+            var riseOrFall = 0;
+            if(null!=gKlineScene.klineData&&null!=gKlineScene.klineData[gKlineScene.currentCandleIndex]&&gKlineScene.currentCandleIndex>1){
+                riseOrFall = gKlineScene.klineData[gKlineScene.currentCandleIndex].c/gKlineScene.klineData[gKlineScene.currentCandleIndex-1].c *100-100;
+
+
+            }
+            if(userInfo.matchMode != MatchType.Type_DailyTrade_Match&&!this.specialFlag){
+                if(riseOrFall>3||riseOrFall<-3){
+                    cc.log("riseOrFall==",riseOrFall);
+                }
+                if(riseOrFall>5&&!this.priceFlag[0]){
+                    this.priceFlag[0] = true;
+                    this.specialFlag = true;
+                    this.priceSprite.initWithFile(res.BG_EFFECT_RISE);
+                    var priceSpriteSize = this.priceSprite.getContentSize();
+                    cc.spriteFrameCache.addSpriteFrames(res.EFFECT_NUM_PLIST);
+                    this.priceInfo1.initWithFile(res.WORDS_EFFECT_RISE);//.text.setString();
+                    this.priceInfo1.setPosition(priceSpriteSize.width/2,priceSpriteSize.height/2);
+                    this.priceInfo2.initWithSpriteFrame( cc.spriteFrameCache.getSpriteFrame("effect_rise_wp.png"));//
+                    this.priceInfo2.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(120,15)));//.text.setString();
+                    this.priceNum.initWithSpriteFrame( cc.spriteFrameCache.getSpriteFrame("effect_rise_w5.png"));//
+                    this.priceNum.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(92,15)));//.text.setString();
+
+                    gKlineScene.priceSprite.setVisible(true);
+                    pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.priceSprite.setVisible(false);gKlineScene.specialFlag=false;gKlineScene.priceFlag[0]=false;},3000);
+                    cc.log("isRiseOrFall1");
+                }else if(riseOrFall<-5&&!this.priceFlag[1]){
+                    this.priceFlag[0] = true;
+                    this.specialFlag = true;
+                    this.priceSprite.initWithFile(res.BG_EFFECT_FALL);
+                    var priceSpriteSize = this.priceSprite.getContentSize();
+                    cc.spriteFrameCache.addSpriteFrames(res.EFFECT_NUM_PLIST);
+                    this.priceInfo1.initWithFile(res.WORDS_EFFECT_FALL);//.text.setString();
+                    this.priceInfo1.setPosition(priceSpriteSize.width/2,priceSpriteSize.height/2);
+                    this.priceInfo2.initWithSpriteFrame( cc.spriteFrameCache.getSpriteFrame("effect_fall_wp.png"));//
+                    this.priceInfo2.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(120,15)));//.text.setString();
+                    this.priceNum.initWithSpriteFrame( cc.spriteFrameCache.getSpriteFrame("effect_fall_w5.png"));//
+                    this.priceNum.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(92,15)));//.text.setString();
+
+                    gKlineScene.priceSprite.setVisible(true);
+                    pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.priceSprite.setVisible(false);gKlineScene.specialFlag=false;gKlineScene.priceFlag[1]=false;},3000);
+                    cc.log("isRiseOrFall2");
+				}
+            }else if(!this.specialFlag){
+                if(riseOrFall>0.2||riseOrFall<-0.2){
+                    cc.log("riseOrFall==",riseOrFall);
+                }
+                if(riseOrFall>1&&!this.priceFlag[0]){
+                    this.priceFlag[0] = true;
+                    this.specialFlag = true;
+                    this.priceSprite.initWithFile(res.BG_EFFECT_RISE);
+                    var priceSpriteSize = this.priceSprite.getContentSize();
+                    cc.spriteFrameCache.addSpriteFrames(res.EFFECT_NUM_PLIST);
+                    this.priceInfo1.initWithFile(res.WORDS_EFFECT_RISE);//.text.setString();
+                    this.priceInfo1.setPosition(priceSpriteSize.width/2,priceSpriteSize.height/2);
+                    this.priceInfo2.initWithSpriteFrame( cc.spriteFrameCache.getSpriteFrame("effect_rise_wp.png"));//
+                    this.priceInfo2.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(120,15)));//.text.setString();
+                    this.priceNum.initWithSpriteFrame( cc.spriteFrameCache.getSpriteFrame("effect_rise_w1.png"));//
+                    this.priceNum.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(92,15)));//.text.setString();
+
+                    gKlineScene.priceSprite.setVisible(true);
+                    pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.priceSprite.setVisible(false);gKlineScene.specialFlag=false;gKlineScene.priceFlag[0]=false;},3000);
+                    cc.log("isRiseOrFall1");
+                }else if(riseOrFall<-1&&!this.priceFlag[1]){
+                    this.priceFlag[1] = true;
+                    this.specialFlag = true;
+                    this.priceSprite.initWithFile(res.BG_EFFECT_FALL);
+                    var priceSpriteSize = this.priceSprite.getContentSize();
+                    cc.spriteFrameCache.addSpriteFrames(res.EFFECT_NUM_PLIST);
+                    this.priceInfo1.initWithFile(res.WORDS_EFFECT_FALL);//.text.setString();
+                    this.priceInfo1.setPosition(priceSpriteSize.width/2,priceSpriteSize.height/2);
+                    this.priceInfo2.initWithSpriteFrame( cc.spriteFrameCache.getSpriteFrame("effect_fall_wp.png"));//
+                    this.priceInfo2.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(120,15)));//.text.setString();
+                    this.priceNum.initWithSpriteFrame( cc.spriteFrameCache.getSpriteFrame("effect_fall_w1.png"));//
+                    this.priceNum.setPosition(cc.pAdd(cc.p(priceSpriteSize.width/2,priceSpriteSize.height/2),cc.p(92,15)));//.text.setString();
+
+                    gKlineScene.priceSprite.setVisible(true);
+                    pageTimer["hideinComeSprite"] = setTimeout(function(){gKlineScene.priceSprite.setVisible(false);gKlineScene.specialFlag=false;gKlineScene.priceFlag[1]=false;},3000);
+                    cc.log("isRiseOrFall2");
+                }
+            }
+        },
 
 
 

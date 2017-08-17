@@ -101,7 +101,6 @@ var SelectAdd_NewFriend = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Sel
 // var FriendMatch_Answer =
 
 
-
 var OneDayInfo =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("OneDayInfo");
 var MatchUserInfo = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("MatchUserInfo");
 var HisdataInfo =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("HisdataInfo");
@@ -112,7 +111,37 @@ var EndMatch_Info = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("EndMatch_
 var Fast_Lgoin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Fast_Lgoin");
 var Use_DeviceId_Login =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Use_DeviceId_Login");
 var Mobile_Login =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Mobile_Login");
-
+var treatyList =[{"name":"A:豆一","where":"大商所","start":"2003","end ":"2016","code":"A"},
+    {"name":"AG:沪银","where":"上期所","start":"2013","end ":"2016","code":"AG"},
+    {"name":"AL:沪铝","where":"上期所","start":"1999","end ":"2016","code":"AL"},
+    {"name":"HC:热卷","where":"上期所","start":"2015","end ":"2016","code":"HC"},
+    {"name":"AU:沪金","where":"上期所","start":"2009","end ":"2016","code":"AU"},
+    {"name":"BU:沥青","where":"上期所","start":"2014","end ":"2016","code":"BU"},
+    {"name":"C:玉米","where":"大商所","start":"2005","end ":"2016","code":"C"},
+    {"name":"CF:郑棉","where":"郑商所","start":"2005","end ":"2016","code":"CF"},
+    {"name":"CS:淀粉","where":"大商所","start":"2015","end ":"2016","code":"CS"},
+    {"name":"CU:沪铜","where":"上期所","start":"1997","end ":"2016","code":"CU"},
+    {"name":"FG:玻璃","where":"郑商所","start":"2013","end ":"2016","code":"FG"},
+    {"name":"I:铁矿","where":"大商所","start":"2014","end ":"2016","code":"I"},
+    {"name":"J:焦炭","where":"大商所","start":"2012","end ":"2016","code":"J"},
+    {"name":"JD:鸡蛋","where":"大商所","start":"2014","end ":"2016","code":"JD"},
+    {"name":"JM:焦煤","where":"大商所","start":"2014","end ":"2016","code":"JM"},
+    {"name":"L:塑料","where":"大商所","start":"2008","end ":"2016","code":"L"},
+    {"name":"M:豆粕","where":"大商所","start":"2001","end ":"2016","code":"M"},
+    {"name":"MA:郑醇","where":"郑商所","start":"2012","end ":"2016","code":"MA"},
+    {"name":"NI:沪镍","where":"上期所","start":"2016","end ":"2016","code":"NI"},
+    {"name":"OI:郑油","where":"郑商所","start":"2008","end ":"2016","code":"OI"},
+    {"name":"P:棕榈","where":"大商所","start":"2008","end ":"2016","code":"P"},
+    {"name":"PP:PP","where":"大商所","start":"2015","end ":"2016","code":"PP"},
+    {"name":"RB:螺纹","where":"上期所","start":"2010","end ":"2016","code":"RB"},
+    {"name":"RM:菜粕","where":"郑商所","start":"2013","end ":"2016","code":"RM"},
+    {"name":"RU:橡胶","where":"上期所","start":"1998","end ":"2016","code":"RU"},
+    {"name":"SR:白糖","where":"郑商所","start":"2006","end ":"2016","code":"SR"},
+    {"name":"TA:PTA","where":"郑商所","start":"2007","end ":"2016","code":"TA"},
+    {"name":"Y:豆油","where":"大商所","start":"2006","end ":"2016","code":"Y"},
+    {"name":"ZC：郑煤","where":"郑商所","start":"2014","end ":"2016","code":"ZC"},
+    {"name":"ZN:沪锌","where":"上期所","start":"2008","end ":"2016","code":"ZN"}
+];
 var userInfo ={
     //主界面数据
     userId:null,//
