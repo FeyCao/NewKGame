@@ -181,7 +181,10 @@ var BaseGraphLayer= cc.Layer.extend({
 		// }
 
 	},
-	
+	getKlineData:function () {
+
+		return this.klineData;
+    },
 	clearKLineDataForTais:function()
 	{
 		for(var i=0;i<this.taisArray.length;i++)

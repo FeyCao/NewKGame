@@ -1,7 +1,7 @@
 // JavaScript Document
 var VolumnTechLayer= BaseGraphLayer.extend({
 	barMaxScale:1.05,				//最大的成交量的柱状图的放大倍数
-	
+    currentCode:null,
 	ctor:function(width,height)
 	{
 		this._super(width,height);
@@ -11,7 +11,13 @@ var VolumnTechLayer= BaseGraphLayer.extend({
 	{
 		this._super();
 	},
-	
+
+    setCodeName:function (codeName) {
+        this.currentCode = codeName;
+    },
+    getCodeName:function () {
+        return this.currentCode;
+    },
 	//是否可以显示成交量
 	canVolumnShown:function()
 	{

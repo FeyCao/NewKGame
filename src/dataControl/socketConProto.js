@@ -226,9 +226,9 @@ protoSocketConn.prototype.SendBeginMessage=function()
     // ws.send("BEGIN||");
 }
 
-protoSocketConn.prototype.SendRecordMessage=function(matchId,userId)//查看对战记录
+protoSocketConn.prototype.SendRecordMessage=function(matchId,matchType)//查看对战记录
 {
-    var recordMsg = "O|"+matchId+"#"+userId+"#"+userInfo.userId+"|";
+    var recordMsg = "O|"+matchId+"#"+matchType+"#"+userInfo.userId+"|";
     cc.log("send Recordmsg=="+recordMsg);
     // ws.send(recordMsg);
 
@@ -236,6 +236,7 @@ protoSocketConn.prototype.SendRecordMessage=function(matchId,userId)//查看对�
     var  message = new Message();
     var messageSend = new MatchRecord();
     messageSend.setMatchId(matchID);
+    messageSend.setMatchType(parseInt(matchType));
     message.setMessageType(MessageType.Type_Match_Record);
     message.setMatchRecord(messageSend);
     var arrayBuf =  message.toArrayBuffer();
@@ -294,7 +295,59 @@ protoSocketConn.prototype.BeginMatch=function(matchType,handleDays,aiInfo)
 
     // ws.send("3|"+mode+"|");
 }
+protoSocketConn.prototype.BeginMatchForMC=function(matchType,handleDays,codeList,year)//测试MC
+{
+    // cc.log("send BeginMatchMessage=="+matchType+"|"+handleDays+"|"+codeList+"|"+year+"|");
 
+    if(typeof (handleDays)=="undefined"){//typeof(gMainMenuScene)=="undefined"
+        handleDays=120;
+    }
+    if(typeof (codeList)=="undefined"){//typeof(gMainMenuScene)=="undefined"
+        codeList=["BU","AU","HC"];
+    }
+    if(typeof (year)=="undefined"){//typeof(gMainMenuScene)=="undefined"
+        year=2015;
+    }
+    var messageSend = new Request_Match();
+    messageSend.setMatchType(matchType);
+    if(typeof (codeList)!="undefined"){//typeof(gMainMenuScene)=="undefined"
+        messageSend.setVariety(codeList);
+    }
+    if(typeof (year)!="undefined"){//typeof(gMainMenuScene)=="undefined"
+        messageSend.setStartyear(parseInt(year));
+    }
+    messageSend.setHandleDays(handleDays);
+    var  message = new Message();
+//    var hall_Info = ;
+    message.setMessageType(MessageType.Type_Request_Match);
+//        message.setMessageType(MessageType.Type_Hall_Info);
+    message.setRequestMatch(messageSend);
+    var arrayBuf =  message.toArrayBuffer();
+    arrayBuf.valueOf();
+    ws.send(arrayBuf);
+    console.info("比赛历史数据的请求：");
+    console.info(message);
+
+    // ws.send("3|"+mode+"|");
+}
+
+protoSocketConn.prototype.ChangeCode=function(code)
+{
+
+    cc.log("ChangeCode=function(code)=="+code);
+
+    var  message = new Message();
+//    var hall_Info = ;
+    message.setMessageType(MessageType.Type_Change_Code);
+    message.setChangeCode(code);
+    var arrayBuf =  message.toArrayBuffer();
+    arrayBuf.valueOf();
+    ws.send(arrayBuf);
+    console.info("切换合约：");
+    console.info(message);
+
+    // ws.send(buyMsg);
+}
 protoSocketConn.prototype.Buy=function(index,lots)
 {
     var buyMsg = "6|"+index+"|";
@@ -404,7 +457,7 @@ protoSocketConn.prototype.SendShareMessage=function()
     // ws.send("S||");
 }
 
-protoSocketConn.prototype.ShareMessage=function(userId,matchId)
+protoSocketConn.prototype.ShareMessage=function(userId,matchId,matchType)
 {
     var shareMsg="G|"+userId+"#"+matchId+"|";
     cc.log("send share msg="+shareMsg);
@@ -413,6 +466,7 @@ protoSocketConn.prototype.ShareMessage=function(userId,matchId)
     var  message = new Message();
     var messageSend = new Share();
     messageSend.setMatchId(matchID);
+    messageSend.setMatchType(matchType);
     message.setMessageType(MessageType.Type_Share);
     message.setShareInfo(messageSend);
     var arrayBuf =  message.toArrayBuffer();

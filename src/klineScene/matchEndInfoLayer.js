@@ -1,6 +1,5 @@
-// JavaScript Document
+//JavaScript Document
 var MatchEndInfoLayer= cc.Layer.extend({
-	
 	bgSprtie:null,
 	stockInfoLabel:null,
 	btnReplay:null,		//复盘---退出游戏
@@ -34,6 +33,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		this.fYScale = this.size.height/720;
 
 		this.tableView = null;
+		this.codetableView = null;
 		// this.width = 985*this.fXScale;
 		// this.height = 483*this.fYScale;
 
@@ -87,9 +87,9 @@ var MatchEndInfoLayer= cc.Layer.extend({
 			this.bgSprtie.addChild(this.decInfoLabel,2);
 			posBtnY = 70;
 
-			if(this.tableView==null)
-			this.tableView = new cc.TableView(this, cc.size(1000, 360));
-
+			if(this.tableView==null){
+                this.tableView = new cc.TableView(this, cc.size(1000, 360));
+			}
 			this.tableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
 			//tableView.setAnchorPoint(0,1);
 			//cc.log(-winSize.width/2,-40);this
@@ -101,9 +101,83 @@ var MatchEndInfoLayer= cc.Layer.extend({
 			this.tableView.setDelegate(this);
 			this.tableView.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
 		}
-		else//单人
-		{
+		else if(userInfo.matchMode==MatchType.Type_Practice_MC){
+            posBtnY =70;
+            this.bgSprtie = cc.Sprite.create(res.BG_RESULT_PNG);
+            bgSize = this.bgSprtie.getContentSize();
+            this.stockInfoLabel.setPosition(bgSize.width / 2, bgSize.height-265);
+            this.bgSprtie.addChild(this.stockInfoLabel,2);
+            this.scoreLabel=cc.LabelTTF.create("", "黑体", 30);
+            //this.stockInfoLabel.setColor(cc.color(40,184,245,255));
+            this.scoreLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
+            // this.scoreLabel.setAnchorPoint(0,0.5);
+            this.scoreLabel.setPosition(bgSize.width / 2, bgSize.height-160);
+            this.scoreLabel.setColor(cc.color(33,158,187,255));
+            this.scoreLabel.setString("您这局的收益率为：");
+            this.bgSprtie.addChild(this.scoreLabel,2);
 
+            this.scoreLabel2=cc.LabelTTF.create("", "Arial", 30);
+            //this.stockInfoLabel.setColor(cc.color(40,184,245,255));
+            this.scoreLabel2.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
+            this.scoreLabel2.setAnchorPoint(0,0.5);
+            this.scoreLabel2.setPosition(bgSize.width / 2+this.scoreLabel.getContentSize().width/2, bgSize.height-160);
+            this.scoreLabel2.setColor(cc.color(33,158,187,255));
+            this.bgSprtie.addChild(this.scoreLabel2,2);
+
+            this.avatarSprite=cc.Sprite.create("res/bg_touxiang.png");
+            this.avatarSprite.setPosition(bgSize.width /4, bgSize.height-160);
+            // this.avatarSprite.setScale(0.4);
+            this.bgSprtie.addChild(this.avatarSprite,5);
+            // this.addChild(this.avatarSprite,5);
+            var url = userInfo.headSprite;
+            cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
+                if(err){
+                    cc.log(err);
+                    cc.log("MatchEndInfoLayer fail loadImg="+userInfo.headSprite); // self.addChild(logo);
+                }
+                if(img){
+                    cc.log("img!=null"+img);
+                    var headSprite = new cc.Sprite();
+                    //     this.touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
+                    // cc.textureCache.addImage(imgUrl);
+                    var texture2d = new cc.Texture2D();
+                    texture2d.initWithElement(img);
+                    texture2d.handleLoadedTexture();
+                    headSprite.initWithTexture(texture2d);
+
+                    // this.touxiangSprite.setScale(fXScale,fYScale);
+
+                    var size = headSprite.getContentSize();
+                    headSprite.setScale(110/size.width,110/size.height);
+                    headSprite.setPosition(bgSize.width /4, bgSize.height-160);
+                    self.bgSprtie.addChild(headSprite,5);
+
+                    cc.log("MatchEndInfoLayer success loadImg="+userInfo.headSprite); // self.addChild(logo);
+                    // self.touxiangSprite.setValue(false);
+                }
+
+            });
+
+            var bgList = new cc.Sprite(res.BG_CONTRACT_PNG);
+            bgList.setPosition(bgSize.width/2,220);
+            this.bgSprtie.addChild(bgList,5);
+
+            var bgList2 = new cc.Sprite(res.BG_CONTRACT_PNG);
+            bgList2.setPosition(bgSize.width/2,150);
+            this.bgSprtie.addChild(bgList2,5);
+
+            if(null==this.codetableView){
+                this.codetableView = new cc.TableView(this, cc.size(1000, 100));
+			}
+            this.codetableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
+            this.codetableView.setPosition(-244,-30);
+            this.codetableView.setDelegate(this);
+            this.codetableView.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+
+
+        }else {//单人
+        // case MatchType.Type_Practice_MC:
+        // case MatchType.Type_DailyTrade_Match
 			this.bgSprtie = cc.Sprite.create("res/matchEnd.png");
 			bgSize = this.bgSprtie.getContentSize();
 			this.stockInfoLabel.setPosition(bgSize.width / 2, bgSize.height-265);
@@ -116,7 +190,6 @@ var MatchEndInfoLayer= cc.Layer.extend({
 			this.scoreLabel.setColor(cc.color(33,158,187,255));
 			this.scoreLabel.setString("您这局的收益率为：");
 			this.bgSprtie.addChild(this.scoreLabel,2);
-
 
 			this.scoreLabel2=cc.LabelTTF.create("", "Arial", 30);
 			//this.stockInfoLabel.setColor(cc.color(40,184,245,255));
@@ -172,15 +245,15 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		mu.y = 0;
 		this.bgSprtie.addChild(mu, 2);
 
-		this.btnAgain=new cc.MenuItemImage("res/meBtnAgain.png","", self.again, this);//new Button("res/home.png");
+		this.btnAgain=new cc.MenuItemImage(res.BTN_AGAIN_PNG,"", self.again, this);//new Button("res/home.png");
 		// this.btnAgain.setScale(fXScale,fYScale);
 		// this.btnAgain.setPosition(cc.p(size.width/4,posY));
 		mu.addChild(this.btnAgain);
-		this.btnShare=new cc.MenuItemImage("res/meBtnShare.png","", self.share, this);//new Button("res/home.png");
+		this.btnShare=new cc.MenuItemImage(res.BTN_SHARE_PNG,"", self.share, this);//new Button("res/home.png");
 		// this.btnShare.setScale(fXScale,fYScale);
 		// this.btnShare.setPosition(cc.p(size.width/4*3,posY));
 		mu.addChild(this.btnShare);
-		this.btnReplay=new cc.MenuItemImage("res/btnEnd.png","", self.replay, this);//new Button("res/home.png");
+		this.btnReplay=new cc.MenuItemImage(res.BTN_OVER_PNG,"", self.replay, this);//new Button("res/home.png");
 		// this.meBtnStart.setScale(fXScale,fYScale);
 		// this.meBtnStart.setPosition(cc.p(size.width/2,posY));
 		mu.addChild(this.btnReplay);
@@ -197,6 +270,11 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		{
 			this.tableView.reloadData();
 			this.addChild(this.tableView,2);
+		}
+		if(this.codetableView!=null)
+		{
+            this.codetableView.reloadData();
+			this.addChild(this.codetableView,2);
 		}
 		this.setScale(this.fXScale,this.fYScale);
 
@@ -438,6 +516,42 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		userInfo.matchId = endMatchInfo.matchId;
 		switch(userInfo.matchMode)
 		{
+            case MatchType.Type_Practice_MC:{//多品种{
+                cc.log("多品种userInfo.matchMode ="+userInfo.matchMode);
+                var fields=endMatchInfo.codeInfo;
+                this.stockInfoLabel.setString(fields);
+                var playersInfo = endMatchInfo.playerInfo;
+                var ratio=parseFloat(playersInfo[0].score).toFixed(2);
+                userInfo.score = ratio;
+                if(ratio>0)
+                {
+                    // playWinSound();
+                    this.scoreLabel2.setColor(cc.color(249,27,27,255));
+                }
+                else if(ratio<0)
+                {
+                    // playLoseSound();
+                    this.scoreLabel2.setColor(cc.color(6,224,0,255));
+                }
+                else
+                {
+                    this.scoreLabel2.setColor(cc.color(255,255,255,255));
+                }
+                this.scoreLabel2.setString(ratio+"%");
+                // if(null==userInfo.endInfoOfAllcodes)
+                // {
+                 //    userInfo.endInfoOfAllcodes=new Array();
+                // }else {
+                 //    userInfo.endInfoOfAllcodes=[];
+				// }
+                userInfo.endInfoOfAllcodes = playersInfo[0].codeScore;
+                if(this.codetableView!=null)
+                {
+                    this.codetableView.reloadData();
+                    // this.tableView.setVisible(true);
+                }
+                break;
+            }
 			case MatchType.Type_DailyTrade_Match://分时比赛
 			case MatchType.Type_Practice_Match:
 			{
@@ -477,7 +591,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 
 				this.stockInfoLabel.setString(fields);
 				var endInfoData = endMatchInfo.playerInfo;
-				var endInfoList = new Array()
+				var endInfoList = new Array();
 				// userInfo.endInfoOfAllPlayers=;
 				for(var i=0;endInfoData!=null&&i<endInfoData.length;i++)
 				{
@@ -537,6 +651,8 @@ var MatchEndInfoLayer= cc.Layer.extend({
 				}
 				break;
 			}
+
+
 			default:
 			{
 				cc.log("userInfo.matchMode ="+userInfo.matchMode);
@@ -564,10 +680,12 @@ var MatchEndInfoLayer= cc.Layer.extend({
 	},
 
 	tableCellSizeForIndex:function (table, idx) {
-		//if (idx == 2) {
-		//    return cc.size(1000, 100);
-		//}
-		return cc.size(1000, 90);
+		if(userInfo.matchMode==MatchType.Type_Practice_MC){
+            return cc.size(1000, 50);
+        }else{
+            return cc.size(1000, 90);
+        }
+
 	},
 
 	tableCellAtIndex:function (table, idx) {
@@ -578,44 +696,47 @@ var MatchEndInfoLayer= cc.Layer.extend({
 		var cell = table.dequeueCell();
 		var label;
 		var textLabel;
-		if (!cell) {
-			cell = new PlayerInfoCell();
 
-			//label = new cc.LabelTTF(strValue, "Arial", 30.0);
-			//label.setPosition(cc.p(0,20));
-			//label.setAnchorPoint(0,0);
-			//label.tag = 123;
-			//cell.addChild(label);
-			if(userInfo.endInfoOfAllPlayers!=null)
-			{
-				cell.setCellData(idx);
-			}
+        if(userInfo.matchMode==MatchType.Type_Practice_MC){
+            if (!cell) {
+                cell = new CodeInfoCell();
+            }
+            if(userInfo.endInfoOfAllcodes!=null)
+            {
+                cell.setCellData(idx);
+            }
+        }else{
+            if (!cell) {
+                //label = new cc.LabelTTF(strValue, "Arial", 30.0);
+                //label.setPosition(cc.p(0,20));
+                //label.setAnchorPoint(0,0);
+                //label.tag = 123;
+                //cell.addChild(label);
+                cell = new PlayerInfoCell();
+            }
+            if(userInfo.endInfoOfAllPlayers!=null)
+            {
+                cell.setCellData(idx);
+            }
+        }
 
-		}
-		else {
-			//label = cell.getChildByTag(123);
-			//label.setString(strValue);
-			if(userInfo.endInfoOfAllPlayers!=null)
-			{
-				cell.setCellData(idx);
-			}
-		}
 
 		return cell;
 	},
 
 	numberOfCellsInTableView:function (table) {
-		if(userInfo.endInfoOfAllPlayers!=null)
-		{
-			cc.log("userInfo.endInfoOfAllPlayers.length=="+userInfo.endInfoOfAllPlayers.length);
-			if(userInfo.endInfoOfAllPlayers.length>4)
-				return 4;
-			else
-				return userInfo.endInfoOfAllPlayers.length;
-		}
-		else return 0;
-	},
 
+        if(userInfo.matchMode==MatchType.Type_Practice_MC){
+            if(userInfo.endInfoOfAllcodes!=null) {
+                return userInfo.endInfoOfAllcodes.length;
+            }
+        }else{
+            if(userInfo.endInfoOfAllPlayers!=null) {
+                return userInfo.endInfoOfAllPlayers.length;
+            }
+        }
+		return 0;
+	},
 
 
 });
@@ -674,8 +795,6 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 			}
 			sprite.addChild(textScoreLabel);
 
-
-
 			cc.log("buyInfo=="+buyInfo);
 			//设置查看交易记录按钮
 			//设置查看交易记录按钮
@@ -695,4 +814,44 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 		}
 	},
 
+});
+var CodeInfoCell = cc.TableViewCell.extend({
+	draw:function (ctx) {
+		this._super(ctx);
+
+	},
+	setCellData:function(idx){
+		cc.log("PlayerInfoCell setCellData=="+idx);
+		// var sprite = new cc.Sprite(res.BLUE_BG_BTN);
+		var sprite = new cc.Node();
+		sprite.setPosition(cc.p(0,0));
+		sprite.setAnchorPoint(0,0);
+		this.addChild(sprite);
+		if(null!=userInfo.endInfoOfAllcodes[idx]) {
+
+            //设置code名
+            var textNameLabel = new cc.LabelTTF(userInfo.endInfoOfAllcodes[idx].code, "Arial", 25.0);
+            textNameLabel.setPosition(cc.p(200, 40));
+            textNameLabel.enableStroke(ShadowColor, 2);
+            textNameLabel.setAnchorPoint(0,0.5);
+            sprite.addChild(textNameLabel);
+
+            //设置收益
+            var score = parseFloat(userInfo.endInfoOfAllcodes[idx].codeScore).toFixed(2);
+            var strScoreText = score + "%";
+            var textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
+            textScoreLabel.setPosition(cc.p(500, 40));
+            textScoreLabel.setAnchorPoint(0.5, 0.5);
+            if (userInfo.endInfoOfAllcodes[idx].codeScore > 0) {
+                textScoreLabel.setColor(RedColor);
+            }
+            else if (userInfo.endInfoOfAllcodes[idx].codeScore < 0) {
+                textScoreLabel.setColor(GreenColor);
+            }
+            else {
+                textScoreLabel.setColor(WhiteColor);
+            }
+            sprite.addChild(textScoreLabel);
+        }
+	},
 });

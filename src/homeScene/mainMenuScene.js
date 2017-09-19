@@ -247,7 +247,7 @@ var MainMenuScene =SceneBase.extend(
         }
 
         // gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
-
+        codeDataList.clearCodeData();
         this.setInfoBySource(userInfo.source);
         this.openSceneType();
         var loadTime=new Date().getTime();
@@ -330,7 +330,7 @@ var MainMenuScene =SceneBase.extend(
         //     gKlineScene=new KLineScene();
         // }
 
-        // userInfo.matchMode = MatchType.Type_Practice_Match;
+        userInfo.matchMode = MatchType.Type_Practice_Match;
         if(this.preMatchView==null){
             this.preMatchView=new preMatchView();
             this.preMatchView.setVisible(false);
@@ -799,7 +799,7 @@ var MainMenuScene =SceneBase.extend(
                     if(self.headSprite ==null){
                         self.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
                         self.headSprite.setPosition(cc.p(180,500));
-                        var sizeHead = this.headSprite.getContentSize();
+                        var sizeHead = self.headSprite.getContentSize();
                         self.headSprite.setScale(90/sizeHead.width,90/sizeHead.height);
                         self.backgroundSprite.addChild(self.headSprite,2);
                     }
@@ -910,11 +910,12 @@ var MainMenuScene =SceneBase.extend(
         // userInfo.sumMatchFriend =data["sumMatchFriend"];
         // userInfo.gainCumulation=data["gainCumulation"];
         // userInfo.sumOfAllMatch=data["sumOfAllMatch"];
+        //sumMatchOneMC
         userInfo.userId = data["uid"];
         userInfo.nickName=data["userName"];
         userInfo.headSprite=data["headPicture"];
-        userInfo.winOfMatchForOne=data["winMatchOne"]+data["winMatchDaily"];
-        userInfo.sumOfMatchForOne=data["sumMatchOne"]+data["sumMatchDaily"];
+        userInfo.winOfMatchForOne=data["winMatchOne"]+data["winMatchDaily"]+data["winMatchOneMC"];
+        userInfo.sumOfMatchForOne=data["sumMatchOne"]+data["sumMatchDaily"]+data["sumMatchOneMC"];
         userInfo.winOfMatchForMore=data["winMatchMore"]+data["winMatchMoreTool"];
         userInfo.sumOfMatchForMore=data["sumMatchMore"]+data["sumMatchMoreTool"];
         userInfo.winOfMatchForAI=data["winMatchAI"];
@@ -946,7 +947,6 @@ var MainMenuScene =SceneBase.extend(
 		// var packet=Packet.prototype.Parse(message);
         cc.log("messageCallBack mainScene message callback message=="+message.messageType);
 		if(message==null) return;
-
 // WARN_FOR_REMOTE_LOGIN(-400,"您的账号已在其他地方登陆，请确保密码安全"),
 //     WARN_FOR_GET_HISDATA(-401, "获取历史行情失败，请重新再试"),
 //     WARN_FOR_VISTOR_APP(-402,"更多功能，请登录东航金融APP"),
@@ -962,6 +962,9 @@ var MainMenuScene =SceneBase.extend(
 //     WARN_NOT_MATCH_MOBILE_CODE(-412,"手机号验证码校验失败"),
 //     WARN_LOGIN_AGAIN(-413,"请重新登录");
         if(message.messageType==MessageType.Type_Warn){
+            if(null!=message.warn.token){
+                userInfo.token = message.warn.token;
+            }
             switch (message.warn.code){
                 case -400:{
                     self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
@@ -1117,7 +1120,7 @@ var MainMenuScene =SceneBase.extend(
             // }
             case MessageType.Type_HisdataInfo://K线数据
             {
-
+                //localStorage.clear();
                 if(gKlineScene==null){
                     gKlineScene=new KLineScene();
                 }
@@ -1284,167 +1287,6 @@ var MainMenuScene =SceneBase.extend(
                 }
                 self.stopProgress();
                 break;
-            }
-
-
-            case "2":
-            {
-                //登录失败
-                self.stopProgress();
-                self.showErrorBox(packet.content,function(){self.errorBoxClosed();});
-                break;
-            }
-
-            case "D":
-            {
-                //其他地方登陆
-                self.stopProgress();
-                self.showErrorBox(packet.content,function(){self.errorBoxClosed();});
-                break;
-            }
-
-            case "ERROR":
-            {
-                //登录失败
-                self.stopProgress();
-                self.showMessageBox(packet.content,function(){self.messageBoxClosed();});
-                break;
-            }
-            case "UNMATCH":
-            {
-                if(packet.content=="SUCCESS"){
-                    userInfo.matchBeginFlag=false;
-                    cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=== UNMATCH SUCCESSpacket.content=="+ packet.content);
-                }else {
-                    cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=== packet.content=="+ packet.content);
-                }
-
-                break;
-            }
-
-            case "SENDCODE"://获取验证码test
-            {
-                cc.log("messageCallBack.mainScenepacket.msgType="+packet.msgType+"packet.content=="+ packet.content);
-                break;
-            }
-
-
-            case "LOGIN"://获取验证码test
-            {
-                cc.log("messageCallBack.mainScenepacket.msgType="+packet.msgType+"packet.content=="+ packet.content);
-                // gSocketConn.toLogin(packet.content);
-                // self.login();toLogin
-                self.stopProgress();
-                gSocketConn.SendToHMessage(packet.content);
-                break;
-            }
-
-            case "LISTFRIEND":
-            {
-
-                cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
-                userInfo.friendListData = [];
-                var data=JSON.parse(packet.content);
-                userInfo.friendListData  = data;
-                cc.log(userInfo.friendListData);
-                userInfo.friendListData.sort(function (a,b) {
-                    if(a["status"]=="在线"){
-                        return -1;
-                    }else if(b["status"]=="在线"){
-                        return 1;
-                    }else if(a["status"]=="组队中"){
-                        return -1;
-                    }else if(b["status"]=="组队中"){
-                        return 1;
-                    }else if(a["status"]=="比赛中"){
-                        return -1;
-                    }else if(b["status"]=="比赛中"){
-                        return 1;
-                    }else {
-                        return a["userName"]-b["userName"];
-                    }
-                });
-                //
-            //     var arrSimple2=new Array(1,8,7,6);
-            //     arrSimple2.sort(function(a,b){
-            //         return b-a});
-            // 解释：a,b表示数组中的任意两个元素，若return > 0 b前a后；reutrn < 0 a前b后；a=b时存在浏览器兼容
-            //     简化一下：a-b输出从小到大排序，b-a输出从大到小排序。
-                // cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
-
-                if(self.friendLayer!=null){
-                    self.friendLayer.refreshFriendViewLayer();
-                }
-
-                break;
-
-            }
-            case "FRIENDCHANGE":
-            {
-
-                // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
-                cc.log(userInfo.friendListData);
-
-                var friendName = packet.content.split("#")[0];
-                var status = packet.content.split("#")[1];
-                for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
-                {
-                   if(userInfo.friendListData[i]["friendname"]==friendName){
-                       userInfo.friendListData[i]["status"]=status;
-                   }
-                }
-
-                userInfo.friendListData.sort(function (a,b) {
-                    if(a["status"]=="在线"){
-                        return -1;
-                    }else if(b["status"]=="在线"){
-                        return 1;
-                    }else if(a["status"]=="组队中"){
-                        return -1;
-                    }else if(b["status"]=="组队中"){
-                        return 1;
-                    }else if(a["status"]=="比赛中"){
-                        return -1;
-                    }else if(b["status"]=="比赛中"){
-                        return 1;
-                    }else {
-                        return -1;
-                    }
-                });
-                cc.log(userInfo.friendListData);
-                // cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
-
-                if(self.friendLayer!=null){
-                    self.friendLayer.refreshFriendViewLayer();
-                }
-                break;
-
-            }
-            case "INVITE":
-            {
-                // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
-                inviteInfo.code = packet.content.split("#")[0];
-                inviteInfo.friendName = packet.content.split("#")[1];
-                inviteInfo.picUrl = packet.content.split("#")[2];
-                userInfo.matchMode = 4;
-                // userInfo.matchMode = AiType.Type_Friend_Match;
-                // var self = this;
-                if(self.invitedViewLayer==null){
-                    self.invitedViewLayer=new InvitedViewLayer();
-                    self.invitedViewLayer.setVisible(false);
-                    self.invitedViewLayer.setPosition(0,0);
-                    self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
-                    self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
-                }
-
-                self.invitedViewLayer.showLayer();
-                self.pauseLowerLayer();
-
-                // if(self.friendLayer!=null){
-                //     self.friendLayer.refreshFriendViewLayer();
-                // }
-                break;
-
             }
 
             case  MessageType.Type_AddFriend:
@@ -1669,21 +1511,174 @@ var MainMenuScene =SceneBase.extend(
                 break;
 
             }
-            case "REJECT":
-            {
-                // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
-                var name = packet.content.split("#")[0];
-
-                if(self.friendLayer!=null){
-                    self.friendLayer.showMessageInfo(name+"拒绝了你的邀请！");
-                }
-
-                // if(self.friendLayer!=null){
-                //     self.friendLayer.refreshFriendViewLayer();
-                // }
-                break;
-
-            }
+            // case "2":
+            // {
+            //     //登录失败
+            //     self.stopProgress();
+            //     self.showErrorBox(packet.content,function(){self.errorBoxClosed();});
+            //     break;
+            // }
+            // case "D":
+            // {
+            //     //其他地方登陆
+            //     self.stopProgress();
+            //     self.showErrorBox(packet.content,function(){self.errorBoxClosed();});
+            //     break;
+            // }
+            // case "ERROR":
+            // {
+            //     //登录失败
+            //     self.stopProgress();
+            //     self.showMessageBox(packet.content,function(){self.messageBoxClosed();});
+            //     break;
+            // }
+            // case "UNMATCH":
+            // {
+            //     if(packet.content=="SUCCESS"){
+            //         userInfo.matchBeginFlag=false;
+            //         cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=== UNMATCH SUCCESSpacket.content=="+ packet.content);
+            //     }else {
+            //         cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=== packet.content=="+ packet.content);
+            //     }
+            //
+            //     break;
+            // }
+            // case "SENDCODE"://获取验证码test
+            // {
+            //     cc.log("messageCallBack.mainScenepacket.msgType="+packet.msgType+"packet.content=="+ packet.content);
+            //     break;
+            // }
+            // case "LOGIN"://获取验证码test
+            // {
+            //     cc.log("messageCallBack.mainScenepacket.msgType="+packet.msgType+"packet.content=="+ packet.content);
+            //     // gSocketConn.toLogin(packet.content);
+            //     // self.login();toLogin
+            //     self.stopProgress();
+            //     gSocketConn.SendToHMessage(packet.content);
+            //     break;
+            // }
+            // case "LISTFRIEND":
+            // {
+            //
+            //     cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+            //     userInfo.friendListData = [];
+            //     var data=JSON.parse(packet.content);
+            //     userInfo.friendListData  = data;
+            //     cc.log(userInfo.friendListData);
+            //     userInfo.friendListData.sort(function (a,b) {
+            //         if(a["status"]=="在线"){
+            //             return -1;
+            //         }else if(b["status"]=="在线"){
+            //             return 1;
+            //         }else if(a["status"]=="组队中"){
+            //             return -1;
+            //         }else if(b["status"]=="组队中"){
+            //             return 1;
+            //         }else if(a["status"]=="比赛中"){
+            //             return -1;
+            //         }else if(b["status"]=="比赛中"){
+            //             return 1;
+            //         }else {
+            //             return a["userName"]-b["userName"];
+            //         }
+            //     });
+            //     //
+            //     //     var arrSimple2=new Array(1,8,7,6);
+            //     //     arrSimple2.sort(function(a,b){
+            //     //         return b-a});
+            //     // 解释：a,b表示数组中的任意两个元素，若return > 0 b前a后；reutrn < 0 a前b后；a=b时存在浏览器兼容
+            //     //     简化一下：a-b输出从小到大排序，b-a输出从大到小排序。
+            //     // cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+            //
+            //     if(self.friendLayer!=null){
+            //         self.friendLayer.refreshFriendViewLayer();
+            //     }
+            //
+            //     break;
+            //
+            // }
+            // case "FRIENDCHANGE":
+            // {
+            //
+            //     // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+            //     cc.log(userInfo.friendListData);
+            //
+            //     var friendName = packet.content.split("#")[0];
+            //     var status = packet.content.split("#")[1];
+            //     for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
+            //     {
+            //         if(userInfo.friendListData[i]["friendname"]==friendName){
+            //             userInfo.friendListData[i]["status"]=status;
+            //         }
+            //     }
+            //
+            //     userInfo.friendListData.sort(function (a,b) {
+            //         if(a["status"]=="在线"){
+            //             return -1;
+            //         }else if(b["status"]=="在线"){
+            //             return 1;
+            //         }else if(a["status"]=="组队中"){
+            //             return -1;
+            //         }else if(b["status"]=="组队中"){
+            //             return 1;
+            //         }else if(a["status"]=="比赛中"){
+            //             return -1;
+            //         }else if(b["status"]=="比赛中"){
+            //             return 1;
+            //         }else {
+            //             return -1;
+            //         }
+            //     });
+            //     cc.log(userInfo.friendListData);
+            //     // cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+            //
+            //     if(self.friendLayer!=null){
+            //         self.friendLayer.refreshFriendViewLayer();
+            //     }
+            //     break;
+            //
+            // }
+            // case "INVITE":
+            // {
+            //     // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+            //     inviteInfo.code = packet.content.split("#")[0];
+            //     inviteInfo.friendName = packet.content.split("#")[1];
+            //     inviteInfo.picUrl = packet.content.split("#")[2];
+            //     userInfo.matchMode = 4;
+            //     // userInfo.matchMode = AiType.Type_Friend_Match;
+            //     // var self = this;
+            //     if(self.invitedViewLayer==null){
+            //         self.invitedViewLayer=new InvitedViewLayer();
+            //         self.invitedViewLayer.setVisible(false);
+            //         self.invitedViewLayer.setPosition(0,0);
+            //         self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
+            //         self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+            //     }
+            //
+            //     self.invitedViewLayer.showLayer();
+            //     self.pauseLowerLayer();
+            //
+            //     // if(self.friendLayer!=null){
+            //     //     self.friendLayer.refreshFriendViewLayer();
+            //     // }
+            //     break;
+            //
+            // }
+            // case "REJECT":
+            // {
+            //     // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+            //     var name = packet.content.split("#")[0];
+            //
+            //     if(self.friendLayer!=null){
+            //         self.friendLayer.showMessageInfo(name+"拒绝了你的邀请！");
+            //     }
+            //
+            //     // if(self.friendLayer!=null){
+            //     //     self.friendLayer.refreshFriendViewLayer();
+            //     // }
+            //     break;
+            //
+            // }
                 // REJECT|张三|
             default:
             {

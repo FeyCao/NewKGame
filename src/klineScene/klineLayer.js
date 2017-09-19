@@ -5,7 +5,7 @@ var KlineLayer= BaseGraphLayer.extend({
 
 	upArrowSpriteIndexs:[],		//向上箭头的图片是在哪个index的位置
 	downArrowSpriteIndexs:[],		//向下箭头的图片是在哪个index的位置
-
+	currentCode:null,
 	ctor:function(width,height)
 	{
 		this._super(width,height);
@@ -21,6 +21,12 @@ var KlineLayer= BaseGraphLayer.extend({
 		this._super();
 		this.clearUpDownArrows();
 	},
+	setCodeName:function (codeName) {
+		this.currentCode = codeName;
+    },
+	getCodeName:function () {
+		return this.currentCode;
+    },
 	//如果最大最小改变了，则需要重新绘制之前的蜡烛
 	calculateMaxMinAtIndex:function(index)
 	{

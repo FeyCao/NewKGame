@@ -368,7 +368,9 @@ cc.MenuItemLabel = cc.MenuItem.extend(/** @lends cc.MenuItemLabel# */{
             else
                 this._originalScale = this.scale;
 
-            var zoomAction = cc.scaleTo(0.1, this._originalScale * 1.2);
+            var zoomAction1 = cc.scaleTo(0.1, this._originalScale * 1.2);//new cc.Sequence(actionFadeIn,actionBlank,actionFadeOut);
+            var zoomAction2 = cc.scaleTo(0.1, this._originalScale/1.2);//new cc.Sequence(actionFadeIn,actionBlank,actionFadeOut);
+            var zoomAction = new cc.Sequence(zoomAction1,zoomAction1);
             zoomAction.setTag(cc.ZOOM_ACTION_TAG);
             this.runAction(zoomAction);
         }

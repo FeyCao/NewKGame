@@ -115,8 +115,9 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
         recordButton.setPosition(cc.p(880,30));
         this.spriteBg.addChild(recordButton);
         var matchId = matchData["matchId"];
-        var userId = userInfoTemp[0]["userName"];
-        cc.log("recordButton ClickEvent userId["+idx+"] ="+userId+"||matchId="+matchId);
+        // var userId = userInfoTemp["userName"];
+        var matchType =  matchData["matchType"];
+        // cc.log("recordButton ClickEvent userId["+idx+"] ="+userId+"||matchId="+matchId);
         recordButton.setClickEvent(function(){
 
             var klineSceneNext=new KLineScene();
@@ -124,7 +125,7 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
 
             };
             userInfo.matchMode=userInfo.recordMode;
-            gSocketConn.SendRecordMessage(matchId,userId);
+            gSocketConn.SendRecordMessage(matchId,matchType);
             cc.director.runScene(klineSceneNext);
 
         });
@@ -210,7 +211,12 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
             // strNameText= userInfo.MatchListData[idx]["uid"];
             switch (userInfo.recordMode)
             {
+                case MatchType.Type_DailyTrade_Match:{
 
+                }
+                case MatchType.Type_Practice_MC:{
+
+                }
                 case MatchType.Type_Practice_Match:
                 {
                     touxiangSprite = cc.Sprite.create("res/bg_touxiang.png");
@@ -283,8 +289,9 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
                     recordButton.setPosition(cc.p(800,40));
                     this.spriteBg.addChild(recordButton);
                     var matchId = matchData["matchId"];
-                    var userId = userInfoTemp["userName"];
-                    cc.log("recordButton ClickEvent userId["+idx+"] ="+userId+"||matchId="+matchId);
+                    // var userId = userInfoTemp["userName"];
+                    var matchType =  matchData["matchType"];
+                    // cc.log("recordButton ClickEvent userId["+idx+"] ="+userId+"||matchId="+matchId);
                     recordButton.setClickEvent(function(){
 
                         var klineSceneNext=new KLineScene();
@@ -292,7 +299,7 @@ var ZhanjiTableViewCell = cc.TableViewCell.extend({
 
                         };
                         userInfo.matchMode=userInfo.recordMode;
-                        gSocketConn.SendRecordMessage(matchId,userId);
+                        gSocketConn.SendRecordMessage(matchId,matchType);
                         cc.director.runScene(klineSceneNext);
 
                     });

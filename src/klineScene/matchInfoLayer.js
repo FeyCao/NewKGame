@@ -1,4 +1,4 @@
-﻿//﻿//﻿ JavaScript Document用来显示对局的信息和按钮等控件
+﻿//﻿/JavaScript Document用来显示对局的信息和按
 var MatchInfoLayer = cc.Layer.extend({
     buyDisableSprite:null,		//买入按钮关闭图片
 	buyCloseDisableSprite:null,	//买入平仓按钮关闭图片
@@ -43,6 +43,10 @@ var MatchInfoLayer = cc.Layer.extend({
 	// menu:null,
 
     dailyControlLayer:null,			//分时控制层
+    tradeControlLayer:null,			//多品种控制层
+	codeLabel:null,
+	currentCodeName:null,
+	codeButton:null,
 
 	statusFlag:0,
 
@@ -65,16 +69,11 @@ var MatchInfoLayer = cc.Layer.extend({
 
 		var posX = 80;
 		var posY = 35;
-		// this.backgroundSprite=cc.Sprite.create("res/battle_bg.png");
-		// var bgSize = this.backgroundSprite.getContentSize();
-		// this.menuControlLayer = new cc.Layer();
-		// this.menuControlLayer.setScale(fXScale,fYScale);
-		// this.menuControlLayer.setPosition(0,0);
-		// this.addChild(this.menuControlLayer);
+
 		var mu = new cc.Menu();
 		mu.x = 0;
 		mu.y = 0;
-		this.addChild(mu, 2);
+		this.addChild(mu,3);
 
 		this.btnAgain=new cc.MenuItemImage("res/meBtnAgain.png","", self.again, this);//new Button("res/home.png");
 		this.btnAgain.setScale(fXScale,fYScale);
@@ -88,23 +87,6 @@ var MatchInfoLayer = cc.Layer.extend({
 		this.meBtnStart.setScale(fXScale,fYScale);
 		this.meBtnStart.setPosition(cc.p(gDesignResolutionWidth/2,posY));
 		mu.addChild(this.meBtnStart);
-
-		// this.btnStart=new Button("res/btnStart.png");
-		// this.btnStart.setPosition(cc.p(363,posY));
-		// this.btnStart.setClickEvent(function(){
-		//     self.start();
-		// });
-
-		// this.btnHome=new Button("res/home.png");
-		// this.btnHome.setPosition(cc.p(363,posY));
-		// this.btnHome.setClickEvent(function(){
-		//     self.meStart();
-		// });
-
-		// this.addChild(this.btnAgain,3);
-		// this.addChild(this.btnShare,3);
-		// this.addChild(this.meBtnStart,3);
-		// this.addChild(this.btnStart,3);
 
 
 		var posBuy = cc.p(posX,posY);
@@ -134,15 +116,6 @@ var MatchInfoLayer = cc.Layer.extend({
 		cc.log("userInfo.matchMode=="+userInfo.matchMode);
 		// this.toolsButton.setVisible(userInfo.matchMode==1?true:false);
 
-
-		// this.matchInfoArea=new cc.DrawNode();
-		// //设置K线图的区域
-		// this.matchInfoArea.setPosition(cc.p(0,0));
-		// this.matchInfoArea.width=this.width;
-		// this.matchInfoArea.height=this.height;
-		// this.addChild(this.matchInfoArea, 1);
-
-
 		//设置变速信息的区域
 		this.initSpeedControlArea();
 
@@ -154,6 +127,9 @@ var MatchInfoLayer = cc.Layer.extend({
 
         //分时区域设置
         this.initDailyTradeControlArea();
+
+        //多品种区域设置
+        this.initTradeControlArea();
 
 		this.faceSprites = [];
 		var posX = 85;
@@ -243,7 +219,6 @@ var MatchInfoLayer = cc.Layer.extend({
 		// 	// gKlineScene.drawNormalCandlePart();
 		// 	userInfo.toolsFlag=0;
 		// }
-
 	},
 
 	ShowemoticonView:function()
@@ -366,42 +341,6 @@ var MatchInfoLayer = cc.Layer.extend({
 		this.scDoubleCheckButton.setVisible(false);
 		mu.addChild(this.scDoubleCheckButton);//new CheckButton("res/btn_sc_a_double.png","res/btn_sc_d_double.png");
 
-		// this.scBackgroundSprite=cc.Sprite.create("res/btn_sc_bg.png");
-		// this.scPlayCheckButton=new CheckButton("res/btn_sc_pause.png","res/btn_sc_play.png");
-		// this.scHalfCheckButton=new CheckButton("res/btn_sc_a_half.png","res/btn_sc_d_half.png");
-		// this.scNormalCheckButton=new CheckButton("res/btn_sc_a_normal.png","res/btn_sc_d_normal.png");
-		// this.scDoubleCheckButton=new CheckButton("res/btn_sc_a_double.png","res/btn_sc_d_double.png");
-
-		// this.scBackgroundSprite.setPosition(cc.p(406,posY));
-		// this.scPlayCheckButton.setPosition(cc.p(302,posY));
-		// this.scHalfCheckButton.setPosition(cc.p(359,posY));
-		// this.scNormalCheckButton.setPosition(cc.p(406,posY));
-		// this.scDoubleCheckButton.setPosition(cc.p(453,posY));
-
-		// this.scPlayCheckButton.setClickEvent(function(){
-		// 	self.playCheckChanged();
-		// });
-
-		// this.scHalfCheckButton.setClickEvent(function(){
-		// 	self.halfSpeedCheckClicked();
-		// });
-        //
-		// this.scNormalCheckButton.setClickEvent(function(){
-		// 	self.normalSpeedCheckClicked();
-		// });
-        //
-		// this.scDoubleCheckButton.setClickEvent(function(){
-		// 	self.doubleSpeedCheckClicked();
-		// });
-        //
-		// this.scNormalCheckButton.setChecked(true);
-		// this.scPlayCheckButton.setChecked(true);
-
-		// this.speedControlLayer.addChild(this.scBackgroundSprite,1);
-		// this.speedControlLayer.addChild(this.scPlayCheckButton,1);
-		// this.speedControlLayer.addChild(this.scHalfCheckButton,1);
-		// this.speedControlLayer.addChild(this.scNormalCheckButton,1);
-		// this.speedControlLayer.addChild(this.scDoubleCheckButton,1);
 	},
 	initDailyTradeControlArea:function()
 	{
@@ -422,8 +361,6 @@ var MatchInfoLayer = cc.Layer.extend({
 		this.addChild(this.dailyControlLayer,3);
 		var bgSize = this.dailyControlLayer.getContentSize();
 		cc.log("dailyControlLayer  bgSize.width=="+bgSize.width+"bgSize.height=="+bgSize.height);
-
-
 
 		var mu = new cc.Menu();
 		mu.x = 0;
@@ -462,11 +399,135 @@ var MatchInfoLayer = cc.Layer.extend({
 		this.item1.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2));
 		this.itemOne.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY));
 		this.itemFive.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-posY/2*3));
-
-
 		this.setDefaultDailyTradeControlArea();
+	},
+	initTradeControlArea:function()
+	{
+		//设置合约列表信息的信息
+		var self=this;
+		// var size = cc.director.getWinSize();currentCodeName
+        var posX =48;
+		var posY = 40;
+		var fontSize = 25;
+        var labelSize = cc.size(220,70);
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
+        var tmp=new cc.Sprite(res.EXERCISE_BOX_DEFAULT);//new cc.Sprite(res.EXERCISE_BOX_DEFAULT);//new cc.Sprite(res.EXERCISE_BOX_STRETCH);
+        var sizeTmp = tmp.getContentSize();
+        var fullRect = cc.Rect(0,0, sizeTmp.width, sizeTmp.height);
+        var insetRect = cc.Rect(6,6,sizeTmp.width-6, sizeTmp.height-6);
+
+        this.tradeControlLayer=new cc.Scale9Sprite(res.EXERCISE_BOX_DEFAULT,fullRect,insetRect);//new cc.Sprite(res.EXERCISE_BOX_DEFAULT);//new cc.Sprite(res.EXERCISE_BOX_STRETCH);
+        this.tradeControlLayer.setContentSize(cc.size(200, 60));
+        var bgSize = this.tradeControlLayer.getContentSize();//178*212
+        this.tradeControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*0.575/2-10,gDesignResolutionHeight-bgSize.height*0.575/2-5);
+        this.tradeControlLayer.setScale(fXScale,fYScale);
+        // this.dailyControlLayer.setAnchorPoint(0.5,1);
+
+        // CCScale9Sprite* backGround = CCScale9Sprite::create("extensions/background.png", fullRect, insetRect );   // 这个就是 5的位置和大小
+        // backGround-setContentSize(CCSizeMake(300, 30));
+        // backGround->setPosition(ccp(10, 230));
+        // backGround->setAnchorPoint(CCPointZero);
+
+
+
+
+
+        // initWithSpriteFrame
+               // this.dailySelectButton=new cc.MenuItemImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);//new Button("res/home.png");
+        // this.dailySelectButton.setPosition(cc.p(bgSize.width-posX,bgSize.height-posY/2));
+        this.addChild(this.tradeControlLayer,3);
+        // var bgSize = this.tradeControlLayer.getContentSize();
+        cc.log("dailyControlLayer  bgSize.width=="+bgSize.width+"bgSize.height=="+bgSize.height);
+        this.currentCodeName  = new cc.LabelTTF("",res.FONT_TYPE,fontSize,labelSize);
+        this.currentCodeName.enableStroke(ShadowColor, 2);
+        this.currentCodeName.setPosition(-100,170);
+        this.tradeControlLayer.addChild(this.currentCodeName);
+        if(null!=userInfo.currentCode){
+            this.currentCodeName.setString(userInfo.currentCode);
+		}
+        var mu = new cc.Menu();
+        mu.x = 0;
+        mu.y = 0;
+        this.tradeControlLayer.addChild(mu, 3);
+        this.codeLabel = new Array();
+        this.codeButton = new Array();
+        for(var i=0;i<5;i++){
+            var codeLabelTem = new cc.LabelTTF("__",res.FONT_TYPE,fontSize,labelSize);
+            this.codeLabel.push(codeLabelTem);
+            codeLabelTem.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+            codeLabelTem.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
+            var codeButtonTem = new cc.MenuItemLabel(codeLabelTem, self.changeCode, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+            codeButtonTem.setPosition(cc.p((bgSize.width-posX)/2,30-42*i));
+            codeButtonTem.setVisible(false);
+            this.codeButton.push(codeButtonTem);
+            // item1.setAnchorPoint(0,0.5);
+            mu.addChild(codeButtonTem);
+        }
+
+		if(null!=userInfo.codeMainList){
+            var codeCount=userInfo.codeMainList.length;
+            this.tradeControlLayer.setContentSize(cc.size(200,codeCount>1?42*codeCount:45));
+            var bgSize = this.tradeControlLayer.getContentSize();//178*212
+            this.currentCodeName.setPosition(-100,bgSize.height-20);
+            this.tradeControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
+			var codeDec ="";
+			for(var i = 0;i<userInfo.codeMainList.length;i++){
+                codeDec = userInfo.codeMainList[i].code+"  "+userInfo.codeMainList[i].codeScore+"%";
+				if(null!=this.codeButton[i]){
+                    this.codeButton[i].setVisible(true);
+                    this.codeButton[i].setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-20-42*i));
+                    this.codeButton[i].setTag(i);
+                    this.codeLabel[i].setString(codeDec);
+				}
+			}
+		}
 
 	},
+	initTradeControlAreaByData:function()
+	{
+        //codeScore
+
+        // initWithSpriteFrame
+        // this.tradeControlLayer.setScale(1,userInfo.codeMainList.length/5);
+
+        if(null!=this.tradeControlLayer){
+            this.tradeControlLayer.setVisible(true);
+		}
+        if(null!=userInfo.currentCode){
+            this.currentCodeName.setString(userInfo.currentCode);
+        }
+
+		//设置合约列表信息的信息
+        if(null!=userInfo.codeMainList){
+            var codeCount=userInfo.codeMainList.length;
+            this.tradeControlLayer.setContentSize(cc.size(220,codeCount>1?42*codeCount:45));
+            var bgSize = this.tradeControlLayer.getContentSize();//178*212
+            this.currentCodeName.setPosition(-100,bgSize.height-20);
+            this.tradeControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*0.575/2-10,gDesignResolutionHeight-bgSize.height*0.575/2-5);
+            var codeDec ="";
+            for(var i = 0;i<userInfo.codeMainList.length;i++){
+            	var score = parseFloat(userInfo.codeMainList[i].codeScore);
+                codeDec = userInfo.codeMainList[i].code+"  "+score.toFixed(2)+"%";
+                if(null!=this.codeButton[i]){
+                    this.codeButton[i].setVisible(true);
+                    this.codeButton[i].setPosition(cc.p((bgSize.width)/2,bgSize.height-20-42*i));
+                    this.codeButton[i].setTag(i);
+                    this.codeLabel[i].setString(codeDec);
+                }
+            }
+        }
+	},
+    changeCode:function (taget) {
+        cc.log("changeCode:function!!!");
+        var tagFlag = taget.getTag();
+        var code = userInfo.codeMainList[tagFlag].code;//taget.label.getString();
+        var klineScene=this.parent.parent;
+        if(null!=klineScene){
+            klineScene.drawChangeCodeView(code);
+        }
+    },
+
 	dailyLine:function () {
 
 		this.setDefaultDailyTradeControlArea();
@@ -685,6 +746,7 @@ var MatchInfoLayer = cc.Layer.extend({
 
 		this.speedControlLayer.setVisible(false);
 		this.dailyControlLayer.setVisible(false);
+		this.tradeControlLayer.setVisible(false);
 		// if(testFlag==true){
 		// 	// this.emoticonButton.setVisible(true);
 		// 	// this.toolsButton.setVisible(true);
@@ -711,8 +773,8 @@ var MatchInfoLayer = cc.Layer.extend({
 	{
 		this.toolsButton.setVisible(false);
 	},
-	//将按钮设置为平仓的状态
-	setButtonsToNoPosition:function()
+
+	setButtonsToNoPosition:function()//将按钮设置为平仓的状态
 	{
 		cc.log("setButtonsToNoPosition");
 		var self = this;
@@ -727,7 +789,7 @@ var MatchInfoLayer = cc.Layer.extend({
 
 		this.statusFlag = 0;
         // if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchMode==MatchType.Type_Tool_Match||userInfo.matchMode==MatchType.Type_Friend_Match||userInfo.matchMode==MatchType.Type_ArtificialMatch)//多人
-        if(userInfo.matchMode==MatchType.Type_Practice_Match||userInfo.matchMode==MatchType.Type_DailyTrade_Match||userInfo.matchMode==MatchType.Type_ArtificialMatch){
+        if(userInfo.matchMode==MatchType.Type_Practice_Match||userInfo.matchMode==MatchType.Type_Practice_MC||userInfo.matchMode==MatchType.Type_DailyTrade_Match||userInfo.matchMode==MatchType.Type_ArtificialMatch){
             this.ableSpeedButtons();
         }
         if(userInfo.matchMode==MatchType.Type_PlainMultiplayer_Match||userInfo.matchMode==MatchType.Type_Tool_Match||userInfo.matchMode==MatchType.Type_Friend_Match){//匹配赛
@@ -739,9 +801,8 @@ var MatchInfoLayer = cc.Layer.extend({
 		// this.buyCloseButton.setVisible(false);
 		// this.sellCloseButton.setVisible(false);
 	},
-	
-	//将按钮设置为多仓的状态
-	setButtonsToBuyPosition:function()
+
+	setButtonsToBuyPosition:function()//将按钮设置为多仓的状态
 	{
 		// this.buyButton.setVisible(false);
 		var self = this;
@@ -756,9 +817,8 @@ var MatchInfoLayer = cc.Layer.extend({
 		// this.buyCloseButton.setVisible(false);
 		// this.sellCloseButton.setVisible(true);
 	},
-	
-	//将按钮设置为空仓的状态
-	setButtonsToSellPosition:function()
+
+	setButtonsToSellPosition:function()//将按钮设置为空仓的状态
 	{
 		var self = this;
 		this.buyButton.setVisible(true);

@@ -35,6 +35,7 @@ var ShareLoadScene = SceneBase.extend(
 		userInfo.nickName=getQueryStringByName("userName");
 		userInfo.userId=getQueryStringByName("userId");
 		userInfo.matchId=getQueryStringByName("matchId");
+		userInfo.matchMode=getQueryStringByName("matchType");
         cc.log("userId:"+self.userId);
 		cc.log("matchId:"+self.matchId);
 

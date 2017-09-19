@@ -30,7 +30,114 @@ var Singleton = (function () {
         }
     };
 })();
+/*调用公有的方法来获取实例:*/
+Singleton.getInstance().publicMethod();
+var BaseLocalData = {};
+/*
+ * 写入数据，将数据存储在本地
+ * @param jsonName:json文件名字
+ */
+var baseData = [{a:1},{b:2},{c:3},{d:4},{e:5},{f:6},{g:7}];
+BaseLocalData.setItem = function(jsonName)
+{
+    var baseData = JSON.stringify(jsonName);
+    sys.localStorage.setItem("baseData", baseData);
+};
+/*
+ * 读取基础数据
+ * 还回json格式数据
+ */
+BaseLocalData.getItem = function()
+{
+    var baseData1 = JSON.stringify(baseData); //将json格式转换成string
+    sys.localStorage.setItem("baseData", baseData1); //将数据存储在本地
+    var baseDataa = sys.localStorage.getItem("baseData"); //从本地读取数据
+    baseDataa = JSON.parse(baseDataa); //将string转换成json
+    return baseDataa;
+};
+/*
+ * 删除数据
+ */
+BaseLocalData.deleteItem = function()
+{
+    sys.localStorage.removeItem("baseData");
+};
 
+// function codeDataInfo(){
+//     // var codeName=null;//
+//     // var codeData=null;//
+//     setCodeName:function (name) {
+//
+//     }
+//
+// };
+var codeDataInfoList = (function () {
+    var codeDataList;
+    function init() {
+        /*这里定义单例代码*/
+        return {
+            setItem:function (name,data) {
+            if(null==codeDataList){
+                codeDataList = new Array();
+            }
+            var codeData = new Object();
+            codeData.codeName = name;
+            codeData.codeData = data;
+            codeDataList.push(codeData);
+            },
+            getItem:function (name) {
+                if(null==codeDataList){
+                    return null;
+                }else{
+                    for(var i=0;i<codeDataList.length;i++){
+                        if(name==codeDataList[i].codeName){
+                            return codeDataList[i];
+                        }
+                    }
+                }
+            },
+            clearCodeData: function () {
+                // var codeDataList = codeDataInfoList.getInstance();
+                if(null!=codeDataList){
+                    for (var i = 0; i<codeDataList.length; i++){
+                        for(var key in codeDataList[i]){
+                            delete codeDataList[i][key];
+                        }
+                        cc.log('clearData codeDataList[]='+key);
+                    }
+                    codeDataList=null;
+                }
+                cc.log('clearData codeDataList');
+            },
+            publicSetItem: 'setItem'
+        };
+
+        // return {
+        //
+        //     publicGetItem: 'getItem'
+        // };
+        // return {
+        //
+        //     clearProperty: 'clear'
+        // };
+        return {
+            otherMethod: function () {
+                cc.log('other world');
+            },
+            otherProperty: 'other'
+        };
+    }
+    return {
+        getInstance: function () {
+            if (!codeDataList) {
+                codeDataList = init();
+            }
+            return codeDataList;
+        }
+    };
+})();
+
+var codeDataList = codeDataInfoList.getInstance();
 
 // var gSocketConn=null;
 // var gPlayerName=null;			//用户名
@@ -46,8 +153,7 @@ var Singleton = (function () {
 
 
 
-/*调用公有的方法来获取实例:*/
-Singleton.getInstance().publicMethod();
+
 
 SOURCE_DHJK = "DHJK";     //东航金控APP
 SOURCE_ZSQQ = "ZKQQ";     //掌上全球APP
@@ -58,6 +164,9 @@ var RedColor=cc.color(255,27,27,255);//红色
 var YellowColor=cc.color(255,217,0,255);//黄色
 var GreenColor=cc.color(6,224,0,255);//绿色
 var WhiteColor=cc.color(255,255,255,255);//白色
+var GrayColor=cc.color(166,166,166,255);//灰色
+// var WhiteColor=cc.WHITE;//白色GRAY
+
 var BlueColor=cc.color(7,64,111,255);//蓝色
 var fontBlueColor=cc.color("#1075b0");//蓝色
 // var fontBlueColor=cc.color(16,117,116,255);//蓝色
@@ -111,36 +220,42 @@ var EndMatch_Info = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("EndMatch_
 var Fast_Lgoin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Fast_Lgoin");
 var Use_DeviceId_Login =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Use_DeviceId_Login");
 var Mobile_Login =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Mobile_Login");
-var treatyList =[{"name":"A:豆一","where":"大商所","start":"2003","end ":"2016","code":"A"},
-    {"name":"AG:沪银","where":"上期所","start":"2013","end ":"2016","code":"AG"},
-    {"name":"AL:沪铝","where":"上期所","start":"1999","end ":"2016","code":"AL"},
-    {"name":"HC:热卷","where":"上期所","start":"2015","end ":"2016","code":"HC"},
-    {"name":"AU:沪金","where":"上期所","start":"2009","end ":"2016","code":"AU"},
-    {"name":"BU:沥青","where":"上期所","start":"2014","end ":"2016","code":"BU"},
-    {"name":"C:玉米","where":"大商所","start":"2005","end ":"2016","code":"C"},
-    {"name":"CF:郑棉","where":"郑商所","start":"2005","end ":"2016","code":"CF"},
-    {"name":"CS:淀粉","where":"大商所","start":"2015","end ":"2016","code":"CS"},
-    {"name":"CU:沪铜","where":"上期所","start":"1997","end ":"2016","code":"CU"},
-    {"name":"FG:玻璃","where":"郑商所","start":"2013","end ":"2016","code":"FG"},
-    {"name":"I:铁矿","where":"大商所","start":"2014","end ":"2016","code":"I"},
-    {"name":"J:焦炭","where":"大商所","start":"2012","end ":"2016","code":"J"},
-    {"name":"JD:鸡蛋","where":"大商所","start":"2014","end ":"2016","code":"JD"},
-    {"name":"JM:焦煤","where":"大商所","start":"2014","end ":"2016","code":"JM"},
-    {"name":"L:塑料","where":"大商所","start":"2008","end ":"2016","code":"L"},
-    {"name":"M:豆粕","where":"大商所","start":"2001","end ":"2016","code":"M"},
-    {"name":"MA:郑醇","where":"郑商所","start":"2012","end ":"2016","code":"MA"},
-    {"name":"NI:沪镍","where":"上期所","start":"2016","end ":"2016","code":"NI"},
-    {"name":"OI:郑油","where":"郑商所","start":"2008","end ":"2016","code":"OI"},
-    {"name":"P:棕榈","where":"大商所","start":"2008","end ":"2016","code":"P"},
-    {"name":"PP:PP","where":"大商所","start":"2015","end ":"2016","code":"PP"},
-    {"name":"RB:螺纹","where":"上期所","start":"2010","end ":"2016","code":"RB"},
-    {"name":"RM:菜粕","where":"郑商所","start":"2013","end ":"2016","code":"RM"},
-    {"name":"RU:橡胶","where":"上期所","start":"1998","end ":"2016","code":"RU"},
-    {"name":"SR:白糖","where":"郑商所","start":"2006","end ":"2016","code":"SR"},
-    {"name":"TA:PTA","where":"郑商所","start":"2007","end ":"2016","code":"TA"},
-    {"name":"Y:豆油","where":"大商所","start":"2006","end ":"2016","code":"Y"},
-    {"name":"ZC：郑煤","where":"郑商所","start":"2014","end ":"2016","code":"ZC"},
-    {"name":"ZN:沪锌","where":"上期所","start":"2008","end ":"2016","code":"ZN"}
+var treatyList =[
+    {"name":"A:豆一","where":"大商所","start":"2003","end ":"2016","code":"A","status":"-1"},
+    {"name":"AG:沪银","where":"上期所","start":"2013","end ":"2016","code":"AG","status":"-1"},
+    {"name":"AL:沪铝","where":"上期所","start":"1999","end ":"2016","code":"AL","status":"-1"},
+    {"name":"AU:沪金","where":"上期所","start":"2009","end ":"2016","code":"AU","status":"-1"},
+    {"name":"BU:沥青","where":"上期所","start":"2014","end ":"2016","code":"BU","status":"-1"},
+    {"name":"C:玉米","where":"大商所","start":"2005","end ":"2016","code":"C","status":"-1"},
+    {"name":"CF:郑棉","where":"郑商所","start":"2005","end ":"2016","code":"CF","status":"-1"},
+    {"name":"CS:淀粉","where":"大商所","start":"2015","end ":"2016","code":"CS","status":"-1"},
+    {"name":"CU:沪铜","where":"上期所","start":"1997","end ":"2016","code":"CU","status":"-1"},
+    {"name":"FG:玻璃","where":"郑商所","start":"2013","end ":"2016","code":"FG","status":"-1"},
+    {"name":"HC:热卷","where":"上期所","start":"2015","end ":"2016","code":"HC","status":"-1"},
+    {"name":"I:铁矿","where":"大商所","start":"2014","end ":"2016","code":"I","status":"-1"},
+    {"name":"IC:IC","where":"中金所","start":"2016","end ":"2016","code":"IC","status":"-1"},
+    {"name":"IF:IF","where":"中金所","start":"2011","end ":"2016","code":"IF","status":"-1"},
+    {"name":"IH:IH","where":"中金所","start":"2016","end ":"2016","code":"IH","status":"-1"},
+    {"name":"J:焦炭","where":"大商所","start":"2012","end ":"2016","code":"J","status":"-1"},
+    {"name":"JD:鸡蛋","where":"大商所","start":"2014","end ":"2016","code":"JD","status":"-1"},
+    {"name":"JM:焦煤","where":"大商所","start":"2014","end ":"2016","code":"JM","status":"-1"},
+    {"name":"L:塑料","where":"大商所","start":"2008","end ":"2016","code":"L","status":"-1"},
+    {"name":"M:豆粕","where":"大商所","start":"2001","end ":"2016","code":"M","status":"-1"},
+    {"name":"MA:郑醇","where":"郑商所","start":"2012","end ":"2016","code":"MA","status":"-1"},
+    {"name":"NI:沪镍","where":"上期所","start":"2016","end ":"2016","code":"NI","status":"-1"},
+    {"name":"OI:郑油","where":"郑商所","start":"2008","end ":"2016","code":"OI","status":"-1"},
+    {"name":"P:棕榈","where":"大商所","start":"2008","end ":"2016","code":"P","status":"-1"},
+    {"name":"PP:PP","where":"大商所","start":"2015","end ":"2016","code":"PP","status":"-1"},
+    {"name":"RB:螺纹","where":"上期所","start":"2010","end ":"2016","code":"RB","status":"-1"},
+    {"name":"RM:菜粕","where":"郑商所","start":"2013","end ":"2016","code":"RM","status":"-1"},
+    {"name":"RU:橡胶","where":"上期所","start":"1998","end ":"2016","code":"RU","status":"-1"},
+    {"name":"SR:白糖","where":"郑商所","start":"2006","end ":"2016","code":"SR","status":"-1"},
+    {"name":"T:T","where":"中金所","start":"2016","end ":"2016","code":"T","status":"-1"},
+    {"name":"TA:PTA","where":"郑商所","start":"2007","end ":"2016","code":"TA","status":"-1"},
+    {"name":"TF:TF","where":"中金所","start":"2014","end ":"2016","code":"TF","status":"-1"},
+    {"name":"Y:豆油","where":"大商所","start":"2006","end ":"2016","code":"Y","status":"-1"},
+    {"name":"ZC：郑煤","where":"郑商所","start":"2014","end ":"2016","code":"ZC","status":"-1"},
+    {"name":"ZN:沪锌","where":"上期所","start":"2008","end ":"2016","code":"ZN","status":"-1"},
 ];
 var userInfo ={
     //主界面数据
@@ -181,6 +296,11 @@ var userInfo ={
     businessInfo:null,//交易记录
 
     playerListData:null,//玩家列表
+    codeList:null,//多品种合约列表[code:"沥青主连"codeScore:0]
+    codeSelected:null,//选中的合约codeName
+    codeMainList:null,
+    currentCode:null,
+    startYear:null,
     friendListData:null,//好友列表
     friendNewListData:null,//新的好友列表
     friendSearchListData:null,//搜索到的好友列表
@@ -198,6 +318,7 @@ var userInfo ={
      }
      */
     //matchMode
+    // matchMode:MatchType.Type_Practice_Match,//游戏模式0：练习场，1：多人战，2：人机战,分时战
     matchMode:MatchType.Type_Practice_Match,//游戏模式0：练习场，1：多人战，2：人机战,分时战
     matchFlag:false,//false 比赛中，true 观看记录
     matchDayCount:120,
@@ -207,6 +328,7 @@ var userInfo ={
 
     matchId:null,
     endInfoOfAllPlayers:null,//对战结束后玩家信息
+    endInfoOfAllcodes:null,//对战结束后合约信息
     myRanking:null,//我的排名信息
     rankList:null,//排名列表信息
 
@@ -214,8 +336,9 @@ var userInfo ={
     buttonSoundFlag:true,//音效设置
     viewFlag:true,
     toolsFlag:0,//0表示无道具，1表示K线颠倒
-}
 
+    // selectedCode:null,
+}
 var inviteInfo =new FriendMatch_Invite();
 // var inviteInfo ={
 //     friendName:null,

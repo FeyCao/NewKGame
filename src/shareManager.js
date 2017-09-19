@@ -77,10 +77,12 @@ ShareManager.prototype.ShareMessage=function()
 	var self=ShareManager.instance;
 	cc.log("userId4:"+userInfo.userId);
 	cc.log("matchId4:"+userInfo.matchId);
+	cc.log("userInfo.matchMode4:"+userInfo.matchMode);
 	var aUserId = userInfo.userId;
 	var aMatchId = userInfo.matchId;
+	var aMatchMode = userInfo.matchMode;
 	gSocketConn.RegisterEvent("onmessage",this.ShareMessageCallback);
-	gSocketConn.ShareMessage(aUserId,aMatchId);
+	gSocketConn.ShareMessage(aUserId,aMatchId,aMatchMode);
 }
 
 ShareManager.prototype.ShareMessageCallback=function(message)

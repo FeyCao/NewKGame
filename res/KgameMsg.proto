@@ -31,6 +31,7 @@
 	Type_Server_Ping=29;
 	Type_Server_Pong=30;
 	Type_AddFriend=31;
+	Type_Change_Code=32;
 }
 
 
@@ -41,6 +42,7 @@ enum MatchType{
     Type_Tool_Match=3;
     Type_Friend_Match=4;
 	Type_DailyTrade_Match=5;
+	Type_Practice_MC=6;
 }
 
 enum FaceType{
@@ -63,10 +65,10 @@ enum AiType{
 }
 
 enum AddFriendType{
-    Type_SelectAdd_NewFriend=0;
-	Type_SendFriend_Request=1;
-	Type_FindFriendRequest=2;
-	Type_ReceiveFriendRequest=3;
+    Type_SelectAdd_NewFriend=0;//搜索
+	Type_SendFriend_Request=1;//发送好友请求
+	Type_FindFriendRequest=2;//新好友列表
+	Type_ReceiveFriendRequest=3;//接受好友
 
 }
 
@@ -79,15 +81,25 @@ message AiInfo{
 
 message Warn{
     required int32 code=1;
-	optional string warnInfo=2;
+    optional string warnInfo=2;
+    optional string token=3;
 }
 
 message Share{
    required int32 matchId=1;
-   repeated OneDayInfo oneDayInfo=2;
-   optional int32 handleDay=3;//供玩家操作的天数
-   repeated MatchUserInfo playerInfo=4;
-   optional MatchType matchType=5;
+   required MatchType matchType=2;//2017-8-24 比赛种类
+   repeated OneDayInfo oneDayInfo=3;
+   optional int32 handleDay=4;//供玩家操作的天数
+   repeated MatchUserInfo playerInfo=5;
+   optional string currentCode=6;//2017-8-24 当前操作的合约信息
+}
+
+message HistoryMatches{
+   required MatchType matchType=1;
+   optional	int32  sumMatch=2;
+   optional double winRate=3;
+   optional double AvgGain=4;
+   repeated OneHistoryMatch matchInfo=5;
 }
 
 message MatchRecord{
@@ -96,6 +108,7 @@ message MatchRecord{
    optional int32 handleDay=3;//供玩家操作的天数
    repeated MatchUserInfo playerInfo=4;
    optional MatchType matchType=5;
+   optional string currentCode=6;//2017-8-24 当前操作的合约信息
 }
 
 message Face{
@@ -134,20 +147,18 @@ message HallInfo{
    optional string userName=21;
    optional string headPicture=22;
    optional int32 onLineNum=23;
+   optional int32 sumMatchOneMC=24;
+   optional int32 winMatchOneMC=25;
+   optional double GainCumulationForOneMC=26;
 }
 
-message HistoryMatches{
-   required MatchType matchType=1;
-   optional	int32  sumMatch=2;
-   optional double winRate=3;
-   optional double AvgGain=4;
-   repeated OneHistoryMatch matchInfo=5;
-}
+
 
 message OneHistoryMatch{
    optional int32 matchId=1;
    optional string	matchTime=2;
-   repeated	MatchUserInfo userInfo=3;
+   optional MatchType matchType=3;
+   repeated	MatchUserInfo userInfo=4;
 }
 
 message PlayerRanking{
@@ -176,15 +187,23 @@ message OneDayInfo{
 	optional double avg=6;
 }
 
+//某个合约的成绩
+message Code_Score{
+required string code=1;
+required double codeScore=2;
+}
 
 message MatchUserInfo{
 
 required string userName=1;
-required double score=2;
+required double score=2;//评均成绩
 optional int32 ranking=3;
 required string headPicture=4;
 repeated int32 operationIndex=5;
 optional int32 currentIndex=6;
+repeated Code_Score codeScore=7;//合约成绩列表
+optional string currentCode=8;//当前操作的合约信息
+
 }
 
 message HisdataInfo{
@@ -193,14 +212,18 @@ message HisdataInfo{
    required int32 handleDay=2;//供玩家操作的天数
    repeated MatchUserInfo playerInfo=3;
    optional MatchType matchType=4;
-
+  
 }
+
+
+
 
 message BuyOrSell{
    required int32 lots=1;//手数
    required bool isBuy=2;//是否是买
+   optional string code=3;//合约信息
 }
-
+//比赛的总成绩
 message Score{
    repeated MatchUserInfo playerInfo=1;
 }
@@ -218,6 +241,8 @@ message Request_Match{
    required MatchType matchType=1;
    optional AiInfo aiInfo=2;
    optional int32 handleDays=3;//供玩家操作的天数
+   repeated string variety=4;//品种列表
+   optional int32 startyear=5;//可用的年份下限 
 }
 
 message Use_DeviceId_Login{
@@ -245,10 +270,11 @@ message Friend_Status{
 }
 
 message FriendMatch_Invite{
-   required string inviteeName=1;//被邀请人
+   optional string inviteeName=1;//被邀请人
    optional string inviterName=2;//邀请人
    optional string inviterPic=3;//邀请人头像
    optional string inviteCode=4;
+   required bool otherPlatform = 5;//是否是第三方平台
 }
 
 message FriendMatch_Answer{
@@ -294,7 +320,6 @@ message ReceiveFriendRequest{
    optional string comment=2;
    required string token=3;
 
-
 }
 
 
@@ -316,8 +341,7 @@ message Message{
    optional Request_Match requestMatch=4;
    optional Fast_Lgoin fastLogin=5;
    optional Use_DeviceId_Login useDeviceIdLogin=6;
-   optional Mobile_Login mobileLogin=7;
-   
+   optional Mobile_Login mobileLogin=7;  
    optional Warn warn=8;
    optional End_Match_Info endMatchInfo=9;
    optional HisdataInfo hisdataInfo=10;
@@ -336,4 +360,5 @@ message Message{
    optional MatchRecord matchRecord=23;
    optional ServerPong serverPong=24;
    optional AddFriend addFriend=25;
+   optional string changeCode=26;
 }

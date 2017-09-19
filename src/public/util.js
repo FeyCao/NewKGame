@@ -263,6 +263,8 @@ var createClipRoundNode = cc.Node.extend({
     }
 
 });
+
+
 // function bubbleSort(arr,compare) {
 //     var len=arr.length,j;
 //     var temp;

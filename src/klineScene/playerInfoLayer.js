@@ -19,6 +19,8 @@ var PlayerInfoLayer= cc.Node.extend({
 	playerHead_Select:null,//头像选中
 	playerNameLabel:null,				//名字
 	playerScoreLabel:null,			//分数
+	playerCodeLabel:null,			//分数
+
 
 	// playerEmoticonBtn:null,
 	// player1Label:null,				//自己的名字
@@ -108,6 +110,7 @@ var PlayerInfoLayer= cc.Node.extend({
 		// }
 		switch(userInfo.matchMode)
 		{
+            case MatchType.Type_Practice_MC:
             case MatchType.Type_DailyTrade_Match://分时比赛
 			case MatchType.Type_Practice_Match://练习场比赛
 			{
@@ -176,7 +179,7 @@ var PlayerInfoLayer= cc.Node.extend({
 				});
 				break;
 			}
-			// case MatchType.Type_Practice_Match:
+
 			case MatchType.Type_ArtificialMatch://人机匹配
 			case MatchType.Type_Tool_Match://道具匹配
 			case MatchType.Type_Friend_Match://好友匹配

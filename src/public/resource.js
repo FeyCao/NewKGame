@@ -13,8 +13,6 @@ var res = {
  SOUND_WIN:"res/sound/win.mp3",
 
 
-
-
  //背景界面
  BG_mainMenu_png  : "res/mainMenu_bg.png",
  BG_battle_png  :"res/battle_bg.png",
@@ -23,8 +21,8 @@ var res = {
  BG_message_png  : "res/bg_message.png",
  BG_rank_png  :"res/rank_bg.png",
  BG_tittle_png  : "res/bg_tittle.png",
- BG_select_png  :"res/bg_select.png",
- BG_select0_png  :"res/bg_select0.png",
+ BG_SELECT_PNG  :"res/bg_select.png",
+ // BG_select0_png  :"res/bg_select0.png",
  BG_touxiang_png  :"res/bg_touxiang.png",
  BG_playerInfo_png  :"res/playerInfo_bg.png",
 
@@ -37,7 +35,9 @@ var res = {
  Emoticon_BTN2_png:"res/public/btn_2.png",
  Emoticon_BTN3_png:"res/public/btn_3.png",
  BLUE_BG_png:"res/public/blue_bg.png",
- BLUE_BG_BTN:"res/public/btn_blue_bg.png",
+
+    BLUE_BG_BTN:"res/public/btn_blue_bg.png",
+
  LESS_BG_png:"res/public/less_bg.png",
  BG_INCOME_INFO:"res/public/icome_bg.png",
  BG_EFFECT_FALL:"res/public/effect_fall_bg.png",
@@ -64,6 +64,7 @@ var res = {
  //道具选择以及道具
  SELECT_NO_PNG:"res/selected_no.png",
  SELECT_OK_PNG:"res/selected_ok.png",
+ SELECT_FALSE_PNG:"res/selected_false.png",
  BTN_PROPS_png:"res/prop/btn_props.png",
  BTN_BAN_png:"res/prop/btn_ban.png",
  BTN_COVER_png:"res/prop/btn_cover.png",
@@ -138,15 +139,13 @@ var res = {
  BTN_REJECT:"res/friend/btn_refuse.png",
  BTN_AGREE:"res/friend/btn_agree.png",
  BTN_FRIEND_ACCEPT:"res/friend/ff_btn_accept.png",
- // BTN_FRIEND_INVITE_png:"res/friend/ff_invite.png",
- // STATUS_FRIEND_GAME_png:"res/friend/ff_status_itg.png",
- // STATUS_FRIEND_MG_png:"res/friend/ff_status_mg.png",
- // STATUS_FRIEND_ONLINE_png:"res/friend/ff_status_online.png",
- // STATUS_FRIEND_OFFLINE_png:"res/friend/ff_status_offline.png",
+
 
 //分时练习资源
  BG_SELECT  : "res/exercise/bg_exercise.png",
- TITLE_TIME  :"res/exercise/title_time.png",
+ // TITLE_TIME  :"res/exercise/title_time.png",
+ TITLE_CHOOSE  :"res/exercise/title_choose.png",
+ TITLE_CHOOSE_TIME  :"res/exercise/title_choose_time.png",
  TITLE_TYPE  :"res/exercise/title_type.png",
  EXERCISE_CHOOSE  :"res/exercise/exercise_choose_on.png",
  EXERCISE_CHOOSE_TIME  :"res/exercise/exercise_choose1.png",
@@ -155,12 +154,31 @@ var res = {
  EXERCISE_ARROW_UP  :"res/exercise/time_arrow_up.png",
  EXERCISE_BOX_DEFAULT  :"res/exercise/box_time_default.png",//收缩
  EXERCISE_BOX_STRETCH  :"res/exercise/box_time_unfold.png",//伸展
+ BG_BOX_CHOOSE  :"res/exercise/box_contract.png",//code列表背景
+BTN_CODE_D1:"res/exercise/exchange_d1.png",
+BTN_CODE_ON1:"res/exercise/exchange_on1.png",
+BTN_CODE_D2:"res/exercise/exchange_d2.png",
+BTN_CODE_ON2:"res/exercise/exchange_on2.png",
+BTN_CODE_D3:"res/exercise/exchange_d3.png",
+BTN_CODE_ON3:"res/exercise/exchange_on3.png",
+BTN_CODE_D4:"res/exercise/exchange_d4.png",
+BTN_CODE_ON4:"res/exercise/exchange_on4.png",
+
 
  BTN_HOME_png:"res/home.png",//"res/btn_open.png","res/btn_close.png",
  BTN_OPEN:"res/btn_open.png",
  BTN_CLOSE:"res/btn_close.png",
 
 
+//比赛结束界面资源
+    BG_RESULT_PNG:"res/result/bg_result.png",
+    BG_CONTRACT_PNG:"res/result/bg_contract.png",
+    BTN_AGAIN_PNG:"res/result/btn_r_again.png",
+    BTN_OVER_PNG:"res/result/btn_r_gameover.png",
+    BTN_SHARE_PNG:"res/result/btn_r_share.png",
+    BTN_RECORD_PNG:"res/result/btn_recording.png",
+    BG_WIN_PNG:"res/result/icon_win.png",
+    BG_LOSE_PNG:"res/result/icon_lose.png",
 
 
 

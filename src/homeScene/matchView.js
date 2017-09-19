@@ -2,7 +2,7 @@
  * Created by Administrator on 2016-12-13.
  */
 var MatchViewLayer = cc.Layer.extend({
-
+    __className:"MatchViewLayer",
     closeCallBackFunction:null,
 
     backgroundSprite:null,//
@@ -14,10 +14,16 @@ var MatchViewLayer = cc.Layer.extend({
 
     bgSprite:null,
     bgTittle:null,
+
     AiMenu:null,
     AiModeSelect:null,
     // PracticeBattleView:null,
 
+    typeNode:null,
+    tittleTimebg:null,
+    bgCodeList:null,
+    tableViewCode:null,
+    codeButton:null,
     dayCount1Btn:null,
     dayCount2Btn:null,
     dayCount3Btn:null,
@@ -102,24 +108,26 @@ var MatchViewLayer = cc.Layer.extend({
         switch (userInfo.matchMode)
         {
 
+            case MatchType.Type_Practice_MC:
             case MatchType.Type_Practice_Match:
             {
+                // gSocketConn.BeginMatch(userInfo.matchMode,userInfo.matchDayCount);
+                if(null!=userInfo.codeSelected&&userInfo.codeSelected.length>0){
+                    gSocketConn.BeginMatchForMC(MatchType.Type_Practice_MC,userInfo.matchDayCount,userInfo.codeSelected,userInfo.startYear);
+                }else{
+                    gSocketConn.BeginMatch(MatchType.Type_Practice_Match,userInfo.matchDayCount);
+                }
 
-                // var klineSceneNext=new KLineScene();
-                // klineSceneNext.onEnteredFunction=function(){
-                //
-                //     // klineSceneNext.showProgress();
-                // };
-                // gSocketConn.RegisterEvent("onmessage",klineSceneNext.messageCallBack);
-                gSocketConn.BeginMatch(userInfo.matchMode,userInfo.matchDayCount);
                 userInfo.matchBeginFlag=true;
-
-                //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
-                // cc.director.runScene(klineSceneNext);
-                // cc.log("klineSceneNext切换KGameScene场景调用完毕");
 
                 break;
             }
+            //  case MatchType.Type_Practice_MC:
+            // {
+            //     gSocketConn.BeginBeginMatchForMC(userInfo.matchMode,userInfo.matchDayCount,userInfo.codeSelected,userInfo.startYear);
+            //     userInfo.matchBeginFlag=true;
+            //     break;
+            // }
              case MatchType.Type_ArtificialMatch:
             {
 
@@ -246,50 +254,11 @@ var MatchViewLayer = cc.Layer.extend({
         }
         if(this.AiBattleView !=null){
             this.bgSprite.initWithFile(res.BG_SELECT);
-            this.bgTittle.initWithFile(res.TITLE_TIME);
+            this.bgTittle.initWithFile(res.TITLE_CHOOSE);
             this.bgTittle.setVisible(true);
-
-
-            var posX0 = 40;
-            var spaceX = 140 ;
-            var spaceY = 10 ;
-            var fscale = 1.2;
-            var posY=100;
-            this.dayCount1Btn.setPosition(cc.p(posX0+spaceX*1,bgSize.height/2+spaceY));
-            this.dayCount1Btn.setScale(fscale);
-            this.dayCount1Btn.setTag(101);
-
-            this.dayCount2Btn.setPosition(cc.p(posX0+spaceX*2,bgSize.height/2+spaceY));
-            this.dayCount2Btn.setScale(fscale);
-            this.dayCount2Btn.setTag(102);
-
-            this.dayCount3Btn.setPosition(cc.p(posX0+spaceX*3,bgSize.height/2+spaceY));
-            this.dayCount3Btn.setScale(fscale);
-            this.dayCount3Btn.setTag(103);
-
-            this.dayCount4Btn.setPosition(cc.p(posX0+spaceX*4,bgSize.height/2+spaceY));
-            this.dayCount4Btn.setTag(104);
-            this.dayCount4Btn.setScale(fscale);
-            this.dayCountSelect.setScale(fscale);
-
-            this.AiBeginButton.setPosition(cc.p(bgSize.width/2,posY));
-            switch(userInfo.matchDayCount)
-            {
-                case 60:
-                    this.dayCountSelect.setPosition(this.dayCount1Btn.getPosition());
-                    break;
-                case 120:
-                    this.dayCountSelect.setPosition(this.dayCount2Btn.getPosition());
-                    break;
-                case 180:
-                    this.dayCountSelect.setPosition(this.dayCount3Btn.getPosition());
-                    break;
-                case 240:
-                    this.dayCountSelect.setPosition(this.dayCount4Btn.getPosition());
-                    break;
-                default:
-                    break;
-            }
+            //品种选择区域设置
+            this.setTypeNode();
+            this.typeNode.setVisible(true);
             this.AiMenu.setVisible(false);
             this.AiModeSelect.setVisible(false);
             this.AiBattleView.setVisible(true);
@@ -310,16 +279,17 @@ var MatchViewLayer = cc.Layer.extend({
         var posY = 80;
         var fontSize = 25;
 
-        if(this.AiBattleView ==null){
+        if(null==this.AiBattleView){
             this.AiBattleView =new cc.LayerColor(cc.color(0,0,0,127),size.width,size.height);
-            this.bgSprite=cc.Sprite.create("res/bg_control.png");
+            this.AiBattleView._className="MatchViewLayer";
+            this.bgSprite=cc.Sprite.create(res.BG_SELECT_PNG);
             bgSize = this.bgSprite.getContentSize();
 
-            this.bgTittle = new cc.Sprite(res.TITLE_TIME);
+            this.bgTittle = new cc.Sprite(res.TITLE_CHOOSE);
             this.bgTittle.setPosition(cc.p(bgSize.width/2+10,bgSize.height-40));
             this.bgSprite.addChild(this.bgTittle,3);
 
-            this.bgSprite.initWithFile("res/bg_select.png");
+            // this.bgSprite.initWithFile(res.BG_SELECT_PNG);
             cc.log("MatchViewLayer backgroundSprite bgSize="+bgSize.width);
 
             var mu = new cc.Menu();
@@ -327,9 +297,9 @@ var MatchViewLayer = cc.Layer.extend({
             mu.y = 0;
             this.bgSprite.addChild(mu,3);
             // closeBtn=new Button("res/close.png");
-            var closeBtn = new cc.MenuItemImage("res/close.png", "res/close.png", self.toMainScene, this);
-            closeBtn.setPosition(cc.p(bgSize.width-40,bgSize.height-40));
-            mu.addChild(closeBtn);
+            this.closeBtn = new cc.MenuItemImage("res/close.png", "res/close.png", self.toMainScene, this);
+            this.closeBtn.setPosition(cc.p(bgSize.width-40,bgSize.height-40));
+            mu.addChild(this.closeBtn);
             this.AiBeginButton=new cc.MenuItemImage("res/btn_begin.png", "res/btn_begin.png", self.beginMatch, this);//new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
             this.AiBeginButton.setPosition(cc.p(bgSize.width/2,posY));
             mu.addChild(this.AiBeginButton);
@@ -364,31 +334,38 @@ var MatchViewLayer = cc.Layer.extend({
             }
             this.dayCount4Btn.setPosition(cc.p(posX0+spaceX*4,bgSize.height/2+spaceY));
             this.dayCount4Btn.setTag(104);
+            this.dayCount4Btn.setVisible(false);
 
             if(this.dayCountSelect==null){
                 this.dayCountSelect = cc.Sprite.create("res/select_bg.png");
                 this.bgSprite.addChild(this.dayCountSelect,3);
             }
 
-            switch(userInfo.matchDayCount)
-            {
-                case 60:
-                    this.dayCountSelect.setPosition(this.dayCount1Btn.getPosition());
-                    break;
-                case 120:
-                    this.dayCountSelect.setPosition(this.dayCount2Btn.getPosition());
-                    break;
-                case 180:
-                    this.dayCountSelect.setPosition(this.dayCount3Btn.getPosition());
-                    break;
-                case 240:
-                    this.dayCountSelect.setPosition(this.dayCount4Btn.getPosition());
-                    break;
-                default:
-                    break;
-            }
+            // switch(userInfo.matchDayCount)
+            // {
+            //     case 60:
+            //         this.dayCountSelect.setPosition(this.dayCount1Btn.getPosition());
+            //         break;
+            //     case 120:
+            //         this.dayCountSelect.setPosition(this.dayCount2Btn.getPosition());
+            //         break;
+            //     case 180:
+            //         this.dayCountSelect.setPosition(this.dayCount3Btn.getPosition());
+            //         break;
+            //     case 240:
+            //         this.dayCountSelect.setPosition(this.dayCount4Btn.getPosition());
+            //         break;
+            //     default:
+            //         break;
+            // }
 
-            if(this.AiMenu==null){
+            //品种选择区域设置
+            // self.setTypeNode();
+            // mu.setVisible(false);
+            // this.dayCountSelect.setVisible(false);
+
+            //机器人类型选择
+           if(this.AiMenu==null){
                 this.AiMenu = new cc.Menu();
                 this.AiMenu.x = 0;
                 this.AiMenu.y = 0;
@@ -461,11 +438,12 @@ var MatchViewLayer = cc.Layer.extend({
             this.AiBattleView.setVisible(true);
         }
         if(this.AiBattleView !=null){
-            this.bgSprite.initWithFile("res/bg_select.png");
-
+            this.bgSprite.initWithFile(res.BG_SELECT_PNG);
+            bgSize = this.bgSprite.getContentSize();
             this.bgTittle.initWithFile(res.TITLE_TYPE);
             this.bgTittle.setVisible(false);
 
+            this.closeBtn.setPosition(cc.p(bgSize.width-40,bgSize.height-40));
             var posX0 = 120;
             var spaceX = 110 ;
             var spaceY = 60 ;
@@ -503,6 +481,9 @@ var MatchViewLayer = cc.Layer.extend({
                 default:
                     break;
             }
+            if(null!=this.typeNode){
+                this.typeNode.setVisible(false);
+            }
 
             this.AiMenu.setVisible(true);
             this.AiModeSelect.setVisible(true);
@@ -514,19 +495,290 @@ var MatchViewLayer = cc.Layer.extend({
             this.PersonBattleView.setVisible(false);
         }
     },
+    setTypeNode:function () {
+        if(null==this.typeNode){
+            this.typeNode = new cc.Node();
+            this.typeNode.setPosition(0,0);
+            this.bgSprite.addChild(this.typeNode,3);
+        }
+        bgSize = this.bgSprite.getContentSize();
+        this.bgTittle.setPosition(cc.p(bgSize.width/2+10,bgSize.height-30));
+        this.closeBtn.setPosition(cc.p(bgSize.width-30,bgSize.height-30));
+        var posX0 = 450;
+        var spaceX = 110 ;
+        var spaceX1 = 220 ;
+        var spaceY = 110 ;
+        var posY=70;
+        var posY0 = 380;
+        var posX1 = -60;
+        var posY1 = 390;
+        var spaceY2 = 70;
+        if(null==this.tittleTimebg){
+            this.tittleTimebg = new cc.Sprite(res.TITLE_CHOOSE_TIME);
+            this.tittleTimebg.setPosition(cc.p(posX0+spaceX*3/2,posY0));
+            this.typeNode.addChild(this.tittleTimebg,5);
+        }
 
-    setDayCount1:function()
-    {
+        this.dayCount1Btn.setPosition(cc.p(posX0+spaceX,posY+spaceY*2));
+        this.dayCount2Btn.setPosition(cc.p(posX0+spaceX*2,posY+spaceY*2));
+        this.dayCount3Btn.setPosition(cc.p(posX0+spaceX,posY+spaceY));
+        this.dayCount4Btn.setPosition(cc.p(posX0+spaceX*2,posY+spaceY));
+        this.AiBeginButton.setPosition(cc.p(bgSize.width/2,posY));
+        switch(userInfo.matchDayCount)
+        {
+            case 60:
+                this.dayCountSelect.setPosition(this.dayCount1Btn.getPosition());
+                break;
+            case 120:
+                this.dayCountSelect.setPosition(this.dayCount2Btn.getPosition());
+                break;
+            case 180:
+                this.dayCountSelect.setPosition(this.dayCount3Btn.getPosition());
+                break;
+            case 240:
+                this.dayCountSelect.setPosition(this.dayCount4Btn.getPosition());
+                break;
+            default:
+                break;
+        }
+
+        var mu = new cc.Menu();
+        mu.x = 0;
+        mu.y = 0;
+        this.typeNode.addChild(mu,5);
+
+
+        if(null==this.codeButton){
+            this.codeButton = new Array();
+            //中金、上期、大商、郑商所
+            var codeItem1 = new cc.MenuItemImage(res.BTN_CODE_D1, res.BTN_CODE_ON1, this.selectCodeType, this);
+            codeItem1.setTag(101);
+            codeItem1.setPosition(posX1+spaceX1,posY1);
+            codeItem1.unselected();
+            this.codeButton.push(codeItem1);
+            var codeItem2 = new cc.MenuItemImage(res.BTN_CODE_D2, res.BTN_CODE_ON2, this.selectCodeType, this);
+            codeItem2.setTag(102);
+            codeItem2.setPosition(posX1+spaceX1*2,posY1);
+            codeItem2.unselected();
+            this.codeButton.push(codeItem2);
+            var codeItem3 = new cc.MenuItemImage(res.BTN_CODE_D3, res.BTN_CODE_ON3, this.selectCodeType, this);
+            codeItem3.setTag(103);
+            codeItem3.setPosition(posX1+spaceX1,posY1-spaceY2);
+            codeItem3.unselected();
+            this.codeButton.push(codeItem3);
+            var codeItem4 = new cc.MenuItemImage(res.BTN_CODE_D4, res.BTN_CODE_ON4, this.selectCodeType, this);
+            codeItem4.setTag(104);
+            codeItem4.setPosition(posX1+spaceX1*2,posY1-spaceY2);
+            codeItem4.unselected();
+            this.codeButton.push(codeItem4);
+            mu.addChild(codeItem1);
+            mu.addChild(codeItem2);
+            mu.addChild(codeItem3);
+            mu.addChild(codeItem4);
+        }
+
+        // var fontSize = 30;
+        // var labelSize = cc.size(100,70);
+        // self.type1Label = new cc.LabelTTF("大商所",res.FONT_TYPE,fontSize,labelSize);
+        // self.type1Label.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+        // self.type1Label.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
+        // this.itemType1 = new cc.MenuItemLabel(self.type1Label, self.selectTypeList, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+        // // item1.setAnchorPoint(0,0.5);
+        // mu.addChild(this.itemType1);
+        // self.typeLabel2 = new cc.LabelTTF("上期所",res.FONT_TYPE,fontSize,labelSize);
+        // self.typeLabel2.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+        // self.typeLabel2.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
+        // this.itemType2 = new cc.MenuItemLabel(self.typeLabel2, self.selectTypeList, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+        // // item1.setAnchorPoint(0,0.5);
+        // mu.addChild(this.itemType2);
+        // self.typeLabel3 = new cc.LabelTTF("郑商所",res.FONT_TYPE,fontSize,labelSize);
+        // self.typeLabel3.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+        // self.typeLabel3.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
+        // this.itemType3 = new cc.MenuItemLabel(self.typeLabel3, self.selectTypeList, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+        // // item1.setAnchorPoint(0,0.5);
+        // mu.addChild(this.itemType3);
+        // self.typeLabel4 = new cc.LabelTTF("中金所",res.FONT_TYPE,fontSize,labelSize);
+        // self.typeLabel4.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+        // self.typeLabel4.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
+        // this.itemType4 = new cc.MenuItemLabel(self.typeLabel4, self.selectTypeList, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+        // // item1.setAnchorPoint(0,0.5);
+        // mu.addChild(this.itemType4);
+        // this.itemType1.setPosition(cc.p(posX,pos-posY));
+        // this.itemType2.setPosition(cc.p(posX,pos-posY*2));
+        // this.itemType3.setPosition(cc.p(posX,pos-posY*3));
+        // this.itemType4.setPosition(cc.p(posX,pos-posY*4));
+
+
+        var posCode = cc.p(60,120);
+        if(null==this.bgCodeList){
+            this.bgCodeList = new cc.Sprite(res.BG_BOX_CHOOSE);
+            this.bgCodeList.setAnchorPoint(0,0);
+            this.bgCodeList.setPosition(posCode);
+            this.typeNode.addChild(this.bgCodeList,5);
+        }
+        if(null==this.tableViewCode){
+            this.tableViewCode = new cc.TableView(this, cc.size(420, 158));
+            this.tableViewCode.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
+            // this.tableViewCode.setDirection(cc.SCROLLVIEW_DIRECTION_BOTH);
+            //tableView.setAnchorPoint(0,1);
+            //cc.log(-winSize.width/2,-40);this
+            this.tableViewCode.setPosition(posCode);
+            //tableView.setPosition(0,0);
+            //tableView.x = winSize.width/2;
+            //tableView.y = winSize.height / 2 - 150;
+            //this.tableView.setScale(fXScale,fYScale);
+            this.tableViewCode.setDelegate(this);
+            this.tableViewCode.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+            this.typeNode.addChild(this.tableViewCode,5);
+        }
+        this.setCodeType(102);
+        // this.tableViewCode.reloadData();
+
+    },
+
+    selectCodeType:function (taget) {
+
+        var code = taget.getTag();
+        cc.log("selectCodeType:function!!! getTag()=="+code);
+        this.setCodeType(code);
+
+
+        // if(null!=gSocketConn){
+        //     gSocketConn.ChangeCode(code);
+        // }
+
+    },
+
+    setCodeType:function (code) {
+        if(null==userInfo.codeList){
+            userInfo.codeList = new Array();
+        }
+        userInfo.codeList=[];
+        switch (code){//中金、上期、大商、郑商所
+            case 101://
+            {
+                for(var i=0;i<treatyList.length;i++)
+                {
+                    if(treatyList[i].where=="中金所"){
+                        userInfo.codeList.push(treatyList[i]);
+                    }
+                }
+                break;
+            }
+            case 102:
+            {
+                for(var i=0;i<treatyList.length;i++)
+                {
+                    if(treatyList[i].where=="上期所"){
+                        userInfo.codeList.push(treatyList[i]);
+                    }
+                }
+                break;
+            }
+            case 103:
+            {
+                for(var i=0;i<treatyList.length;i++)
+                {
+                    if(treatyList[i].where=="大商所"){
+                        userInfo.codeList.push(treatyList[i]);
+                    }
+                }
+                break;
+            }
+            case 104:
+            {
+                for(var i=0;i<treatyList.length;i++)
+                {
+                    if(treatyList[i].where=="郑商所"){
+                        userInfo.codeList.push(treatyList[i]);
+                    }
+                }
+                break;
+            }
+            default:{
+                cc.log(" setCodeType:function (code) ERROR=="+code);
+                break;
+            }
+        }
+        console.info(" setCodeType:function (code)userInfo.codeList=="+userInfo.codeList);
+
+
+
+        if(null!=this.tableViewCode){
+            this.tableViewCode.reloadData();
+        }
+        for(var i=0;i<4;i++){
+            if(null!=this.codeButton&&this.codeButton[i]){
+                cc.log("this.codeButton[i].getTag()=="+this.codeButton[i].getTag());
+                if(code==this.codeButton[i].getTag()){
+                    this.codeButton[i].unselected();
+                }else{
+                    this.codeButton[i].selected();
+                }
+            }
+        }
+    },
+
+    scrollViewDidScroll:function (view) {
+    },
+    scrollViewDidZoom:function (view) {
+    },
+
+    tableCellTouched:function (table, cell) {
+        cc.log("cell touched at index: " + cell.getIdx());
+
+
+        // var matchId = userInfo.MatchListData[cell.getIdx()]["matchId"];
+        // var userId = userInfo.MatchListData[cell.getIdx()]["uid"];
+        // gSocketConn.SendRecordMessage(userId,matchId);
+    },
+
+    tableCellSizeForIndex:function (table, idx) {
+        //if (idx == 2) {
+        //    return cc.size(1000, 100);
+        //}
+        return cc.size(200, 70);
+    },
+
+    tableCellAtIndex:function (table, idx) {
+        cc.log("cell tableCellAtIndex index: "+idx);
+        var self = this;
+        var strValue = idx.toFixed(0);
+        var strText;
+        var cell = table.dequeueCell();
+        var label;
+        var textLabel;
+        if (!cell) {
+            cell = new codeSelectCell();
+        }
+        cell.setCodeInfoData(userInfo.codeList[idx]);
+        cell.setCellData(idx);
+
+        return cell;
+    },
+
+    numberOfCellsInTableView:function (table) {
+
+        if(null!=userInfo.codeList){
+            return userInfo.codeList.length;
+        }else{
+            return 0;
+        }
+
+    },
+    // selectTypeList:function () {
+    //     var self = this;
+    // },
+
+    setDayCount1:function() {
         userInfo.matchDayCount = 60;
         this.dayCountSelect.setPosition(this.dayCount1Btn.getPosition());
     },
-    setDayCount2:function()
-    {
+    setDayCount2:function() {
         userInfo.matchDayCount = 120;
         this.dayCountSelect.setPosition(this.dayCount2Btn.getPosition());
     },
-    setDayCount3:function()
-    {
+    setDayCount3:function() {
         userInfo.matchDayCount = 180;
         this.dayCountSelect.setPosition(this.dayCount3Btn.getPosition());
     },
@@ -779,9 +1031,6 @@ var MatchViewLayer = cc.Layer.extend({
         // this.backgroundSprite.addChild(spriteTest001, 3);
 
     },
-
-
-
     refreshMatchViewLayer:function()//
     {
         var self =this;
@@ -819,7 +1068,6 @@ var MatchViewLayer = cc.Layer.extend({
             }
         }
     },
-
     refreshMatchViewByData:function(content)
     {
         cc.log("refreshMatchViewByData 1=="+content);//人人人对战信息Matching|"playerList":[{"userName":"caoyongfei","score":"0.00","ranking":0,"headPicture":"http://222.66.97.203/Kgame/img/kiiikIcon.png"},{"userName":"红莲安迪","score":"0.00","ranking":0,"headPicture":"http://ohfw64y24.bkt.clouddn.com/30"}]|###
@@ -970,7 +1218,6 @@ var MatchViewLayer = cc.Layer.extend({
             this.textLabel.setString("匹配成功！");
         }
     },
-
     showHeadChange:function()
     {
         // var frameCache = cc.spriteFrameCache;
@@ -1024,7 +1271,7 @@ var MatchViewLayer = cc.Layer.extend({
     },
 });
 var preMatchView = cc.Layer.extend({
-
+    __className:"preMatchView",
     closeCallBackFunction:null,
 
     backgroundSprite:null,//
@@ -1113,8 +1360,9 @@ var preMatchView = cc.Layer.extend({
             this.chooseSelect = new cc.Sprite(res.EXERCISE_CHOOSE);
             this.bgSprite.addChild(this.chooseSelect,3);
         }
-        userInfo.matchMode=MatchType.Type_DailyTrade_Match;
-        this.chooseSelect.setPosition(this.timeBtn.getPosition());
+        this.practiceMatch();
+        // userInfo.matchMode=MatchType.Type_DailyTrade_Match;
+        // this.chooseSelect.setPosition(this.timeBtn.getPosition());
         return true;
     },
 
@@ -1164,6 +1412,9 @@ var preMatchView = cc.Layer.extend({
                     parentView.matchViewLayer.showLayer();
                     parentView.pauseLowerLayer();
                 }
+                // var codeList = ["BU","AU","HC"];
+                // gSocketConn.BeginMatchForMC(MatchType.Type_Practice_MC,120,codeList,2015);
+                // userInfo.matchBeginFlag=true;
 
                 break;
             }
@@ -1253,6 +1504,8 @@ var preMatchView = cc.Layer.extend({
         //     this.closeCallBackFunction();
         // }
     },
+
+
     showLayer:function()
     {
         this.setVisible(true);
@@ -1269,3 +1522,150 @@ var preMatchView = cc.Layer.extend({
     },
 
 });
+
+var codeSelectCell = cc.TableViewCell.extend({
+    __className:"codeSelectCell",
+    bgSprite:null,
+    codeInfo:null,
+    selectButton:null,
+    decButton:null,
+    decLabel:null,
+    draw:function (ctx) {
+        this._super(ctx);
+
+    },
+
+    onEnter:function () {
+        this._super();
+        // cc.log("RankTableViewCell onEnter end");
+    },
+    onExit:function () {
+        this._super();
+        this.removeAllChildrenWithCleanup(true);
+        // cc.log("RankTableViewCell onExit end");
+    },
+
+    setCodeInfoData:function (data) {
+        this.codeInfo = data;//userInfo.rankList[idx];
+    },
+    setCellData:function(idx) {
+        var self = this;
+        var fontSize =30;
+        cc.log("codeSelectCell setCellData==" + idx+"|this.codeInfo.start=="+this.codeInfo.start);
+        this.bgSprite = new cc.Node();//cc.Sprite(res.BLUE_BG_BTN);
+        this.bgSprite.setPosition(cc.p(0, 0));
+        this.bgSprite.setAnchorPoint(0, 0);
+        this.addChild(this.bgSprite);
+        var mu = new cc.Menu();
+        mu.x = 0;
+        mu.y = 0;
+        this.bgSprite.addChild(mu,3);
+
+        this.selectButton=new cc.MenuItemImage(res.SELECT_NO_PNG, res.SELECT_OK_PNG, res.SELECT_FALSE_PNG,self.setCodeStuas, self);//new CheckButton("res/btn_unmatch.png","res/btn_unmatch.png");//new Button("res/btn_mode1d.png");
+        this.selectButton.setPosition(25,25);
+        this.selectButton.setEnabled(true);
+
+        mu.addChild(this.selectButton);
+
+        cc.MenuItemFont.setFontName("fonts/Self.ttf");
+        cc.MenuItemFont.setFontSize(fontSize);
+
+        this.decLabel = new cc.LabelTTF("_______", "fonts/Self.ttf",fontSize);
+        this.decLabel.setColor(WhiteColor);//GrayColor
+        // .setColor(cc.color(166, 166, 166));//(166, 166, 166);//灰色
+        this.decButton = new cc.MenuItemLabel(this.decLabel,self.setCodeStuas, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
+        this.decButton.setAnchorPoint(0,0.5);
+        this.decButton.setPosition(60,30);
+        this.decButton.setEnabled(true);
+        mu.addChild(this.decButton);
+
+        userInfo.startYear=getCodeStar(treatyList);
+        // if(this.codeInfo.start<userInfo.startYear){
+        //     self.codeInfo.status =0;
+        // }
+
+        if(null!=self.codeInfo){
+            this.decLabel.setString(self.codeInfo.name);
+            // this.disLabel.setString(self.codeInfo.name);
+            this.setCellStatus(self.codeInfo.status);
+        }
+
+        cc.log("codeSelectCell setCellData==" + idx+"| userInfo.startYear=="+ userInfo.startYear);
+    },
+    setCellStatus:function (flag) {
+
+        this.decLabel.setColor(WhiteColor);
+        if(flag==0){
+            this.selectButton.setEnabled(false);
+            this.decButton.setEnabled(false);
+            this.decLabel.setColor(GrayColor)
+        }else if(flag==1){
+            this.selectButton.setEnabled(true);
+            this.decButton.setEnabled(true);
+            this.selectButton.selected();
+            this.decButton.selected();
+
+        }else if(flag==-1){
+            this.selectButton.setEnabled(true);
+            this.decButton.setEnabled(true);
+            this.selectButton.unselected();
+            this.decButton.unselected();
+        }
+    },
+    setCodeStuas:function(){
+        cc.log("setCodeStuas:function()");
+        if(this.codeInfo.status!=0){
+            var flag = this.codeInfo.status;
+            this.codeInfo.status = -flag;
+            this.setCellStatus(this.codeInfo.status);
+        }
+        for(var i=0;i<treatyList.length;i++)
+        {
+            if(treatyList[i].code==this.codeInfo.code){
+                treatyList[i].status=this.codeInfo.status;
+                break;
+            }
+        }
+        if(null==userInfo.codeSelected){
+            userInfo.codeSelected = new Array();
+        }
+        userInfo.codeSelected = [];
+        for(var i=0;i<treatyList.length;i++)
+        {
+            if(treatyList[i].status==1){
+                userInfo.codeSelected.push(treatyList[i].code);
+            }
+        }
+        userInfo.startYear = getCodeStar(treatyList);
+        cc.log("setCodeStuas:function()userInfo.startYear=="+userInfo.startYear+"this.codeInfo.status=="+this.codeInfo.status);
+        cc.log("setCodeStuas:function()");
+        var parent = gMainMenuScene.matchViewLayer;
+        console.info(userInfo.codeSelected);
+        for(var i=0;i<4;i++){
+            if(null!=parent.codeButton&&!parent.codeButton[i].isSelected()){
+                cc.log("this.codeButton[i].getTag()=="+parent.codeButton[i].getTag());
+                var code =parent.codeButton[i].getTag();
+                parent.setCodeType(code);
+            }
+        }
+    },
+});
+
+function getCodeStar(codeList){
+    userInfo.startYear=1997;
+    for(var i=0;i<codeList.length;i++)
+    {
+        if(codeList[i].status==1){
+            userInfo.startYear = userInfo.startYear>codeList[i].start?userInfo.startYear:codeList[i].start;
+        }
+    }
+    for(var i=0;i<codeList.length;i++)
+    {
+        if(userInfo.startYear<codeList[i].end&&codeList[i].status!=1){
+            codeList[i].status=0;
+        }else if(codeList[i].status==0){
+            codeList[i].status=-1;
+        }
+    }
+    return userInfo.startYear;
+};
