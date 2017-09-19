@@ -334,7 +334,7 @@ var MatchViewLayer = cc.Layer.extend({
             }
             this.dayCount4Btn.setPosition(cc.p(posX0+spaceX*4,bgSize.height/2+spaceY));
             this.dayCount4Btn.setTag(104);
-            this.dayCount4Btn.setVisible(false);
+            // this.dayCount4Btn.setVisible(false);
 
             if(this.dayCountSelect==null){
                 this.dayCountSelect = cc.Sprite.create("res/select_bg.png");
@@ -1269,6 +1269,16 @@ var MatchViewLayer = cc.Layer.extend({
             cc.log("stopHeadChange= end");
         }
     },
+    setCountDayStatus:function (num) {
+        if(num<1){
+            this.dayCount3Btn.setVisible(false);
+            this.dayCount4Btn.setVisible(false);
+            this.setDayCount2();
+        }else{
+            this.dayCount3Btn.setVisible(true);
+            this.dayCount4Btn.setVisible(true);
+        }
+    },
 });
 var preMatchView = cc.Layer.extend({
     __className:"preMatchView",
@@ -1614,40 +1624,49 @@ var codeSelectCell = cc.TableViewCell.extend({
     },
     setCodeStuas:function(){
         cc.log("setCodeStuas:function()");
-        if(this.codeInfo.status!=0){
-            var flag = this.codeInfo.status;
-            this.codeInfo.status = -flag;
-            this.setCellStatus(this.codeInfo.status);
-        }
-        for(var i=0;i<treatyList.length;i++)
-        {
-            if(treatyList[i].code==this.codeInfo.code){
-                treatyList[i].status=this.codeInfo.status;
-                break;
+        if(userInfo.codeSelected>4){
+            if(null!=gMainMenuScene){
+                gMainMenuScene.showErrorBox("所选品种不能超过5个",function(){gMainMenuScene.errorBoxClosed();});
+            }
+            return;
+        }else {
+            if(this.codeInfo.status!=0){
+                var flag = this.codeInfo.status;
+                this.codeInfo.status = -flag;
+                this.setCellStatus(this.codeInfo.status);
+            }
+            for(var i=0;i<treatyList.length;i++)
+            {
+                if(treatyList[i].code==this.codeInfo.code){
+                    treatyList[i].status=this.codeInfo.status;
+                    break;
+                }
+            }
+            if(null==userInfo.codeSelected){
+                userInfo.codeSelected = new Array();
+            }
+            userInfo.codeSelected = [];
+            for(var i=0;i<treatyList.length;i++)
+            {
+                if(treatyList[i].status==1){
+                    userInfo.codeSelected.push(treatyList[i].code);
+                }
+            }
+            userInfo.startYear = getCodeStar(treatyList);
+            cc.log("setCodeStuas:function()userInfo.startYear=="+userInfo.startYear+"this.codeInfo.status=="+this.codeInfo.status);
+            cc.log("setCodeStuas:function()");
+            var parent = gMainMenuScene.matchViewLayer;
+            parent.setCountDayStatus(2016-userInfo.startYear);
+            console.info(userInfo.codeSelected);
+            for(var i=0;i<4;i++){
+                if(null!=parent.codeButton&&!parent.codeButton[i].isSelected()){
+                    cc.log("this.codeButton[i].getTag()=="+parent.codeButton[i].getTag());
+                    var code =parent.codeButton[i].getTag();
+                    parent.setCodeType(code);
+                }
             }
         }
-        if(null==userInfo.codeSelected){
-            userInfo.codeSelected = new Array();
-        }
-        userInfo.codeSelected = [];
-        for(var i=0;i<treatyList.length;i++)
-        {
-            if(treatyList[i].status==1){
-                userInfo.codeSelected.push(treatyList[i].code);
-            }
-        }
-        userInfo.startYear = getCodeStar(treatyList);
-        cc.log("setCodeStuas:function()userInfo.startYear=="+userInfo.startYear+"this.codeInfo.status=="+this.codeInfo.status);
-        cc.log("setCodeStuas:function()");
-        var parent = gMainMenuScene.matchViewLayer;
-        console.info(userInfo.codeSelected);
-        for(var i=0;i<4;i++){
-            if(null!=parent.codeButton&&!parent.codeButton[i].isSelected()){
-                cc.log("this.codeButton[i].getTag()=="+parent.codeButton[i].getTag());
-                var code =parent.codeButton[i].getTag();
-                parent.setCodeType(code);
-            }
-        }
+
     },
 });
 
