@@ -283,8 +283,10 @@ var MatchViewLayer = cc.Layer.extend({
 
         if(null==this.AiBattleView){
             this.AiBattleView =new cc.LayerColor(cc.color(0,0,0,127),size.width,size.height);
-            this.AiBattleView._className="MatchViewLayer";
+            // this.AiBattleView._className="MatchViewLayer";
+            this.AiBattleView.setName("AiBattleView");
             this.bgSprite=cc.Sprite.create(res.BG_SELECT_PNG);
+            this.bgSprite.setName("bgSprite");
             bgSize = this.bgSprite.getContentSize();
 
             this.bgTittle = new cc.Sprite(res.TITLE_CHOOSE);
@@ -500,6 +502,7 @@ var MatchViewLayer = cc.Layer.extend({
     setTypeNode:function () {
         if(null==this.typeNode){
             this.typeNode = new cc.Node();
+            this.typeNode.setName("tableViewCode");
             this.typeNode.setPosition(0,0);
             this.bgSprite.addChild(this.typeNode,3);
         }
@@ -620,6 +623,7 @@ var MatchViewLayer = cc.Layer.extend({
         }
         if(null==this.tableViewCode){
             this.tableViewCode = new cc.TableView(this, cc.size(420, 158));
+            this.tableViewCode.setName("tableViewCode");
             this.tableViewCode.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
             // this.tableViewCode.setDirection(cc.SCROLLVIEW_DIRECTION_BOTH);
             //tableView.setAnchorPoint(0,1);
@@ -1676,8 +1680,9 @@ var codeSelectCell = cc.TableViewCell.extend({
             userInfo.startYear = getCodeStar(treatyList);
             cc.log("setCodeStuas:function()userInfo.startYear=="+userInfo.startYear+"this.codeInfo.status=="+this.codeInfo.status);
             cc.log("setCodeStuas:function()");
-            var parent = gMainMenuScene.matchViewLayer;
-            parent.setCountDayStatus(2016-userInfo.startYear);
+            var tableViewCodeTmp = this.parent.parent.parent;//tableViewCode;
+            var matchViewTmp = tableViewCodeTmp.parent.parent.parent;
+            matchViewTmp.setCountDayStatus(2016-userInfo.startYear);
             console.info(userInfo.codeSelected);
             // for(var i=0;i<4;i++){
             //     if(null!=parent.codeButton&&!parent.codeButton[i].isSelected()){
