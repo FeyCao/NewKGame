@@ -142,7 +142,11 @@ var MatchInfoLayer = cc.Layer.extend({
 		}
 	},
 
-
+    onExit: function () {
+        userInfo.codeMainList=null;
+        cc.eventManager.removeListener(this._listener);
+        this._super();
+    },
 	showFaceSprite:function(name,num)
 	{
 		var size = cc.director.getWinSize();

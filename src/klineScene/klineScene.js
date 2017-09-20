@@ -123,6 +123,12 @@ KLineScene = SceneBase.extend(
             userInfo.endInfoOfAllPlayers = null;
             userInfo.playerListData = null;
             userInfo.matchId = null;
+            userInfo.endInfoOfAllcodes = null;
+            userInfo.codeSelected = null;
+            userInfo.codeList = null;
+            userInfo.codeMainList = null;
+
+            codeLocalData.clearItem();
             this.removeAllChildrenWithCleanup(true);
             gKlineScene = null;
             // if(cc.audioEngine.isMusicPlaying()==true)
@@ -139,7 +145,7 @@ KLineScene = SceneBase.extend(
             // cc.director.setDisplayStats(true);
             cc.view.enableRetina(userInfo.viewFlag);
 
-            codeDataList.clearCodeData();
+            codeLocalData.clearItem();
             // if(userInfo.bgSoundFlag==true){
             //
             // 	if(cc.audioEngine.isMusicPlaying()==false)
@@ -1753,7 +1759,7 @@ KLineScene = SceneBase.extend(
                     v: dailyData["vol"]
                 });
             }
-            codeDataList.setItem(userInfo.currentCode+"A",self.klineData)
+            codeLocalData.setItem(userInfo.currentCode+"A",self.klineData)
             // switch (userInfo.matchMode) {
             //     case MatchType.Type_Practice_MC: {//多品种
             //         break;
@@ -2198,7 +2204,7 @@ KLineScene = SceneBase.extend(
                 this.klineLayerMain = new Array();
                 this.volumnTechLayerMain = new Array();
             }
-            var codeKlineData = codeDataList.getItem(userInfo.currentCode+"A");
+            var codeKlineData = codeLocalData.getItem(userInfo.currentCode+"A");
             var klineLayerMain = new KlineLayer(kWidth, 192);
             klineLayerMain.setCodeName(userInfo.currentCode);
 
@@ -2225,8 +2231,8 @@ KLineScene = SceneBase.extend(
             macdTais1.isEnabled = false;
             this.getVolumnTechLayerMain().addNewTais(macdTais1);
 
-            this.getKlineLayerMain().setKLineData(codeKlineData.codeData, null);
-            this.getVolumnTechLayerMain().setKLineData(codeKlineData.codeData, null);
+            this.getKlineLayerMain().setKLineData(codeKlineData, null);
+            this.getVolumnTechLayerMain().setKLineData(codeKlineData, null);
 
 
 
@@ -2820,35 +2826,6 @@ KLineScene = SceneBase.extend(
                 macdTais1.isEnabled = false;
                 this.getVolumnTechLayerPrev().addNewTais(macdTais1);
 
-                // var codeKlineData = codeDataList.getItem(userInfo.currentCode+"A");
-                // var klinePbData = codeKlineData.codeData;
-                // var dayInfolengths = klinePbData.length;
-                //
-                // self.klinedataMain = [];
-                // for (var i = self.prevDataDayCount; i < dayInfolengths; i++) {
-                //     var dailyData = klinePbData[i];
-                //     self.klinedataMain.push({
-                //         avg: dailyData["avg"],
-                //         o: dailyData["open"],
-                //         x: dailyData["max"],
-                //         i: dailyData["min"],
-                //         c: dailyData["close"],
-                //         v: dailyData["vol"]
-                //     });
-                // }
-                //
-                // self.prevKlineData = [];
-                // for (var i = 0; i < self.prevDataDayCount; i++) {
-                //     var dailyData = klinePbData[i];
-                //     self.prevKlineData.push({
-                //         avg: dailyData["avg"],
-                //         o: dailyData["open"],
-                //         x: dailyData["max"],
-                //         i: dailyData["min"],
-                //         c: dailyData["close"],
-                //         v: dailyData["vol"]
-                //     });
-                // }
                 //设置主K线图的数据
                 this.getKlineLayerPrev().setKLineData(this.klinedataMain, this.prevKlineData);
                 //设置附图的数据
@@ -3030,7 +3007,7 @@ KLineScene = SceneBase.extend(
         },
         drawChangeCodeView: function (codeName) {
             var self = this;
-            var codeKlineData = codeDataList.getItem(codeName+"A");
+            var codeKlineData = codeLocalData.getItem(codeName+"A");
             var playFlag = this.drawCandleStoped;
             console.info(""+codeName);
             console.info(codeKlineData);

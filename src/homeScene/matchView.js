@@ -42,11 +42,13 @@ var MatchViewLayer = cc.Layer.extend({
                 return true;
             }
         });
+        reloadCodeList(treatyList);
         cc.eventManager.addListener(listener, this);
         this._listener = listener;
     },
 
     onExit: function () {
+        reloadCodeList(treatyList);
         cc.eventManager.removeListener(this._listener);
         this._super();
     },
@@ -623,15 +625,25 @@ var MatchViewLayer = cc.Layer.extend({
             //tableView.setAnchorPoint(0,1);
             //cc.log(-winSize.width/2,-40);this
             this.tableViewCode.setPosition(posCode);
-            //tableView.setPosition(0,0);
-            //tableView.x = winSize.width/2;
-            //tableView.y = winSize.height / 2 - 150;
-            //this.tableView.setScale(fXScale,fYScale);
+            /*float calculateTableCellOffsetByCellIdx(float viewHeight, float cellHeight, int cellCount, int cellCountShown, int cellIndex, int locationindex) {
+            float tableTotalHeight = cellHeight * cellCount;
+            if(tableTotalHeight > viewHeight) {
+                return 0.00 - (cellCount - (cellIndex + cellCountShown - locationindex + 1)) * cellHeight;
+            }
+            else{
+                return viewHeight - tableTotalHeight;
+            }
+        }*/
+            // var posPre = this.tableViewCode.minContainerOffset();
+            this.tableViewCode.setContentOffset(cc.Point(0,0),true);
             this.tableViewCode.setDelegate(this);
-            this.tableViewCode.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+
+            // this.tableViewCode.setVerticalFillOrder(cc.TABLEVIEW_FILL_BOTTOMUP);//c从大到小
+            this.tableViewCode.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);//c从小到大
             this.typeNode.addChild(this.tableViewCode,5);
+            this.setCodeType(102,false);
         }
-        this.setCodeType(102);
+
         // this.tableViewCode.reloadData();
 
     },
@@ -640,7 +652,7 @@ var MatchViewLayer = cc.Layer.extend({
 
         var code = taget.getTag();
         cc.log("selectCodeType:function!!! getTag()=="+code);
-        this.setCodeType(code);
+        this.setCodeType(code,false);
 
 
         // if(null!=gSocketConn){
@@ -649,7 +661,7 @@ var MatchViewLayer = cc.Layer.extend({
 
     },
 
-    setCodeType:function (code) {
+    setCodeType:function (code,flag) {
         if(null==userInfo.codeList){
             userInfo.codeList = new Array();
         }
@@ -705,7 +717,16 @@ var MatchViewLayer = cc.Layer.extend({
 
 
         if(null!=this.tableViewCode){
-            this.tableViewCode.reloadData();
+
+            var posPre = this.tableViewCode.minContainerOffset();
+            if(flag){
+                posPre = this.tableViewCode.getContentOffset();
+                this.tableViewCode.reloadData();
+            }else{
+                this.tableViewCode.reloadData();
+                posPre = this.tableViewCode.minContainerOffset();
+            }
+            this.tableViewCode.setContentOffset(posPre,true);
         }
         for(var i=0;i<4;i++){
             if(null!=this.codeButton&&this.codeButton[i]){
@@ -1624,7 +1645,7 @@ var codeSelectCell = cc.TableViewCell.extend({
     },
     setCodeStuas:function(){
         cc.log("setCodeStuas:function()");
-        if(userInfo.codeSelected>4){
+        if(null!=userInfo.codeSelected&&userInfo.codeSelected.length>4){
             if(null!=gMainMenuScene){
                 gMainMenuScene.showErrorBox("所选品种不能超过5个",function(){gMainMenuScene.errorBoxClosed();});
             }
@@ -1658,13 +1679,13 @@ var codeSelectCell = cc.TableViewCell.extend({
             var parent = gMainMenuScene.matchViewLayer;
             parent.setCountDayStatus(2016-userInfo.startYear);
             console.info(userInfo.codeSelected);
-            for(var i=0;i<4;i++){
-                if(null!=parent.codeButton&&!parent.codeButton[i].isSelected()){
-                    cc.log("this.codeButton[i].getTag()=="+parent.codeButton[i].getTag());
-                    var code =parent.codeButton[i].getTag();
-                    parent.setCodeType(code);
-                }
-            }
+            // for(var i=0;i<4;i++){
+            //     if(null!=parent.codeButton&&!parent.codeButton[i].isSelected()){
+            //         cc.log("this.codeButton[i].getTag()=="+parent.codeButton[i].getTag());
+            //         var code =parent.codeButton[i].getTag();
+            //         parent.setCodeType(code,true);
+            //     }
+            // }
         }
 
     },
@@ -1687,4 +1708,11 @@ function getCodeStar(codeList){
         }
     }
     return userInfo.startYear;
+};
+function reloadCodeList(codeList){
+    for(var i=0;i<codeList.length;i++)
+    {
+        codeList[i].status=-1;
+    }
+    // return userInfo.startYear;
 };

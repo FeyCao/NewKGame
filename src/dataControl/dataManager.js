@@ -62,82 +62,105 @@ BaseLocalData.deleteItem = function()
 {
     sys.localStorage.removeItem("baseData");
 };
+var codeLocalData = {};
+/*
+ * 写入数据，将数据存储在本地
+ * @param jsonName:json文件名字
+ */
+// var baseData = [{a:1},{b:2},{c:3},{d:4},{e:5},{f:6},{g:7}];
+codeLocalData.setItem = function(jsonName,data)
+{
+    var baseData = JSON.stringify(data);
+    sys.localStorage.setItem(jsonName, baseData);
+};
+/*
+ * 读取基础数据
+ * 还回json格式数据
+ */
+codeLocalData.getItem = function(jsonName)
+{
+    var baseDataa = sys.localStorage.getItem(jsonName); //从本地读取数据
+    baseDataa = JSON.parse(baseDataa); //将string转换成json
+    return baseDataa;
+};
+/*
+ * 删除数据
+ */
+codeLocalData.clearItem = function()
+{
+    sys.localStorage.clear();
+};
 
-// function codeDataInfo(){
-//     // var codeName=null;//
-//     // var codeData=null;//
-//     setCodeName:function (name) {
+// var codeDataInfoList = (function () {
+//     var codeDataList;
+//     function init() {
+//         /*这里定义单例代码*/
+//         return {
+//             setItem:function (name,data) {
+//                 if(null==codeDataList){
+//                     codeDataList = new Array();
+//                 }
+//                 var codeData = new Object();
+//                 codeData.codeName = name;
+//                 codeData.codeData = data;
+//                 codeDataList.push(codeData);
+//             },
+//             getItem:function (name) {
+//                 if(null==codeDataList){
+//                     return null;
+//                 }else{
+//                     for(var i=0;i<codeDataList.length;i++){
+//                         if(name==codeDataList[i].codeName){
+//                             return codeDataList[i];
+//                         }
+//                     }
+//                 }
+//             },
+//             clearCodeData: function () {
+//                 // var codeDataList = codeDataInfoList.getInstance();
+//                 if(null!=codeDataList){
+//                     for (var i = 0; i<codeDataList.length; i++){
+//                         for(var key in codeDataList[i]){
+//                             // for (var  j= 0; j< codeDataList[i][key]; j++){
+//                             //     cc.log('clearData codeDataList[i][key]='+j);
+//                             //     delete codeDataList[i][key].j;
+//                             // }
+//                             delete codeDataList[i][key];
+//                         }
+//                         cc.log('clearData codeDataList[]='+key);
+//                     }
+//                     codeDataList=null;
+//                 }
+//                 cc.log('clearData codeDataList');
+//             },
+//             publicSetItem: 'setItem'
+//         };
 //
+//         // return {
+//         //
+//         //     publicGetItem: 'getItem'
+//         // };
+//         // return {
+//         //
+//         //     clearProperty: 'clear'
+//         // };
+//         return {
+//             otherMethod: function () {
+//                 cc.log('other world');
+//             },
+//             otherProperty: 'other'
+//         };
 //     }
-//
-// };
-var codeDataInfoList = (function () {
-    var codeDataList;
-    function init() {
-        /*这里定义单例代码*/
-        return {
-            setItem:function (name,data) {
-            if(null==codeDataList){
-                codeDataList = new Array();
-            }
-            var codeData = new Object();
-            codeData.codeName = name;
-            codeData.codeData = data;
-            codeDataList.push(codeData);
-            },
-            getItem:function (name) {
-                if(null==codeDataList){
-                    return null;
-                }else{
-                    for(var i=0;i<codeDataList.length;i++){
-                        if(name==codeDataList[i].codeName){
-                            return codeDataList[i];
-                        }
-                    }
-                }
-            },
-            clearCodeData: function () {
-                // var codeDataList = codeDataInfoList.getInstance();
-                if(null!=codeDataList){
-                    for (var i = 0; i<codeDataList.length; i++){
-                        for(var key in codeDataList[i]){
-                            delete codeDataList[i][key];
-                        }
-                        cc.log('clearData codeDataList[]='+key);
-                    }
-                    codeDataList=null;
-                }
-                cc.log('clearData codeDataList');
-            },
-            publicSetItem: 'setItem'
-        };
-
-        // return {
-        //
-        //     publicGetItem: 'getItem'
-        // };
-        // return {
-        //
-        //     clearProperty: 'clear'
-        // };
-        return {
-            otherMethod: function () {
-                cc.log('other world');
-            },
-            otherProperty: 'other'
-        };
-    }
-    return {
-        getInstance: function () {
-            if (!codeDataList) {
-                codeDataList = init();
-            }
-            return codeDataList;
-        }
-    };
-})();
-
-var codeDataList = codeDataInfoList.getInstance();
+//     return {
+//         getInstance: function () {
+//             if (!codeDataList) {
+//                 codeDataList = init();
+//             }
+//             return codeDataList;
+//         }
+//     };
+// })();
+// var codeDataList = codeDataInfoList.getInstance();
 
 // var gSocketConn=null;
 // var gPlayerName=null;			//用户名
@@ -298,7 +321,7 @@ var userInfo ={
     playerListData:null,//玩家列表
     codeList:null,//多品种合约列表[code:"沥青主连"codeScore:0]
     codeSelected:null,//选中的合约codeName
-    codeMainList:null,
+    codeMainList:null,//显示的主力合约
     currentCode:null,
     startYear:null,
     friendListData:null,//好友列表

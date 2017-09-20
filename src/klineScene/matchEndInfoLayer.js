@@ -167,7 +167,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
             this.bgSprtie.addChild(bgList2,5);
 
             if(null==this.codetableView){
-                this.codetableView = new cc.TableView(this, cc.size(1000, 100));
+                this.codetableView = new cc.TableView(this, cc.size(1000, 120));
 			}
             this.codetableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
             this.codetableView.setPosition(-244,-30);
@@ -820,6 +820,15 @@ var CodeInfoCell = cc.TableViewCell.extend({
 		this._super(ctx);
 
 	},
+    onEnter:function () {
+        this._super();
+        // cc.log("RankTableViewCell onEnter end");
+    },
+    onExit:function () {
+        this._super();
+        this.removeAllChildrenWithCleanup(true);
+        // cc.log("RankTableViewCell onExit end");
+    },
 	setCellData:function(idx){
 		cc.log("PlayerInfoCell setCellData=="+idx);
 		// var sprite = new cc.Sprite(res.BLUE_BG_BTN);

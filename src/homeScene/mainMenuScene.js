@@ -247,7 +247,7 @@ var MainMenuScene =SceneBase.extend(
         }
 
         // gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
-        codeDataList.clearCodeData();
+        // codeDataList.clearCodeData();
         this.setInfoBySource(userInfo.source);
         this.openSceneType();
         var loadTime=new Date().getTime();
