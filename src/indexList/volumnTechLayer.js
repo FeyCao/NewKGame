@@ -81,7 +81,7 @@ var VolumnTechLayer= BaseGraphLayer.extend({
 				start=0;
 			}
 
-			for(var i=start;i<=end;i++)
+            for(var i=start;i<=end&&null!=this.klineData[i];i++)
 			{
 				if(this.klineData[i].v>this.maxValue)
 				{

@@ -96,7 +96,7 @@ var KlineLayer= BaseGraphLayer.extend({
 		
 		
 		
-		for(var i=start;i<=end;i++)
+		for(var i=start;i<=end&&null!=this.klineData[i];i++)
 		{
 			if(this.klineData[i].x>this.maxValue)
 			{

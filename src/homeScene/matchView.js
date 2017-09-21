@@ -1649,50 +1649,49 @@ var codeSelectCell = cc.TableViewCell.extend({
     },
     setCodeStuas:function(){
         cc.log("setCodeStuas:function()");
-        if(null!=userInfo.codeSelected&&userInfo.codeSelected.length>4){
-            if(null!=gMainMenuScene){
-                gMainMenuScene.showErrorBox("所选品种不能超过5个",function(){gMainMenuScene.errorBoxClosed();});
+        ;
+        if(this.codeInfo.status==1){
+            this.codeInfo.status = -1;
+            this.setCellStatus(this.codeInfo.status);
+            this.setCodeData();
+        }else if(this.codeInfo.status==-1){
+            if(null!=userInfo.codeSelected&&userInfo.codeSelected.length>4){
+                if(null!=gMainMenuScene){
+                    gMainMenuScene.showErrorBox("所选品种不能超过5个",function(){gMainMenuScene.errorBoxClosed();});
+                }
+                console.info(userInfo.codeSelected);
+                return;
             }
-            return;
-        }else {
-            if(this.codeInfo.status!=0){
-                var flag = this.codeInfo.status;
-                this.codeInfo.status = -flag;
+            else{
+                this.codeInfo.status = 1;
                 this.setCellStatus(this.codeInfo.status);
+                this.setCodeData();
             }
-            for(var i=0;i<treatyList.length;i++)
-            {
-                if(treatyList[i].code==this.codeInfo.code){
-                    treatyList[i].status=this.codeInfo.status;
-                    break;
-                }
-            }
-            if(null==userInfo.codeSelected){
-                userInfo.codeSelected = new Array();
-            }
-            userInfo.codeSelected = [];
-            for(var i=0;i<treatyList.length;i++)
-            {
-                if(treatyList[i].status==1){
-                    userInfo.codeSelected.push(treatyList[i].code);
-                }
-            }
-            userInfo.startYear = getCodeStar(treatyList);
-            cc.log("setCodeStuas:function()userInfo.startYear=="+userInfo.startYear+"this.codeInfo.status=="+this.codeInfo.status);
-            cc.log("setCodeStuas:function()");
-            var tableViewCodeTmp = this.parent.parent.parent;//tableViewCode;
-            var matchViewTmp = tableViewCodeTmp.parent.parent.parent;
-            matchViewTmp.setCountDayStatus(2016-userInfo.startYear);
-            console.info(userInfo.codeSelected);
-            // for(var i=0;i<4;i++){
-            //     if(null!=parent.codeButton&&!parent.codeButton[i].isSelected()){
-            //         cc.log("this.codeButton[i].getTag()=="+parent.codeButton[i].getTag());
-            //         var code =parent.codeButton[i].getTag();
-            //         parent.setCodeType(code,true);
-            //     }
-            // }
         }
-
+    },
+    setCodeData:function(){
+        for(var i=0;i<treatyList.length;i++)
+        {
+            if(treatyList[i].code==this.codeInfo.code){
+                treatyList[i].status=this.codeInfo.status;
+                break;
+            }
+        }
+        if(null==userInfo.codeSelected){
+            userInfo.codeSelected = new Array();
+        }
+        userInfo.codeSelected = [];
+        for(var i=0;i<treatyList.length;i++)
+        {
+            if(treatyList[i].status==1){
+                userInfo.codeSelected.push(treatyList[i].code);
+            }
+        }
+        userInfo.startYear = getCodeStar(treatyList);
+        var tableViewCodeTmp = this.parent.parent.parent;//tableViewCode;
+        var matchViewTmp = tableViewCodeTmp.parent.parent.parent;
+        matchViewTmp.setCountDayStatus(2016-userInfo.startYear);
+        console.info(userInfo.codeSelected);
     },
 });
 

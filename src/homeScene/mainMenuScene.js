@@ -265,6 +265,15 @@ var MainMenuScene =SceneBase.extend(
                 // this.paimingButton.setEnabled(false);
                 // this.zhanjiButton.setEnabled(false);
             }
+            // case "ZKQQ":{
+            //     this.fourthMode.setEnabled(false);
+            //     this.thirdMode.setEnabled(false);
+            //     this.paimingButton.setEnabled(false);
+            //     this.zhanjiButton.setEnabled(false);
+            //     // this.thirdMode.set;
+            //     // this.paimingButton.setEnabled(false);
+            //     // this.zhanjiButton.setEnabled(false);
+            // }
             case 2:
             default:{
                 cc.log("setInfoBySource source=="+source);
@@ -1422,11 +1431,11 @@ var MainMenuScene =SceneBase.extend(
             {
                 cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
                 var data=message.friendListChange;
-                var friendName =data["userName"];
+                var friendName =data["uid"];
                 var status = data["status"];
                 for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
                 {
-                    if(userInfo.friendListData[i]["userName"]==friendName){
+                    if(userInfo.friendListData[i]["uid"]==friendName){
                         userInfo.friendListData[i]["status"]=status;
                     }
                 }
@@ -1474,17 +1483,23 @@ var MainMenuScene =SceneBase.extend(
                 inviteInfo.inviterPic = data["inviterPic"];
                 // userInfo.matchMode = 4;
                 userInfo.matchMode = MatchType.Type_Friend_Match;
-                // var self = this;
-                if(self.invitedViewLayer==null){
-                    self.invitedViewLayer=new InvitedViewLayer();
-                    self.invitedViewLayer.setVisible(false);
-                    self.invitedViewLayer.setPosition(0,0);
-                    self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
-                    self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
-                }
 
-                self.invitedViewLayer.showLayer();
-                self.pauseLowerLayer();
+                if(null==inviteInfo.inviteeName){//邀请第三方平台
+
+                    cc.log("invite.html");
+                }else{
+                    if(self.invitedViewLayer==null){
+                        self.invitedViewLayer=new InvitedViewLayer();
+                        self.invitedViewLayer.setVisible(false);
+                        self.invitedViewLayer.setPosition(0,0);
+                        self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
+                        self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+                    }
+
+                    self.invitedViewLayer.showLayer();
+                    self.pauseLowerLayer();
+                }
+                // var self = this;
 
                 // if(self.friendLayer!=null){
                 //     self.friendLayer.refreshFriendViewLayer();

@@ -26,6 +26,10 @@ var res = {
  BG_touxiang_png  :"res/bg_touxiang.png",
  BG_playerInfo_png  :"res/playerInfo_bg.png",
 
+
+
+    BG_HEAD_SELECT_PNG : "res/public/head_small_on.png",//"res/touxiang_select.png",
+    BG_HEAD_PNG : "res/public/bg_touxiang.png",
  //表情资源
  btn_Emoticon_png:"res/public/btn_Emoticon.png",
  Emoticon_1_png:"res/public/Emoticon_1.png",
@@ -125,6 +129,7 @@ var res = {
  BG_FRIEND_SEARCH_L:"res/friend/search_friends_bg_l.png",
  BG_FRIEND_SEARCH_S:"res/friend/search_friends_bg_s.png",
  BG_FRIEND_ACCEPT:"res/friend/bg_accept_battle.png",
+ BG_FRIEND_INVITE:"res/friend/bg_invite.png",
 
  STATUS_FRIEND_GAME_png:"res/friend/ff_status_itg.png",
  STATUS_FRIEND_MG_png:"res/friend/ff_status_mg.png",
@@ -139,6 +144,11 @@ var res = {
  BTN_REJECT:"res/friend/btn_refuse.png",
  BTN_AGREE:"res/friend/btn_agree.png",
  BTN_FRIEND_ACCEPT:"res/friend/ff_btn_accept.png",
+
+ BTN_FRIENT_BEGINON:"res/friend/btn_begin_on.png",
+ BTN_FRIENT_BEGINOFF:"res/friend/btn_begin_off.png",
+ BTN_FRIENT_QQ:"res/friend/ff_invite_qq.png",
+ BTN_FRIENT_WECHAT:"res/friend/ff_invite_wechat.png",
 
 
 //分时练习资源
@@ -155,14 +165,15 @@ var res = {
  EXERCISE_BOX_DEFAULT  :"res/exercise/box_time_default.png",//收缩
  EXERCISE_BOX_STRETCH  :"res/exercise/box_time_unfold.png",//伸展
  BG_BOX_CHOOSE  :"res/exercise/box_contract.png",//code列表背景
-BTN_CODE_D1:"res/exercise/exchange_d1.png",
-BTN_CODE_ON1:"res/exercise/exchange_on1.png",
-BTN_CODE_D2:"res/exercise/exchange_d2.png",
-BTN_CODE_ON2:"res/exercise/exchange_on2.png",
-BTN_CODE_D3:"res/exercise/exchange_d3.png",
-BTN_CODE_ON3:"res/exercise/exchange_on3.png",
-BTN_CODE_D4:"res/exercise/exchange_d4.png",
-BTN_CODE_ON4:"res/exercise/exchange_on4.png",
+    //颜色取反
+BTN_CODE_ON1:"res/exercise/exchange_d1.png",
+BTN_CODE_D1:"res/exercise/exchange_on1.png",
+BTN_CODE_ON2:"res/exercise/exchange_d2.png",
+BTN_CODE_D2:"res/exercise/exchange_on2.png",
+BTN_CODE_ON3:"res/exercise/exchange_d3.png",
+BTN_CODE_D3:"res/exercise/exchange_on3.png",
+BTN_CODE_ON4:"res/exercise/exchange_d4.png",
+BTN_CODE_D4:"res/exercise/exchange_on4.png",
 
 
  BTN_HOME_png:"res/home.png",//"res/btn_open.png","res/btn_close.png",
@@ -187,10 +198,8 @@ BTN_CODE_ON4:"res/exercise/exchange_on4.png",
  touxiang_plist : "res/touxiang/touxiang.plist",
     //
 
- BG_HEAD_PNG : "res/bg_touxiang.png",
  HEAD_0_PNG : "res/touxiang_0.png",
  HEAD_NO_PNG : "res/head_no.png",
- BG_HEAD_SELECT_PNG : "res/touxiang_select.png",
  BG_VS_NAME_PNG:"res/vs_name.png"
 
 

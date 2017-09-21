@@ -243,6 +243,7 @@ var EndMatch_Info = ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("EndMatch_
 var Fast_Lgoin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Fast_Lgoin");
 var Use_DeviceId_Login =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Use_DeviceId_Login");
 var Mobile_Login =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Mobile_Login");
+
 var treatyList =[
     {"name":"A:豆一","where":"大商所","start":"2003","end ":"2016","code":"A","status":"-1"},
     {"name":"AG:沪银","where":"上期所","start":"2013","end ":"2016","code":"AG","status":"-1"},
@@ -360,6 +361,7 @@ var userInfo ={
     viewFlag:true,
     toolsFlag:0,//0表示无道具，1表示K线颠倒
 
+    inviteType:null,//QQ/Wechat
     // selectedCode:null,
 }
 var inviteInfo =new FriendMatch_Invite();

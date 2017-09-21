@@ -159,7 +159,7 @@ var FriendTableViewCell = cc.TableViewCell.extend({
             self.statusSprite.setAnchorPoint(0,0.5);
             // self.statusSprite.setVisible(false);
             // self.invitedInfoLabel.setVisible(true);
-            gSocketConn.inviteFriend(username);
+            gSocketConn.inviteFriend(username,false);
         });
         cc.log("FriendTableViewCell setCellView end");
     },
@@ -327,7 +327,6 @@ var FriendTableViewCell = cc.TableViewCell.extend({
 
 var FriendViewLayer = cc.Layer.extend({
     closeCallBackFunction:null,
-    _className: "FriendViewLayer",
 
     bgNumber:1,		//底图层号
     infoNumber:2,//信息层号
@@ -337,10 +336,13 @@ var FriendViewLayer = cc.Layer.extend({
     friendAddNode:null,//添加好友界面新的好友界面
     // friendSearchNode:null,//好友搜索界面
 
+
     onEnter: function () {
         this._super();
         // this.setColor();
+        this.setName("FriendViewLayer");
         this.setOpacity(160);
+        userInfo.inviteType =null;
         var listener = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
@@ -353,8 +355,10 @@ var FriendViewLayer = cc.Layer.extend({
     },
 
     onExit: function () {
+        userInfo.inviteType =null;
         cc.eventManager.removeListener(this._listener);
         this._super();
+
     },
     ctor:function () {
         this._super();
@@ -411,6 +415,37 @@ var FriendViewLayer = cc.Layer.extend({
         this.btnHome.setScale(0.9);
         mu.addChild(this.btnHome);
 
+        this.btnBegin=new cc.MenuItemImage(res.BTN_FRIENT_BEGINON, res.BTN_FRIENT_BEGINON,res.BTN_FRIENT_BEGINOFF, self.beginMatch, self);//new Button("res/home.png");
+        this.btnBegin.setAnchorPoint(0.5,0);
+        this.btnBegin.setPosition(cc.p(460,68));
+        this.btnBegin.setEnabled(false);
+        // this.btnBegin.setScale(0.9);
+        mu.addChild(this.btnBegin);
+
+        this.btnInviteQQ=new cc.MenuItemImage(res.BTN_FRIENT_QQ, res.BTN_FRIENT_QQ, self.inviteQQMatch, this);//new Button("res/home.png");
+        this.btnInviteQQ.setPosition(cc.p(1190,topPosY));
+        // this.btnInviteQQ.setScale(0.9);
+        mu.addChild(this.btnInviteQQ);
+
+        this.btnInviteWechat=new cc.MenuItemImage(res.BTN_FRIENT_WECHAT, res.BTN_FRIENT_WECHAT, self.inviteWechatMatch, this);//new Button("res/home.png");
+        this.btnInviteWechat.setPosition(cc.p(1010,topPosY));
+        // this.btnInviteWechat.setScale(0.9);
+        mu.addChild(this.btnInviteWechat);
+
+        this.leftDownBg = new cc.Sprite(res.BG_FRIEND_INVITE);
+        this.leftDownBg.setAnchorPoint(0,0.5);
+        this.leftDownBg.setPosition(cc.p(925,topPosY));
+        this.backgroundSprite.addChild(this.leftDownBg,2);
+
+        if(userInfo.source!="DHJK"){
+
+            this.leftDownBg.setVisible(false);
+            this.btnInviteQQ.setVisible(false);
+            this.btnInviteWechat.setVisible(false);
+        }
+        this.leftDownBg.setVisible(false);
+        this.btnInviteQQ.setVisible(false);
+        this.btnInviteWechat.setVisible(false);
         // var sprite = new cc.Sprite(spriteFrame);
         var posD = 400;
         this.selfBg = new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);
@@ -716,6 +751,19 @@ var FriendViewLayer = cc.Layer.extend({
         }
     },
 
+    beginMatch:function () {
+        cc.log("beginMatch:function");
+    },
+    inviteQQMatch:function () {
+        userInfo.inviteType = "QQ";//QQ/Wechat
+        gSocketConn.inviteFriend(null,true);
+        cc.log("inviteQQMatch:function");
+    },
+    inviteWechatMatch:function () {
+        userInfo.inviteType = "Wechat";//QQ/Wechat
+        gSocketConn.inviteFriend(null,true);
+        cc.log("inviteWechatMatch:function");
+    },
     scrollViewDidScroll:function (view) {
     },
     scrollViewDidZoom:function (view) {

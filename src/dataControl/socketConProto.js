@@ -670,13 +670,14 @@ var  message = new Message();
     // ws.send("LISTFRIEND||");
 }
 
-protoSocketConn.prototype.inviteFriend=function(userName)
+protoSocketConn.prototype.inviteFriend=function(userName,otherPlatformFlag)//邀请好友战
 {
     cc.log("send inviteFriend==INVITE|"+userName+"|");
     var  message = new Message();
     var messageSend = new FriendMatch_Invite();
     // messageSend.setAgree(boolean);
     messageSend.setInviteeName(userName);
+    messageSend.setOtherPlatform(otherPlatformFlag);
     message.setMessageType(MessageType.Type_FriendMatch_Invit);
     message.setFriendMatchInvite(messageSend);
     var arrayBuf =  message.toArrayBuffer();
@@ -688,7 +689,7 @@ protoSocketConn.prototype.inviteFriend=function(userName)
 }
 
 
-protoSocketConn.prototype.ansInviteFriend=function(boolean,inviteInfo)//ANSINVITE｜boolean#code｜
+protoSocketConn.prototype.ansInviteFriend=function(boolean,inviteInfo)//回复邀请好友战ANSINVITE｜boolean#code｜
 {
     cc.log("send ANSINVITEFriend==ANSINVITE|"+boolean+"#"+inviteInfo.code+"|"+inviteInfo.inviterName+"|");
     // ws.send("ANSINVITE|"+boolean+"#"+code+"|");

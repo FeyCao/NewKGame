@@ -215,7 +215,7 @@ var PlayerInfoLayer= cc.Node.extend({
 						// this.playerHead_Sprite[i].setContentSize(size);
 						// this.playerHead_Sprite[i].setVisible(false);
 						this.playerHead_Select[i] = new cc.Sprite(res.BG_HEAD_SELECT_PNG);
-						this.playerHead_Select[i].setScale(0.6);
+						// this.playerHead_Select[i].setScale(0.6);
 						// this.playerHead_Select[i].setVisible(false);
 
 //////////////////////////////////////

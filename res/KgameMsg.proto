@@ -12,7 +12,7 @@
     Type_New_Day=10;
     Type_Start_Match=11;
     Type_Operation_End=12;
-    Type_Home_In_Game=13;
+    Type_Home_In_Game=13;//比赛中的返回大厅
     Type_Matching_Success=14;
 	Type_Share=15;
 	Type_Ping=16;
@@ -32,6 +32,8 @@
 	Type_Server_Pong=30;
 	Type_AddFriend=31;
 	Type_Change_Code=32;
+	Type_Entry_Game_In_Home=33;//房主开始游戏
+	Type_Player_In_Home=34;//房间内成员变更
 }
 
 
@@ -85,13 +87,15 @@ message Warn{
     optional string token=3;
 }
 
-message Share{
-   required int32 matchId=1;
-   required MatchType matchType=2;//2017-8-24 比赛种类
-   repeated OneDayInfo oneDayInfo=3;
-   optional int32 handleDay=4;//供玩家操作的天数
-   repeated MatchUserInfo playerInfo=5;
-   optional string currentCode=6;//2017-8-24 当前操作的合约信息
+
+
+message HisdataInfo{
+
+   repeated OneDayInfo oneDayInfo=1;
+   required int32 handleDay=2;//供玩家操作的天数
+   repeated MatchUserInfo playerInfo=3;
+   optional MatchType matchType=4;
+  
 }
 
 message HistoryMatches{
@@ -104,10 +108,19 @@ message HistoryMatches{
 
 message MatchRecord{
    required int32 matchId=1;
-   repeated OneDayInfo oneDayInfo=2;
-   optional int32 handleDay=3;//供玩家操作的天数
-   repeated MatchUserInfo playerInfo=4;
-   optional MatchType matchType=5;
+   required MatchType matchType=2;//2017-8-24 比赛种类
+   repeated OneDayInfo oneDayInfo=3;
+   optional int32 handleDay=4;//供玩家操作的天数
+   repeated MatchUserInfo playerInfo=5;
+   optional string currentCode=6;//2017-8-24 当前操作的合约信息
+}
+
+message Share{
+   required int32 matchId=1;
+   required MatchType matchType=2;//2017-8-24 比赛种类
+   repeated OneDayInfo oneDayInfo=3;
+   optional int32 handleDay=4;//供玩家操作的天数
+   repeated MatchUserInfo playerInfo=5;
    optional string currentCode=6;//2017-8-24 当前操作的合约信息
 }
 
@@ -206,13 +219,11 @@ optional string currentCode=8;//当前操作的合约信息
 
 }
 
-message HisdataInfo{
 
-   repeated OneDayInfo oneDayInfo=1;
-   required int32 handleDay=2;//供玩家操作的天数
-   repeated MatchUserInfo playerInfo=3;
-   optional MatchType matchType=4;
-  
+message PlayerInHome{
+   required string userName=1;
+   required string headPicture=2;
+   required bool   owener=3;//房主
 }
 
 
@@ -266,7 +277,8 @@ message End_Match_Info{
 message Friend_Status{
    optional string userName=1;
    optional string headPicture=2;
-   optional string status=3;
+   optional string uid=3;
+   optional string status=4;
 }
 
 message FriendMatch_Invite{
@@ -279,7 +291,7 @@ message FriendMatch_Invite{
 
 message FriendMatch_Answer{
     required bool agree=1;//同意
-	required string inviterName=2;//邀请人
+	optional string inviterName=2;//邀请人
 	optional string answerName=3;//被邀请者
 	optional string answerPic=4;//被邀请人头像
 	optional string inviteCode=5;
@@ -361,4 +373,5 @@ message Message{
    optional ServerPong serverPong=24;
    optional AddFriend addFriend=25;
    optional string changeCode=26;
+   repeated PlayerInHome playerInHome=27;//好友站房间信息
 }
