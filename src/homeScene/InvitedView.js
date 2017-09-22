@@ -51,8 +51,6 @@ var InvitedViewLayer = cc.Layer.extend({
         this.bgColorLayer.addChild(this.backgroundSprite);
 
 
-
-
         var bgSize = this.backgroundSprite.getContentSize();
         var posD = 340;
         this.selfBg = new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);

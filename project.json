@@ -11,7 +11,7 @@
     "testFlag" : false,
     "testMyFlag" : true,
     "enableRetina":true,
-    "serverMyURL":"192.168.16.250:8888/Kgamefeng/websocket",
+    "serverMyURL":"192.168.16.145:8888/Kgamefeng/websocket",
     "serverTestURL":"192.168.16.145:8888/Kgamefeng/websocket",
     "serverURL":"kgt.kiiik.com:7003/Kgamefeng/websocket",
     "other":"kgt.kiiik.com:7003/Kgamefeng/websocket;//测试环境'kgame.kiiik.com:5003/Kgamefeng/websocket;//正式环境'/  192.168.16.250:5210/Kgamefeng/websocket';192.168.16.250:8888/Kgamefeng/websocket//本地环境/'ws://192.168.16.145:8080/Kgamefeng/websocket';/晓峰环境",

@@ -1481,6 +1481,8 @@ var MainMenuScene =SceneBase.extend(
                 inviteInfo.inviterName = data["inviterName"];
                 inviteInfo.inviteeName = data["inviteeName"];
                 inviteInfo.inviterPic = data["inviterPic"];
+                inviteInfo.inviteeUid = data["inviteeUid"];
+                inviteInfo.otherPlatform= data["otherPlatform"];
                 // userInfo.matchMode = 4;
                 userInfo.matchMode = MatchType.Type_Friend_Match;
 

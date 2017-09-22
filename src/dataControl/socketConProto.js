@@ -670,14 +670,23 @@ var  message = new Message();
     // ws.send("LISTFRIEND||");
 }
 
-protoSocketConn.prototype.inviteFriend=function(userName,otherPlatformFlag)//邀请好友战
+protoSocketConn.prototype.inviteFriend=function(userName,otherPlatformFlag,inviteeUid)//邀请好友战
 {
     cc.log("send inviteFriend==INVITE|"+userName+"|");
     var  message = new Message();
     var messageSend = new FriendMatch_Invite();
-    // messageSend.setAgree(boolean);
+    if(typeof (userName)=="undefined"){//typeof(gMainMenuScene)=="undefined"
+        userName=null;
+    }
     messageSend.setInviteeName(userName);
+    if(typeof (otherPlatformFlag)=="undefined"){//typeof(gMainMenuScene)=="undefined"
+        otherPlatformFlag=false;
+    }
     messageSend.setOtherPlatform(otherPlatformFlag);
+    if(typeof (inviteeUid)=="undefined"){//typeof(gMainMenuScene)=="undefined"
+        inviteeUid=null;
+    }
+    messageSend.setInviteeUid(inviteeUid);
     message.setMessageType(MessageType.Type_FriendMatch_Invit);
     message.setFriendMatchInvite(messageSend);
     var arrayBuf =  message.toArrayBuffer();
@@ -697,7 +706,7 @@ protoSocketConn.prototype.ansInviteFriend=function(boolean,inviteInfo)//回复�
     var messageSend = new FriendMatch_Answer();
     messageSend.setAgree(boolean);
     messageSend.setInviteCode(inviteInfo.inviteCode);
-    messageSend.setInviterName(inviteInfo.inviterName);
+    messageSend.setInviterUid(userInfo.userId);
     message.setMessageType(MessageType.Type_FriendMatch_Answer);
     message.setFriendMatchAnswer(messageSend);
     var arrayBuf =  message.toArrayBuffer();

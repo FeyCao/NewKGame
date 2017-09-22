@@ -111,6 +111,7 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         self.addChild(this.statusSprite,2);
 
         var username = self.friendInfo["userName"];
+        var uid = self.friendInfo["uid"];
         self.friendnameLabel.setString(cutstr(username,17));
 
         var stausFlag = self.friendInfo["status"];//在线or离线or组队中or比赛中
@@ -159,7 +160,7 @@ var FriendTableViewCell = cc.TableViewCell.extend({
             self.statusSprite.setAnchorPoint(0,0.5);
             // self.statusSprite.setVisible(false);
             // self.invitedInfoLabel.setVisible(true);
-            gSocketConn.inviteFriend(username,false);
+            gSocketConn.inviteFriend(username,false,uid);
         });
         cc.log("FriendTableViewCell setCellView end");
     },
@@ -443,10 +444,9 @@ var FriendViewLayer = cc.Layer.extend({
             this.btnInviteQQ.setVisible(false);
             this.btnInviteWechat.setVisible(false);
         }
-        this.leftDownBg.setVisible(false);
-        this.btnInviteQQ.setVisible(false);
-        this.btnInviteWechat.setVisible(false);
-        // var sprite = new cc.Sprite(spriteFrame);
+        // this.leftDownBg.setVisible(false);
+        // this.btnInviteQQ.setVisible(false);
+        // this.btnInviteWechat.setVisible(false);
         var posD = 400;
         this.selfBg = new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);
         this.selfBg.setPosition(270,posD);
@@ -756,12 +756,12 @@ var FriendViewLayer = cc.Layer.extend({
     },
     inviteQQMatch:function () {
         userInfo.inviteType = "QQ";//QQ/Wechat
-        gSocketConn.inviteFriend(null,true);
+        gSocketConn.inviteFriend(null,true,null);
         cc.log("inviteQQMatch:function");
     },
     inviteWechatMatch:function () {
         userInfo.inviteType = "Wechat";//QQ/Wechat
-        gSocketConn.inviteFriend(null,true);
+        gSocketConn.inviteFriend(null,true,null);
         cc.log("inviteWechatMatch:function");
     },
     scrollViewDidScroll:function (view) {

@@ -280,18 +280,22 @@ message Friend_Status{
    optional string uid=3;
    optional string status=4;
 }
-
+//邀请人告诉server邀请谁
+//服务器告诉被邀请人谁邀请你
+//若为第三方平台，仅获得邀请码作用
 message FriendMatch_Invite{
    optional string inviteeName=1;//被邀请人
-   optional string inviterName=2;//邀请人
+    optional string  inviterName=2;//邀请人昵称
    optional string inviterPic=3;//邀请人头像
    optional string inviteCode=4;
    required bool otherPlatform = 5;//是否是第三方平台
+    optional string  inviteeUid=6;//被邀请邀请人uid
 }
-
+//被邀请人告诉服务器是否同意邀请人的邀请
+//服务器告诉邀请人来自被邀请人的拒绝信息
 message FriendMatch_Answer{
     required bool agree=1;//同意
-	optional string inviterName=2;//邀请人
+	required string inviterUid=2;//邀请人
 	optional string answerName=3;//被邀请者
 	optional string answerPic=4;//被邀请人头像
 	optional string inviteCode=5;
