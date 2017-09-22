@@ -3466,16 +3466,28 @@ KLineScene = SceneBase.extend(
                 return;
             }
             else if(userInfo.matchMode == MatchType.Type_DailyTrade_Match){
+                for(var j=0;null!=this.selfOperations&&j<this.selfOperations.length;j++){
+                    if(lastCandleIndex==this.selfOperations[j]){
+                        return false;
+                    }
+                }
                 this.selfOperations.push(lastCandleIndex);
                 this.refreshScores(lastCandleIndex);
                 this.getKlineLayerMain().setUpArrowIndex(lastCandleIndex, (this.selfOperations.length % 2 == 1));
                 gSocketConn.Buy(lastCandleIndex - 1 > 0 ? lastCandleIndex - 1 : 0);
+                return true;
             }else{
+                for(var j=0;null!=this.selfOperations&&j<this.selfOperations.length;j++){
+                    if(lastCandleIndex==this.selfOperations[j]){
+                        return false;
+                    }
+                }
+                this.selfOperations.push(lastCandleIndex);
                 if (gSocketConn != null && gSocketConn != undefined&&this.matchRunFlag) {
                     gSocketConn.Buy(lastCandleIndex - 121 > 0 ? lastCandleIndex - 121 : 0);//
+                    return true;
                 }
             }
-
         },
 
         sellClick: function () {
@@ -3486,11 +3498,23 @@ KLineScene = SceneBase.extend(
             if (lastCandleIndex < 121 && userInfo.matchMode != MatchType.Type_DailyTrade_Match) {
                 return;
             } else if(userInfo.matchMode == MatchType.Type_DailyTrade_Match){
+                for(var j=0;null!=this.selfOperations&&j<this.selfOperations.length;j++){
+                    if(lastCandleIndex==this.selfOperations[j]){
+                        return false;
+                    }
+                }
+                this.selfOperations.push(lastCandleIndex);
                 this.selfOperations.push(lastCandleIndex);
                 this.refreshScores(lastCandleIndex);
                 this.getKlineLayerMain().setUpArrowIndex(lastCandleIndex, (this.selfOperations.length % 2 == 1));
                 gSocketConn.Sell(lastCandleIndex - 1 > 0 ? lastCandleIndex - 1 : 0);
             }else{
+                for(var j=0;null!=this.selfOperations&&j<this.selfOperations.length;j++){
+                    if(lastCandleIndex==this.selfOperations[j]){
+                        return false;
+                    }
+                }
+                this.selfOperations.push(lastCandleIndex);
                 if (gSocketConn != null && gSocketConn != undefined&&this.matchRunFlag) {
                     gSocketConn.Sell(lastCandleIndex - 121 > 0 ? lastCandleIndex - 121 : 0);
                 }

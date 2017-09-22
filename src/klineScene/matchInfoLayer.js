@@ -859,15 +859,19 @@ var MatchInfoLayer = cc.Layer.extend({
 			}
 			else
 			{
-				klineScene.buyClick();
-				if(this.statusFlag==0)
-				{
-					this.setButtonsToBuyPosition();
-				}
-				else
-				{
-					this.setButtonsToNoPosition();
-				}
+				if(klineScene.buyClick()==false){
+
+					return;
+				}else{
+                    if(this.statusFlag==0)
+                    {
+                        this.setButtonsToBuyPosition();
+                    }
+                    else
+                    {
+                        this.setButtonsToNoPosition();
+                    }
+				};
 
 			}
 		}
@@ -901,15 +905,19 @@ var MatchInfoLayer = cc.Layer.extend({
 			}
 			else
 			{
-				klineScene.sellClick();
-				if(this.statusFlag==0)
-				{
-					this.setButtonsToSellPosition();
-				}
-				else
-				{
-					this.setButtonsToNoPosition();
-				}
+                if(klineScene.sellClick()==false){
+
+                    return;
+                }else{
+                    if(this.statusFlag==0)
+                    {
+                        this.setButtonsToSellPosition();
+                    }
+                    else
+                    {
+                        this.setButtonsToNoPosition();
+                    }
+                }
 			}
 		}
 
