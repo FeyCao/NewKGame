@@ -289,7 +289,8 @@ message FriendMatch_Invite{
    optional string inviterPic=3;//邀请人头像
    optional string inviteCode=4;
    required bool otherPlatform = 5;//是否是第三方平台
-    optional string  inviteeUid=6;//被邀请邀请人uid
+    optional string  inviteeUid=6;//被邀请人uid
+	optional string inviterUid=7;//邀请人uid
 }
 //被邀请人告诉服务器是否同意邀请人的邀请
 //服务器告诉邀请人来自被邀请人的拒绝信息

@@ -706,7 +706,7 @@ protoSocketConn.prototype.ansInviteFriend=function(boolean,inviteInfo)//回复�
     var messageSend = new FriendMatch_Answer();
     messageSend.setAgree(boolean);
     messageSend.setInviteCode(inviteInfo.inviteCode);
-    messageSend.setInviterUid(userInfo.userId);
+    messageSend.setInviterUid(inviteInfo.inviterUid+'');
     message.setMessageType(MessageType.Type_FriendMatch_Answer);
     message.setFriendMatchAnswer(messageSend);
     var arrayBuf =  message.toArrayBuffer();
