@@ -337,7 +337,11 @@ SceneBase = cc.Scene.extend(
 		cc.log("login sceneBase::sys.os=="+sys.os);
 
 		var url = "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";
-		window.open(url);
+        if(sys.isMobile!=false){
+            window.location.href = url;
+        }else{
+            window.open(url);
+        }
 		// if(sys.os===sys.OS_WINDOWS||sys.os===sys.OS_OSX) {//浏览器模式
         //
 		// }

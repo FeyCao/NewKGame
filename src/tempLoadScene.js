@@ -47,6 +47,8 @@ var TempLoadScene = SceneBase.extend(
         userInfo.deviceId=getQueryStringByName("deviceId");
         userInfo.source=getQueryStringByName("source");
         userInfo.token=getQueryStringByName("token");
+        userInfo.inviterUid=getQueryStringByName("inviterUid");
+        userInfo.inviterCode=getQueryStringByName("inviteCode");
 
         cc.log("userId="+userInfo.userId+"deviceId="+userInfo.deviceId+"source="+userInfo.source);
 
@@ -276,7 +278,7 @@ var TempLoadScene = SceneBase.extend(
 			userInfo.deviceId=hallMessage.uid;;
 
 			//
-			if(userInfo.source!='DHJK'&&userInfo.source!='ZKQQ'){//
+			if(userInfo.source==null){//
 				cc.log("userInfo.source before=="+userInfo.source);
 				userInfo.source='TEST';
 			}

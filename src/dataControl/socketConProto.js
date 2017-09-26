@@ -54,8 +54,8 @@ protoSocketConn.prototype.Connect=function(url)
                 var arrayBuf =  message.toArrayBuffer();
                 arrayBuf.valueOf();
                 ws.send(arrayBuf);
-                console.info("心跳请求：");
-                console.info(message);
+                // console.info("心跳请求：");
+                // console.info(message);
 
             }
             self.onmessageevent[i](MessageInfo);
@@ -217,6 +217,20 @@ protoSocketConn.prototype.SendBeginMessage=function()
     var  message = new Message();
 //    var hall_Info = ;
     message.setMessageType(MessageType.Type_Start_Match);
+//        message.setMessageType(MessageType.Type_Hall_Info);
+    var arrayBuf =  message.toArrayBuffer();
+    arrayBuf.valueOf();
+    ws.send(arrayBuf);
+    console.info("比赛开始请求：");
+    console.info(message);
+    // ws.send("BEGIN||");
+}
+protoSocketConn.prototype.SendBeginFriendMessage=function()
+{
+    cc.log("protoSocketConn send SendBeginFriendmsg= BEGIN||");
+    var  message = new Message();
+//    var hall_Info = ;
+    message.setMessageType(MessageType.Type_Entry_Game_In_Home);
 //        message.setMessageType(MessageType.Type_Hall_Info);
     var arrayBuf =  message.toArrayBuffer();
     arrayBuf.valueOf();
@@ -707,6 +721,25 @@ protoSocketConn.prototype.ansInviteFriend=function(boolean,inviteInfo)//回复�
     messageSend.setAgree(boolean);
     messageSend.setInviteCode(inviteInfo.inviteCode);
     messageSend.setInviterUid(inviteInfo.inviterUid+'');
+    message.setMessageType(MessageType.Type_FriendMatch_Answer);
+    message.setFriendMatchAnswer(messageSend);
+    var arrayBuf =  message.toArrayBuffer();
+    arrayBuf.valueOf();
+    ws.send(arrayBuf);
+    console.info("发送回答要战信息请求：");
+    console.info(message);
+    // ws.send(toolMsg);
+}
+
+protoSocketConn.prototype.ansRoomFriend=function(boolean,inviterUid,inviteCode)//回复邀请好友战ANSINVITE｜boolean#code｜
+{
+    cc.log("send ansRoomFriend==ANSINVITE|"+boolean+"#"+inviteInfo.code+"|"+inviteInfo.inviterName+"|");
+    // ws.send("ANSINVITE|"+boolean+"#"+code+"|");
+    var  message = new Message();
+    var messageSend = new FriendMatch_Answer();
+    messageSend.setAgree(boolean);
+    messageSend.setInviteCode(inviteCode);
+    messageSend.setInviterUid(inviterUid+'');
     message.setMessageType(MessageType.Type_FriendMatch_Answer);
     message.setFriendMatchAnswer(messageSend);
     var arrayBuf =  message.toArrayBuffer();

@@ -248,8 +248,9 @@ var MainMenuScene =SceneBase.extend(
 
         // gSocketConn.SendEHMessage(userInfo.userId,userInfo.deviceId);
         // codeDataList.clearCodeData();
-        this.setInfoBySource(userInfo.source);
         this.openSceneType();
+        this.setInfoBySource(userInfo.source);
+
         var loadTime=new Date().getTime();
         cc.log("MainMenuScene onEnter end");
 	},
@@ -265,15 +266,17 @@ var MainMenuScene =SceneBase.extend(
                 // this.paimingButton.setEnabled(false);
                 // this.zhanjiButton.setEnabled(false);
             }
-            // case "ZKQQ":{
-            //     this.fourthMode.setEnabled(false);
-            //     this.thirdMode.setEnabled(false);
-            //     this.paimingButton.setEnabled(false);
-            //     this.zhanjiButton.setEnabled(false);
-            //     // this.thirdMode.set;
-            //     // this.paimingButton.setEnabled(false);
-            //     // this.zhanjiButton.setEnabled(false);
-            // }
+            case "QQ":{
+
+            }
+            case "Wechat":{
+                userInfo.inviteFlag = true;
+                gSocketConn.ansRoomFriend(true,userInfo.inviterUid,userInfo.inviterCode);//默认同意邀请
+                userInfo.source = "ANSERED";
+                userInfo.inviterUid=null;
+                userInfo.inviterCode=null;
+                this.openFriendLayer();
+            }
             case 2:
             default:{
                 cc.log("setInfoBySource source=="+source);
@@ -483,7 +486,7 @@ var MainMenuScene =SceneBase.extend(
         }
         cc.log("zhanji...end");
 
-        // if(sys.isMobile==false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
+        // if(sys.isMobile!=false&&sys.isNative==false&&userInfo.operationType==2) {//浏览器模式
         //     this.showLoginView();
         //
         // }else{
@@ -510,21 +513,6 @@ var MainMenuScene =SceneBase.extend(
 
 	config:function()
 	{
-        // var musicFile = "res/sound/home_bg.mp3";
-        // cc.audioEngine.playMusic(musicFile,true);
-
-        // var self = this;
-        // if(this.invitedViewLayer==null){
-        //     this.invitedViewLayer=new InvitedViewLayer();
-        //     this.invitedViewLayer.setVisible(false);
-        //     this.invitedViewLayer.setPosition(0,0);
-        //     this.otherMessageTipLayer.addChild(this.invitedViewLayer, 1,this.invitedViewLayer.getTag());
-        //     this.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
-        // }
-        //
-        // this.invitedViewLayer.showLayer();
-        // this.pauseLowerLayer();
-
         var self = this;
         if(this.controlViewLayer==null){
             this.controlViewLayer=new ControlViewLayer();
@@ -548,6 +536,7 @@ var MainMenuScene =SceneBase.extend(
         //关闭应邀请求界面
         if(this.addFriendViewLayer!=null){
             this.addFriendViewLayer.hideLayer();
+            this.addFriendViewLayer =null;
         }
         //关闭控制界面
         if(this.controlViewLayer!=null){
@@ -577,15 +566,25 @@ var MainMenuScene =SceneBase.extend(
 
         this.resumeLowerLayer();
     },
-    addViewLayer_Close:function()
+    openFriendLayer:function()
     {
-
-        //关闭应邀请求界面
-        if(this.addFriendViewLayer!=null){
-            this.addFriendViewLayer.hideLayer();
+        var self =this;
+        this.popViewLayer_Close();//关闭所有弹出的界面
+        if(true!=userInfo.inviteFlag){return;}
+        if(self.friendLayer==null){
+            self.friendLayer=new FriendViewLayer();
+            self.friendLayer.setVisible(false);
+            self.friendLayer.setAnchorPoint(0,0);
+            self.friendLayer.setPosition(0,0);
+            self.otherMessageTipLayer.addChild(self.friendLayer, 1,self.friendLayer.getTag());
+            self.friendLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
         }
-        this.addFriendViewLayer =null;
-        this.resumeLowerLayer();
+        // LISTFRIEND||
+        self.friendLayer.showLayer();
+        self.pauseLowerLayer();
+        if(self.friendLayer!=null){
+            self.friendLayer.refreshFriendViewLayer();
+        }
     },
     // helpViewLayer_Close:function()
     // {
@@ -954,7 +953,7 @@ var MainMenuScene =SceneBase.extend(
 		var self=gMainMenuScene;
         self.stopProgress();
 		// var packet=Packet.prototype.Parse(message);
-        cc.log("messageCallBack mainScene message callback message=="+message.messageType);
+        cc.log("messageCallBack mainScene message callback message=="+message);
 		if(message==null) return;
 // WARN_FOR_REMOTE_LOGIN(-400,"您的账号已在其他地方登陆，请确保密码安全"),
 //     WARN_FOR_GET_HISDATA(-401, "获取历史行情失败，请重新再试"),
@@ -1300,7 +1299,9 @@ var MainMenuScene =SceneBase.extend(
 
             case  MessageType.Type_AddFriend:
             {
-                cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+                // cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+
+                userInfo.inviteFlag = false;
                 userInfo.friendListData = [];
                 var data=message.addFriend;
                 userInfo.friendAddData = data;
@@ -1367,6 +1368,7 @@ var MainMenuScene =SceneBase.extend(
            case  MessageType.Type_FriendList:
             {
                 cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+                userInfo.inviteFlag = false;
                 userInfo.friendListData = [];
                 var data=message.friendList;
                 userInfo.friendListData  = data;
@@ -1408,28 +1410,16 @@ var MainMenuScene =SceneBase.extend(
                 //     });
                 // }
 
-                if(self.friendLayer==null){
-                    self.friendLayer=new FriendViewLayer();
-                    self.friendLayer.setVisible(false);
-                    self.friendLayer.setAnchorPoint(0,0);
-                    self.friendLayer.setPosition(0,0);
-                    self.otherMessageTipLayer.addChild(self.friendLayer, 1,self.friendLayer.getTag());
-                    self.friendLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
-                }
-
-                // LISTFRIEND||
-                self.friendLayer.showLayer();
-                self.pauseLowerLayer();
-                if(self.friendLayer!=null){
-                    self.friendLayer.refreshFriendViewLayer();
-                }
+                userInfo.inviteFlag = true;
+                self.openFriendLayer();
 
                 break;
             }
 
             case  MessageType.Type_FriendList_Change:
             {
-                cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+                // cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+                userInfo.inviteFlag = false;
                 var data=message.friendListChange;
                 var friendName =data["uid"];
                 var status = data["status"];
@@ -1439,25 +1429,26 @@ var MainMenuScene =SceneBase.extend(
                         userInfo.friendListData[i]["status"]=status;
                     }
                 }
-
-                userInfo.friendListData.sort(function (a,b) {
-                    if(a["status"]=="在线"){
-                        return -1;
-                    }else if(b["status"]=="在线"){
-                        return 1;
-                    }else if(a["status"]=="组队中"){
-                        return -1;
-                    }else if(b["status"]=="组队中"){
-                        return 1;
-                    }else if(a["status"]=="比赛中"){
-                        return -1;
-                    }else if(b["status"]=="比赛中"){
-                        return 1;
-                    }else {
-                        return -1;
-                    }
-                });
-                cc.log(userInfo.friendListData);
+                if(null!=userInfo.friendListData&&userInfo.friendListData.length>1){
+                    userInfo.friendListData.sort(function (a,b) {
+                        if(a["status"]=="在线"){
+                            return -1;
+                        }else if(b["status"]=="在线"){
+                            return 1;
+                        }else if(a["status"]=="组队中"){
+                            return -1;
+                        }else if(b["status"]=="组队中"){
+                            return 1;
+                        }else if(a["status"]=="比赛中"){
+                            return -1;
+                        }else if(b["status"]=="比赛中"){
+                            return 1;
+                        }else {
+                            return -1;
+                        }
+                    });
+                }
+                cc.log("好友列表"+userInfo.friendListData);
                 // cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
 
                 if(self.friendLayer!=null){
@@ -1468,13 +1459,8 @@ var MainMenuScene =SceneBase.extend(
 
             case MessageType.Type_FriendMatch_Invit:
             {
-                // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
-                /*message FriendMatch_Invite{
-                required string inviteeName=1;//被邀请人
-                optional string inviterName=2;//邀请人
-                optional string inviterPic=3;//邀请人头像
-                optional string inviteCode=4;
-            }*/
+
+                userInfo.inviteFlag = false;
                 var data = message.friendMatchInvite;
                 // var inviteInfo = new FriendMatch_Invite();
                 inviteInfo.inviteCode = data["inviteCode"];
@@ -1488,15 +1474,25 @@ var MainMenuScene =SceneBase.extend(
                 userInfo.matchMode = MatchType.Type_Friend_Match;
 
                 if(null==inviteInfo.inviteeName){//邀请第三方平台
+                    var content = "点击链接同意比赛";
+                    var url = "index.html?" + "tittle=room&&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
+                    cc.log("url");
+                    // window.location.href = url;
+                    if(sys.isMobile!=false){
+                        window.location.href = url;
+                    }else{
+                        window.open(url);
+                    }
 
-                    cc.log("invite.html");
+                    userInfo.inviteType=null;
                 }else{
                     if(self.invitedViewLayer==null){
                         self.invitedViewLayer=new InvitedViewLayer();
                         self.invitedViewLayer.setVisible(false);
                         self.invitedViewLayer.setPosition(0,0);
                         self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
-                        self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+                        // self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+                        self.invitedViewLayer.closeCallBackFunction=function(){self.openFriendLayer()};
                     }
 
                     self.invitedViewLayer.showLayer();
@@ -1510,6 +1506,13 @@ var MainMenuScene =SceneBase.extend(
                 break;
 
             }
+            case MessageType.Type_Player_In_Home:{
+                cc.log("MessageType.Type_Player_In_Home=="+message+"=====");
+                var playerInHome = message.playerInHome;
+                self.friendLayer.refreshInviteFriend(playerInHome);
+                // if()
+                break;
+            }
              case MessageType.Type_FriendMatch_Answer:
             {
                 // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
@@ -1519,6 +1522,7 @@ var MainMenuScene =SceneBase.extend(
                  optional string answerPic=3;//回答者头像
                  optional string inviteCode=4;
                  }*/
+                userInfo.inviteFlag = false;
                 var data = message.friendMatchAnswer;
                 var name = data["answerName"];
                 if(self.friendLayer!=null&&!data["agree"]){
@@ -1898,7 +1902,7 @@ var MainMenuScene =SceneBase.extend(
             self.addFriendViewLayer.setVisible(false);
             self.addFriendViewLayer.setPosition(0,0);
             self.otherMessageTipLayer.addChild(self.addFriendViewLayer,1,self.addFriendViewLayer.getTag());
-            self.addFriendViewLayer.closeCallBackFunction=function(){self.addViewLayer_Close()};
+            self.addFriendViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
         }
         self.addFriendViewLayer.showLayer();
         self.pauseLowerLayer();

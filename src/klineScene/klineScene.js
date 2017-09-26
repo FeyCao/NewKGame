@@ -777,6 +777,167 @@ KLineScene = SceneBase.extend(
                     break;
                 }
 
+                case  MessageType.Type_FriendList:
+                {
+                    cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+                    userInfo.friendListData = [];
+                    var data=message.friendList;
+                    userInfo.friendListData  = data;
+
+                    userInfo.friendListData.sort(function (a,b) {
+                        if(a["status"]=="在线"){
+                            return -1;
+                        }else if(b["status"]=="在线"){
+                            return 1;
+                        }else if(a["status"]=="组队中"){
+                            return -1;
+                        }else if(b["status"]=="组队中"){
+                            return 1;
+                        }else if(a["status"]=="比赛中"){
+                            return -1;
+                        }else if(b["status"]=="比赛中"){
+                            return 1;
+                        }else {
+                            // console.log(a["userName"].charCodeAt(0));
+                            // console.log(b["userName"].charCodeAt(0));
+                            return a["userName"].charCodeAt(0)-b["userName"].charCodeAt(0);
+                        }
+                    });
+                    cc.log("after sort.....");
+                    cc.log(userInfo.friendListData);
+                    if(self.friendLayer==null){
+                        self.friendLayer=new FriendViewLayer();
+                        self.friendLayer.setVisible(false);
+                        self.friendLayer.setAnchorPoint(0,0);
+                        self.friendLayer.setPosition(0,0);
+                        self.otherMessageTipLayer.addChild(self.friendLayer, 1,self.friendLayer.getTag());
+                        self.friendLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+                    }
+                    // LISTFRIEND||
+                    self.friendLayer.showLayer();
+                    self.pauseLowerLayer();
+                    if(self.friendLayer!=null){
+                        self.friendLayer.refreshFriendViewLayer();
+                    }
+
+                    // userInfo.inviteFlag = true;
+                    // self.openFriendLayer();
+
+                    break;
+                }
+
+                case  MessageType.Type_FriendList_Change:
+                {
+                    // cc.log("messageCallBack.mainScene.packet.msgType="+message.messageType+"=====");
+                    var data=message.friendListChange;
+                    var friendName =data["uid"];
+                    var status = data["status"];
+                    for(var i=0;userInfo.friendListData!=null&&i<userInfo.friendListData.length;i++)
+                    {
+                        if(userInfo.friendListData[i]["uid"]==friendName){
+                            userInfo.friendListData[i]["status"]=status;
+                        }
+                    }
+                    if(null!=userInfo.friendListData&&userInfo.friendListData.length>1){
+                        userInfo.friendListData.sort(function (a,b) {
+                            if(a["status"]=="在线"){
+                                return -1;
+                            }else if(b["status"]=="在线"){
+                                return 1;
+                            }else if(a["status"]=="组队中"){
+                                return -1;
+                            }else if(b["status"]=="组队中"){
+                                return 1;
+                            }else if(a["status"]=="比赛中"){
+                                return -1;
+                            }else if(b["status"]=="比赛中"){
+                                return 1;
+                            }else {
+                                return -1;
+                            }
+                        });
+                    }
+                    cc.log("好友列表"+userInfo.friendListData);
+                    // cc.log("userInfo.friendListData[1][headPicture]=="+userInfo.friendListData[1]["headPicture"]);
+
+                    if(self.friendLayer!=null){
+                        self.friendLayer.refreshFriendViewLayer();
+                    }
+                    break;
+                }
+
+                case MessageType.Type_FriendMatch_Invit:
+                {
+
+                    var data = message.friendMatchInvite;
+                    // var inviteInfo = new FriendMatch_Invite();
+                    inviteInfo.inviteCode = data["inviteCode"];
+                    inviteInfo.inviterName = data["inviterName"];
+                    inviteInfo.inviteeName = data["inviteeName"];
+                    inviteInfo.inviterPic = data["inviterPic"];
+                    inviteInfo.inviterUid = data["inviterUid"];
+                    inviteInfo.inviteeUid = data["inviteeUid"];
+                    inviteInfo.otherPlatform= data["otherPlatform"];
+                    // userInfo.matchMode = 4;
+                    userInfo.matchMode = MatchType.Type_Friend_Match;
+
+                    if(null==inviteInfo.inviteeName){//邀请第三方平台
+                        var content = "点击同意邀请的比赛";
+                        var url = "index.html?" + "tittle=room&&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
+                        cc.log("url");
+                        if(sys.isMobile!=false){
+                            window.location.href = url;
+                        }else{
+                            window.open(url);
+                        }
+                        userInfo.inviteType=null;
+                    }else{
+                        if(self.invitedViewLayer==null){
+                            self.invitedViewLayer=new InvitedViewLayer();
+                            self.invitedViewLayer.setVisible(false);
+                            self.invitedViewLayer.setPosition(0,0);
+                            self.otherMessageTipLayer.addChild(self.invitedViewLayer, 1,self.invitedViewLayer.getTag());
+                            // self.invitedViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+                            self.invitedViewLayer.closeCallBackFunction=function(){self.openFriendLayer()};
+                        }
+
+                        self.invitedViewLayer.showLayer();
+                        self.pauseLowerLayer();
+                    }
+                    // var self = this;
+
+                    // if(self.friendLayer!=null){
+                    //     self.friendLayer.refreshFriendViewLayer();
+                    // }
+                    break;
+
+                }
+                case MessageType.Type_Player_In_Home:{
+                    cc.log("MessageType.Type_Player_In_Home=="+message+"=====");
+                    var playerInHome = message.playerInHome;
+                    self.friendLayer.refreshInviteFriend(playerInHome);
+                    // if()
+                    break;
+                }
+                case MessageType.Type_FriendMatch_Answer:
+                {
+                    // cc.log("messageCallBack.mainScene.packet.msgType="+packet.msgType+"=====");
+                    /*message FriendMatch_Answer{
+                     required bool agree=1;//同意
+                     optional string answerName=2;//回答者
+                     optional string answerPic=3;//回答者头像
+                     optional string inviteCode=4;
+                     }*/
+                    var data = message.friendMatchAnswer;
+                    var name = data["answerName"];
+                    if(self.friendLayer!=null&&!data["agree"]){
+                        self.friendLayer.showMessageInfo(name+"拒绝了你的邀请！");
+                    }else{
+                        ;
+                    }
+                    break;
+
+                }
                 // case "Matching"://人人人对战信息Matching|"playerList":["http://7xpfdl.com1.z0.glb.clouddn.com/M1 E__1480588002710__166279_3596","http://ohfw64y24.bkt.clouddn.com/54"]|###
                 // {
                 //     cc.log("gKLineScene 人人机对战信息");
@@ -1420,8 +1581,11 @@ KLineScene = SceneBase.extend(
             cc.log(url);
 //		gSocketConn.ShareMessage(userID,matchID);
 //
-            window.open(url);
-            // window.location.href=url;
+            if(sys.isMobile!=false){
+                window.location.href = url;
+            }else{
+                window.open(url);
+            }
 
         },
 
@@ -1429,7 +1593,11 @@ KLineScene = SceneBase.extend(
             var url = "index.html?" + "source=SWEB";
             cc.log(url);
 
-            window.open(url);
+            if(sys.isMobile!=false){
+                window.location.href = url;
+            }else{
+                window.open(url);
+            }
             //window.location.href=url;
         },
 
@@ -1454,9 +1622,11 @@ KLineScene = SceneBase.extend(
 //		var url = "WebSocketClient.html?"+"userId="+userId+"&matchId="+matchId;取得收益
             cc.log(url);
 //		gSocketConn.ShareMessage(userID,matchID);
-//
-// 		window.open(url);
-            window.location.href = url;
+            if(sys.isMobile!=false){
+                window.location.href = url;
+            }else{
+                window.open(url);
+            }
         },
 
         beginReplayKLineScene: function () {
@@ -1642,6 +1812,7 @@ KLineScene = SceneBase.extend(
             cc.log("dataBusiness=" + businessData);
             this.buyInfo = [];
             for (var i = 0; businessData != undefined && i < businessData.length; i++) {
+                // if()
                 this.buyInfo.push(businessData[i]);
             }
             if (data["score"] != undefined) {
@@ -1744,10 +1915,10 @@ KLineScene = SceneBase.extend(
                 this.buyScore = data["score"];
             }
 
-            if (userInfo.playerListData != null) {
-                this.buyInfo = userInfo.playerListData[0]["operationIndex"];
-                userInfo.headSprite = userInfo.playerListData[0]["headPicture"];
-            }
+            // if (userInfo.playerListData != null) {
+            //     this.buyInfo = userInfo.playerListData[0]["operationIndex"];
+            //     userInfo.headSprite = userInfo.playerListData[0]["headPicture"];
+            // }
             if (null != userInfo.playerListData[0] && null != userInfo.playerListData[0].codeScore) {
                 userInfo.codeMainList = userInfo.playerListData[0].codeScore;
                 userInfo.currentCode =  userInfo.playerListData[0].currentCode;
@@ -1809,6 +1980,19 @@ KLineScene = SceneBase.extend(
             //         cc.log("PlayerInfoLayer setPlayerInfo userInfo.matchMode=", userInfo.matchMode);
             //     }
             // }
+            //把该用户信息排在第一位
+            for (var i = userInfo.playerListData.length - 1; i > 0; i--) {
+                for (var j = i; j > 0; j--) {
+                    cc.log("playerData.userName=" + userInfo.playerListData[j]["userName"] + "userInfo.nickName" + userInfo.nickName);
+                    if (userInfo.playerListData[j]["userName"] == userInfo.nickName) {
+                        this.buyInfo = userInfo.playerListData[j]["operationIndex"];
+                        userInfo.headSprite = userInfo.playerListData[j]["headPicture"];
+                        var temp = userInfo.playerListData[j];
+                        userInfo.playerListData[j] = userInfo.playerListData[j - 1];
+                        userInfo.playerListData[j - 1] = temp;
+                    }
+                }
+            }
             switch (userInfo.matchMode) {
                 case MatchType.Type_Practice_MC: {//多品种
                     // if(null==self.klineDataMc){
@@ -1853,17 +2037,7 @@ KLineScene = SceneBase.extend(
                 case MatchType.Type_Tool_Match://道具匹配
                 case MatchType.Type_Friend_Match://好友匹配
                 case MatchType.Type_PlainMultiplayer_Match: {
-                    //把该用户信息排在第一位
-                    for (var i = userInfo.playerListData.length - 1; i > 0; i--) {
-                        for (var j = i; j > 0; j--) {
-                            cc.log("playerData.userName=" + userInfo.playerListData[j]["userName"] + "userInfo.nickName" + userInfo.nickName);
-                            if (userInfo.playerListData[j]["userName"] == userInfo.nickName) {
-                                var temp = userInfo.playerListData[j];
-                                userInfo.playerListData[j] = userInfo.playerListData[j - 1];
-                                userInfo.playerListData[j - 1] = temp;
-                            }
-                        }
-                    }
+
                     // self.klineData = [];
                     // for (var i = 0; i < dayInfolengths; i++) {
                     //     var dailyData = klinePbData[i];
@@ -3180,7 +3354,11 @@ KLineScene = SceneBase.extend(
                 this.getVolumnTechLayerMain().setPosition(posEnd2);
             }
 
-
+            if (self.matchInfoLayer != null) {//advanceToMainKLine_Record: function ()//观看记录
+                if (MatchType.Type_Practice_MC == userInfo.matchMode) {
+                    self.matchInfoLayer.initTradeControlAreaByData();
+                }
+            }
             this.matchInfoLayer.playCheckChanged(playFlag);
         },
 
@@ -3582,6 +3760,10 @@ KLineScene = SceneBase.extend(
             //关闭preView界面
             if (this.preMatchView != null) {
                 this.preMatchView.hideLayer();
+            }
+            //关闭preView界面
+            if (this.matchEndInfoLayer != null) {
+                this.matchEndInfoLayer.hideLayer();
             }
             this.resumeLowerLayer();
         },

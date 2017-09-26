@@ -9,7 +9,7 @@
     "engineDir":"frameworks/cocos2d-html5",
     "CANDAL_DRAW_INTERVAL":100,
     "testFlag" : false,
-    "testMyFlag" : true,
+    "testMyFlag" : false,
     "enableRetina":true,
     "serverMyURL":"192.168.16.145:8888/Kgamefeng/websocket",
     "serverTestURL":"192.168.16.145:8888/Kgamefeng/websocket",

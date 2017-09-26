@@ -288,7 +288,8 @@ var userInfo ={
     source:null,
     token:"",
     operationType:0,//1为登录，2为快速登录
-
+    inviterUid:null,
+    inviterCode:null,
     //
     nickName:"无名的游客",
     recordName:null,

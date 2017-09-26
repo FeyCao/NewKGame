@@ -170,6 +170,7 @@ var InvitedViewLayer = cc.Layer.extend({
     rejectFriend:function () {
         this.agreeButton.unselected();
         this.rejectButton.selected();
+        userInfo.inviteFlag = false;
         gSocketConn.ansInviteFriend(false,inviteInfo);
         this.toMainScene();
 
@@ -178,6 +179,7 @@ var InvitedViewLayer = cc.Layer.extend({
     agreeFriend:function () {
         this.agreeButton.selected();
         this.rejectButton.unselected();
+        userInfo.inviteFlag = true;
         gSocketConn.ansInviteFriend(true,inviteInfo);
         this.toMainScene();
     },

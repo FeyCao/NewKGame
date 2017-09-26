@@ -390,10 +390,6 @@ var PlayerInfoLayer= cc.Node.extend({
 		var self = this;
 		self.setPlayerInfo();
 		var strName = cutstr(userInfo.nickName,11);
-		if(this.selfNameLabel!=null){
-			this.selfNameLabel.setString(strName);
-            this.selfNameLabel.setVisible(true);
-		}
 
 		if(this.headSprite==null){
             this.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
@@ -506,6 +502,11 @@ var PlayerInfoLayer= cc.Node.extend({
 							// this.playerHead_Sprite[i].setVisible();
 							self.playerHead_Select[i].setVisible(selectflag);
 							// cc.log(self.playerHead_Select[i].getPosition(),userInfo.recordName);
+						}else{
+                            if(this.selfNameLabel!=null){
+                                this.selfNameLabel.setString(strName);
+                                this.selfNameLabel.setVisible(true);
+                            }
 						}
 
 					}

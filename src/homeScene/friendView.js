@@ -440,22 +440,26 @@ var FriendViewLayer = cc.Layer.extend({
 
         if(userInfo.source!="DHJK"){
 
+            this.btnBegin.setVisible(false);
             this.leftDownBg.setVisible(false);
             this.btnInviteQQ.setVisible(false);
             this.btnInviteWechat.setVisible(false);
         }
-        this.btnBegin.setVisible(false);
-        this.leftDownBg.setVisible(false);
-        this.btnInviteQQ.setVisible(false);
-        this.btnInviteWechat.setVisible(false);
+        // this.btnBegin.setVisible(false);
+        // this.leftDownBg.setVisible(false);
+        // this.btnInviteQQ.setVisible(false);
+        // this.btnInviteWechat.setVisible(false);
         var posD = 400;
         this.selfBg = new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);
         this.selfBg.setPosition(270,posD);
         this.backgroundSprite.addChild(this.selfBg,2);
 
-        this.opponentBg = new cc.Sprite(res.BG_FRIEND_HEAD_WAIT_png);
+        this.opponentBg = new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);
         this.opponentBg.setPosition(660,posD);
         this.backgroundSprite.addChild(this.opponentBg,2);
+        this.opponentHead = new cc.Sprite(res.BG_FRIEND_HEAD_WAIT_png);
+        this.opponentHead.setPosition(660,posD);
+        this.backgroundSprite.addChild(this.opponentHead,1);
 
         this.selfNameLabel = cc.LabelTTF.create(userInfo.nickName, "Arial", fontSize);
         this.selfNameLabel.setPosition(270,posD-100);
@@ -464,6 +468,7 @@ var FriendViewLayer = cc.Layer.extend({
 
         this.opponentNameLabel = cc.LabelTTF.create("-- -- -- --", "Arial", fontSize);
         this.opponentNameLabel.setPosition(660,posD-100);
+        this.opponentNameLabel.enableStroke(ShadowColor, 2);
         this.backgroundSprite.addChild(this.opponentNameLabel,2);
 
         if(userInfo.headSprite!=null)
@@ -754,6 +759,8 @@ var FriendViewLayer = cc.Layer.extend({
 
     beginMatch:function () {
         cc.log("beginMatch:function");
+        gSocketConn.SendBeginFriendMessage();
+
     },
     inviteQQMatch:function () {
         userInfo.inviteType = "QQ";//QQ/Wechat
@@ -980,7 +987,7 @@ var FriendViewLayer = cc.Layer.extend({
                 if(this.infoLabel==null){
                     // this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n请到东航金融“账户”的\n“好友列表”里添加。', res.FONT_TYPE, 24,cc.size(35*10,300));
                     this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n', res.FONT_TYPE, 24,cc.size(35*10,100));
-                    this.infoLabel.setPosition(1100,360);
+                    // this.infoLabel.setPosition(1100,360);
                     this.infoLabel.setPosition(1100,400);
                     // this.infoLabel.enableStroke(ShadowColor, 2);
                     this.infoLabel.setLineHeight(40);
@@ -1007,7 +1014,8 @@ var FriendViewLayer = cc.Layer.extend({
             }
             if(this.infoLabel==null){
                 this.infoLabel =new cc.LabelTTF('抱歉，您目前还没有好友\n', res.FONT_TYPE, 24,cc.size(35*10,100));
-                this.infoLabel.setPosition(1100,360);
+                // this.infoLabel.setPosition(1100,360);
+                this.infoLabel.setPosition(1100,400);
                 // this.infoLabel.enableStroke(ShadowColor, 2);
                 this.infoLabel.setLineHeight(40);
                 this.infoLabel.setAnchorPoint(0.5,1);
@@ -1024,6 +1032,56 @@ var FriendViewLayer = cc.Layer.extend({
             this.infoBg.setVisible(true);
             this.infoLabel.setVisible(true);
         }
+    },
+    refreshInviteFriend:function(players) {
+        var self =this;
+        var owenerFlag = false;
+        var opponentPlayer = null;
+        for(var j=0;null!=players&&j<players.length&&null!=players[j];j++){
+            if(userInfo.nickName==players[j].userName){
+                owenerFlag = players[j].owener;
+            }else{
+                opponentPlayer = players[j];
+            }
+        }
+
+        if(null==opponentPlayer){
+
+            self.opponentNameLabel.setString("-- -- -- --");
+            self.opponentHead.initWithFile(res.BG_FRIEND_HEAD_WAIT_png);
+        }
+        if(null!=opponentPlayer&&null!=opponentPlayer.headPicture)
+        {
+            var url = opponentPlayer.headPicture;
+            cc.loader.loadImg(url, {isCrossOrigin : false }, function(err,img){
+                if(err){
+                    cc.log(err);
+                    cc.log("fail loadImg="+url); // self.addChild(logo);
+                }
+                if(img)
+                {
+                    var texture2d = new cc.Texture2D();
+                    texture2d.initWithElement(img);
+                    texture2d.handleLoadedTexture();
+                   self.opponentHead.initWithTexture(texture2d);
+
+                    var size = self.opponentHead.getContentSize();
+                    self.opponentHead.setScale(130/size.width,130/size.height);
+                    self.opponentHead.setPosition(self.opponentBg.getPosition());
+                    cc.log("refreshInviteFriend success loadImg="+url); // self.addChild(logo);
+                }
+            });
+        }
+        if(null!=opponentPlayer&&null!=opponentPlayer.userName&&null!=self.opponentNameLabel){
+            self.opponentNameLabel.setString(opponentPlayer.userName);
+        }
+
+        if(null!=players&&players.length>1&&owenerFlag){
+            this.btnBegin.setEnabled(true);
+        }else{
+            this.btnBegin.setEnabled(false);
+        }
+        cc.log("refreshInviteFriend");
     }
 });
 
