@@ -707,9 +707,45 @@ KLineScene = SceneBase.extend(
             if (message == null) return;
             if (message.messageType == MessageType.Type_Warn) {
                 cc.log("login scene message callback warnInfo msgType=" + message.messageType);
-                self.showErrorBox("登录失败:" + message.warn.warnInfo, function () {
-                    self.errorBoxClosed();
-                });
+                switch (message.warn.code){
+                    case -400:{
+                        self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                        break;
+                    }
+                    case -401:{
+                        self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                        break;
+                    }
+                    case -402:{
+                        self.showMessageBox(message.warn.warnInfo,function(){self.messageBoxClosed();});
+                        break;
+                    }
+                    case -403:{
+                        self.showMessageBox(message.warn.warnInfo,function(){self.messageBoxClosed();});
+                        break;
+                    }
+                    case -404:{
+                        self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                        break;
+                    }
+                    case -405:{
+                        self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                        break;
+                    }
+                    case -4://未正常开始比赛
+                    // case -4:
+                    case -3:{//错误的买卖操作
+                        break;
+                    }
+                    default:{
+                        cc.log("MainScene messageCallBack default message.warn.code="+message.warn.code);
+                        self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                        break;
+                    }
+                }
+                // self.showErrorBox("" + message.warn.warnInfo, function () {
+                //     self.errorBoxClosed();
+                // });
 
             }
             switch (message.messageType) {

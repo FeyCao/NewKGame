@@ -270,12 +270,11 @@ var MainMenuScene =SceneBase.extend(
 
             }
             case "Wechat":{
-                userInfo.inviteFlag = true;
+                //
                 gSocketConn.ansRoomFriend(true,userInfo.inviterUid,userInfo.inviterCode);//默认同意邀请
                 userInfo.source = "ANSERED";
                 userInfo.inviterUid=null;
                 userInfo.inviterCode=null;
-                this.openFriendLayer();
             }
             case 2:
             default:{
@@ -1509,6 +1508,8 @@ var MainMenuScene =SceneBase.extend(
             case MessageType.Type_Player_In_Home:{
                 cc.log("MessageType.Type_Player_In_Home=="+message+"=====");
                 var playerInHome = message.playerInHome;
+                userInfo.inviteFlag = true;
+                self.openFriendLayer();
                 self.friendLayer.refreshInviteFriend(playerInHome);
                 // if()
                 break;

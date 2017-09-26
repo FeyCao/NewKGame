@@ -1049,6 +1049,7 @@ var FriendViewLayer = cc.Layer.extend({
 
             self.opponentNameLabel.setString("-- -- -- --");
             self.opponentHead.initWithFile(res.BG_FRIEND_HEAD_WAIT_png);
+            self.opponentHead.setScale(1);
         }
         if(null!=opponentPlayer&&null!=opponentPlayer.headPicture)
         {
