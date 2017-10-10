@@ -208,6 +208,8 @@ var g_resources =["res/bg_tittle.png","res/bg_select.png","res/playerInfo_bg.png
 for (var i in res) {
     g_resources.push(res[i]);
 }
+
+// kiiikmobile://start.home?pagename=KGAME&inviteCode=1234567890
 // var wsURL = 'ws://222.66.97.203:5003/';//公网测试
 // var wsURL = 'ws://222.66.97.203:7003/Kgamefeng/websocket';//晓峰环境
 // var wsURL = 'ws://180.169.108.231:5003/Kgamefeng/websocket';//晓峰环境

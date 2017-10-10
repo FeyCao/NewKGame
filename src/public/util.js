@@ -1,5 +1,8 @@
 // JavaScript Document
 // 'use strict';
+function getResult(num,n){//取余数
+    return (num - parseInt(num/n)*n);
+}
 var pageTimer = {} ; //定义计算器全局变量
 var setLabelColor = function(gain){
     if(gain>0){
@@ -174,6 +177,49 @@ function checkPassword()
     return true;
 }
 var sys = cc.sys;//记录平台信息
+
+// function getURL(url) {
+//     var xmlhttp = new ActiveXObject( "Microsoft.XMLHTTP");
+//     xmlhttp.open("GET", url, false);
+//     xmlhttp.send();
+//     if(xmlhttp.readyState==4) {
+//         if(xmlhttp.Status != 200) alert("不存在");
+//         return xmlhttp.Status==200;
+//     }
+//     return false;
+// }
+function testApp(urlAnd,urlIos) {
+    // table._lineCount = lineCount?lineCount:2;//默认行数为2
+    urlAnd = urlAnd|| "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";//下载地址
+    urlIos = urlIos|| "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";//下载地址
+    if(sys.os===sys.OS_IOS) {//苹果
+        // var ifr = document.createElement("iframe");
+        // ifr.src = "mobileplatform://"; /***打开app的协议，有ios同事提供***/
+        // ifr.style.display = "none";
+        // document.body.appendChild(ifr);
+        window.location.href="mobileplatform://"; /***打开app的协议，有ios同事提供***/
+        window.setTimeout(function(){
+            alert('打开失败'+sys.os);// document.body.removeChild(ifr);
+            return false;
+            // window.location.href = urlAnd; /***下载app的地址***/
+        },2000)
+
+    }else if(sys.os===sys.OS_ANDROID){//android
+        window.location.href = "kiiikmobile://start.home?"; /***打开app的协议，有安卓同事提供***///pagename=KGAME&inviteCode=1234567890
+        window.setTimeout(function(){
+            alert('打开失败'+sys.os);// window.location.href = urlIos; /***下载app的协议，有安卓同事提供***/
+            return false;
+        },2000);
+
+    }else{
+        return false;
+        // window.location.href = "http://m.cesfutures.com/kiiikweixin/apppro/phoned.jsp";
+    }
+    // if(sys.isMobile){//移动端模式
+    //
+    // }
+}
+
 
 var wsURL = 'ws://' + cc.game.config[cc.game.CONFIG_KEY.serverURL];
 // if (window.location.protocol == 'http:') {

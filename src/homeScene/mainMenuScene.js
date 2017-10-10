@@ -268,6 +268,10 @@ var MainMenuScene =SceneBase.extend(
             }
             case "QQ":{
 
+                // if(sys.os===sys.OS_WINDOWS||sys.os===sys.OS_OSX) {//浏览器模式
+                //
+                // }
+
             }
             case "Wechat":{
                 //
@@ -513,6 +517,16 @@ var MainMenuScene =SceneBase.extend(
 	config:function()
 	{
         var self = this;
+
+       //登录接口测试
+        if(sys.isMobile) {//浏览器模式
+            testApp();
+        }else{
+            alert('非移动端'+sys.os);
+        }
+
+
+
         if(this.controlViewLayer==null){
             this.controlViewLayer=new ControlViewLayer();
             this.controlViewLayer.setVisible(false);

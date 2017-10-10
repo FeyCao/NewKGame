@@ -44,11 +44,15 @@ var MatchInfoLayer = cc.Layer.extend({
 
     dailyControlLayer:null,			//分时控制层
     tradeControlLayer:null,			//多品种控制层
+
+    tradeLayerW:260,
 	codeLabel:null,
+	codeScoreLabel:null,
 	currentCodeName:null,
 	codeButton:null,
-
+    codeButtonFlag:false,
 	statusFlag:0,
+
 
 	ctor:function(width,height)
 	{
@@ -413,7 +417,7 @@ var MatchInfoLayer = cc.Layer.extend({
         var posX =48;
 		var posY = 40;
 		var fontSize = 25;
-        var labelSize = cc.size(220,70);
+        var labelSize = cc.size(150,70);
 		var fXScale = gDesignResolutionWidth/1280;
 		var fYScale = gDesignResolutionHeight/720;
         var tmp=new cc.Sprite(res.EXERCISE_BOX_DEFAULT);//new cc.Sprite(res.EXERCISE_BOX_DEFAULT);//new cc.Sprite(res.EXERCISE_BOX_STRETCH);
@@ -422,7 +426,7 @@ var MatchInfoLayer = cc.Layer.extend({
         var insetRect = cc.Rect(6,6,sizeTmp.width-6, sizeTmp.height-6);
 
         this.tradeControlLayer=new cc.Scale9Sprite(res.EXERCISE_BOX_DEFAULT,fullRect,insetRect);//new cc.Sprite(res.EXERCISE_BOX_DEFAULT);//new cc.Sprite(res.EXERCISE_BOX_STRETCH);
-        this.tradeControlLayer.setContentSize(cc.size(200, 60));
+        this.tradeControlLayer.setContentSize(cc.size(this.tradeLayerW, 60));
         var bgSize = this.tradeControlLayer.getContentSize();//178*212
         this.tradeControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*0.575/2-10,gDesignResolutionHeight-bgSize.height*0.575/2-5);
         this.tradeControlLayer.setScale(fXScale,fYScale);
@@ -432,59 +436,97 @@ var MatchInfoLayer = cc.Layer.extend({
         // backGround-setContentSize(CCSizeMake(300, 30));
         // backGround->setPosition(ccp(10, 230));
         // backGround->setAnchorPoint(CCPointZero);
-
-
-
-
-
         // initWithSpriteFrame
                // this.dailySelectButton=new cc.MenuItemImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchDailyTradeControlArea, self);//new Button("res/home.png");
         // this.dailySelectButton.setPosition(cc.p(bgSize.width-posX,bgSize.height-posY/2));
         this.addChild(this.tradeControlLayer,3);
-        // var bgSize = this.tradeControlLayer.getContentSize();
-        cc.log("dailyControlLayer  bgSize.width=="+bgSize.width+"bgSize.height=="+bgSize.height);
+
         this.currentCodeName  = new cc.LabelTTF("",res.FONT_TYPE,fontSize,labelSize);
         this.currentCodeName.enableStroke(ShadowColor, 2);
-        this.currentCodeName.setPosition(-100,170);
+        this.currentCodeName.textAlign = cc.TEXT_ALIGNMENT_LEFT;//左对齐cc.TEXT_ALIGNMENT_CENTER;//居中显示
+        this.currentCodeName.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
+        // this.currentCodeName.setPosition(-100,170);
         this.tradeControlLayer.addChild(this.currentCodeName);
-        if(null!=userInfo.currentCode){
-            this.currentCodeName.setString(userInfo.currentCode);
-		}
+
         var mu = new cc.Menu();
         mu.x = 0;
         mu.y = 0;
         this.tradeControlLayer.addChild(mu, 3);
+        this.selectButton=new cc.MenuItemImage(res.EXERCISE_ARROW_DOWN,res.EXERCISE_ARROW_UP, self.setStretchTradeControlArea, self);//48*48;
+        this.selectButton.setPosition(cc.p(bgSize.width-20,bgSize.height-30));
+        mu.addChild(this.selectButton);
+
         this.codeLabel = new Array();
+        this.codeScoreLabel = new Array();
         this.codeButton = new Array();
         for(var i=0;i<5;i++){
             var codeLabelTem = new cc.LabelTTF("__",res.FONT_TYPE,fontSize,labelSize);
             this.codeLabel.push(codeLabelTem);
-            codeLabelTem.textAlign = cc.TEXT_ALIGNMENT_CENTER;//居中显示
+            var codeScoreLabelTem = new cc.LabelTTF("__",res.FONT_TYPE,fontSize,labelSize);
+            this.codeScoreLabel.push(codeScoreLabelTem);
+            codeLabelTem.textAlign = cc.TEXT_ALIGNMENT_LEFT;//左对齐cc.TEXT_ALIGNMENT_CENTER;//居中显示
             codeLabelTem.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
+            codeScoreLabelTem.textAlign = cc.TEXT_ALIGNMENT_LEFT;//左对齐cc.TEXT_ALIGNMENT_CENTER;//居中显示
+            codeScoreLabelTem.verticalAlign = cc.VERTICAL_TEXT_ALIGNMENT_CENTER;
             var codeButtonTem = new cc.MenuItemLabel(codeLabelTem, self.changeCode, self);//new cc.MenuItemFont("普通模式", self.generalMatch, this);
-            codeButtonTem.setPosition(cc.p((bgSize.width-posX)/2,30-42*i));
+            codeButtonTem.setPosition(10,30-42*i);
             codeButtonTem.setVisible(false);
+            codeScoreLabelTem.setVisible(false);
             this.codeButton.push(codeButtonTem);
             // item1.setAnchorPoint(0,0.5);
             mu.addChild(codeButtonTem);
+            this.tradeControlLayer.addChild(codeScoreLabelTem);
         }
 
 		if(null!=userInfo.codeMainList){
             var codeCount=userInfo.codeMainList.length;
-            this.tradeControlLayer.setContentSize(cc.size(200,codeCount>1?42*codeCount:45));
+            this.tradeControlLayer.setContentSize(cc.size(this.tradeLayerW,codeCount>1?42*codeCount:45));
             var bgSize = this.tradeControlLayer.getContentSize();//178*212
-            this.currentCodeName.setPosition(-100,bgSize.height-20);
+            // this.currentCodeName.setPosition(-100,bgSize.height-20);
             this.tradeControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
-			var codeDec ="";
+			// var codeDec ="";
 			for(var i = 0;i<userInfo.codeMainList.length;i++){
-                codeDec = userInfo.codeMainList[i].code+"  "+userInfo.codeMainList[i].codeScore+"%";
+                // codeDec = userInfo.codeMainList[i].code+"  "+userInfo.codeMainList[i].codeScore+"%";
+                // self.playerScoreLabel[i].setString(score.toFixed(2)+"%");
+                // self.playerScoreLabel[i].setColor(setLabelColor(score));
+				var score = userInfo.codeMainList[i].codeScore;
 				if(null!=this.codeButton[i]){
                     this.codeButton[i].setVisible(true);
-                    this.codeButton[i].setPosition(cc.p((bgSize.width-posX)/2,bgSize.height-20-42*i));
+                    this.codeScoreLabel[i].setVisible(true);
+                    this.codeButton[i].setPosition(50,bgSize.height-20-42*i);
+                    this.codeScoreLabel[i].setPosition(200,bgSize.height-20-42*i);
                     this.codeButton[i].setTag(i);
-                    this.codeLabel[i].setString(codeDec);
+                    this.codeLabel[i].setString(userInfo.codeMainList[i].code);
+                    this.codeScoreLabel[i].setString(score.toFixed(2)+"%");
+                    this.codeScoreLabel[i].setColor(setLabelColor(score));
 				}
 			}
+            if(null!=userInfo.currentCode){
+                this.currentCodeName.setString(userInfo.currentCode);
+            }
+            this.currentCodeName.setPosition(this.codeButton[0].getPosition());
+		}else if(null!=userInfo.codeSelected){
+            var codeCount=userInfo.codeSelected.length;
+            this.tradeControlLayer.setContentSize(cc.size(this.tradeLayerW,codeCount>1?42*codeCount:45));
+            var bgSize = this.tradeControlLayer.getContentSize();//178*212
+            // this.currentCodeName.setPosition(-100,bgSize.height-20);
+            this.tradeControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
+            for(var i = 0;i<userInfo.codeSelected.length;i++){
+                var score = 0;
+                if(null!=this.codeButton[i]){
+                    this.codeButton[i].setVisible(true);
+                    this.codeButton[i].setPosition(80,bgSize.height-20-42*i);
+                    this.codeScoreLabel[i].setPosition(200,bgSize.height-20-42*i);
+                    this.codeButton[i].setTag(i);
+                    this.codeLabel[i].setString(userInfo.codeSelected[i].name);
+                    this.codeScoreLabel[i].setString(score.toFixed(2)+"%");
+                    this.codeScoreLabel[i].setColor(setLabelColor(score));
+                }
+            }
+            if(null!=userInfo.currentCode){
+                this.currentCodeName.setString(userInfo.currentCode);
+            }
+            this.currentCodeName.setPosition(this.codeButton[0].getPosition());
 		}
 
 	},
@@ -498,29 +540,25 @@ var MatchInfoLayer = cc.Layer.extend({
         if(null!=this.tradeControlLayer){
             this.tradeControlLayer.setVisible(true);
 		}
+        for (var i = userInfo.codeMainList.length - 1; i > 0; i--) {//当前合约排在第一位
+            for (var j = i; j > 0; j--) {
+                if (userInfo.codeMainList[j].code == userInfo.currentCode) {
+                    var temp = userInfo.codeMainList[j];
+                    userInfo.codeMainList[j] = userInfo.codeMainList[j-1];
+                    userInfo.codeMainList[j-1] = temp;
+                }
+            }
+        }
         if(null!=userInfo.currentCode){
             this.currentCodeName.setString(userInfo.currentCode);
         }
 
-		//设置合约列表信息的信息
-        if(null!=userInfo.codeMainList){
-            var codeCount=userInfo.codeMainList.length;
-            this.tradeControlLayer.setContentSize(cc.size(220,codeCount>1?42*codeCount:45));
-            var bgSize = this.tradeControlLayer.getContentSize();//178*212
-            this.currentCodeName.setPosition(-100,bgSize.height-20);
-            this.tradeControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*0.575/2-10,gDesignResolutionHeight-bgSize.height*0.575/2-5);
-            var codeDec ="";
-            for(var i = 0;i<userInfo.codeMainList.length;i++){
-            	var score = parseFloat(userInfo.codeMainList[i].codeScore);
-                codeDec = userInfo.codeMainList[i].code+"  "+score.toFixed(2)+"%";
-                if(null!=this.codeButton[i]){
-                    this.codeButton[i].setVisible(true);
-                    this.codeButton[i].setPosition(cc.p((bgSize.width)/2,bgSize.height-20-42*i));
-                    this.codeButton[i].setTag(i);
-                    this.codeLabel[i].setString(codeDec);
-                }
-            }
-        }
+        if(this.codeButtonFlag){
+        	this.setStretchTradeControlArea();
+		}else{
+            this.setDefaultTradeControlArea();
+		}
+
 	},
     changeCode:function (taget) {
         cc.log("changeCode:function!!!");
@@ -610,6 +648,87 @@ var MatchInfoLayer = cc.Layer.extend({
 			this.itemOne.setPosition(cc.p((bgSize.width-posX)/2,bgSize.height/2));
 			this.itemFive.setPosition(cc.p((bgSize.width-posX)/2,posY));
 			self.infoLabel.setVisible(false);
+        }
+    },
+	setDefaultTradeControlArea:function () {//设置默认当前合约
+		this.codeButtonFlag = false;
+		var self=this;
+		// var size = cc.director.getWinSize();
+		var posX =48;
+		var posY = 78;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
+
+        if(this.tradeControlLayer!=null){
+
+            var codeCount=userInfo.codeMainList.length;
+            this.tradeControlLayer.setContentSize(cc.size(this.tradeLayerW,60));
+			var bgSize = cc.size(this.tradeLayerW,codeCount>1?42*codeCount:45);
+            this.tradeControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-60*fYScale/2-5);
+            this.selectButton.setPosition(cc.p(bgSize.width-30,30));
+            this.selectButton.unselected();
+            this.selectButton.setCallback(self.setStretchTradeControlArea, self);
+
+            for(var i = 0;null!=userInfo.codeMainList&&i<userInfo.codeMainList.length;i++){
+
+
+                var score = userInfo.codeMainList[i].codeScore;
+                if(null!=this.codeButton[i]){
+                    if(i!=0){
+                        this.codeButton[i].setVisible(false);
+                        this.codeScoreLabel[i].setVisible(false);
+                    }else {
+                        this.codeButton[i].setVisible(true);
+                        this.codeScoreLabel[i].setVisible(true);
+					}
+                    this.codeButton[i].setPosition(cc.p(80,30));
+                    this.codeScoreLabel[i].setPosition(200,30);
+                    this.codeButton[i].setTag(i);
+                    this.codeLabel[i].setString(userInfo.codeMainList[i].code);
+                    this.codeScoreLabel[i].setString(score.toFixed(2)+"%");
+                    this.codeScoreLabel[i].setColor(setLabelColor(score));
+                }
+            }
+            if(null!=userInfo.currentCode){
+                this.currentCodeName.setString(userInfo.currentCode);
+            }
+            this.currentCodeName.setPosition(this.codeButton[0].getPosition());
+        }
+
+    },
+    setStretchTradeControlArea:function () {//设置拉伸选择合约模式
+		var self=this;
+        this.codeButtonFlag = true;
+		var posX =48;
+		var posY = 78/2;
+		var fXScale = gDesignResolutionWidth/1280;
+		var fYScale = gDesignResolutionHeight/720;
+        if(this.tradeControlLayer!=null){
+            var codeCount=userInfo.codeMainList.length;
+            this.tradeControlLayer.setContentSize(cc.size(this.tradeLayerW,codeCount>1?42*codeCount:45));
+			var bgSize = this.tradeControlLayer.getContentSize();
+            this.tradeControlLayer.setPosition(gDesignResolutionWidth-bgSize.width*fXScale/2-10,gDesignResolutionHeight-bgSize.height*fYScale/2-5);
+            this.selectButton.setPosition(cc.p(bgSize.width-30,bgSize.height-30));
+			this.selectButton.selected();
+			this.selectButton.setCallback(self.setDefaultTradeControlArea, self);
+
+            for(var i = 0;null!=userInfo.codeMainList&&i<userInfo.codeMainList.length;i++){
+                var score = userInfo.codeMainList[i].codeScore;
+                if(null!=this.codeButton[i]){
+                    this.codeButton[i].setVisible(true);
+                    this.codeScoreLabel[i].setVisible(true);
+                    this.codeButton[i].setPosition(80,bgSize.height-20-42*i);
+                    this.codeScoreLabel[i].setPosition(200,bgSize.height-20-42*i);
+                    this.codeButton[i].setTag(i);
+                    this.codeLabel[i].setString(userInfo.codeMainList[i].code);
+                    this.codeScoreLabel[i].setString(score.toFixed(2)+"%");
+                    this.codeScoreLabel[i].setColor(setLabelColor(score));
+                }
+            }
+            if(null!=userInfo.currentCode){
+                this.currentCodeName.setString(userInfo.currentCode);
+            }
+            this.currentCodeName.setPosition(this.codeButton[0].getPosition());
         }
     },
 

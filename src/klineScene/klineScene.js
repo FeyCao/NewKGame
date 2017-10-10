@@ -1505,6 +1505,7 @@ KLineScene = SceneBase.extend(
 
                 userInfo.codeMainList = userInfo.playerListData[0].codeScore;
                 userInfo.currentCode = userInfo.playerListData[0].currentCode;
+                // userInfo.codeMainList
             }
             if (MatchType.Type_Practice_MC == userInfo.matchMode) {
                 this.matchInfoLayer.initTradeControlAreaByData();
@@ -2029,17 +2030,13 @@ KLineScene = SceneBase.extend(
                     }
                 }
             }
+            if(null!=userInfo.playerListData[0]&&null!=userInfo.playerListData[0]){
+                userInfo.headSprite = userInfo.playerListData[0]["headPicture"];
+            }
+
             switch (userInfo.matchMode) {
                 case MatchType.Type_Practice_MC: {//多品种
-                    // if(null==self.klineDataMc){
-                    //     codeDataList.setItem(userInfo.currentCode+"A",self.klineData);//localStorage.setItem(key, value)
-                    //     codeDataList.setItem(userInfo.currentCode+"M",self.klinedataMain);//localStorage.setItem(key, value)
-                    //     codeDataList.setItem(userInfo.currentCode+"P",self.prevKlineData);//localStorage.setItem(key, value)
-                    //     // self.klineDataMc = new Array();
-                    //     // var codedataTemp = new codedataInfo();
-                    //     // codedataTemp.code
-                    //
-                    // }
+
                     break;
 
                 }
@@ -2073,44 +2070,6 @@ KLineScene = SceneBase.extend(
                 case MatchType.Type_Tool_Match://道具匹配
                 case MatchType.Type_Friend_Match://好友匹配
                 case MatchType.Type_PlainMultiplayer_Match: {
-
-                    // self.klineData = [];
-                    // for (var i = 0; i < dayInfolengths; i++) {
-                    //     var dailyData = klinePbData[i];
-                    //     self.klineData.push({
-                    //         avg: dailyData["avg"],
-                    //         o: dailyData["open"],
-                    //         x: dailyData["max"],
-                    //         i: dailyData["min"],
-                    //         c: dailyData["close"],
-                    //         v: dailyData["vol"]
-                    //     });
-                    // }
-                    // self.klinedataMain = [];
-                    // for (var i = self.prevDataDayCount; i < dayInfolengths; i++) {
-                    //     var dailyData = klinePbData[i];
-                    //     self.klinedataMain.push({
-                    //         avg: dailyData["avg"],
-                    //         o: dailyData["open"],
-                    //         x: dailyData["max"],
-                    //         i: dailyData["min"],
-                    //         c: dailyData["close"],
-                    //         v: dailyData["vol"]
-                    //     });
-                    // }
-                    //
-                    // self.prevKlineData = [];
-                    // for (var i = 0; i < self.prevDataDayCount; i++) {
-                    //     var dailyData = klinePbData[i];
-                    //     self.prevKlineData.push({
-                    //         avg: dailyData["avg"],
-                    //         o: dailyData["open"],
-                    //         x: dailyData["max"],
-                    //         i: dailyData["min"],
-                    //         c: dailyData["close"],
-                    //         v: dailyData["vol"]
-                    //     });
-                    // }
                     break;
 
                 }//普通匹配
@@ -3295,15 +3254,27 @@ KLineScene = SceneBase.extend(
             console.info(""+codeName);
             console.info(codeKlineData);
             userInfo.currentCode = codeName;
-            if (MatchType.Type_Practice_MC == userInfo.matchMode) {
-                self.matchInfoLayer.initTradeControlAreaByData();
+
+            for (var i = userInfo.codeMainList.length - 1; i > 0; i--) {//当前合约排在第一位
+                for (var j = i; j > 0; j--) {
+                    if (userInfo.codeMainList[j].code == userInfo.currentCode) {
+                        var temp = userInfo.codeMainList[j];
+                        userInfo.codeMainList[j] = userInfo.codeMainList[j-1];
+                        userInfo.codeMainList[j-1] = temp;
+                    }
+                }
             }
+            // if (MatchType.Type_Practice_MC == userInfo.matchMode) {
+            //     self.matchInfoLayer.initTradeControlAreaByData();
+            //
+            // }
             if(null!=gSocketConn){
                 gSocketConn.ChangeCode(codeName);
                 // return;
             }
             if(null!=codeKlineData&&!self.drawFlag){
                 self.drawViewByData(codeKlineData);
+
             }
 
         },
@@ -3327,6 +3298,7 @@ KLineScene = SceneBase.extend(
             }
             // this.drawCandleStoped = false;
             if(indexFromServe<0){
+                this.matchInfoLayer.disableAllButtons();
                 switch (userInfo.matchMode) {
 
                     case MatchType.Type_Practice_MC: {
@@ -3388,14 +3360,16 @@ KLineScene = SceneBase.extend(
                 //位置校正
                 this.getKlineLayerMain().setPosition(posEnd1);
                 this.getVolumnTechLayerMain().setPosition(posEnd2);
+                this.matchInfoLayer.playCheckChanged(playFlag);//只有比赛开始后才重置加速播放按钮
             }
 
-            if (self.matchInfoLayer != null) {//advanceToMainKLine_Record: function ()//观看记录
+            if (self.matchInfoLayer != null) {//
                 if (MatchType.Type_Practice_MC == userInfo.matchMode) {
                     self.matchInfoLayer.initTradeControlAreaByData();
+
                 }
             }
-            this.matchInfoLayer.playCheckChanged(playFlag);
+
         },
 
         drawOppositeCandlePart: function () {
@@ -3573,7 +3547,7 @@ KLineScene = SceneBase.extend(
             this.clearBuySellOperation();
             var businessInfo = this.buyInfo;
             this.selfOperations = [];
-            for (i = 0; i < businessInfo.length; i++) {
+            for (i = 0; null!=businessInfo&&i < businessInfo.length; i++) {
                 cc.log("businessInfo[" + i + "] = " + businessInfo[i]);
                 this.selfOperations.push(businessInfo[i]);
                 if (businessInfo[i] > 0) {
@@ -3637,7 +3611,7 @@ KLineScene = SceneBase.extend(
             }
             cc.log("bbusinessMatchInfo:function() his.playerInfoLayer.refreshScoresByData();");
             this.playerInfoLayer.refreshScoresByData();
-            this.playerInfoLayer.refreshScores(score);
+            // this.playerInfoLayer.refreshScores(score);
             if (this.playerInfoLayer != null) {
                 this.playerInfoLayer.ableInfoButtons();
             }

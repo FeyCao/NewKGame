@@ -138,7 +138,7 @@ var PlayerInfoLayer= cc.Node.extend({
 					this.backgroundSprite.addChild(this.selfScoreLabel,5);
 				}
 
-				if(this.headSprite==null){
+				if(this.headSpritebg==null){
 					this.headSpritebg = new cc.Sprite(res.BG_HEAD_PNG);
 					this.headSpritebg.setPosition(posX1,posY);
 					this.headSpritebg.setScale(0.9);
@@ -149,7 +149,7 @@ var PlayerInfoLayer= cc.Node.extend({
 				if(this.headSprite==null){
                     this.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
                     var sizeHead = this.headSprite.getContentSize();
-                    this.headSprite.setScale(90/sizeHead.width,90/sizeHead.height);
+                    this.headSprite.setScale(80/sizeHead.width);
 					this.headSprite.setPosition(posX1,posY);
 					this.backgroundSprite.addChild(this.headSprite,2);
 				}
@@ -173,7 +173,7 @@ var PlayerInfoLayer= cc.Node.extend({
 						self.headSprite.initWithTexture(gPlayerAvatarSprite);
 
 						var size = self.headSprite.getContentSize();
-						self.headSprite.setScale(90/size.width,90/size.height);
+						self.headSprite.setScale(90/size.width);
 					}
 					cc.log("//练习场比赛loadImg="+userInfo.headSprite); // self.addChild(logo);
 				});
@@ -363,7 +363,7 @@ var PlayerInfoLayer= cc.Node.extend({
 		var upColor=cc.color(252,0,1,0);
 		var downColor=cc.color(6,226,0,0);
 		// var scoreLabel=this.selfScoreLabel;
-		if(this.selfScoreLabel!=null)
+		if(this.selfScoreLabel!=null&&null!=buyScore)
 		{
 			score=buyScore;
 			this.selfScoreLabel.setString(score.toFixed(2)+"%");
@@ -394,7 +394,7 @@ var PlayerInfoLayer= cc.Node.extend({
 		if(this.headSprite==null){
             this.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
             var sizeHead = this.headSprite.getContentSize();
-            this.headSprite.setScale(90/sizeHead.width,90/sizeHead.height);
+            this.headSprite.setScale(80/sizeHead.width);
 			this.headSprite.setPosition(160,670);
 			this.backgroundSprite.addChild(this.headSprite,2);
 		}
@@ -423,7 +423,7 @@ var PlayerInfoLayer= cc.Node.extend({
 					self.headSprite.initWithTexture(gPlayerAvatarSprite);
 
 					var size = self.headSprite.getContentSize();
-					self.headSprite.setScale(80/size.width,80/size.height);
+					self.headSprite.setScale(80/size.width);
 				}
 				cc.log("playInfoLayer refreshScoresByData1 loadImg="+url); // self.addChild(logo);
 
@@ -462,7 +462,7 @@ var PlayerInfoLayer= cc.Node.extend({
 									texture2d.handleLoadedTexture();
 									self.playerHead_Sprite[0].initWithTexture(texture2d);
 									var size = self.playerHead_Sprite[0].getContentSize();
-									self.playerHead_Sprite[0].setScale(90/size.width,90/size.height);
+									self.playerHead_Sprite[0].setScale(80/size.width);
 
 								}
 								cc.log("playInfoLayer refreshScoresByData2 loadImg"+url); // self.addChild(logo);
@@ -481,7 +481,7 @@ var PlayerInfoLayer= cc.Node.extend({
 									texture2d.handleLoadedTexture();
 									self.playerHead_Sprite[1].initWithTexture(texture2d);
 									var size = self.playerHead_Sprite[1].getContentSize();
-									self.playerHead_Sprite[1].setScale(90/size.width,90/size.height);
+									self.playerHead_Sprite[1].setScale(80/size.width);
 								}
 								cc.log("playInfoLayer  refreshScoresByData3 loadImg"+url); // self.addChild(logo);
 							});

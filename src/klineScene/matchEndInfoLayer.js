@@ -167,10 +167,11 @@ var MatchEndInfoLayer= cc.Layer.extend({
             this.bgSprtie.addChild(bgList2,5);
 
             if(null==this.codetableView){
-                this.codetableView = new cc.TableView(this, cc.size(1000, 120));
+                this.codetableView = new cc.CTableView(this, cc.size(780, 130));
 			}
             this.codetableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
-            this.codetableView.setPosition(-244,-30);
+            // this.codetableView.setPosition(-244,-30);
+            this.codetableView.setPosition(-100,-35);
             this.codetableView.setDelegate(this);
             this.codetableView.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
 
@@ -681,7 +682,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 
 	tableCellSizeForIndex:function (table, idx) {
 		if(userInfo.matchMode==MatchType.Type_Practice_MC){
-            return cc.size(1000, 50);
+            return cc.size(380, 60);
         }else{
             return cc.size(1000, 90);
         }
@@ -728,7 +729,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 
         if(userInfo.matchMode==MatchType.Type_Practice_MC){
             if(userInfo.endInfoOfAllcodes!=null) {
-                return userInfo.endInfoOfAllcodes.length;
+                return userInfo.endInfoOfAllcodes.length+2;
             }
         }else{
             if(userInfo.endInfoOfAllPlayers!=null) {
@@ -737,7 +738,13 @@ var MatchEndInfoLayer= cc.Layer.extend({
         }
 		return 0;
 	},
-
+    cellSizeForTable:function (table) {
+        if(userInfo.matchMode==MatchType.Type_Practice_MC){
+            return cc.size(380, 60);
+        }else{
+            return cc.size(1000, 90);
+        }
+    },
 
 });
 
@@ -840,7 +847,7 @@ var CodeInfoCell = cc.TableViewCell.extend({
 
             //设置code名
             var textNameLabel = new cc.LabelTTF(userInfo.endInfoOfAllcodes[idx].code, "Arial", 25.0);
-            textNameLabel.setPosition(cc.p(200, 40));
+            textNameLabel.setPosition(cc.p(0, 40));
             textNameLabel.enableStroke(ShadowColor, 2);
             textNameLabel.setAnchorPoint(0,0.5);
             sprite.addChild(textNameLabel);
@@ -849,7 +856,7 @@ var CodeInfoCell = cc.TableViewCell.extend({
             var score = parseFloat(userInfo.endInfoOfAllcodes[idx].codeScore).toFixed(2);
             var strScoreText = score + "%";
             var textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
-            textScoreLabel.setPosition(cc.p(500, 40));
+            textScoreLabel.setPosition(cc.p(200, 40));
             textScoreLabel.setAnchorPoint(0.5, 0.5);
             if (userInfo.endInfoOfAllcodes[idx].codeScore > 0) {
                 textScoreLabel.setColor(RedColor);

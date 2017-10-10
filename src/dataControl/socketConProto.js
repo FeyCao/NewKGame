@@ -83,6 +83,7 @@ protoSocketConn.prototype.Connect=function(url)
         {
             self.oncloseevent[i]();
         }
+        window.location.reload();
         //
         cc.log("WebSocket 链接已断开 close");
     };

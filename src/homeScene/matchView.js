@@ -614,7 +614,7 @@ var MatchViewLayer = cc.Layer.extend({
         // this.itemType4.setPosition(cc.p(posX,pos-posY*4));
 
 
-        var posCode = cc.p(60,120);
+        var posCode = cc.p(55,120);
         if(null==this.bgCodeList){
             this.bgCodeList = new cc.Sprite(res.BG_BOX_CHOOSE);
             this.bgCodeList.setAnchorPoint(0,0);
@@ -622,7 +622,7 @@ var MatchViewLayer = cc.Layer.extend({
             this.typeNode.addChild(this.bgCodeList,5);
         }
         if(null==this.tableViewCode){
-            this.tableViewCode = new cc.TableView(this, cc.size(420, 158));
+            this.tableViewCode = new cc.CTableView(this, cc.size(420, 150));
             this.tableViewCode.setName("tableViewCode");
             this.tableViewCode.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
             // this.tableViewCode.setDirection(cc.SCROLLVIEW_DIRECTION_BOTH);
@@ -765,6 +765,9 @@ var MatchViewLayer = cc.Layer.extend({
         return cc.size(200, 70);
     },
 
+    cellSizeForTable:function (table) {
+        return cc.size(200, 70);
+    },
     tableCellAtIndex:function (table, idx) {
         cc.log("cell tableCellAtIndex index: "+idx);
         var self = this;
@@ -776,19 +779,26 @@ var MatchViewLayer = cc.Layer.extend({
         if (!cell) {
             cell = new codeSelectCell();
         }
-        cell.setCodeInfoData(userInfo.codeList[idx]);
-        cell.setCellData(idx);
+        if(userInfo.codeList[idx]){
+            cell.setCodeInfoData(userInfo.codeList[idx]);
+            cell.setCellData(idx);
+        }
 
         return cell;
     },
 
     numberOfCellsInTableView:function (table) {
 
+        var num = 0;
         if(null!=userInfo.codeList){
-            return userInfo.codeList.length;
-        }else{
-            return 0;
+            // if(userInfo.codeList.length%2==0){
+            //
+            // }else{
+            //     num = userInfo.codeList.length+1;
+            // }
+            num = userInfo.codeList.length+2;
         }
+        return num;
 
     },
     // selectTypeList:function () {
@@ -1557,7 +1567,47 @@ var preMatchView = cc.Layer.extend({
     },
 
 });
+var CustomTableViewCell = cc.TableViewCell.extend({
+    _xGap:12,
+    _sprList:null,
+    ctor: function(idx){
+        this._super();
+        this._sprList = [];
+        this._init(idx);
+    },
+    draw:function (ctx) {
+        this._super(ctx);
+    },
+    _init: function(idx){
+        var strValue = idx.toFixed(0);
+        for(var i = 0; i < 4; i++){
+            //var sprite = new cc.Sprite(res.NT01_png);
 
+            var sprite = new Pic(parseInt(idx * 4) + parseInt(i));
+            sprite.anchorX = 0;
+            sprite.anchorY = 0;
+            sprite.x = sprite.getContentSize().width * i + this._xGap*i;
+            sprite.y = 0;
+            this.addChild(sprite);
+            this._sprList.push(sprite);
+
+        }
+        var label = new cc.LabelTTF(strValue, "Helvetica", 20.0);
+        label.x = 0;
+        label.y = 0;
+        label.anchorX = 0;
+        label.anchorY = 0;
+        label.tag = 123;
+        this.addChild(label);
+    },
+    updateData: function(idx){
+        for(var i in this._sprList){
+            var spr = this._sprList[i];
+            var lab = spr.getChildByTag(123);
+            lab.setString(idx * 4 + parseInt(i));
+        }
+    }
+});
 var codeSelectCell = cc.TableViewCell.extend({
     __className:"codeSelectCell",
     bgSprite:null,
