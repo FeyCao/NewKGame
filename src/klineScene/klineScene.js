@@ -1952,10 +1952,10 @@ KLineScene = SceneBase.extend(
                 this.buyScore = data["score"];
             }
 
-            // if (userInfo.playerListData != null) {
-            //     this.buyInfo = userInfo.playerListData[0]["operationIndex"];
-            //     userInfo.headSprite = userInfo.playerListData[0]["headPicture"];
-            // }
+            if (userInfo.playerListData != null&&null==this.buyScore) {
+                this.buyInfo = userInfo.playerListData[0]["operationIndex"];
+                userInfo.headSprite = userInfo.playerListData[0]["headPicture"];
+            }
             if (null != userInfo.playerListData[0] && null != userInfo.playerListData[0].codeScore) {
                 userInfo.codeMainList = userInfo.playerListData[0].codeScore;
                 userInfo.currentCode =  userInfo.playerListData[0].currentCode;
@@ -2573,7 +2573,7 @@ KLineScene = SceneBase.extend(
 
                 }
                 gSocketConn.SendBeginMessage();//画线前请求比赛
-
+                this.matchRunFlag=true;
                 //依次画后面的K线
                 this.drawAllCandlesOneByOne();
                 // clearTimeout(pageTimer["beginTimer"]);
@@ -3115,7 +3115,7 @@ KLineScene = SceneBase.extend(
             // var ended=this.klineLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
             // this.volumnTechLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
             // cc.log("drawAllCandlesOneByOne currentIndex=="+this.currentCandleIndex);
-            // this.matchRunFlag=true;
+            this.matchRunFlag=true;
             if (this.currentCandleIndex == this.getKlineLayerMain().getKlineData()) {
                 cc.log("绘制结束");
                 this.matchRunFlag = false;

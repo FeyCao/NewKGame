@@ -440,15 +440,15 @@ var FriendViewLayer = cc.Layer.extend({
 
         if(userInfo.source!="DHJK"){
 
-            this.btnBegin.setVisible(false);
+            // this.btnBegin.setVisible(false);
             this.leftDownBg.setVisible(false);
             this.btnInviteQQ.setVisible(false);
             this.btnInviteWechat.setVisible(false);
         }
         // this.btnBegin.setVisible(false);
-        // this.leftDownBg.setVisible(false);
-        // this.btnInviteQQ.setVisible(false);
-        // this.btnInviteWechat.setVisible(false);
+        this.leftDownBg.setVisible(false);
+        this.btnInviteQQ.setVisible(false);
+        this.btnInviteWechat.setVisible(false);
         var posD = 400;
         this.selfBg = new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);
         this.selfBg.setPosition(270,posD);
