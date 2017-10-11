@@ -158,20 +158,20 @@ var MatchEndInfoLayer= cc.Layer.extend({
 
             });
 
-            var bgList = new cc.Sprite(res.BG_CONTRACT_PNG);
-            bgList.setPosition(bgSize.width/2,220);
-            this.bgSprtie.addChild(bgList,5);
-
-            var bgList2 = new cc.Sprite(res.BG_CONTRACT_PNG);
-            bgList2.setPosition(bgSize.width/2,150);
-            this.bgSprtie.addChild(bgList2,5);
+            // var bgList = new cc.Sprite(res.BG_CONTRACT_PNG);
+            // bgList.setPosition(bgSize.width/2,220);
+            // this.bgSprtie.addChild(bgList,5);
+            //
+            // var bgList2 = new cc.Sprite(res.BG_CONTRACT_PNG);
+            // bgList2.setPosition(bgSize.width/2,150);
+            // this.bgSprtie.addChild(bgList2,5);
 
             if(null==this.codetableView){
-                this.codetableView = new cc.CTableView(this, cc.size(780, 130));
+                this.codetableView = new cc.CTableView(this, cc.size(762, 150));//
 			}
             this.codetableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
             // this.codetableView.setPosition(-244,-30);
-            this.codetableView.setPosition(-100,-35);
+            this.codetableView.setPosition(-150,-35);
             this.codetableView.setDelegate(this);
             this.codetableView.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
 
@@ -682,7 +682,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 
 	tableCellSizeForIndex:function (table, idx) {
 		if(userInfo.matchMode==MatchType.Type_Practice_MC){
-            return cc.size(380, 60);
+            return cc.size(367, 70);
         }else{
             return cc.size(1000, 90);
         }
@@ -701,11 +701,12 @@ var MatchEndInfoLayer= cc.Layer.extend({
         if(userInfo.matchMode==MatchType.Type_Practice_MC){
             if (!cell) {
                 cell = new CodeInfoCell();
+                if(userInfo.endInfoOfAllcodes!=null)
+                {
+                    cell.setCellData(idx);
+                }
             }
-            if(userInfo.endInfoOfAllcodes!=null)
-            {
-                cell.setCellData(idx);
-            }
+
         }else{
             if (!cell) {
                 //label = new cc.LabelTTF(strValue, "Arial", 30.0);
@@ -714,14 +715,13 @@ var MatchEndInfoLayer= cc.Layer.extend({
                 //label.tag = 123;
                 //cell.addChild(label);
                 cell = new PlayerInfoCell();
-            }
-            if(userInfo.endInfoOfAllPlayers!=null)
-            {
-                cell.setCellData(idx);
+                if(userInfo.endInfoOfAllPlayers!=null&&null!=userInfo.endInfoOfAllPlayers[idx])
+                {
+                    cell.setCellInfo(userInfo.endInfoOfAllPlayers[idx]);
+                    cell.setCellData(idx);
+                }
             }
         }
-
-
 		return cell;
 	},
 
@@ -740,7 +740,7 @@ var MatchEndInfoLayer= cc.Layer.extend({
 	},
     cellSizeForTable:function (table) {
         if(userInfo.matchMode==MatchType.Type_Practice_MC){
-            return cc.size(380, 60);
+            return cc.size(367, 70);//734*62
         }else{
             return cc.size(1000, 90);
         }
@@ -749,27 +749,33 @@ var MatchEndInfoLayer= cc.Layer.extend({
 });
 
 var PlayerInfoCell = cc.TableViewCell.extend({
+	cellDataInfo:null,
 	draw:function (ctx) {
 		this._super(ctx);
 
 	},
 
+	setCellInfo:function (data) {
+		this.cellDataInfo = data;
+    },
 	setCellData:function(idx){
+		var self = this;
 		cc.log("PlayerInfoCell setCellData=="+idx);
 		var sprite = new cc.Sprite("res/line_bg.png");
 		sprite.setPosition(cc.p(0,0));
 		sprite.setAnchorPoint(0,0);
 		this.addChild(sprite);
-		if(userInfo.endInfoOfAllPlayers[idx]!=null)
+		// if(userInfo.endInfoOfAllPlayers[idx]!=null)
+		if(this.cellDataInfo!=null)
 		{
 
-			var rankFlag = parseInt(userInfo.endInfoOfAllPlayers[idx]["ranking"]);
+			var rankFlag = parseInt(this.cellDataInfo["ranking"]);
 			var rankLabel = new cc.LabelTTF(rankFlag, "Arial", 35.0);
 			rankLabel.setPosition(cc.p(20,40));
 			rankLabel.setAnchorPoint(0,0.5);
 			sprite.addChild(rankLabel);
 			//设置用户名
-			var strNameText= userInfo.endInfoOfAllPlayers[idx]["userName"];
+			var strNameText= this.cellDataInfo["userName"];
 			var textNameLabel = new cc.LabelTTF(cutstr(strNameText,11), "Arial", 25.0);
 			textNameLabel.setPosition(cc.p(200,40));
 			// textNameLabel.setAnchorPoint(0,0.5);
@@ -779,27 +785,16 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 
 			//设置收益
 			var buyInfo=[];
-			for(var i=0;userInfo.endInfoOfAllPlayers[idx]["operationIndex"]!=undefined&&i<userInfo.endInfoOfAllPlayers[idx]["operationIndex"].length;i++)
+			for(var i=0;this.cellDataInfo["operationIndex"]!=undefined&&i<this.cellDataInfo["operationIndex"].length;i++)
 			{
-				buyInfo.push(userInfo.endInfoOfAllPlayers[idx]["operationIndex"][i]);
+				buyInfo.push(this.cellDataInfo["operationIndex"][i]);
 			}
-			var score = parseFloat(userInfo.endInfoOfAllPlayers[idx]["score"]).toFixed(2);
+			var score = parseFloat(this.cellDataInfo["score"]).toFixed(2);
 			var strScoreText= score+"%";
 			var textScoreLabel = new cc.LabelTTF(strScoreText, "Arial", 35.0);
 			textScoreLabel.setPosition(cc.p(500,40));
 			textScoreLabel.setAnchorPoint(0.5,0.5);
-			if(userInfo.endInfoOfAllPlayers[idx]["score"]>0)
-			{
-				textScoreLabel.setColor(RedColor);
-			}
-			else if(userInfo.endInfoOfAllPlayers[idx]["score"]<0)
-			{
-				textScoreLabel.setColor(GreenColor);
-			}
-			else
-			{
-				textScoreLabel.setColor(WhiteColor);
-			}
+            textScoreLabel.setColor(setLabelColor(this.cellDataInfo["score"]));
 			sprite.addChild(textScoreLabel);
 
 			cc.log("buyInfo=="+buyInfo);
@@ -810,10 +805,11 @@ var PlayerInfoCell = cc.TableViewCell.extend({
 			recordButton.setPosition(cc.p(800,40));
 			sprite.addChild(recordButton);
 			// var matchId = userInfo.endInfoOfAllPlayers[idx]["matchId"];
-			userInfo.recordName= userInfo.endInfoOfAllPlayers[idx]["userName"];
+
             // userInfo.matchId = matchId;
 			cc.log("PlayerInfoCell recordButton ClickEvent userName["+idx+"] ="+userInfo.recordName+"||matchId="+userInfo.matchId);
 			recordButton.setClickEvent(function(){
+                userInfo.recordName= self.cellDataInfo["userName"];
 				gKlineScene.businessMatchInfo(buyInfo,score);
 				// gSocketConn.SendRecordMatchMessage(userId,matchId);
 
@@ -839,7 +835,7 @@ var CodeInfoCell = cc.TableViewCell.extend({
 	setCellData:function(idx){
 		cc.log("PlayerInfoCell setCellData=="+idx);
 		// var sprite = new cc.Sprite(res.BLUE_BG_BTN);
-		var sprite = new cc.Node();
+		var sprite = new cc.Sprite(res.BG_CONTRACT_PNG);//new cc.Node();734*62
 		sprite.setPosition(cc.p(0,0));
 		sprite.setAnchorPoint(0,0);
 		this.addChild(sprite);

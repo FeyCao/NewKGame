@@ -446,9 +446,9 @@ var FriendViewLayer = cc.Layer.extend({
             this.btnInviteWechat.setVisible(false);
         }
         // this.btnBegin.setVisible(false);
-        this.leftDownBg.setVisible(false);
-        this.btnInviteQQ.setVisible(false);
-        this.btnInviteWechat.setVisible(false);
+        // this.leftDownBg.setVisible(false);
+        // this.btnInviteQQ.setVisible(false);
+        // this.btnInviteWechat.setVisible(false);
         var posD = 400;
         this.selfBg = new cc.Sprite(res.BG_FRIEND_HEAD_VS_png);
         this.selfBg.setPosition(270,posD);
@@ -1038,7 +1038,7 @@ var FriendViewLayer = cc.Layer.extend({
         var owenerFlag = false;
         var opponentPlayer = null;
         for(var j=0;null!=players&&j<players.length&&null!=players[j];j++){
-            if(userInfo.nickName==players[j].userName){
+            if(userInfo.userId==players[j].uid){
                 owenerFlag = players[j].owener;
             }else{
                 opponentPlayer = players[j];
@@ -1074,7 +1074,8 @@ var FriendViewLayer = cc.Layer.extend({
             });
         }
         if(null!=opponentPlayer&&null!=opponentPlayer.userName&&null!=self.opponentNameLabel){
-            self.opponentNameLabel.setString(opponentPlayer.userName);
+            self.opponentNameLabel.setString(cutstr(opponentPlayer.userName,11));
+            // self.opponentNameLabel.setString(opponentPlayer.userName);
         }
 
         if(null!=players&&players.length>1&&owenerFlag){

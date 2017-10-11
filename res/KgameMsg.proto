@@ -223,7 +223,8 @@ optional string currentCode=8;//当前操作的合约信息
 message PlayerInHome{
    required string userName=1;
    required string headPicture=2;
-   required bool   owener=3;//房主
+   required string uid=3;
+   required bool   owener=4;//房主
 }
 
 

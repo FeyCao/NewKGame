@@ -338,6 +338,7 @@ var MatchViewLayer = cc.Layer.extend({
             }
             this.dayCount4Btn.setPosition(cc.p(posX0+spaceX*4,bgSize.height/2+spaceY));
             this.dayCount4Btn.setTag(104);
+
             // this.dayCount4Btn.setVisible(false);
 
             if(this.dayCountSelect==null){
@@ -466,7 +467,8 @@ var MatchViewLayer = cc.Layer.extend({
             this.dayCount4Btn.setPosition(cc.p(posX0+spaceX*4,bgSize.height/2+spaceY));
             this.dayCount4Btn.setScale(fscale);
             this.dayCountSelect.setScale(fscale);
-
+            this.dayCount3Btn.setVisible(true);
+            this.dayCount4Btn.setVisible(true);
 
             switch(userInfo.matchDayCount)
             {
@@ -645,7 +647,7 @@ var MatchViewLayer = cc.Layer.extend({
             // this.tableViewCode.setVerticalFillOrder(cc.TABLEVIEW_FILL_BOTTOMUP);//c从大到小
             this.tableViewCode.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);//c从小到大
             this.typeNode.addChild(this.tableViewCode,5);
-            this.setCodeType(102,false);
+            this.setCodeType(101,false);
         }
 
         // this.tableViewCode.reloadData();

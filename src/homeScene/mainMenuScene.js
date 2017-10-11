@@ -519,11 +519,11 @@ var MainMenuScene =SceneBase.extend(
         var self = this;
 
        //登录接口测试
-        if(sys.isMobile) {//浏览器模式
-            testApp();
-        }else{
-            alert('非移动端'+sys.os);
-        }
+       //  if(sys.isMobile) {//浏览器模式
+       //      testApp();
+       //  }else{
+       //      alert('非移动端'+sys.os);
+       //  }
 
 
 
@@ -845,7 +845,8 @@ var MainMenuScene =SceneBase.extend(
 
         if(userInfo.nickName!=null&&self.selfNameLabel!=null)
         {
-            self.selfNameLabel.setString(userInfo.nickName);
+            // self.selfNameLabel.setString(userInfo.nickName);
+            self.selfNameLabel.setString(cutstr(userInfo.nickName,21));
         }
         if(userInfo.winOfMatchForOne!=null&&self.winOneLabel!=null)
         {

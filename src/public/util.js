@@ -64,7 +64,11 @@ function cutstr(str, len) {
 function refreshUrl(seconds)
 {
     if(testFlag!=true){
-        pageTimer["refreshUrl"] = setTimeout("window.location.reload()",seconds*1000);
+        pageTimer["refreshUrl"] = setTimeout(function () {
+            alert('服务断开重新登录');
+            window.location.reload();
+
+        },seconds*1000);
     }
 }
 

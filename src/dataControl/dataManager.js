@@ -278,7 +278,7 @@ var treatyList =[
     {"name":"TA:PTA","where":"郑商所","start":"2007","end ":"2016","code":"TA","status":"-1"},
     {"name":"TF:TF","where":"中金所","start":"2014","end ":"2016","code":"TF","status":"-1"},
     {"name":"Y:豆油","where":"大商所","start":"2006","end ":"2016","code":"Y","status":"-1"},
-    {"name":"ZC：郑煤","where":"郑商所","start":"2014","end ":"2016","code":"ZC","status":"-1"},
+    {"name":"ZC:郑煤","where":"郑商所","start":"2014","end ":"2016","code":"ZC","status":"-1"},
     {"name":"ZN:沪锌","where":"上期所","start":"2008","end ":"2016","code":"ZN","status":"-1"},
 ];
 var userInfo ={

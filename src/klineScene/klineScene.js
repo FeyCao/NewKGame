@@ -703,6 +703,7 @@ KLineScene = SceneBase.extend(
             cc.log("KlineScene messageCallBack.begin..");
             // var packet=Packet.prototype.Parse(message);
             var self = gKlineScene;
+            self.stopProgress();
             // if(packet==null) return;
             if (message == null) return;
             if (message.messageType == MessageType.Type_Warn) {
