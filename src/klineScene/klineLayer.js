@@ -272,11 +272,11 @@ var KlineLayer= BaseGraphLayer.extend({
 	{
 		cc.log("drawFiveDailyTradeLine called index="+candleIndex);
 		this.graphAreaFive.clear();
-		if(candleIndex%5+1==5){
+		if(getResult(candleIndex,5)==0){
 			return;
 		}
 		var index = parseInt(candleIndex/5);//丢掉小数部分取整
-		cc.log("drawReFiveDailyTradeLine called index="+5*index);
+		cc.log("drawReFiveDailyTradeLine called index="+index);
 		var posX=this.getCandlePosX(5*index)+this.candleWidth/2;//取第1个坐标中心为起始位置
 		var posY_O=this.getCandlePosYByValue(this.klineData[5*index].o);
 		var posY_C=this.getCandlePosYByValue(this.klineData[candleIndex].c);
@@ -300,13 +300,40 @@ var KlineLayer= BaseGraphLayer.extend({
 
 		var needleColor=cc.color(145,145,145,255);		//上下影线的颜色
 
+        // var klineDataThis= this.klineData[5*index];
+        // klineDataThis.c = this.klineData[candleIndex].c;
+        // var klineDataPrev=null;
+        // if(index>0)
+        // {
+        //     klineDataPrev=this.klineData[5*index-1];
+        // }
+        //
+        // if(getResult(candleIndex,5)==4){
+        //     cc.log("posY_C="+klineDataThis.c+" posY_O="+klineDataThis.o);
+        // }
+        // if(klineDataThis.c<klineDataThis.o)
+        // {
+        //     frameColor=cc.color(6,226,0,255);	//跌色
+        //     innerColor=cc.color(6,226,0,255);
+        // }
+        // else if(klineDataThis.c==klineDataThis.o)
+        // {
+        //     if(klineDataPrev!=null)
+        //     {
+        //         if(klineDataThis.c<klineDataPrev.c)
+        //         {
+        //             frameColor=cc.color(6,226,0,255);	//跌色
+        //             innerColor=cc.color(6,226,0,255);
+        //         }
+        //     }
+        // }
 
-
-		if(posY_O<posY_C)
-		{
+        //
+        if(posY_O>posY_C)
+        {
 			frameColor=cc.color(6,226,0,255);	//跌色
 			innerColor=cc.color(6,226,0,255);
-		}
+        }
 
 		needleColor=frameColor;
 
@@ -352,7 +379,7 @@ var KlineLayer= BaseGraphLayer.extend({
 
 
 
-		if(posY_O<posY_C)
+		if(posY_O>posY_C)
 		{
 			frameColor=cc.color(6,226,0,255);	//跌色
 			innerColor=cc.color(6,226,0,255);

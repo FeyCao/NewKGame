@@ -1546,6 +1546,9 @@ KLineScene = SceneBase.extend(
                     if(userInfo.matchMode == MatchType.Type_DailyTrade_Match){
                         this.selfOperations.push(operationIndexFromServe[i]);
                         this.getKlineLayerMain().setUpArrowIndex(Math.abs(operationIndexFromServe[i]), (this.selfOperations.length % 2 == 1));
+                        if (null != this.klineView){
+                            this.klineView.setUpArrowIndex(Math.abs(operationIndexFromServe[i]), (this.selfOperations.length % 2 == 1));
+                        }
                     }else{
                         this.selfOperations.push(operationIndexFromServe[i]+120);
                         this.getKlineLayerMain().setUpArrowIndex(Math.abs(operationIndexFromServe[i]) + 120, (this.selfOperations.length % 2 == 1));
@@ -1556,6 +1559,9 @@ KLineScene = SceneBase.extend(
                     if(userInfo.matchMode == MatchType.Type_DailyTrade_Match){
                         this.selfOperations.push(operationIndexFromServe[i]);
                         this.getKlineLayerMain().setDownArrowIndex(Math.abs(operationIndexFromServe[i]), (this.selfOperations.length % 2 == 1));
+                        if (null != this.klineView){
+                            this.klineView.setDownArrowIndex(Math.abs(operationIndexFromServe[i]), (this.selfOperations.length % 2 == 1));
+                        }
                     }else{
                         this.selfOperations.push(operationIndexFromServe[i]-120);
                         this.getKlineLayerMain().setDownArrowIndex(Math.abs(operationIndexFromServe[i]) + 120, (this.selfOperations.length % 2 == 1));
@@ -2352,11 +2358,12 @@ KLineScene = SceneBase.extend(
 
                 //var curentIndex = this.currentCandleIndex+120;
                 var ended = false;
-                if (null != this.getKlineLayerMain() && this.getKlineLayerMain().isVisible()) {
-                    ended = this.getKlineLayerMain().drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
-                }
+
                 if (null != this.klineView && this.klineView.isVisible()) {
                     ended = this.klineView.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
+                    this.getKlineLayerMain().setVisible(false);
+                }else if (null != this.getKlineLayerMain() && this.getKlineLayerMain().isVisible()) {
+                    ended = this.getKlineLayerMain().drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
                 }
                 if (null != this.getVolumnTechLayerMain()) {
                     this.getVolumnTechLayerMain().drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
@@ -3110,6 +3117,11 @@ KLineScene = SceneBase.extend(
         },
         drawHistoryCandlePartToIndex: function (index) {
             cc.log("drawHistoryCandlePartToIndex:function(index) this.currentCandleIndex==" + this.currentCandleIndex + "||index==" + index);
+
+            if (null != this.klineView && this.klineView.isVisible()){
+                return;
+            }
+            // if(null != this.klineView && this.klineView.isVisible()){return;}
 
             this.phase2 = true;
             this.currentCandleIndex = index;

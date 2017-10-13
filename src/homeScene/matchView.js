@@ -84,14 +84,14 @@ var MatchViewLayer = cc.Layer.extend({
     },
 
     generalMatch:function () {
-        // if(userInfo.matchBeginFlag==true){return;}
+        if(userInfo.matchBeginFlag==true){return;}
         userInfo.matchMode=MatchType.Type_PlainMultiplayer_Match;
         this.propButton.unselected();
         this.generalButton.selected();
     },
 
     propMatch:function () {
-        // if(userInfo.matchBeginFlag==true){return;}
+        if(userInfo.matchBeginFlag==true){return;}
         userInfo.matchMode=MatchType.Type_Tool_Match;
         this.propButton.selected();
         this.generalButton.unselected();
@@ -222,7 +222,7 @@ var MatchViewLayer = cc.Layer.extend({
 
     unMatch:function(){
         cc.log(" unMatch:function() begin");
-
+        userInfo.matchBeginFlag=false;
         this.unmatchButton.setVisible(false);
         this.textLabel.setVisible(false);
         this.timeLabel.setVisible(false);
@@ -1013,14 +1013,6 @@ var MatchViewLayer = cc.Layer.extend({
 
 
 
-
-            // this.propLabel=cc.LabelTTF.create("道具模式", "fonts/Self.ttf",fontSize);
-            // this.propLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
-            // this.propLabel.setAnchorPoint(0,0.5);
-            // this.propLabel.setPosition(cc.p(bgSize.width/2+70,macthButtonPosY-3));
-            // this.backgroundSprite.addChild(this.propLabel,2);
-
-
             this.beginButton=new cc.MenuItemImage("res/btn_begin.png", "res/btn_begin.png", self.beginMatch, this);//new CheckButton("res/btn_begin.png","res/btn_begin.png");//new Button("res/btn_mode1d.png");
             this.beginButton.setPosition(cc.p(bgSize.width/2,posY));
             mu.addChild(this.beginButton);
@@ -1053,7 +1045,8 @@ var MatchViewLayer = cc.Layer.extend({
             this.generalButton.unselected();
             this.propButton.selected();
         }
-
+        this.propButton.setEnabled(true);
+        this.generalButton.setEnabled(true);
 
         // cc.spriteFrameCache.addSpriteFrames("res/animated-grossini.plist");
         // var spriteTest001 = cc.Sprite.create(cc.spriteFrameCache.getSpriteFrame("grossini-head.png"));

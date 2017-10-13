@@ -65,8 +65,14 @@ function refreshUrl(seconds)
 {
     if(testFlag!=true){
         pageTimer["refreshUrl"] = setTimeout(function () {
-            alert('服务断开重新登录');
-            window.location.reload();
+
+            if(sys.os === sys.OS_ANDROID){
+                alert('服务断开请重新登录');
+                window.location.href="http://analyse.kiiik.com";//回到东航app中
+            }else {
+                window.location.reload();
+            }
+
 
         },seconds*1000);
     }

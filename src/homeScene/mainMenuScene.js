@@ -525,6 +525,12 @@ var MainMenuScene =SceneBase.extend(
        //      alert('非移动端'+sys.os);
        //  }
 
+        // var truthBeTold = window.confirm("服务断开请重新登录，单击“确定”继续。单击“取消”停止。");
+        // if (truthBeTold) {
+        //     window.location.reload();
+        // } else {
+        //     window.close();//self.toHome();
+        // };
 
 
         if(this.controlViewLayer==null){
@@ -539,6 +545,8 @@ var MainMenuScene =SceneBase.extend(
         this.controlViewLayer.showLayer();
         this.pauseLowerLayer();
 
+        // alert('服务断开请重新登录');
+        // window.location.reload();
 	},
     popViewLayer_Close:function()
     {
@@ -846,7 +854,7 @@ var MainMenuScene =SceneBase.extend(
         if(userInfo.nickName!=null&&self.selfNameLabel!=null)
         {
             // self.selfNameLabel.setString(userInfo.nickName);
-            self.selfNameLabel.setString(cutstr(userInfo.nickName,21));
+            self.selfNameLabel.setString(cutstr(userInfo.nickName,37));
         }
         if(userInfo.winOfMatchForOne!=null&&self.winOneLabel!=null)
         {
