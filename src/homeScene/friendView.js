@@ -807,23 +807,26 @@ var FriendViewLayer = cc.Layer.extend({
             data = userInfo.friendListData[idx];
             if(data!=null){
                 cell.setFriendInfo(data,AddFriendType.Type_SendFriend_Request);
+                cell.setCellView(idx);
             }
-            cell.setCellView(idx);
+
         }
         else  if(null!=userInfo.friendAddData&&this.friendAddNode.isVisible()==true){
             // return userInfo.friendNewListData.length;
             data = userInfo.friendNewListData[idx];
             if(data!=null){
                 cell.setFriendInfo(data,AddFriendType.Type_FindFriendRequest);
+                cell.setCellView(idx);
             }
-            cell.setCellView(idx);
+
         }else if(null!=userInfo.friendAddData&&this.friendSearchNode.isVisible()==true){
             // return userInfo.friendSearchListData.length;
             data = userInfo.friendSearchListData[idx];
             if(data!=null){
                 cell.setFriendInfo(data,AddFriendType.Type_SelectAdd_NewFriend);
+                cell.setCellView(idx);
             }
-            cell.setCellView(idx);
+
         }
 
         return cell;
@@ -840,15 +843,15 @@ var FriendViewLayer = cc.Layer.extend({
         if(userInfo.friendListData!=null&&this.friendListNode.isVisible()==true)
         {
             cc.log("numberOfCellsInTableView:function (table)1");
-            return userInfo.friendListData.length;
+            return userInfo.friendListData.length+1;
         }
         else  if(null!=userInfo.friendNewListData&&this.friendAddNode.isVisible()==true)
         {
             cc.log("numberOfCellsInTableView:function (table)2");
-            return userInfo.friendNewListData.length;
+            return userInfo.friendNewListData.length+1;
         }else if(null!=userInfo.friendSearchListData&&this.friendSearchNode.isVisible()==true){
             cc.log("numberOfCellsInTableView:function (table)3");
-            return userInfo.friendSearchListData.length;
+            return userInfo.friendSearchListData.length+1;
         } else {
             cc.log("numberOfCellsInTableView:function (table)4");
             return 0;
@@ -874,19 +877,23 @@ var FriendViewLayer = cc.Layer.extend({
     sendFriendList:function () {
         // userInfo.matchMode = MatchType.Type_Friend_Match;
         userInfo.friendListData = null;
-        this.refreshFriendViewLayer();
+        // this.refreshFriendViewLayer();
+        var parent = this.parent.parent;
         if(null!=gSocketConn){
+            parent.showProgress();
             gSocketConn.getFriendList(userInfo.matchMode);
         }
     },
     sendFriendAdd:function () {
         // userInfo.friendNewListData = null;
-        this.refreshAddFriendView();
+        // this.refreshAddFriendView();
         var addFriendType = AddFriendType.Type_FindFriendRequest;//AddFriendType.Type_SelectAdd_NewFriend;ddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
         var content = new FindFriend_Request();
         content.setToken(userInfo.token);
         // userInfo.matchMode = MatchType.Type_Friend_Match;
+        var parent = this.parent.parent;
         if(null!=gSocketConn){
+            parent.showProgress();
             gSocketConn.addFriend(addFriendType,content);
         }
     },

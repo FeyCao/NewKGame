@@ -149,7 +149,7 @@ var PlayerInfoLayer= cc.Node.extend({
 				if(this.headSprite==null){
                     this.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
                     var sizeHead = this.headSprite.getContentSize();
-                    this.headSprite.setScale(80/sizeHead.width);
+                    this.headSprite.setScale(80/sizeHead.width,80/size.height);
 					this.headSprite.setPosition(posX1,posY);
 					this.backgroundSprite.addChild(this.headSprite,2);
 				}
@@ -173,7 +173,7 @@ var PlayerInfoLayer= cc.Node.extend({
 						self.headSprite.initWithTexture(gPlayerAvatarSprite);
 
 						var size = self.headSprite.getContentSize();
-						self.headSprite.setScale(90/size.width);
+						self.headSprite.setScale(80/size.width,80/size.height);
 					}
 					cc.log("//练习场比赛loadImg="+userInfo.headSprite); // self.addChild(logo);
 				});
@@ -394,7 +394,7 @@ var PlayerInfoLayer= cc.Node.extend({
 		if(this.headSprite==null){
             this.headSprite = new cc.Sprite(res.HEAD_NO_PNG);
             var sizeHead = this.headSprite.getContentSize();
-            this.headSprite.setScale(80/sizeHead.width);
+            this.headSprite.setScale(80/sizeHead.width,80/sizeHead.height);
 			this.headSprite.setPosition(160,670);
 			this.backgroundSprite.addChild(this.headSprite,2);
 		}
@@ -423,7 +423,7 @@ var PlayerInfoLayer= cc.Node.extend({
 					self.headSprite.initWithTexture(gPlayerAvatarSprite);
 
 					var size = self.headSprite.getContentSize();
-					self.headSprite.setScale(80/size.width);
+					self.headSprite.setScale(80/size.width,80/size.height);
 				}
 				cc.log("playInfoLayer refreshScoresByData1 loadImg="+url); // self.addChild(logo);
 
@@ -462,7 +462,7 @@ var PlayerInfoLayer= cc.Node.extend({
 									texture2d.handleLoadedTexture();
 									self.playerHead_Sprite[0].initWithTexture(texture2d);
 									var size = self.playerHead_Sprite[0].getContentSize();
-									self.playerHead_Sprite[0].setScale(80/size.width);
+									self.playerHead_Sprite[0].setScale(80/size.width,80/size.height);
 
 								}
 								cc.log("playInfoLayer refreshScoresByData2 loadImg"+url); // self.addChild(logo);
@@ -481,7 +481,7 @@ var PlayerInfoLayer= cc.Node.extend({
 									texture2d.handleLoadedTexture();
 									self.playerHead_Sprite[1].initWithTexture(texture2d);
 									var size = self.playerHead_Sprite[1].getContentSize();
-									self.playerHead_Sprite[1].setScale(80/size.width);
+									self.playerHead_Sprite[1].setScale(80/size.width,80/size.height);
 								}
 								cc.log("playInfoLayer  refreshScoresByData3 loadImg"+url); // self.addChild(logo);
 							});

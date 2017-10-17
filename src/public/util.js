@@ -229,8 +229,72 @@ function testApp(urlAnd,urlIos) {
     //
     // }
 }
+function isWeiXin(){
+    // alert('屏幕状态:'+window.neworientation.current+"||浏览器:"+sys.browserType+"||平台:"+sys.os);
+    var ua = window.navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+        return true;
+    }else{
+        return false;
+    }
+}
+// var win = window, nav = win.navigator;
+// var ua = nav.userAgent.toLowerCase();
+// var isWeChat = ua.match(/MicroMessenger/i) == 'micromessenger'?'true':'false'
+function testScene() {
+    alert('屏幕状态:'+window.neworientation.current+"||浏览器:"+sys.browserType+"||平台:"+sys.os+"||isWeChat:"+isWeChat);
+    // window.addEventListener('orientationchange', function(){
+    //     if(window.neworientation.current === 'portrait|landscape'){
+    //         alert('屏幕状态'+window.neworientation.current);// do something……
+    //     } else {
+    //         alert('屏幕状态'+window.neworientation.current);// do something……
+    //     }
+    // }, false);
+}
 
+function findDimensions() {
 
+    var winWidth, winHeight;
+
+    //获取窗口宽度
+
+    if (window.innerWidth)
+
+        winWidth = window.innerWidth;
+
+    else if ((document.body) && (document.body.clientWidth))
+
+        winWidth = document.body.clientWidth;
+
+    //获取窗口高度
+
+    if (window.innerHeight)
+
+        winHeight = window.innerHeight;
+
+    else if ((document.body) && (document.body.clientHeight))
+
+        winHeight = document.body.clientHeight;
+
+    //通过深入Document内部对body进行检测，获取窗口大小
+
+    if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
+
+        winHeight = document.documentElement.clientHeight;
+
+        winWidth = document.documentElement.clientWidth;
+
+    }
+
+    return {
+
+        "width": winWidth,
+
+        "height": winHeight
+
+    };
+
+};
 var wsURL = 'ws://' + cc.game.config[cc.game.CONFIG_KEY.serverURL];
 // if (window.location.protocol == 'http:') {
 //     wsURL = 'ws://' + cc.game.config[cc.game.CONFIG_KEY.serverURL];

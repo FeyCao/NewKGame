@@ -184,6 +184,7 @@ BTN_CODE_D4:"res/exercise/exchange_on4.png",
 //比赛结束界面资源
     BG_RESULT_PNG:"res/result/bg_result.png",
     BG_CONTRACT_PNG:"res/result/bg_contract.png",
+    BG_LINE_PNG:"res/result/line_bg.png",
     BTN_AGAIN_PNG:"res/result/btn_r_again.png",
     BTN_OVER_PNG:"res/result/btn_r_gameover.png",
     BTN_SHARE_PNG:"res/result/btn_r_share.png",
@@ -208,7 +209,7 @@ var g_resources =["res/bg_tittle.png","res/bg_select.png","res/playerInfo_bg.png
 for (var i in res) {
     g_resources.push(res[i]);
 }
-
+//        "src/lib/orientationchange-fix.min.js",
 // kiiikmobile://start.home?pagename=KGAME&inviteCode=1234567890
 // var wsURL = 'ws://222.66.97.203:5003/';//公网测试
 // var wsURL = 'ws://222.66.97.203:7003/Kgamefeng/websocket';//晓峰环境

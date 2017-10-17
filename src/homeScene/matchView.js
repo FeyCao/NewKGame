@@ -1407,7 +1407,7 @@ var preMatchView = cc.Layer.extend({
     },
 
     toMainScene:function () {
-        cc.log(" toMainScene:function () begin");
+        cc.log(" preMatchView toMainScene:function () begin");
         if(this.closeCallBackFunction!=null){
             this.closeCallBackFunction();
         }

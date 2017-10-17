@@ -64,6 +64,14 @@ var currentScene = null;//记录当前显示的界面
 
 var gLoginManager=null;
 
+// window.addEventListener('orientationchange', function(){
+//     if(window.neworientation.current === 'portrait|landscape'){
+//         alert('屏幕状态'+window.neworientation.current);// do something……
+//     } else {
+//         alert('屏幕状态'+window.neworientation.current);// do something……
+//     }
+// }, false);
+
 cc.game.onStart = function(){
     if(!cc.sys.isNative && document.getElementById("cocosLoading")) //If referenced loading.js, please remove it
         document.body.removeChild(document.getElementById("cocosLoading"));
@@ -76,7 +84,9 @@ cc.game.onStart = function(){
 
     // Uncomment the following line to set a fixed orientation for your game
     // cc.view.setOrientation(cc.ORIENTATION_PORTRAIT);
-
+    cc.view.enableAutoFullScreen(true);//自动全屏//true   : 可以自动全屏
+    //false  : 不可以自动全屏
+    //添加在cc.view.setDesignResolutionSize的前面
     // Setup the resolution policy and design resolution size
     cc.view.setDesignResolutionSize(gDesignResolutionWidth, gDesignResolutionHeight, cc.ResolutionPolicy.SHOW_ALL);
 

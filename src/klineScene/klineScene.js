@@ -1762,7 +1762,7 @@ KLineScene = SceneBase.extend(
                         gKlineScene.preMatchView.setPosition(0, 0);
                         gKlineScene.otherMessageTipLayer.addChild(this.preMatchView, 1, this.preMatchView.getTag());
                         gKlineScene.preMatchView.closeCallBackFunction = function () {
-                            self.popViewLayer_Close()
+                            self.toHome()
                         };
                     }
                     gKlineScene.preMatchView.showLayer();
@@ -1773,7 +1773,7 @@ KLineScene = SceneBase.extend(
                         gKlineScene.matchViewLayer.setPosition(0, 0);
                         gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1, gKlineScene.matchViewLayer.getTag());
                         gKlineScene.matchViewLayer.closeCallBackFunction = function () {
-                            gKlineScene.popViewLayer_Close()
+                            gKlineScene.toHome()
                         };
                         // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
                     }

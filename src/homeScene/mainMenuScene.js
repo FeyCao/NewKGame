@@ -518,11 +518,32 @@ var MainMenuScene =SceneBase.extend(
 	{
         var self = this;
 
+        // if(isWeiXin()==true){
+        //     alert('是微信width=='+findDimensions().width+'||hegit=='+findDimensions().height);
+        //
+        //     // cc.view.resizeWithBrowserSize()
+        // }else{
+        //     alert('不是微信width=='+findDimensions().width+'||hegit=='+findDimensions().height);
+        // }
+        // if(findDimensions().width<findDimensions().height){
+        //
+        //     var c=document.getElementById("gameCanvas");
+        //     var ctx=c.getContext("2d");
+        //     ctx.save();
+        //     ctx.rotate(Math.PI/2);
+        //     // ctx.fillStyle="yellow";
+        //     // 4 ctx.fillRect(25,25,250,100)
+        //     ctx.restore();
+        //     // cc.view.setFrameSize(findDimensions().height, findDimensions().width);
+        //     // cc.view.setDesignResolutionSize(findDimensions().height, findDimensions().width, cc.ResolutionPolicy.SHOW_ALL);
+        //     alert('切换width');
+        // }
+        // testScene();
        //登录接口测试
        //  if(sys.isMobile) {//浏览器模式
        //      testApp();
        //  }else{
-       //      alert('非移动端'+sys.os);
+       //
        //  }
 
         // var truthBeTold = window.confirm("服务断开请重新登录，单击“确定”继续。单击“取消”停止。");
@@ -533,20 +554,17 @@ var MainMenuScene =SceneBase.extend(
         // };
 
 
-        if(this.controlViewLayer==null){
-            this.controlViewLayer=new ControlViewLayer();
-            this.controlViewLayer.setVisible(false);
-            this.controlViewLayer.setPosition(0,0);
-            this.otherMessageTipLayer.addChild(this.controlViewLayer, 1,this.controlViewLayer.getTag());
-            this.controlViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
-        }
-        // this.controlViewLayer.refreshControlViewLayer();
-
-        this.controlViewLayer.showLayer();
-        this.pauseLowerLayer();
-
-        // alert('服务断开请重新登录');
-        // window.location.reload();
+        // if(this.controlViewLayer==null){
+        //     this.controlViewLayer=new ControlViewLayer();
+        //     this.controlViewLayer.setVisible(false);
+        //     this.controlViewLayer.setPosition(0,0);
+        //     this.otherMessageTipLayer.addChild(this.controlViewLayer, 1,this.controlViewLayer.getTag());
+        //     this.controlViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+        // }
+        // // this.controlViewLayer.refreshControlViewLayer();
+        //
+        // this.controlViewLayer.showLayer();
+        // this.pauseLowerLayer();
 	},
     popViewLayer_Close:function()
     {
@@ -1020,6 +1038,15 @@ var MainMenuScene =SceneBase.extend(
                     self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
                     break;
                 }
+                case -420:{
+                    if(self.friendLayer!=null){
+                        self.friendLayer.showLayer();
+                        self.pauseLowerLayer();
+                    }
+                    self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+
+                    break;
+                }
                 default:{
                     cc.log("MainScene messageCallBack default message.warn.code="+message.warn.code);
                     self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
@@ -1329,38 +1356,6 @@ var MainMenuScene =SceneBase.extend(
                 userInfo.friendAddData = data;
                 userInfo.friendNewListData  = data.findFriendRequest;
                 userInfo.friendSearchListData  = data.selectAddNewFriend;
-                /*comment:"我是yaco"
-                followerId:"43562"
-                headPicture:"http://qiniu.kiiik.com/12AA6F6D-F5E7-FC51-FBE9-ED07E3A89A9720170531095532.jpg"
-                nickName:"海军测试"
-                status:1
-                token:"1bd9e33acc154ec099a9447aea559e61"
-                type:2
-                */
-                /* enum AddFriendType{
-    Type_SelectAdd_NewFriend=0;//搜索好友
-    Type_SendFriend_Request=1;//好友申请
-    Type_FindFriendRequest=2;//新的朋友列表
-    }*/
-                // userInfo.friendListData.sort(function (a,b) {
-                //     if(a["status"]=="在线"){
-                //         return -1;
-                //     }else if(b["status"]=="在线"){
-                //         return 1;
-                //     }else if(a["status"]=="组队中"){
-                //         return -1;
-                //     }else if(b["status"]=="组队中"){
-                //         return 1;
-                //     }else if(a["status"]=="比赛中"){
-                //         return -1;
-                //     }else if(b["status"]=="比赛中"){
-                //         return 1;
-                //     }else {
-                //         return a["userName"].charCodeAt(0)-b["userName"].charCodeAt(0);
-                //     }
-                // });
-                // cc.log("after sort.....");
-                // cc.log(userInfo.friendListData);
                 if(self.friendLayer==null){
                     return;
                 }else {
@@ -1434,7 +1429,9 @@ var MainMenuScene =SceneBase.extend(
 
                 userInfo.inviteFlag = true;
                 self.openFriendLayer();
-
+                // if(self.friendLayer!=null){
+                //     self.friendLayer.refreshFriendViewLayer();
+                // }
                 break;
             }
 
