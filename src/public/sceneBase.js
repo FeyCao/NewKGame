@@ -47,6 +47,10 @@ SceneBase = cc.Scene.extend(
 		// 	// }
 		// }
 		var self=this;
+		// if(findDimensions().height>findDimensions().width){
+         //    self.runAction(new cc.RotateTo(0.5,90,90));
+		// }
+
 		// var size = cc.director.getWinSize();
 		var fXScale = gDesignResolutionWidth/1280;
 		var fYScale = gDesignResolutionHeight/720;

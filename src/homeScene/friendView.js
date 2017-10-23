@@ -155,6 +155,8 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         self.addChild(inviteButton,2);//INVITE|username|
 
         inviteButton.setClickEvent(function(){
+            if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+            if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
             self.statusSprite.initWithFile(res.STATUS_FRIEND_INVITED_png);
             self.statusSprite.setPosition(cc.p(140,30));
             self.statusSprite.setAnchorPoint(0,0.5);
@@ -191,6 +193,8 @@ var FriendTableViewCell = cc.TableViewCell.extend({
                 self.addChild(self.agreeButton);//INVITE|username|
                 self.agreeButton.setClickEvent(function(){
 
+                    if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+                    if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
                     var addFriendType = AddFriendType.Type_ReceiveFriendRequest//AddFriendType.Type_SelectAdd_NewFriend;AddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
                     var content = new ReceiveFriendRequest();
                     content.setToken(self.friendInfo["token"]);
@@ -229,15 +233,18 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         }
         var comment = self.friendInfo["comment"];
         // new createClipRoundNode("xxx对xxx使用了道具xxx对",22,YellowColor,350,30);
-        if(GetLength(comment)>10&&addFlag == true){
-            self.commentLabel =  new createClipRoundNode(comment,19,cc.color("#0090e2"),100,30);
-            self.commentLabel.setPosition(cc.p(140,20));
-        }else{
-            self.commentLabel =  new cc.LabelTTF(cutstr(username,10), res.FONT_TYPE, 19.0,cc.size(100,25));
-            self.commentLabel.setPosition(cc.p(140,posY));
-        }
+        // if(GetLength(comment)>10&&addFlag == true)
+        // if(GetLength(comment)>10){
+        //     self.commentLabel =  new createClipRoundNode(comment,19,cc.color("#0090e2"),100,30);
+        //     self.commentLabel.setPosition(cc.p(140,20));
+        // }else{
+        //     self.commentLabel =  new cc.LabelTTF(cutstr(comment), 19.0,cc.size(100,30));
+        //     self.commentLabel.setPosition(cc.p(140,20));
+        //     self.commentLabel.setColor(cc.color("#0090e2"));
+        // }
         //new cc.LabelTTF(cutstr(comment,9), res.FONT_TYPE, 19.0);
-        self.commentLabel.setColor(cc.color("#0090e2"));
+        self.commentLabel =  new createClipRoundNode(comment,19,cc.color("#0090e2"),100,30);
+        self.commentLabel.setPosition(cc.p(140,20));
         self.commentLabel.setAnchorPoint(0,0.5);
         self.addChild(self.commentLabel);
         cc.log("FriendTableViewCell setNewFriendCellData end");
@@ -303,6 +310,8 @@ var FriendTableViewCell = cc.TableViewCell.extend({
         var comment = "我是"+userInfo.nickName;
         addButton.setClickEvent(function(){
 
+            if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+            if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
             // var addFriendType = AddFriendType.Type_SendFriend_Request//AddFriendType.Type_SelectAdd_NewFriend;AddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
             var content = new SendFriend_Request();//SendFriend_Request
             content.setToken(self.friendInfo["token"]);
@@ -444,6 +453,10 @@ var FriendViewLayer = cc.Layer.extend({
             this.leftDownBg.setVisible(false);
             this.btnInviteQQ.setVisible(false);
             this.btnInviteWechat.setVisible(false);
+        }else{
+            this.leftDownBg.setVisible(true);
+            this.btnInviteQQ.setVisible(true);
+            this.btnInviteWechat.setVisible(true);
         }
         // this.btnBegin.setVisible(false);
         // this.leftDownBg.setVisible(false);
@@ -735,6 +748,8 @@ var FriendViewLayer = cc.Layer.extend({
     },
     toMainScene:function () {
 
+        if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+        if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
         if(gMainMenuScene!=null)
         {
             if(gMainMenuScene==false)
@@ -758,16 +773,22 @@ var FriendViewLayer = cc.Layer.extend({
     },
 
     beginMatch:function () {
+        if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+        if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
         cc.log("beginMatch:function");
         gSocketConn.SendBeginFriendMessage();
 
     },
     inviteQQMatch:function () {
+        if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+        if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
         userInfo.inviteType = "QQ";//QQ/Wechat
         gSocketConn.inviteFriend(null,true,null);
         cc.log("inviteQQMatch:function");
     },
     inviteWechatMatch:function () {
+        if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+        if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
         userInfo.inviteType = "Wechat";//QQ/Wechat
         gSocketConn.inviteFriend(null,true,null);
         cc.log("inviteWechatMatch:function");
@@ -848,10 +869,10 @@ var FriendViewLayer = cc.Layer.extend({
         else  if(null!=userInfo.friendNewListData&&this.friendAddNode.isVisible()==true)
         {
             cc.log("numberOfCellsInTableView:function (table)2");
-            return userInfo.friendNewListData.length+1;
+            return userInfo.friendNewListData.length;
         }else if(null!=userInfo.friendSearchListData&&this.friendSearchNode.isVisible()==true){
             cc.log("numberOfCellsInTableView:function (table)3");
-            return userInfo.friendSearchListData.length+1;
+            return userInfo.friendSearchListData.length;
         } else {
             cc.log("numberOfCellsInTableView:function (table)4");
             return 0;
@@ -875,6 +896,8 @@ var FriendViewLayer = cc.Layer.extend({
     },
 
     sendFriendList:function () {
+        if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+        if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
         // userInfo.matchMode = MatchType.Type_Friend_Match;
         userInfo.friendListData = null;
         // this.refreshFriendViewLayer();
@@ -887,6 +910,8 @@ var FriendViewLayer = cc.Layer.extend({
     sendFriendAdd:function () {
         // userInfo.friendNewListData = null;
         // this.refreshAddFriendView();
+        if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+        if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
         var addFriendType = AddFriendType.Type_FindFriendRequest;//AddFriendType.Type_SelectAdd_NewFriend;ddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
         var content = new FindFriend_Request();
         content.setToken(userInfo.token);
@@ -898,6 +923,8 @@ var FriendViewLayer = cc.Layer.extend({
         }
     },
     sendFriendSearch:function () {
+        if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+        if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
         cc.log("sendFriendSearch:function");
         var self = this;
         // userInfo.friendSearchListData = null;
@@ -914,6 +941,8 @@ var FriendViewLayer = cc.Layer.extend({
         }
     },
     sendAddFriend:function () {
+        if(null!=gMainMenuScene&&gMainMenuScene.isShowingProgress==true){return;}
+        if(null!=gKlineScene&&gKlineScene.isShowingProgress==true){return;}
         cc.log("sendAddFriend");
         var addFriendType = AddFriendType.Type_SendFriend_Request//AddFriendType.Type_SelectAdd_NewFriend;AddFriendType.Type_SendFriend_Request;AddFriendType.Type_FindFriendRequest;
         var content = new SendFriend_Request();
@@ -941,6 +970,9 @@ var FriendViewLayer = cc.Layer.extend({
         this.disableAllFriend();
         this.friendAddNode.setVisible(true);
         this.tableViewNewFriend.setVisible(true);
+        this.leftDownBg.setVisible(false);
+        this.btnInviteQQ.setVisible(false);
+        this.btnInviteWechat.setVisible(false);
         if(self.tableViewNewFriend!=null)
         {
             cc.log("refreshAddFriendViewLayer:function()");
@@ -954,6 +986,9 @@ var FriendViewLayer = cc.Layer.extend({
         this.disableAllFriend();
         this.friendSearchNode.setVisible(true);
         this.tableViewSearchFriend.setVisible(true);
+        this.leftDownBg.setVisible(false);
+        this.btnInviteQQ.setVisible(false);
+        this.btnInviteWechat.setVisible(false);
         if(self.tableViewSearchFriend!=null)
         {
             cc.log("refreshSearchFriendView:function()");
@@ -1039,6 +1074,17 @@ var FriendViewLayer = cc.Layer.extend({
             this.infoBg.setVisible(true);
             this.infoLabel.setVisible(true);
         }
+        if(userInfo.source!="DHJK"){
+
+            // this.btnBegin.setVisible(false);
+            this.leftDownBg.setVisible(false);
+            this.btnInviteQQ.setVisible(false);
+            this.btnInviteWechat.setVisible(false);
+        }else{
+            this.leftDownBg.setVisible(true);
+            this.btnInviteQQ.setVisible(true);
+            this.btnInviteWechat.setVisible(true);
+        }
     },
     refreshInviteFriend:function(players) {
         var self =this;
@@ -1051,7 +1097,9 @@ var FriendViewLayer = cc.Layer.extend({
                 opponentPlayer = players[j];
             }
         }
-
+        this.leftDownBg.setVisible(false);
+        this.btnInviteQQ.setVisible(false);
+        this.btnInviteWechat.setVisible(false);
         if(null==opponentPlayer){
 
             self.opponentNameLabel.setString("-- -- -- --");

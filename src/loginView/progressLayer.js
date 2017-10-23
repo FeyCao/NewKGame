@@ -85,7 +85,7 @@ var ProgressLayer= cc.Layer.extend({
 			cc.log("IOS rotate: sceneBase::sys.os=="+sys.os);
 			refreshUrl(10);
         }else  if(sys.isMobile==true){
-            refreshUrl(5);
+            refreshUrl(10);
 		}
 	},
 	

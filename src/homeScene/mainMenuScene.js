@@ -554,17 +554,17 @@ var MainMenuScene =SceneBase.extend(
         // };
 
 
-        // if(this.controlViewLayer==null){
-        //     this.controlViewLayer=new ControlViewLayer();
-        //     this.controlViewLayer.setVisible(false);
-        //     this.controlViewLayer.setPosition(0,0);
-        //     this.otherMessageTipLayer.addChild(this.controlViewLayer, 1,this.controlViewLayer.getTag());
-        //     this.controlViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
-        // }
-        // // this.controlViewLayer.refreshControlViewLayer();
-        //
-        // this.controlViewLayer.showLayer();
-        // this.pauseLowerLayer();
+        if(this.controlViewLayer==null){
+            this.controlViewLayer=new ControlViewLayer();
+            this.controlViewLayer.setVisible(false);
+            this.controlViewLayer.setPosition(0,0);
+            this.otherMessageTipLayer.addChild(this.controlViewLayer, 1,this.controlViewLayer.getTag());
+            this.controlViewLayer.closeCallBackFunction=function(){self.popViewLayer_Close()};
+        }
+        // this.controlViewLayer.refreshControlViewLayer();
+
+        this.controlViewLayer.showLayer();
+        this.pauseLowerLayer();
 	},
     popViewLayer_Close:function()
     {
@@ -872,7 +872,8 @@ var MainMenuScene =SceneBase.extend(
         if(userInfo.nickName!=null&&self.selfNameLabel!=null)
         {
             // self.selfNameLabel.setString(userInfo.nickName);
-            self.selfNameLabel.setString(cutstr(userInfo.nickName,37));
+            var showName = GetLength(userInfo.nickName)>32?"无名的游客":userInfo.nickName;
+            self.selfNameLabel.setString(cutstr(showName,27));
         }
         if(userInfo.winOfMatchForOne!=null&&self.winOneLabel!=null)
         {

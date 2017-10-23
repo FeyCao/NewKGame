@@ -90,7 +90,7 @@ function gotoshare()
 {
     //注意：该函数无任何作用，只是为了给APP分享时捕获链接用的
 
-    window.open("shareGame.html");
+    window.open("share.html");
 }
 
 function getQueryString()

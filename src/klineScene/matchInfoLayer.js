@@ -540,15 +540,15 @@ var MatchInfoLayer = cc.Layer.extend({
         if(null!=this.tradeControlLayer){
             this.tradeControlLayer.setVisible(true);
 		}
-        for (var i = userInfo.codeMainList.length - 1; i > 0; i--) {//当前合约排在第一位
-            for (var j = i; j > 0; j--) {
-                if (userInfo.codeMainList[j].code == userInfo.currentCode) {
-                    var temp = userInfo.codeMainList[j];
-                    userInfo.codeMainList[j] = userInfo.codeMainList[j-1];
-                    userInfo.codeMainList[j-1] = temp;
-                }
-            }
-        }
+        // for (var i = userInfo.codeMainList.length - 1; i > 0; i--) {//当前合约排在第一位
+        //     for (var j = i; j > 0; j--) {
+        //         if (userInfo.codeMainList[j].code == userInfo.currentCode) {
+        //             var temp = userInfo.codeMainList[j];
+        //             userInfo.codeMainList[j] = userInfo.codeMainList[j-1];
+        //             userInfo.codeMainList[j-1] = temp;
+        //         }
+        //     }
+        // }
         if(null!=userInfo.currentCode){
             this.currentCodeName.setString(userInfo.currentCode);
         }
@@ -671,28 +671,29 @@ var MatchInfoLayer = cc.Layer.extend({
 
             for(var i = 0;null!=userInfo.codeMainList&&i<userInfo.codeMainList.length;i++){
 
-
                 var score = userInfo.codeMainList[i].codeScore;
                 if(null!=this.codeButton[i]){
-                    if(i!=0){
-                        this.codeButton[i].setVisible(false);
-                        this.codeScoreLabel[i].setVisible(false);
-                    }else {
-                        this.codeButton[i].setVisible(true);
-                        this.codeScoreLabel[i].setVisible(true);
-					}
                     this.codeButton[i].setPosition(cc.p(80,30));
                     this.codeScoreLabel[i].setPosition(200,30);
                     this.codeButton[i].setTag(i);
                     this.codeLabel[i].setString(userInfo.codeMainList[i].code);
                     this.codeScoreLabel[i].setString(score.toFixed(2)+"%");
                     this.codeScoreLabel[i].setColor(setLabelColor(score));
+                    if (userInfo.codeMainList[i].code == userInfo.currentCode){
+                        this.currentCodeName.setPosition(cc.p(80,30));
+                        this.codeButton[i].setVisible(true);
+                        this.codeScoreLabel[i].setVisible(true);
+					}else{
+                        this.codeButton[i].setVisible(false);
+                        this.codeScoreLabel[i].setVisible(false);
+					}
                 }
+
             }
             if(null!=userInfo.currentCode){
                 this.currentCodeName.setString(userInfo.currentCode);
             }
-            this.currentCodeName.setPosition(this.codeButton[0].getPosition());
+
         }
 
     },
@@ -724,11 +725,14 @@ var MatchInfoLayer = cc.Layer.extend({
                     this.codeScoreLabel[i].setString(score.toFixed(2)+"%");
                     this.codeScoreLabel[i].setColor(setLabelColor(score));
                 }
+                if (userInfo.codeMainList[i].code == userInfo.currentCode){
+                    this.currentCodeName.setPosition(80,bgSize.height-20-42*i);
+                }
             }
             if(null!=userInfo.currentCode){
                 this.currentCodeName.setString(userInfo.currentCode);
             }
-            this.currentCodeName.setPosition(this.codeButton[0].getPosition());
+            // this.currentCodeName.setPosition(this.codeButton[0].getPosition());
         }
     },
 
@@ -957,8 +961,15 @@ var MatchInfoLayer = cc.Layer.extend({
 	buyClick:function()
 	{
 
+	    if(this.statusFlag==1)return;
 		var klineScene=this.parent.parent;
 		var lastCandleIndex=klineScene.currentCandleIndex;
+        var oplength=klineScene.selfOperations.length-1;
+        if(0<oplength&&null!=klineScene.selfOperations[oplength]&&lastCandleIndex<=Math.abs(klineScene.selfOperations[oplength])){
+            cc.log("ERROR　selfOperations[" + i + "] = " + klineScene.selfOperations[oplength]);
+            cc.log(" this.currentCandleIndex = ",lastCandleIndex);
+            return;
+        }
         if(lastCandleIndex<121&&userInfo.matchMode!=MatchType.Type_DailyTrade_Match){
 			return;
 		}else{
@@ -968,31 +979,27 @@ var MatchInfoLayer = cc.Layer.extend({
 				playBuySound();
 				// cc.audioEngine.playEffect("res/sound/button.mp3",false);
 			}
-
-			var i=klineScene.selfOperations.length;
-			if(i>0&&Math.abs(klineScene.selfOperations[i-1])>=klineScene.currentCandleIndex)
-			{
-				cc.log("ERROR　selfOperations[" + i + "] = " + klineScene.selfOperations[i-1]);
-				cc.log(" this.currentCandleIndex = ",klineScene.currentCandleIndex);
-				return;
-			}
-			else
-			{
-				if(klineScene.buyClick()==false){
-
-					return;
-				}else{
-                    if(this.statusFlag==0)
-                    {
-                        this.setButtonsToBuyPosition();
-                    }
-                    else
-                    {
-                        this.setButtonsToNoPosition();
-                    }
-				};
-
-			}
+            if(klineScene.buyClick()==false){
+                return;
+            }else{
+                if(this.statusFlag==0)
+                {
+                    this.setButtonsToBuyPosition();
+                }
+                else
+                {
+                    this.setButtonsToNoPosition();
+                }
+            };
+			// if(i>0&&Math.abs(klineScene.selfOperations[i-1])>=klineScene.currentCandleIndex)
+			// {
+			//
+			// }
+			// else
+			// {
+			//
+            //
+			// }
 		}
 	},
 	
@@ -1006,8 +1013,15 @@ var MatchInfoLayer = cc.Layer.extend({
 	
 	sellClick:function()
 	{
+        if(this.statusFlag==-1)return;
 		var klineScene=this.parent.parent;
 		var lastCandleIndex=klineScene.currentCandleIndex;
+        var oplength=klineScene.selfOperations.length-1;
+        if(0<oplength&&null!=klineScene.selfOperations[oplength]&&lastCandleIndex<=Math.abs(klineScene.selfOperations[oplength])){
+            cc.log("ERROR　selfOperations[" + i + "] = " + klineScene.selfOperations[oplength]);
+            cc.log(" this.currentCandleIndex = ",lastCandleIndex);
+            return;
+        }
         if(lastCandleIndex<121&&userInfo.matchMode!=MatchType.Type_DailyTrade_Match){
 			return;
 		}else{
@@ -1015,32 +1029,20 @@ var MatchInfoLayer = cc.Layer.extend({
 			{
 				playSellSound();
 			}
-			var i=klineScene.selfOperations.length;
-			if(i>0&&Math.abs(klineScene.selfOperations[i-1])>=klineScene.currentCandleIndex)
-			{
-				cc.log("ERROR　selfOperations[" + i + "] = " + klineScene.selfOperations[i-1]);
-				cc.log("this.currentCandleIndex = ",klineScene.currentCandleIndex);
-				return;
-			}
-			else
-			{
-                if(klineScene.sellClick()==false){
-
-                    return;
-                }else{
-                    if(this.statusFlag==0)
-                    {
-                        this.setButtonsToSellPosition();
-                    }
-                    else
-                    {
-                        this.setButtonsToNoPosition();
-                    }
+            if(klineScene.sellClick()==false){
+                return;
+            }else{
+                if(this.statusFlag==0)
+                {
+                    this.setButtonsToSellPosition();
                 }
-			}
+                else
+                {
+                    this.setButtonsToNoPosition();
+                }
+            }
 		}
 
-		
 	},
 	
 	sellCloseClick:function()

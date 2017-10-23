@@ -1701,8 +1701,11 @@ var codeSelectCell = cc.TableViewCell.extend({
             this.setCodeData();
         }else if(this.codeInfo.status==-1){
             if(null!=userInfo.codeSelected&&userInfo.codeSelected.length>4){
-                if(null!=gMainMenuScene){
+                if(null!=gMainMenuScene&&false!=gMainMenuScene){
                     gMainMenuScene.showErrorBox("所选品种不能超过5个",function(){gMainMenuScene.errorBoxClosed();});
+                }
+                if(null!=gKlineScene&&false!=gKlineScene){
+                    gKlineScene.showErrorBox("所选品种不能超过5个",function(){gKlineScene.errorBoxClosed();});
                 }
                 console.info(userInfo.codeSelected);
                 return;

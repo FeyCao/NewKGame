@@ -39,6 +39,7 @@ protoSocketConn.prototype.Connect=function(url)
         // var MessageInfo = Message.decode(data);
         // console.info("收到的数据：[]");
         // console.info(MessageInfo);
+        clearRefreshUrl();
         for(var i=0;i<self.onmessageevent.length;i++)
         {
             cc.log("onmessage==="+evt.data);

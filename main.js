@@ -89,6 +89,31 @@ cc.game.onStart = function(){
     //添加在cc.view.setDesignResolutionSize的前面
     // Setup the resolution policy and design resolution size
     cc.view.setDesignResolutionSize(gDesignResolutionWidth, gDesignResolutionHeight, cc.ResolutionPolicy.SHOW_ALL);
+    // var winWidth, winHeight;
+    //
+    // //获取窗口宽度
+    //
+    // if (window.innerWidth)
+    //     winWidth = window.innerWidth;
+    // else if ((document.body) && (document.body.clientWidth))
+    //     winWidth = document.body.clientWidth;
+    //
+    // //获取窗口高度
+    // if (window.innerHeight)
+    //     winHeight = window.innerHeight;
+    // else if ((document.body) && (document.body.clientHeight))
+    //     winHeight = document.body.clientHeight;
+    // //
+    // var gameCanvas = document.getElementById("gameCanvas");
+    // gameCanvas.width = winWidth;
+    // gameCanvas.height = winHeight;
+    // cc.view.setDesignResolutionSize(gDesignResolutionWidth, gDesignResolutionHeight, cc.ResolutionPolicy.SHOW_ALL);
+    // // if(winHeight>winWidth){
+    //
+    //     cc.view.setDesignResolutionSize(gDesignResolutionHeight, gDesignResolutionWidth, cc.ResolutionPolicy.SHOW_ALL);
+    // }else{
+    //     cc.view.setDesignResolutionSize(gDesignResolutionWidth, gDesignResolutionHeight, cc.ResolutionPolicy.SHOW_ALL);
+    // }
 
     // The game will be resized when browser size change
     cc.view.resizeWithBrowserSize(true);

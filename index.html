@@ -93,6 +93,71 @@ canvas {
 <!--<script src="res/loading.js"></script>-->
 <canvas id="gameCanvas" width="960" height="640"></canvas>
 <script>
+    function isWeiXin(){
+        // alert('屏幕状态:'+window.neworientation.current+"||浏览器:"+sys.browserType+"||平台:"+sys.os);
+        var ua = window.navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    //屏幕方向标识，0横屏，其他值竖屏
+//    var orientation=0;
+    //转屏事件，内部功能可以自定义
+    function screenOrientationEvent(){
+        var ua = window.navigator.userAgent.toLowerCase();
+        var isMobile = ua.indexOf('mobile') !== -1 || ua.indexOf('android') !== -1;
+        if(isWeiXin()){return;}
+        if(window.innerHeight < window.innerWidth){
+            console.info("================横");
+//               window.document.getElementById('game').css('height',window.innerHeight);
+//               window.document.getElementById('game').css('width',window.innerWidth);
+//               window.document.getElementById('game').css('transform' , 'none');
+//               window.document.getElementById('game').css('transform-origin' , '50% 50%');
+//            window.location.href="index.html"+window.location.search;
+//               window.document.getElementById('game').height=window.innerHeight;
+//               window.document.getElementById('game').width=window.innerWidth;
+//               window.document.getElementById('game').window.location.reload();
+//               window.document.getElementById('game').rotate(0);
+        }
+        else {
+            console.info("===================竖");
+            window.location.href="indexGame.html"+window.location.search;
+//               window.document.getElementById('game').height=window.innerWidth;
+//               window.document.getElementById('game').width=window.innerHeight;
+//               window.document.getElementById('game').window.location.reload();
+//               window.document.getElementById('game').rotate(90);
+//               window.document.getElementById('game').transform-origin={50,50};
+//               window.document.getElementById('game').css('height',window.innerWidth);
+//               window.document.getElementById('game').css('width',window.innerHeight);
+//               window.document.getElementById('game').css('transform' , 'rotate(90deg)');
+//               window.document.getElementById('game').css('transform-origin' , '50% 50%');
+////               window.location.href="indexGame.html"+window.location.search;
+        }
+    }
+    var innerWidthTmp = window.innerWidth;
+    //横竖屏事件监听方法
+    function screenOrientationListener(){
+        try{
+            var iw = window.innerWidth;
+//屏幕方向改变处理
+            if(iw != innerWidthTmp){
+//                if(iw<window.innerHeight)orientation = 90;
+//                else orientation = 0;
+//调用转屏事件
+                screenOrientationEvent();
+                innerWidthTmp = iw;
+            }
+        } catch(e){alert(e);};
+//间隔固定事件检查是否转屏，默认500毫秒
+        setTimeout("screenOrientationListener()",500);
+    }
+    //
+    screenOrientationEvent();
+    //启动横竖屏事件监听
+    screenOrientationListener();
+
     (function () {
         var nav = window.navigator;
         var ua = nav.userAgent.toLowerCase();

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>KGame趋势突击</title>
+    <title>NEW趋势突击分享</title>
     <link rel="icon" type="image/GIF" href="res/favicon.ico"/>
 
     <meta name="viewport"
@@ -60,7 +60,7 @@ body {
 
   cursor: default;
   color: #888;
-  background-color: #0F6094;
+  background-color: #333;
 
   text-align: center;
   font-family: Helvetica, Verdana, Arial, sans-serif;
@@ -68,91 +68,43 @@ body {
   display: flex;
   flex-direction: column;
 }
-#game{
-    height: 100vw;
-    width:100vh;
-    transform:rotate(90deg);
-    transform-origin: 50vw 50%;
+
+#Cocos2dGameContainer {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+  left: 0px;
+  top: 0px;
+
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+}
+
+canvas {
+  background-color: rgba(0, 0, 0, 0);
 }
 </style>
-
 </head>
 <body>
-
+<!--<script src="res/loading.js"></script>-->
+<canvas id="gameCanvas" width="960" height="640"></canvas>
 <script>
-    // window.location.search(设置或获取 href 属性中跟在问号后面的部分)
-    var newUrl =window.location.search;
-    console.info(newUrl);
-    function getQueryString()
-    {
-        var result = location.search.match(new RegExp("[\?\&][^\?\&]+=[^\?\&]+","g"));
-        for(var i = 0; i < result.length; i++)
-        {
-            result[i] = result[i].substring(1);
-        }
-        return result;
-    }
-
-    //根据QueryString参数名称获取值
-    function getQueryStringByName(name)
-    {
-        var result = location.search.match(new RegExp("[\?\&]" + name+ "=([^\&]+)","i"));
-        if(result == null || result.length < 1)
-        {
-            return "";
-        }
-        return result[1];
-    }
-
-    //根据QueryString参数索引获取值
-    function getQueryStringByIndex(index)
-    {
-        if(index == null)
-        {
-            return "";
-        }
-
-        var queryStringList = getQueryString();
-        if (index >= queryStringList.length)
-        {
-            return "";
-        }
-
-        var result = queryStringList[index];
-        var startIndex = result.indexOf("=") + 1;
-        result = result.substring(startIndex);
-        return result;
-    }
-    //屏幕方向标识，0横屏，其他值竖屏
-    //       var orientation=90;
-    //转屏事件，内部功能可以自定义
     function screenOrientationEvent(){
-//           if( width > height ){
-//
-//               $print.width(width);
-//               $print.height(height);
-//               $print.css('top',  0 );
-//               $print.css('left',  0 );
-//               $print.css('transform' , 'none');
-//               $print.css('transform-origin' , '50% 50%');
-//           }
-//           else{
-//               $print.width(height);
-//               $print.height(width);
-//               $print.css('top',  (height-width)/2 );
-//               $print.css('left',  0-(height-width)/2 );
-//               $print.css('transform' , 'rotate(90deg)');
-//               $print.css('transform-origin' , '50% 50%');
-//           }if(isMobile==false){return;}
         var ua = window.navigator.userAgent.toLowerCase();
         var isMobile = ua.indexOf('mobile') !== -1 || ua.indexOf('android') !== -1;
-        if(isMobile==false){window.location.href="shareGame.html"+window.location.search; return;}
+        if(isMobile==false){return;}
+        var ua = window.navigator.userAgent.toLowerCase();
+        var isMobile = ua.indexOf('mobile') !== -1 || ua.indexOf('android') !== -1;
+        if(isMobile==false){return;}
         if(window.innerHeight < window.innerWidth){
             console.info("================横");
-            window.location.href="shareGame.html"+window.location.search;
+
         }
         else {
             console.info("===================竖");
+            window.location.href="share.html"+window.location.search;
         }
     }
     var innerWidthTmp = window.innerWidth;
@@ -162,8 +114,8 @@ body {
             var iw = window.innerWidth;
 //屏幕方向改变处理
             if(iw != innerWidthTmp){
-//                   if(iw<window.innerHeight)orientation = 90;
-//                   else orientation = 0;
+//                if(iw<window.innerHeight)orientation = 90;
+//                else orientation = 0;
 //调用转屏事件
                 screenOrientationEvent();
                 innerWidthTmp = iw;
@@ -172,11 +124,31 @@ body {
 //间隔固定事件检查是否转屏，默认500毫秒
         setTimeout("screenOrientationListener()",500);
     }
+    //
     screenOrientationEvent();
     //启动横竖屏事件监听
     screenOrientationListener();
-    //屏幕方向标识，0横屏，其他值竖屏
+
+    (function () {
+        var nav = window.navigator;
+        var ua = nav.userAgent.toLowerCase();
+        var uaResult = /android (\d+(?:\.\d+)+)/i.exec(ua) || /android (\d+(?:\.\d+)+)/i.exec(nav.platform);
+        if (uaResult) {
+            var browserCheck = ua.match(/(qzone|micromessenger|qq)(mobile)?(browser)?\/?([\d.]+)/i);
+            if (browserCheck) {
+                var browserVersion = parseFloat(browserCheck[4] || 0);
+                if (browserVersion < 6.2) {
+                    var gameCanvas = document.getElementById("gameCanvas");
+                    var ctx = gameCanvas.getContext('2d');
+                    ctx.fillStyle = '#000000';
+                    ctx.fillRect(0, 0, 1, 1);
+                }
+            }
+        }
+    })();
+    var shareFlag = true;
 </script>
-    <iframe id="game" src="shareGame.html"></iframe>
+<script src="frameworks/cocos2d-html5/CCBoot.js"></script>
+<script cocos src="main.js"></script>
 </body>
 </html>

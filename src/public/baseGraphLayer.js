@@ -306,12 +306,11 @@ var BaseGraphLayer= cc.Layer.extend({
 	///画位于CurrentIndex的蜡烛线，如果大小变化了则需要重画
 	drawSingleCandleLineByCurrentIndex:function(currentIndex)
 	{
-
 		var totalCandleCount=this.klineData.length;
-		cc.log("totalCandleCount=="+totalCandleCount+"currentIndex=="+currentIndex);
 		if(currentIndex>=totalCandleCount)
 		{
 			//表示已经结束了
+            cc.log("已经结束了totalCandleCount=="+totalCandleCount+"currentIndex=="+currentIndex);
 			return true;
 		}
 		

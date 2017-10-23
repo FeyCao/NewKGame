@@ -50,6 +50,14 @@ var TempLoadScene = SceneBase.extend(
         userInfo.inviterUid=getQueryStringByName("inviterUid");
         userInfo.inviterCode=getQueryStringByName("inviteCode");
 
+        if (window.parent){
+            userInfo.userId=window.parent.getQueryStringByName("userId");
+            userInfo.deviceId=window.parent.getQueryStringByName("deviceId");
+            userInfo.source=window.parent.getQueryStringByName("source");
+            userInfo.token=window.parent.getQueryStringByName("token");
+            userInfo.inviterUid=window.parent.getQueryStringByName("inviterUid");
+            userInfo.inviterCode=window.parent.getQueryStringByName("inviteCode");
+		}
         cc.log("userId="+userInfo.userId+"deviceId="+userInfo.deviceId+"source="+userInfo.source);
 
         if(userInfo.userId!=null&&userInfo.deviceId!=null)

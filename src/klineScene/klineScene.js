@@ -39,6 +39,7 @@ KLineScene = SceneBase.extend(
         phase2: false,				//主K线阶段
         opponentsInfo: [],			//对手信息
 
+        drawHistoryFlag:false,
         matchRunFlag: false,
         //买入卖出信息格式如下，正数为买入，负数为卖出，绝对值表示买入或卖出的索引
         selfOperations: [],			//自己的交易信息，
@@ -84,6 +85,7 @@ KLineScene = SceneBase.extend(
             this.prevKlineData = null;
             this.matchInfoLayer = null;
             this.playerInfoLayer = null;
+
             this.phase2 = false;
             this.opponentsInfo = [];
             this.selfOperations = [];
@@ -1570,14 +1572,15 @@ KLineScene = SceneBase.extend(
                 }
             }
 
-            if(indexLegth%2==0){
-                this.matchInfoLayer.setButtonsToNoPosition();//平仓状态
-            }else if(operationIndexFromServe[indexLegth-1]>0){
-                this.matchInfoLayer.setButtonsToBuyPosition();//平仓状态
-            }else if(operationIndexFromServe[indexLegth-1]<0){
-                this.matchInfoLayer.setButtonsToSellPosition();//平仓状态
+            if(indexFromServe>0){
+                if(indexLegth%2==0){
+                    this.matchInfoLayer.setButtonsToNoPosition();//平仓状态
+                }else if(operationIndexFromServe[indexLegth-1]>0){
+                    this.matchInfoLayer.setButtonsToBuyPosition();//平仓状态
+                }else if(operationIndexFromServe[indexLegth-1]<0){
+                    this.matchInfoLayer.setButtonsToSellPosition();//平仓状态
+                }
             }
-
             // this.drawCandleStoped = false;
         },
         matchEndInfoLayer_Replay: function () {
@@ -1762,7 +1765,7 @@ KLineScene = SceneBase.extend(
                         gKlineScene.preMatchView.setPosition(0, 0);
                         gKlineScene.otherMessageTipLayer.addChild(this.preMatchView, 1, this.preMatchView.getTag());
                         gKlineScene.preMatchView.closeCallBackFunction = function () {
-                            self.toHome()
+                            self.popViewLayer_Close()
                         };
                     }
                     gKlineScene.preMatchView.showLayer();
@@ -1773,7 +1776,7 @@ KLineScene = SceneBase.extend(
                         gKlineScene.matchViewLayer.setPosition(0, 0);
                         gKlineScene.otherMessageTipLayer.addChild(gKlineScene.matchViewLayer, 1, gKlineScene.matchViewLayer.getTag());
                         gKlineScene.matchViewLayer.closeCallBackFunction = function () {
-                            gKlineScene.toHome()
+                            gKlineScene.popViewLayer_Close()
                         };
                         // this.controlViewLayer.replayCallBackFunction=function(){self.MatchEndInfoLayer_Replay()};
                     }
@@ -2314,7 +2317,7 @@ KLineScene = SceneBase.extend(
 
             var self = this;
             // if(this.drawCandleStoped==false&&userInfo.matchMode!=MatchType.Type_DailyTrade_Match)
-            if (this.drawCandleStoped == false) {
+            if (this.drawCandleStoped == false&&this.drawHistoryFlag==false) {
 
                 this.disableAllKlineLayer();
                 cc.log("drawAllCandlesOneByOne currentIndex before==" + this.currentCandleIndex);
@@ -2369,10 +2372,11 @@ KLineScene = SceneBase.extend(
                     this.getVolumnTechLayerMain().drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
                 }
 
-                cc.log("drawAllCandlesOneByOne currentIndex==" + this.currentCandleIndex);
+
                 this.matchRunFlag = true;
                 if (ended) {
                     cc.log("绘制结束");
+                    cc.log("drawAllCandlesOneByOne currentIndex==" + this.currentCandleIndex);
                     this.matchRunFlag = false;
                     this.sendEndMessage();
                     this.matchEnd();
@@ -2409,14 +2413,14 @@ KLineScene = SceneBase.extend(
                     if(this.klineLayerMain[i].graphArea!=null&&this.klineLayerMain[i]!=this.getKlineLayerMain())
                     {
                         this.klineLayerMain[i].graphArea.clear();
-                        // this.klineLayerMain[i].setVisible(false);
+                        this.klineLayerMain[i].setVisible(false);
                     }
                     // this.klineLayerMain[i].clear();
 
                     if(this.volumnTechLayerMain[i].graphArea!=null&&this.volumnTechLayerMain[i]!=this.getVolumnTechLayerMain())
                     {
                         this.volumnTechLayerMain[i].graphArea.clear();
-                        // this.volumnTechLayerMain[i].setVisible(false);
+                        this.volumnTechLayerMain[i].setVisible(false);
                     }
 
                 }
@@ -3101,7 +3105,7 @@ KLineScene = SceneBase.extend(
         },
 
         drawHistoryCandlePart2: function () {
-            this.phase2 = true;
+            this.drawHistoryFlag = true;
             if (this.getKlineLayerMain().graphArea != null) {
                 this.getKlineLayerMain().graphArea.clear();
             }
@@ -3123,13 +3127,15 @@ KLineScene = SceneBase.extend(
             }
             // if(null != this.klineView && this.klineView.isVisible()){return;}
 
-            this.phase2 = true;
+            this.drawHistoryFlag = true;
             this.currentCandleIndex = index;
-            // var ended=this.klineLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
+            var ended=this.getKlineLayerMain().drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
+            this.getKlineLayerMain().setVisible(true);
+            this.getVolumnTechLayerMain().setVisible(true);
             // this.volumnTechLayerMain.drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
             // cc.log("drawAllCandlesOneByOne currentIndex=="+this.currentCandleIndex);
             this.matchRunFlag=true;
-            if (this.currentCandleIndex == this.getKlineLayerMain().getKlineData()) {
+            if (ended) {
                 cc.log("绘制结束");
                 this.matchRunFlag = false;
                 this.sendEndMessage();
@@ -3137,19 +3143,21 @@ KLineScene = SceneBase.extend(
                 // clearTimeout(pageTimer["drawTimer"]);
                 return;
             } else {
-                for(var i = 0;i<this.klineLayerMain.length;i++){
-                    this.klineLayerMain[i].redrawCandlesToIndex(this.currentCandleIndex);
-                    this.volumnTechLayerMain[i].redrawCandlesToIndex(this.currentCandleIndex);
-                    if(this.klineLayerMain[i].getCodeName() == userInfo.currentCode){
-                        this.klineLayerMain[i].setVisible(true);
-                        this.volumnTechLayerMain[i].setVisible(true);
-                    }
-                    else{
-                        this.klineLayerMain[i].setVisible(false);
-                        this.volumnTechLayerMain[i].setVisible(false);
-                    }
-                }
-
+                this.getKlineLayerMain().redrawCandlesToIndex(this.currentCandleIndex);
+                this.getVolumnTechLayerMain().redrawCandlesToIndex(this.currentCandleIndex);
+                // for(var i = 0;i<this.klineLayerMain.length;i++){
+                //     this.klineLayerMain[i].redrawCandlesToIndex(this.currentCandleIndex);
+                //     this.volumnTechLayerMain[i].redrawCandlesToIndex(this.currentCandleIndex);
+                //     if(this.klineLayerMain[i].getCodeName() == userInfo.currentCode){
+                //         this.klineLayerMain[i].setVisible(true);
+                //         this.volumnTechLayerMain[i].setVisible(true);
+                //     }
+                //     else{
+                //         this.klineLayerMain[i].setVisible(false);
+                //         this.volumnTechLayerMain[i].setVisible(false);
+                //     }
+                // }
+                this.drawHistoryFlag = false;
             }
 
         },
@@ -3268,15 +3276,15 @@ KLineScene = SceneBase.extend(
             console.info(codeKlineData);
             userInfo.currentCode = codeName;
 
-            for (var i = userInfo.codeMainList.length - 1; i > 0; i--) {//当前合约排在第一位
-                for (var j = i; j > 0; j--) {
-                    if (userInfo.codeMainList[j].code == userInfo.currentCode) {
-                        var temp = userInfo.codeMainList[j];
-                        userInfo.codeMainList[j] = userInfo.codeMainList[j-1];
-                        userInfo.codeMainList[j-1] = temp;
-                    }
-                }
-            }
+            // for (var i = userInfo.codeMainList.length - 1; i > 0; i--) {//当前合约排在第一位
+            //     for (var j = i; j > 0; j--) {
+            //         if (userInfo.codeMainList[j].code == userInfo.currentCode) {
+            //             var temp = userInfo.codeMainList[j];
+            //             userInfo.codeMainList[j] = userInfo.codeMainList[j-1];
+            //             userInfo.codeMainList[j-1] = temp;
+            //         }
+            //     }
+            // }
             // if (MatchType.Type_Practice_MC == userInfo.matchMode) {
             //     self.matchInfoLayer.initTradeControlAreaByData();
             //
@@ -3287,7 +3295,6 @@ KLineScene = SceneBase.extend(
             }
             if(null!=codeKlineData&&!self.drawFlag){
                 self.drawViewByData(codeKlineData);
-
             }
 
         },
@@ -3658,16 +3665,17 @@ KLineScene = SceneBase.extend(
 
         buyClick: function () {
             cc.log("buyClick:function() begin");
-            if (this.phase2 == false) return;
+            if (this.phase2 == false) return false;
 
             //注意：此处存入的买入操作的index不是从0开始，而是从120开始的
             var lastCandleIndex = this.currentCandleIndex;
+            var oplength = this.selfOperations.length -1;
             cc.log("buyClick operationIndexFromServe=="+lastCandleIndex);
             if (lastCandleIndex < 121 && userInfo.matchMode != MatchType.Type_DailyTrade_Match) {
-                return;
+                return false;
             }
             else if(userInfo.matchMode == MatchType.Type_DailyTrade_Match){
-                for(var j=0;null!=this.selfOperations&&j<this.selfOperations.length;j++){
+                for(var j=oplength;null!=this.selfOperations&&null!=this.selfOperations[j];j--){
                     if(lastCandleIndex==this.selfOperations[j]){
                         return false;
                     }
@@ -3678,7 +3686,7 @@ KLineScene = SceneBase.extend(
                 gSocketConn.Buy(lastCandleIndex - 1 > 0 ? lastCandleIndex - 1 : 0);
                 return true;
             }else{
-                for(var j=0;null!=this.selfOperations&&j<this.selfOperations.length;j++){
+                for(var j=oplength;null!=this.selfOperations&&null!=this.selfOperations[j];j--){
                     if(lastCandleIndex==this.selfOperations[j]){
                         return false;
                     }
@@ -3693,24 +3701,24 @@ KLineScene = SceneBase.extend(
 
         sellClick: function () {
             cc.log("sellClick:function() begin");
-            if (this.phase2 == false) return;
+            if (this.phase2 == false) return false;
             //注意：此处存入的卖出操作的index不是从0开始，而是从120开始的
             var lastCandleIndex = this.currentCandleIndex;
+            var oplength = this.selfOperations.length -1;
             if (lastCandleIndex < 121 && userInfo.matchMode != MatchType.Type_DailyTrade_Match) {
-                return;
+                return false;
             } else if(userInfo.matchMode == MatchType.Type_DailyTrade_Match){
-                for(var j=0;null!=this.selfOperations&&j<this.selfOperations.length;j++){
+                for(var j=oplength;null!=this.selfOperations&&null!=this.selfOperations[j];j--){
                     if(lastCandleIndex==this.selfOperations[j]){
                         return false;
                     }
                 }
                 this.selfOperations.push(lastCandleIndex);
-                this.selfOperations.push(lastCandleIndex);
                 this.refreshScores(lastCandleIndex);
                 this.getKlineLayerMain().setUpArrowIndex(lastCandleIndex, (this.selfOperations.length % 2 == 1));
                 gSocketConn.Sell(lastCandleIndex - 1 > 0 ? lastCandleIndex - 1 : 0);
             }else{
-                for(var j=0;null!=this.selfOperations&&j<this.selfOperations.length;j++){
+                for(var j=oplength;null!=this.selfOperations&&null!=this.selfOperations[j];j--){
                     if(lastCandleIndex==this.selfOperations[j]){
                         return false;
                     }
