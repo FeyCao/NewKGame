@@ -62,7 +62,9 @@ BaseLocalData.deleteItem = function()
 {
     sys.localStorage.removeItem("baseData");
 };
-var codeLocalData = {};
+var codeLocalData = {
+    name:null,
+};
 /*
  * 写入数据，将数据存储在本地
  * @param jsonName:json文件名字
@@ -70,6 +72,12 @@ var codeLocalData = {};
 // var baseData = [{a:1},{b:2},{c:3},{d:4},{e:5},{f:6},{g:7}];
 codeLocalData.setItem = function(jsonName,data)
 {
+    var self = this;
+    if(null==self.name){
+        self.name = new Array();
+    }
+    cc.log("add jsonName=="+jsonName);
+    self.name.push(jsonName);
     var baseData = JSON.stringify(data);
     sys.localStorage.setItem(jsonName, baseData);
 };
@@ -88,7 +96,62 @@ codeLocalData.getItem = function(jsonName)
  */
 codeLocalData.clearItem = function()
 {
-    sys.localStorage.clear();
+    var self = this;
+    for(var i in self.name){
+        cc.log("clear jsonName=="+self.name[i]);
+        sys.localStorage.removeItem(self.name[i]);
+    }
+    if(null!=self.name){
+        self.name.splice(0,self.name.length);
+        self.name = null;
+    }
+};
+var codeWeChatData = {
+    name:null,
+};
+/*
+ * 写入数据，将数据存储在本地
+ * @param jsonName:json文件名字
+ */
+codeWeChatData.setItem = function(jsonName,data)
+{
+    var self = this;
+    if(null==self.name){
+        self.name = new Array();
+    }
+    cc.log("add jsonName=="+jsonName);
+    self.name.push(jsonName);
+    cc.log(data);
+    var baseData = JSON.stringify(data);//data.toArrayBuffer();//JSON.stringify(data);
+    sys.localStorage.setItem(jsonName, baseData);
+};
+/*
+ * 读取基础数据
+ * 还回protobuf格式数据
+ */
+codeWeChatData.getItem = function(jsonName)
+{
+    var baseData = sys.localStorage.getItem(jsonName); //从本地读取数据
+    // var WechatLogin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLogin");
+    baseData = JSON.parse(baseData);//WechatLogin.decode(baseData); //将string转换成protobuf
+    cc.log(baseData);
+    return baseData;
+
+};
+/*
+ * 删除数据
+ */
+codeWeChatData.clearItem = function()
+{
+    var self = this;
+    for(var i in self.name){
+        cc.log("clear jsonName=="+self.name[i]);
+        sys.localStorage.removeItem(self.name[i]);
+    }
+    if(null!=self.name){
+        self.name.splice(0,self.name.length);
+        self.name = null;
+    }
 };
 
 // var codeDataInfoList = (function () {
@@ -244,6 +307,11 @@ var Fast_Lgoin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Fast_Lgoin"
 var Use_DeviceId_Login =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Use_DeviceId_Login");
 var Mobile_Login =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("Mobile_Login");
 
+var WechatLogin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLogin");
+var WechatLoginType =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLoginType");
+var WechatLoginByCode =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLoginByCode");
+var WechatLoginByToken =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLoginByToken");
+
 var treatyList =[
     {"name":"A:豆一","where":"大商所","start":"2003","end ":"2016","code":"A","status":"-1"},
     {"name":"AG:沪银","where":"上期所","start":"2013","end ":"2016","code":"AG","status":"-1"},
@@ -295,6 +363,11 @@ var userInfo ={
     recordName:null,
     headSprite:null,	//头像
     score:null,
+
+    weChatCode:null,
+    accessToken:null,
+    refreshToken:null,
+    openId:null,
     // userName:null,
     // userPassword:null,
 // {"uid":"43562","nickName":"坎坎坷坷6xcvd","winOfMatchForOne":1,"sumOfMatchForOne":28,"winOfMatchForMore":37,"sumOfMatchForMore":67,"winOfMatchForAI":16,"sumOfMatchForAI":51,"gainCumulation":"-11.285","sumOfAllMatch":28,"winMatchFriend":5,"sumMatchFriend":8,"headPicture":"http://qiniu.kiiik.com/SM-N9200__1481620525057__449948_1253"}

@@ -14,6 +14,8 @@
     "serverMyURL":"192.168.16.145:8888/Kgamefeng/websocket",
     "serverTestURL":"kgt.kiiik.com:7003/Kgamefeng/websocket",
     "serverURL":"kgame.kiiik.com:5003/Kgamefeng/websocket",
+    "serverTestWechatURL":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxab385c9110dc72a3",
+    "serverWechatURL":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6c8f3344605a07fc",
     "other":"kgt.kiiik.com:7003/Kgamefeng/websocket;//测试环境'kgame.kiiik.com:5003/Kgamefeng/websocket;//正式环境'/  192.168.16.250:5210/Kgamefeng/websocket';192.168.16.250:8888/Kgamefeng/websocket//本地环境/'ws://192.168.16.145:8080/Kgamefeng/websocket';/晓峰环境",
 
     "modules" : ["cocos2d","gui","shape-nodes","editbox"],

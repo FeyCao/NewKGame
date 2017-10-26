@@ -226,18 +226,18 @@ var MainMenuScene =SceneBase.extend(
         self.sumFriendLabel.setPosition(cc.pAdd(self.winFriendLabel.getPosition(),cc.p(self.winFriendLabel.getContentSize().width,0)));
         this.backgroundSprite.addChild(self.sumFriendLabel,5);
 
-        self.infoLabel.setVisible(userInfo.operationType==1);
-        self.infoLabelAI.setVisible(userInfo.operationType==1);
-        self.infoLabelMore.setVisible(userInfo.operationType==1);
-        self.infoLabelFriend.setVisible(userInfo.operationType==1);
-        self.winAILabel.setVisible(userInfo.operationType==1);
-        self.winMoreLabel.setVisible(userInfo.operationType==1);
-        self.winOneLabel.setVisible(userInfo.operationType==1);
-        self.winFriendLabel.setVisible(userInfo.operationType==1);
-        self.sumOneLabel.setVisible(userInfo.operationType==1);
-        self.sumAILabel.setVisible(userInfo.operationType==1);
-        self.sumMoreLabel.setVisible(userInfo.operationType==1);
-        self.sumFriendLabel.setVisible(userInfo.operationType==1);
+        self.infoLabel.setVisible(userInfo.operationType!=2);
+        self.infoLabelAI.setVisible(userInfo.operationType!=2);
+        self.infoLabelMore.setVisible(userInfo.operationType!=2);
+        self.infoLabelFriend.setVisible(userInfo.operationType!=2);
+        self.winAILabel.setVisible(userInfo.operationType!=2);
+        self.winMoreLabel.setVisible(userInfo.operationType!=2);
+        self.winOneLabel.setVisible(userInfo.operationType!=2);
+        self.winFriendLabel.setVisible(userInfo.operationType!=2);
+        self.sumOneLabel.setVisible(userInfo.operationType!=2);
+        self.sumAILabel.setVisible(userInfo.operationType!=2);
+        self.sumMoreLabel.setVisible(userInfo.operationType!=2);
+        self.sumFriendLabel.setVisible(userInfo.operationType!=2);
 
         this.setButtonInfo();
         userInfo.matchBeginFlag=false;
@@ -1495,7 +1495,7 @@ var MainMenuScene =SceneBase.extend(
 
                 if(null==inviteInfo.inviteeName){//邀请第三方平台
                     var content = "点击链接同意比赛";
-                    var url = "index.html?" + "tittle=room&&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
+                    var url = "index.html?" + "&tittle=room&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
                     cc.log("url");
                     // window.location.href = url;
                     if(sys.isMobile!=false){

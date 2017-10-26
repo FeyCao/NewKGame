@@ -229,15 +229,15 @@ function testApp(urlAnd,urlIos) {
     //
     // }
 }
-function isWeiXin(){
-    // alert('屏幕状态:'+window.neworientation.current+"||浏览器:"+sys.browserType+"||平台:"+sys.os);
-    var ua = window.navigator.userAgent.toLowerCase();
-    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
-        return true;
-    }else{
-        return false;
-    }
-}
+// function isWeiXin(){
+//     // alert('屏幕状态:'+window.neworientation.current+"||浏览器:"+sys.browserType+"||平台:"+sys.os);
+//     var ua = window.navigator.userAgent.toLowerCase();
+//     if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+//         return true;
+//     }else{
+//         return false;
+//     }
+// }
 // var win = window, nav = win.navigator;
 // var ua = nav.userAgent.toLowerCase();
 // var isWeChat = ua.match(/MicroMessenger/i) == 'micromessenger'?'true':'false'

@@ -33,44 +33,44 @@
     <meta name="x5-page-mode" content="app">
 
 <style type="text/css">
-html {
-  -ms-touch-action: none;
-}
+    html {
+        -ms-touch-action: none;
+    }
 
-body, canvas, div {
-  margin: 0;
-  padding: 0;
-  outline: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -khtml-user-select: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
+    body, canvas, div {
+        margin: 0;
+        padding: 0;
+        outline: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        -khtml-user-select: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
 
-body {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  margin: 0;
+    body {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: 0;
+        margin: 0;
 
-  cursor: default;
-  color: #888;
-  background-color: #0F6094;
+        cursor: default;
+        color: #888;
+        background-color: #0F6094;
 
-  text-align: center;
-  font-family: Helvetica, Verdana, Arial, sans-serif;
+        text-align: center;
+        font-family: Helvetica, Verdana, Arial, sans-serif;
 
-  display: flex;
-  flex-direction: column;
-}
+        display: flex;
+        flex-direction: column;
+    }
 #game{
-    height: 100vw;
-    width:100vh;
+    height: 100vmin;
+    width:100vmax;
     transform:rotate(90deg);
     transform-origin: 50vw 50%;
 }
@@ -82,7 +82,55 @@ body {
 <script>
        // window.location.search(设置或获取 href 属性中跟在问号后面的部分)
         var newUrl =window.location.search;
-        console.info(newUrl);
+       console.info(newUrl);
+       var ua = window.navigator.userAgent.toLowerCase();
+       var isWeChat = ua.match(/MicroMessenger/i) == 'micromessenger'? true : false;
+       var codeWeChatData = {
+           name:null,
+       };
+       /*
+        * 写入数据，将数据存储在本地
+        * @param jsonName:json文件名字
+        */
+       codeWeChatData.setItem = function(jsonName,data)
+       {
+           var self = this;
+           if(null==self.name){
+               self.name = new Array();
+           }
+           cc.log("add jsonName=="+jsonName);
+           self.name.push(jsonName);
+           var baseData = JSON.stringify(data);//data.toArrayBuffer();//JSON.stringify(data);
+           window.localStorage.setItem(jsonName, baseData);
+       };
+       /*
+        * 读取基础数据
+        * 还回protobuf格式数据
+        */
+       codeWeChatData.getItem = function(jsonName)
+       {
+           var baseData = window.localStorage.getItem(jsonName); //从本地读取数据
+           // var WechatLogin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLogin");
+           baseData = JSON.parse(baseData);//WechatLogin.decode(baseData); //将string转换成protobuf
+           return baseData;
+
+       };
+       /*
+        * 删除数据
+        */
+       codeWeChatData.clearItem = function()
+       {
+           var self = this;
+           for(var i in self.name){
+               cc.log("clear jsonName=="+self.name[i]);
+               window.localStorage.removeItem(self.name[i]);
+           }
+           if(null!=self.name){
+               self.name.splice(0,self.name.length);
+               self.name = null;
+           }
+       };
+
        function getQueryString()
        {
            var result = location.search.match(new RegExp("[\?\&][^\?\&]+=[^\?\&]+","g"));
@@ -144,7 +192,6 @@ body {
 //               $print.css('transform' , 'rotate(90deg)');
 //               $print.css('transform-origin' , '50% 50%');
 //           }if(isMobile==false){return;}
-           var ua = window.navigator.userAgent.toLowerCase();
            var isMobile = ua.indexOf('mobile') !== -1 || ua.indexOf('android') !== -1;
            if(isMobile==false){return;}
            if(window.innerHeight < window.innerWidth){

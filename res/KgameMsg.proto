@@ -34,6 +34,7 @@
 	Type_Change_Code=32;
 	Type_Entry_Game_In_Home=33;//房主开始游戏
 	Type_Player_In_Home=34;//房间内成员变更
+	Type_Wechat_Login=35;//微信登录
 }
 
 
@@ -46,6 +47,28 @@ enum MatchType{
 	Type_DailyTrade_Match=5;
 	Type_Practice_MC=6;
 }
+
+enum WechatLoginType{
+     Type_Login_By_Code=1;
+	 
+	 Type_Login_By_Token=2;
+}
+
+message WechatLoginByCode{
+    required string code=1;
+	optional string accessToken=2;
+	optional string refreshToken=3;
+	optional string  openId=4;
+
+}
+
+message WechatLoginByToken{
+    required string openId=1;
+	required string accessToken=2;
+	required string refreshToken=3;
+
+}
+
 
 enum FaceType{
     Face_laugh=0;
@@ -351,6 +374,13 @@ message AddFriend{
     
 }
 
+message WechatLogin{
+    required WechatLoginType wechatLoginType=1;
+	optional WechatLoginByCode  wechatLoginByCode=2;
+	optional WechatLoginByToken wechatLoginByToken=3;
+}
+
+
 
 message Message{
    required MessageType messageType=1;//消息类型
@@ -380,4 +410,5 @@ message Message{
    optional AddFriend addFriend=25;
    optional string changeCode=26;
    repeated PlayerInHome playerInHome=27;//好友站房间信息
+   optional WechatLogin wechatLogin=28;
 }

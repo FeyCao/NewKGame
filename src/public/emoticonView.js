@@ -28,7 +28,7 @@ var EmoticonViewLayer = cc.LayerColor.extend({
                 var rect = cc.rect(0, 0, s.width, s.height);
 
                 if (cc.rectContainsPoint(rect, locationInNode)) {
-                    target.opacity = 180;
+                    // target.opacity = 180;
                     return true;
                 }
                 return false;
@@ -40,7 +40,7 @@ var EmoticonViewLayer = cc.LayerColor.extend({
                 var rect = cc.rect(0, 0, s.width, s.height);
 
                 if (cc.rectContainsPoint(rect, locationInNode)) {
-                    target.opacity = 180;
+                    // target.opacity = 180;
                     console.log("logged!:");
                 }else{
                     console.log("logged  2222!:");
@@ -180,7 +180,7 @@ var ToolsViewLayer = cc.LayerColor.extend({
                 var rect = cc.rect(0, 0, s.width, s.height);
 
                 if (cc.rectContainsPoint(rect, locationInNode)) {
-                    target.opacity = 180;
+                    // target.opacity = 180;
                     return true;
                 }
                 return false;
@@ -192,7 +192,7 @@ var ToolsViewLayer = cc.LayerColor.extend({
                 var rect = cc.rect(0, 0, s.width, s.height);
 
                 if (cc.rectContainsPoint(rect, locationInNode)) {
-                    target.opacity = 180;
+                    // target.opacity = 180;
                     console.log("logged!:");
                 }else{
                     console.log("logged  2222!:");

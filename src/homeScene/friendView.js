@@ -763,6 +763,7 @@ var FriendViewLayer = cc.Layer.extend({
             }
             gSocketConn.SendInfoMessage("UNMATCH","");
             gSocketConn.RegisterEvent("onmessage",gMainMenuScene.messageCallBack);
+            gSocketConn.SendEHMessage(userInfo.userId, userInfo.deviceId);
 
             //cc.director.runScene(cc.TransitionFade.create(0.5,klineSceneNext,cc.color(255,255,255,255)));
             //window.location.href="clear.html";

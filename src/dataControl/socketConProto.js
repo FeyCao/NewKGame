@@ -37,17 +37,17 @@ protoSocketConn.prototype.Connect=function(url)
     ws.onmessage = function (evt) {
         // var data = evt.data;
         // var MessageInfo = Message.decode(data);
-        // console.info("收到的数据：[]");
+        console.info("开始收到0的数据：");
         // console.info(MessageInfo);
         clearRefreshUrl();
         for(var i=0;i<self.onmessageevent.length;i++)
         {
             cc.log("onmessage==="+evt.data);
 
-            // self.onmessageevent[i](evt.data);
+
             var data = evt.data;
             var MessageInfo = Message.decode(data);
-            console.info("收到的数据：["+i+"]");
+            console.info("开始收到1的数据：["+i+"]");
             console.info(MessageInfo);
             if(MessageInfo.messageType == MessageType.Type_Ping){
                 var  message = new Message();
@@ -59,6 +59,7 @@ protoSocketConn.prototype.Connect=function(url)
                 // console.info(message);
 
             }
+            // self.onmessageevent[i](evt.data);
             self.onmessageevent[i](MessageInfo);
         }
     };
@@ -133,6 +134,7 @@ protoSocketConn.prototype.RegisterEvent=function(eventname,callbackfunction)
 
 protoSocketConn.prototype.UnRegisterEvent=function(eventname,callbackfunction)
 {
+    cc.log("UnRegisterEvent eventname="+eventname);
     var eventArray=this.GetEventArrayByName(eventname);
     if(eventArray==null) return;
     for(var i=0;i<eventArray.length;i++)
@@ -165,6 +167,48 @@ protoSocketConn.prototype.Login=function(username,password,source)//手机设备
     arrayBuf.valueOf();
     ws.send(arrayBuf);
     console.info("手机设备号登录发送的数据：");
+    console.info(message);
+
+}
+protoSocketConn.prototype.weChatLoginByCode=function(code,state)//微信号登录
+{
+    var loginMsg="code|"+code+"|state|"+state+"|";
+    cc.log("send login msg="+loginMsg);
+    var messageTmp = new WechatLoginByCode();
+    messageTmp.setCode(code);
+    var messageLogin = new WechatLogin();
+    messageLogin.setWechatLoginType(WechatLoginType.Type_Login_By_Code);
+    messageLogin.setWechatLoginByCode(messageTmp);
+
+    var  message = new Message();
+    message.setMessageType(MessageType.Type_Wechat_Login);
+    message.setWechatLogin(messageLogin);
+    var arrayBuf =  message.toArrayBuffer();
+    arrayBuf.valueOf();
+    ws.send(arrayBuf);
+    console.info("微信号登录发送的数据：");
+    console.info(message);
+
+}
+protoSocketConn.prototype.weChatLoginByToken=function(accessToken,refreshToken,openId)//微信号登录
+{
+    var loginMsg="accessToken|"+accessToken+"|refreshToken|"+refreshToken+"|"+"|openId|"+openId+"|";
+    cc.log("send login msg="+loginMsg);
+    var messageTmp = new WechatLoginByToken();
+    messageTmp.setAccessToken(accessToken);
+    messageTmp.setRefreshToken(refreshToken);
+    messageTmp.setOpenId(openId);
+    var messageLogin = new WechatLogin();
+    messageLogin.setWechatLoginType(WechatLoginType.Type_Login_By_Token);
+    messageLogin.setWechatLoginByToken(messageTmp);
+
+    var  message = new Message();
+    message.setMessageType(MessageType.Type_Wechat_Login);
+    message.setWechatLogin(messageLogin);
+    var arrayBuf =  message.toArrayBuffer();
+    arrayBuf.valueOf();
+    ws.send(arrayBuf);
+    console.info("微信号登录发送的数据：");
     console.info(message);
 
 }
@@ -751,3 +795,21 @@ protoSocketConn.prototype.ansRoomFriend=function(boolean,inviterUid,inviteCode)/
     console.info(message);
     // ws.send(toolMsg);
 }
+// protoSocketConn.prototype.weChatCode=function(code,status)//发送微信code｜boolean#code｜
+// {
+//     cc.log("send ansRoomFriend==ANSINVITE|"+boolean+"#"+inviteInfo.code+"|"+inviteInfo.inviterName+"|");
+//     // ws.send("ANSINVITE|"+boolean+"#"+code+"|");
+//     var  message = new Message();
+//     var messageSend = new FriendMatch_Answer();
+//     messageSend.setAgree(boolean);
+//     messageSend.setInviteCode(inviteCode);
+//     messageSend.setInviterUid(inviterUid+'');
+//     message.setMessageType(MessageType.Type_FriendMatch_Answer);
+//     message.setFriendMatchAnswer(messageSend);
+//     var arrayBuf =  message.toArrayBuffer();
+//     arrayBuf.valueOf();
+//     ws.send(arrayBuf);
+//     console.info("发送回答要战信息请求：");
+//     console.info(message);
+//     // ws.send(toolMsg);
+// }

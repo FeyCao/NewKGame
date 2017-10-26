@@ -37,13 +37,15 @@ var ShareLoadScene = SceneBase.extend(
 		userInfo.matchId=getQueryStringByName("matchId");
 		userInfo.matchMode=getQueryStringByName("matchType");
         if (window.parent){
-            userInfo.nickName=getQueryStringByName("userName");
-            userInfo.userId=getQueryStringByName("userId");
-            userInfo.matchId=getQueryStringByName("matchId");
-            userInfo.matchMode=getQueryStringByName("matchType");
+            userInfo.nickName=window.parent.getQueryStringByName("userName");
+            userInfo.userId=window.parent.getQueryStringByName("userId");
+            userInfo.matchId=window.parent.getQueryStringByName("matchId");
+            userInfo.matchMode=window.parent.getQueryStringByName("matchType");
         }
-        cc.log("userId:"+self.userId);
-		cc.log("matchId:"+self.matchId);
+        self.userId = userInfo.userId;
+        self.matchId = userInfo.matchId;
+        cc.log("userId:"+userInfo.userId);
+		cc.log("matchId:"+userInfo.matchId);
 
 		userInfo.nickName = decodeURI(userInfo.nickName);
 

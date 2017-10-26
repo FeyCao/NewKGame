@@ -147,7 +147,7 @@ KLineScene = SceneBase.extend(
             // cc.director.setDisplayStats(true);
             cc.view.enableRetina(userInfo.viewFlag);
 
-            codeLocalData.clearItem();
+            // codeLocalData.clearItem();
             // if(userInfo.bgSoundFlag==true){
             //
             // 	if(cc.audioEngine.isMusicPlaying()==false)
@@ -3126,7 +3126,9 @@ KLineScene = SceneBase.extend(
                 return;
             }
             // if(null != this.klineView && this.klineView.isVisible()){return;}
-
+            if (null == this.getKlineLayerMain()){
+                return;
+            }
             this.drawHistoryFlag = true;
             this.currentCandleIndex = index;
             var ended=this.getKlineLayerMain().drawSingleCandleLineByCurrentIndex(this.currentCandleIndex);
@@ -3378,8 +3380,13 @@ KLineScene = SceneBase.extend(
                     posEnd2 = cc.p(-gDesignResolutionWidth + 15-this.KlineWidth, 75);
                 }
                 //位置校正
-                this.getKlineLayerMain().setPosition(posEnd1);
-                this.getVolumnTechLayerMain().setPosition(posEnd2);
+                if (null != this.getKlineLayerMain()){
+                    this.getKlineLayerMain().setPosition(posEnd1);
+                }
+                if (null != this.getVolumnTechLayerMain()){
+                    this.getVolumnTechLayerMain().setPosition(posEnd2);
+                }
+
                 this.matchInfoLayer.playCheckChanged(playFlag);//只有比赛开始后才重置加速播放按钮
             }
 
@@ -3714,8 +3721,8 @@ KLineScene = SceneBase.extend(
                     }
                 }
                 this.selfOperations.push(lastCandleIndex);
-                this.refreshScores(lastCandleIndex);
-                this.getKlineLayerMain().setUpArrowIndex(lastCandleIndex, (this.selfOperations.length % 2 == 1));
+                // this.refreshScores(lastCandleIndex);
+                // this.getKlineLayerMain().setDownArrowIndex(lastCandleIndex, (this.selfOperations.length % 2 == 1));
                 gSocketConn.Sell(lastCandleIndex - 1 > 0 ? lastCandleIndex - 1 : 0);
             }else{
                 for(var j=oplength;null!=this.selfOperations&&null!=this.selfOperations[j];j--){

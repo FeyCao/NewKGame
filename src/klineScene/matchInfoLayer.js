@@ -95,7 +95,7 @@ var MatchInfoLayer = cc.Layer.extend({
 
 		var posBuy = cc.p(posX,posY);
 		var posSell = cc.p(gDesignResolutionWidth-posX,posY);
-		var posTool = cc.p(70,0);
+		var posTool = cc.p(100,0);
 		this.buyButton=new cc.MenuItemImage(res.BTN_BUY_ENABLE_png,res.BTN_BUY_ENABLE_png,res.BTN_BUY_DISABLE_png, self.buyClick, this);//new Button("res/home.png");
 		this.buyButton.setScale(fXScale,fYScale);
 		this.buyButton.setPosition(posBuy);

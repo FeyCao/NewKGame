@@ -93,22 +93,19 @@ canvas {
 <!--<script src="res/loading.js"></script>-->
 <canvas id="gameCanvas" width="960" height="640"></canvas>
 <script>
-    function isWeiXin(){
-        // alert('屏幕状态:'+window.neworientation.current+"||浏览器:"+sys.browserType+"||平台:"+sys.os);
-        var ua = window.navigator.userAgent.toLowerCase();
-        if(ua.match(/MicroMessenger/i) == 'micromessenger'){
-            return true;
-        }else{
-            return false;
-        }
-    }
+
+    var nav = window.navigator;
+    var ua = nav.userAgent.toLowerCase();
+    var iOS = ( ua.match(/(iPad|iPhone|iPod)/i) ? true : false );
+    var isAndroid = ua.match(/android/i) || nav.platform.match(/android/i) ? true : false;
+    var isWeChat = ua.match(/MicroMessenger/i) == 'micromessenger'? true : false;
     //屏幕方向标识，0横屏，其他值竖屏
 //    var orientation=0;
     //转屏事件，内部功能可以自定义
     function screenOrientationEvent(){
-        var ua = window.navigator.userAgent.toLowerCase();
         var isMobile = ua.indexOf('mobile') !== -1 || ua.indexOf('android') !== -1;
-        if(isWeiXin()){return;}
+//        if(!isMobile||iOS||!isWeChat){return;}
+        if(!isMobile){return;}
         if(window.innerHeight < window.innerWidth){
             console.info("================横");
 //               window.document.getElementById('game').css('height',window.innerHeight);
