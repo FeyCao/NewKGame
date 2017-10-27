@@ -66,7 +66,10 @@ LoginManagerProtoBuf.prototype.weChatLoginByToken=function(accessToken,refreshTo
 LoginManagerProtoBuf.prototype.ConnectServer=function()
 {
     cc.log("LoginManagerProtoBuf.prototype.ConnectServer");
-    alert('链接后台ConnectServer');
+    if(cc.game.config["testFlag"]==true){
+        alert('链接后台ConnectServer');
+    }
+
     if(gSocketConn==null)
     {
         gSocketConn=new protoSocketConn();

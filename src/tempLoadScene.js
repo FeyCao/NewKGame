@@ -382,14 +382,18 @@ var TempLoadScene = SceneBase.extend(
                     if(window.parent){
                         window.parent.codeWeChatData.clearItem();
                     }
-                    alert('weChat微信token授权登录失败');
+                    if(cc.game.config["testFlag"]==true){
+                        alert('weChat微信token授权登录失败');
+                    }
+
                     if(isWeChat){
                         var weChatURL = cc.game.config["serverWechatURL"];
                         //记录测试模式信息
                         if(cc.game.config["testFlag"]==true){
                             weChatURL = cc.game.config["serverTestWechatURL"];
+                            alert('weChat获取微信授权code');
                         }
-                        alert('weChat获取微信授权code');
+
                         var  urlEncode =  encodeURI(window.location.href);
                         var url = weChatURL+"&redirect_uri="+urlEncode+"&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect";//"index.html?" + "tittle=room&&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
                         // var url = weChatURL+window.location.search+"&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect";//"index.html?" + "tittle=room&&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";

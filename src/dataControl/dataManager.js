@@ -152,6 +152,7 @@ codeWeChatData.clearItem = function()
         self.name.splice(0,self.name.length);
         self.name = null;
     }
+    sys.localStorage.clear();
 };
 
 // var codeDataInfoList = (function () {

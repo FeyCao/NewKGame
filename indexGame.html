@@ -129,6 +129,7 @@
                self.name.splice(0,self.name.length);
                self.name = null;
            }
+           window.localStorage.clear();
        };
 
        function getQueryString()
