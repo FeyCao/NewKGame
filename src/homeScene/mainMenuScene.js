@@ -251,6 +251,10 @@ var MainMenuScene =SceneBase.extend(
         this.openSceneType();
         this.setInfoBySource(userInfo.source);
 
+        var bossFlag = getQueryStringByName("type");
+        if(bossFlag!=""&&bossFlag==0){
+            this.fourthModeChanged();
+        }
         var loadTime=new Date().getTime();
         cc.log("MainMenuScene onEnter end");
 	},
@@ -268,6 +272,10 @@ var MainMenuScene =SceneBase.extend(
             }
             case "QQ":{
 
+                gSocketConn.ansRoomFriend(true,userInfo.inviterUid,userInfo.inviterCode);//默认同意邀请
+                userInfo.source = "ANSERED";
+                userInfo.inviterUid=null;
+                userInfo.inviterCode=null;
                 // if(sys.os===sys.OS_WINDOWS||sys.os===sys.OS_OSX) {//浏览器模式
                 //
                 // }

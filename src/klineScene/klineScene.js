@@ -1627,7 +1627,10 @@ KLineScene = SceneBase.extend(
 //		var url = "WebSocketClient.html?"+"userId="+userId+"&matchId="+matchId;取得收益
             cc.log(url);
 //		gSocketConn.ShareMessage(userID,matchID);
-//
+
+            if(window.parent){
+                window.parent.window.location.href = url;
+            }
             if(sys.isMobile!=false){
                 window.location.href = url;
             }else{
