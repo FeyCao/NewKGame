@@ -92,6 +92,7 @@ canvas {
 <body>
 <!--<script src="res/loading.js"></script>-->
 <canvas id="gameCanvas" width="960" height="640"></canvas>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
 
     var nav = window.navigator;
@@ -104,8 +105,9 @@ canvas {
     //转屏事件，内部功能可以自定义
     function screenOrientationEvent(){
         var isMobile = ua.indexOf('mobile') !== -1 || ua.indexOf('android') !== -1;
-//        if(!isMobile||iOS||!isWeChat){return;}
-        if(!isMobile){return;}
+//        return;
+        if(!isMobile||iOS||!isWeChat){return;}
+//        if(!isMobile){return;}
         if(window.innerHeight < window.innerWidth){
             console.info("================横");
 //               window.document.getElementById('game').css('height',window.innerHeight);
@@ -120,7 +122,7 @@ canvas {
         }
         else {
             console.info("===================竖");
-            window.location.href="indexGame.html"+window.location.search;
+//            window.location.href="indexGame.html"+window.location.search;
 //               window.document.getElementById('game').height=window.innerWidth;
 //               window.document.getElementById('game').width=window.innerHeight;
 //               window.document.getElementById('game').window.location.reload();

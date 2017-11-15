@@ -2,6 +2,7 @@
     "project_type": "javascript",
     "debugMode" : 1,
     "showFPS" : true,
+    "weChatFlag" : false,
     "frameRate" : 60,
     "noCache" : false,
     "id" : "gameCanvas",

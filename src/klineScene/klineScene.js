@@ -768,6 +768,59 @@ KLineScene = SceneBase.extend(
 
                     break;
                 }
+                case MessageType.Type_WikiSDK_Config://注册微信签名
+                {
+                    var  wikiConfigInfo = message.wikiConfig;
+                    wx.config({
+                        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                        appId: 'wxc9e7fc9e90e99246', // 必填，公众号的唯一标识
+                        timestamp: wikiConfigInfo.timestamp, // 必填，生成签名的时间戳
+                        nonceStr: wikiConfigInfo.nonceStr, // 必填，生成签名的随机串
+                        signature: wikiConfigInfo.signature,// 必填，签名，见附录1
+                        jsApiList: [
+                            'checkJsApi',
+                            'onMenuShareTimeline',
+                            'onMenuShareAppMessage',
+                            'onMenuShareQQ',
+                            'onMenuShareWeibo',
+                            'onMenuShareQZone',
+                            'hideMenuItems',
+                            'showMenuItems',
+                            'hideAllNonBaseMenuItem',
+                            'showAllNonBaseMenuItem',
+                            'translateVoice',
+                            'startRecord',
+                            'stopRecord',
+                            'onVoiceRecordEnd',
+                            'playVoice',
+                            'onVoicePlayEnd',
+                            'pauseVoice',
+                            'stopVoice',
+                            'uploadVoice',
+                            'downloadVoice',
+                            'chooseImage',
+                            'previewImage',
+                            'uploadImage',
+                            'downloadImage',
+                            'getNetworkType',
+                            'openLocation',
+                            'getLocation',
+                            'hideOptionMenu',
+                            'showOptionMenu',
+                            'closeWindow',
+                            'scanQRCode',
+                            'chooseWXPay',
+                            'openProductSpecificView',
+                            'addCard',
+                            'chooseCard',
+                            'openCard'
+                        ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                    });
+                    cc.log("get MainMenuScene passed");
+                    self.stopProgress();
+
+                    break;
+                }
                 case MessageType.Type_Score: {
                     //收益信息
                     //alert("9="+packet.content);
@@ -921,10 +974,15 @@ KLineScene = SceneBase.extend(
                     userInfo.matchMode = MatchType.Type_Friend_Match;
 
                     if(null==inviteInfo.inviteeName){//邀请第三方平台
-                        var content = "点击同意邀请的比赛";
+                        var tittle = "趋势突击邀请战";
+                        var content = "点击打开链接同意邀请的比赛";
                         var url = "index.html?" + "tittle=room&&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
                         cc.log("url");
-                        if(sys.isMobile!=false){
+                        if(isWeChat){
+                            alert("请利用微信分享功能");
+                            weChatShare(url,tittle,content);
+
+                        }else if(sys.isMobile!=false){
                             window.location.href = url;
                         }else{
                             window.open(url);
@@ -1615,24 +1673,31 @@ KLineScene = SceneBase.extend(
 
             var content = "";
             if (userInfo.score < 100) {
-                content = "取得收益" + userInfo.score + "%25%0a不服点我"
+                content = "取得收益" + userInfo.score + "%不服点我"
             }
             else {
-                content = "取得收益" + userInfo.score + "%25%0a世界上不超过10人玩到100%25"
+                content = "取得收益" + userInfo.score + "%世界上不超过10人玩到100%"
             }
             // var url = "share.html?"+"tittle=share&userId="+userId+"&matchId="+matchId+"&matchType="+userInfo.matchMode+"&head="+"趋势突击&subtitle="+content+"subtitleEnd";
             //分享函数
-            var url = "share.html?" + "tittle=share&userName=" + userInfo.nickName + "&matchId=" + userInfo.matchId + "&matchType=" + userInfo.matchMode + "&head=" + "趋势突击&subtitle=" + content + "subtitleEnd";
+            var url = window.location.origin+"/KGame/share.html?" + "tittle=share&userName=" + userInfo.nickName + "&matchId=" + userInfo.matchId + "&matchType=" + userInfo.matchMode + "&head=" + "趋势突击&subtitle=" + content + "subtitleEnd";
+            url = encodeURIComponent(url);
             //share.html?userId=167&matchId=150
 //		var url = "WebSocketClient.html?"+"userId="+userId+"&matchId="+matchId;取得收益
             cc.log(url);
 //		gSocketConn.ShareMessage(userID,matchID);
 
-            if(window.parent){
-                window.parent.window.location.href = url;
-            }
-            if(sys.isMobile!=false){
-                window.location.href = url;
+            if(isWeChat){
+                var tittle = "趋势突击战况分享";
+                alert("请利用微信分享功能");
+                weChatShare(url,tittle,content);
+
+            }else if(sys.isMobile!=false){
+                if(window.parent){
+                    window.parent.window.location.href = url;
+                }else{
+                    window.location.href = url;
+                }
             }else{
                 window.open(url);
             }

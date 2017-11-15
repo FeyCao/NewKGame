@@ -9,7 +9,7 @@ var TempLoadScene = SceneBase.extend(
 
         titleSprite:null,
 
-        loadTime:null,
+        beginloadTime:null,
 
         ctor: function ()
         {
@@ -72,9 +72,8 @@ var TempLoadScene = SceneBase.extend(
             cc.log("userInfo.weChatCode==");
             cc.log(userInfo.weChatCode);
 
-
-            if(isWeChat&&null!=weChatLoginInfo&&weChatLoginInfo!=""){
-                if(cc.game.config["testFlag"]==true){
+            if(isWeChat&&cc.game.config["weChatFlag"]&&null!=weChatLoginInfo&&weChatLoginInfo!=""){
+                if(cc.game.config["showFPS"]==true){
                     alert('weChat微信token授权登录');
                 }
                 // this.weChatcode = userInfo.weChatCode;
@@ -89,17 +88,16 @@ var TempLoadScene = SceneBase.extend(
                     var wechatLoginByCode = weChatLoginInfo.wechatLoginByToken;
                     gLoginManager.weChatLoginByToken(wechatLoginByCode.accessToken,wechatLoginByCode.refreshToken,wechatLoginByCode.openId,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
                 }
-
             }
             else if(userInfo.weChatCode!=null&&userInfo.weChatCode!=""){
-                if(cc.game.config["testFlag"]==true){
+                if(cc.game.config["showFPS"]==true){
                     alert('weChat微信code授权登录');
                 }
                 this.weChatcode = userInfo.weChatCode;
                 gLoginManager.weChatLogin(this.weChatcode,function(packet){self.messageCallback(packet)},function(){self.connectErrorCallBack()});
             }
-            else if(isWeChat&&userInfo.weChatCode==""){
-                if(cc.game.config["testFlag"]==true){
+            else if(isWeChat&&cc.game.config["weChatFlag"]&&userInfo.weChatCode==""){
+                if(cc.game.config["showFPS"]==true){
                     alert('weChat获取微信授权code');
                 }
                 var weChatURL = cc.game.config["serverWechatURL"];
@@ -107,7 +105,10 @@ var TempLoadScene = SceneBase.extend(
                 if(cc.game.config["testFlag"]==true){
                     weChatURL = cc.game.config["serverTestWechatURL"];
                 }
-                var  urlEncode =  encodeURI(window.location.href);
+                var  urlEncode =  encodeURIComponent(window.location.href);
+                if (window.parent){
+                    urlEncode =  encodeURIComponent(window.parent.window.location.href);
+                }
                 var url = weChatURL+"&redirect_uri="+urlEncode+"&response_type=code&scope=snsapi_login&state="+window.location.search+"#wechat_redirect";//"index.html?" + "tittle=room&&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
                 // var url = weChatURL+window.location.search+"&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect";//"index.html?" + "tittle=room&&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
                 cc.log("url");
@@ -138,7 +139,7 @@ var TempLoadScene = SceneBase.extend(
             }
             // gSocketConn.RegisterEvent("onmessage",this.messageCallBack);
             this.showProgress();
-            loadTime=new Date().getTime();
+            this.beginloadTime=new Date().getTime();
         },
 
         removeLocalStorageItems:function()
@@ -382,14 +383,14 @@ var TempLoadScene = SceneBase.extend(
                     if(window.parent){
                         window.parent.codeWeChatData.clearItem();
                     }
-                    if(cc.game.config["testFlag"]==true){
+                    if(cc.game.config["showFPS"]==true){
                         alert('weChat微信token授权登录失败');
                     }
 
                     if(isWeChat){
                         var weChatURL = cc.game.config["serverWechatURL"];
                         //记录测试模式信息
-                        if(cc.game.config["testFlag"]==true){
+                        if(cc.game.config["testFalg"]==true){
                             weChatURL = cc.game.config["serverTestWechatURL"];
                             alert('weChat获取微信授权code');
                         }

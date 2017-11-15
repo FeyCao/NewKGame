@@ -1,3 +1,7 @@
+var resLoad = {
+
+};
+
 var res = {
  //字体
  FONT_TYPE:"res/fonts/Arial.ttf",//

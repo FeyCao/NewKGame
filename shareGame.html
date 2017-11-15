@@ -83,6 +83,55 @@ body {
     // window.location.search(设置或获取 href 属性中跟在问号后面的部分)
     var newUrl =window.location.search;
     console.info(newUrl);
+    var codeWeChatData = {
+        name:null,
+    };
+    /*
+     * 写入数据，将数据存储在本地
+     * @param jsonName:json文件名字
+     */
+    codeWeChatData.setItem = function(jsonName,data)
+    {
+        var self = this;
+        if(null==self.name){
+            self.name = new Array();
+        }
+        cc.log("add jsonName=="+jsonName);
+        self.name.push(jsonName);
+        var baseData = JSON.stringify(data);//data.toArrayBuffer();//JSON.stringify(data);
+        window.localStorage.setItem(jsonName, baseData);
+    };
+    /*
+     * 读取基础数据
+     * 还回protobuf格式数据
+     */
+    codeWeChatData.getItem = function(jsonName)
+    {
+        var beginTime = new Date().getTime();
+        var baseData = window.localStorage.getItem(jsonName); //从本地读取数据
+        // var WechatLogin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLogin");
+        baseData = JSON.parse(baseData);//WechatLogin.decode(baseData); //将string转换成protobuf
+        var endTime = new Date().getTime();
+        alert('weChat微信token获取时间：'+(endTime-beginTime));
+        return baseData;
+
+    };
+    /*
+     * 删除数据
+     */
+    codeWeChatData.clearItem = function()
+    {
+        var self = this;
+        for(var i in self.name){
+            cc.log("clear jsonName=="+self.name[i]);
+            window.localStorage.removeItem(self.name[i]);
+        }
+        if(null!=self.name){
+            self.name.splice(0,self.name.length);
+            self.name = null;
+        }
+        window.localStorage.clear();
+    };
     function getQueryString()
     {
         var result = location.search.match(new RegExp("[\?\&][^\?\&]+=[^\?\&]+","g"));

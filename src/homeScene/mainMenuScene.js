@@ -255,7 +255,9 @@ var MainMenuScene =SceneBase.extend(
         if(bossFlag!=""&&bossFlag==0){
             this.fourthModeChanged();
         }
+        gSocketConn.getWikiConfig(window.location.href);
         var loadTime=new Date().getTime();
+        weChatShare();
         cc.log("MainMenuScene onEnter end");
 	},
     setInfoBySource:function (source) {
@@ -272,10 +274,10 @@ var MainMenuScene =SceneBase.extend(
             }
             case "QQ":{
 
-                gSocketConn.ansRoomFriend(true,userInfo.inviterUid,userInfo.inviterCode);//默认同意邀请
-                userInfo.source = "ANSERED";
-                userInfo.inviterUid=null;
-                userInfo.inviterCode=null;
+                // gSocketConn.ansRoomFriend(true,userInfo.inviterUid,userInfo.inviterCode);//默认同意邀请
+                // userInfo.source = "ANSERED";
+                // userInfo.inviterUid=null;
+                // userInfo.inviterCode=null;
                 // if(sys.os===sys.OS_WINDOWS||sys.os===sys.OS_OSX) {//浏览器模式
                 //
                 // }
@@ -283,6 +285,7 @@ var MainMenuScene =SceneBase.extend(
             }
             case "Wechat":{
                 //
+
                 gSocketConn.ansRoomFriend(true,userInfo.inviterUid,userInfo.inviterCode);//默认同意邀请
                 userInfo.source = "ANSERED";
                 userInfo.inviterUid=null;
@@ -525,7 +528,40 @@ var MainMenuScene =SceneBase.extend(
 	config:function()
 	{
         var self = this;
+        // wx.checkJsApi({
+        //     jsApiList: [
+        //         'getNetworkType',
+        //         'previewImage'
+        //     ],
+        //     success: function (res) {
+        //         alert(JSON.stringify(res));
+        //     }
+        // });
+        // var shareUrl = window.location.href;//"http://192.168.16.250:5180/KGame/index.html";//"http://kgame.kiiik.com/KGame/index.html?";
+        /**
+         * 显示底部工具栏
+         */
 
+
+        // wx.onMenuShareAppMessage({
+        //     title: '互联网之子',
+        //     desc: '在长大的过程中，我才慢慢发现，我身边的所有事，别人跟我说的所有事，那些所谓本来如此，注定如此的事，它们其实没有非得如此，事情是可以改变的。更重要的是，有些事既然错了，那就该做出改变。',
+        //     link: 'http://movie.douban.com/subject/25785114/',
+        //     imgUrl: 'http://demo.open.weixin.qq.com/jssdk/images/p2166127561.jpg',
+        //     trigger: function (res) {
+        //         // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+        //         alert('用户点击发送给朋友');
+        //     },
+        //     success: function (res) {
+        //         alert('已分享');
+        //     },
+        //     cancel: function (res) {
+        //         alert('已取消');
+        //     },
+        //     fail: function (res) {
+        //         alert(JSON.stringify(res));
+        //     }
+        // });
         // if(isWeiXin()==true){
         //     alert('是微信width=='+findDimensions().width+'||hegit=='+findDimensions().height);
         //
@@ -611,6 +647,7 @@ var MainMenuScene =SceneBase.extend(
             this.preMatchView.hideLayer();
         }
 
+        weChatShare();
         this.resumeLowerLayer();
     },
     openFriendLayer:function()
@@ -666,6 +703,11 @@ var MainMenuScene =SceneBase.extend(
     {
 
         cc.log("MainScene help begin");
+        // wx.showMenuItems({
+        //     menuList: ["menuItem:share:appMessage","menuItem:share:timeline"] // 要显示的菜单项，所有menu项见附录3
+        // });
+
+
         var self = this;
         if(this.helpViewLayer==null){
             this.helpViewLayer=new HelpViewLayer();
@@ -1047,6 +1089,11 @@ var MainMenuScene =SceneBase.extend(
                     self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
                     break;
                 }
+                case -415:{
+                    self.popViewLayer_Close();
+                    self.showErrorBox(message.warn.warnInfo,function(){self.errorBoxClosed();});
+                    break;
+                }
                 case -420:{
                     if(self.friendLayer!=null){
                         self.friendLayer.showLayer();
@@ -1088,41 +1135,138 @@ var MainMenuScene =SceneBase.extend(
                 // self.stopProgress();
                 break;
             }
-            // case "P"://接收到了大厅数据的消息
-            // {
-            //     cc.log("call get MainMenuScene data");
-            //     if(gMainMenuScene==false){
-            //         gMainMenuScene==new MainMenuScene();
-            //     }
-            //     self.setMainMenuScenedata(packet.content);
-            //     cc.log("get MainMenuScene passed");
-            //     self.stopProgress();
-            //     break;
-            // }
-            // case "M"://人机对战结束信息
-            // {
-            //     //收到对方买入的信息
-            //     // if(gKlineScene==null)
-            //     //     gKlineScene=new KLineScene();
-            //     // if(gKlineScene!=null) {
-            //     //     gKlineScene.showMatchEndInfo(packet.content);
-            //     // }
-            //     // self.stopProgress();
-            //     break;
-            // }
-            // case "Matching"://人人人对战信息Matching|"playerList":["http://7xpfdl.com1.z0.glb.clouddn.com/M1 E__1480588002710__166279_3596","http://ohfw64y24.bkt.clouddn.com/54"]|###
-            // {
-            //     cc.log("gMainMenuScene 人人机对战信息");
-            //     if(self.matchViewLayer!=null) {
-            //
-            //         cc.log("gMainMenuScene 人人机对战信息2");
-            //         userInfo.matchBeginFlag=true;
-            //         self.matchViewLayer.stopHeadChange();
-            //         self.matchViewLayer.refreshMatchViewByData(packet.content);
-            //     }
-            //     // self.stopProgress();
-            //     break;
-            // }
+
+            case MessageType.Type_WikiSDK_Config://注册微信签名
+            {
+                // wx.config({
+//     debug: false,
+//     appId: 'wxf8b4f85f3a794e77',
+//     timestamp: 1510102080,
+//     nonceStr: 'G6ipVdUsb4d0iOiW',
+//     signature: 'b3d0fd6693d28511054f27751fdcc1b4c0fb9bc6',
+//     jsApiList: [
+//         'checkJsApi',
+//         'onMenuShareTimeline',
+//         'onMenuShareAppMessage',
+//         'onMenuShareQQ',
+//         'onMenuShareWeibo',
+//         'onMenuShareQZone',
+//         'hideMenuItems',
+//         'showMenuItems',
+//         'hideAllNonBaseMenuItem',
+//         'showAllNonBaseMenuItem',
+//         'translateVoice',
+//         'startRecord',
+//         'stopRecord',
+//         'onVoiceRecordEnd',
+//         'playVoice',
+//         'onVoicePlayEnd',
+//         'pauseVoice',
+//         'stopVoice',
+//         'uploadVoice',
+//         'downloadVoice',
+//         'chooseImage',
+//         'previewImage',
+//         'uploadImage',
+//         'downloadImage',
+//         'getNetworkType',
+//         'openLocation',
+//         'getLocation',
+//         'hideOptionMenu',
+//         'showOptionMenu',
+//         'closeWindow',
+//         'scanQRCode',
+//         'chooseWXPay',
+//         'openProductSpecificView',
+//         'addCard',
+//         'chooseCard',
+//         'openCard'
+//     ]
+// });
+
+                var  wikiConfigInfo = message.wikiConfig;
+                wx.config({
+                    debug: testFlag, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: 'wxc9e7fc9e90e99246', // 必填，公众号的唯一标识
+                    timestamp: wikiConfigInfo.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: wikiConfigInfo.nonceStr, // 必填，生成签名的随机串
+                    signature: wikiConfigInfo.signature,// 必填，签名，见附录1
+                    jsApiList: [
+                        'checkJsApi',
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage',
+                        'onMenuShareQQ',
+                        'onMenuShareWeibo',
+                        'onMenuShareQZone',
+                        'hideMenuItems',
+                        'showMenuItems',
+                        'hideAllNonBaseMenuItem',
+                        'showAllNonBaseMenuItem',
+                        'translateVoice',
+                        'startRecord',
+                        'stopRecord',
+                        'onVoiceRecordEnd',
+                        'playVoice',
+                        'onVoicePlayEnd',
+                        'pauseVoice',
+                        'pauseVoice',
+                        'stopVoice',
+                        'uploadVoice',
+                        'downloadVoice',
+                        'chooseImage',
+                        'previewImage',
+                        'uploadImage',
+                        'downloadImage',
+                        'getNetworkType',
+                        'openLocation',
+                        'getLocation',
+                        'hideOptionMenu',
+                        'showOptionMenu',
+                        'closeWindow',
+                        'scanQRCode',
+                        'chooseWXPay',
+                        'openProductSpecificView'
+                    ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                });
+                wx.ready(function () {
+                    // 1 判断当前版本是否支持指定 JS 接口，支持批量判断
+                    wx.checkJsApi({
+                        jsApiList: [
+                            'getNetworkType',
+                            'previewImage'
+                        ],
+                        success: function (res) {
+                            if(cc.game.config["showFPS"]==true){
+                                alert(JSON.stringify(res));
+                            }
+
+                        }
+                    });
+                    weChatShare();
+                    wx.error(function (res) {
+                        if(cc.game.config["showFPS"]==true){
+                            alert('errorMessage:'+res.errMsg);
+                        }
+                    });
+                });
+                cc.log("get MainMenuScene passed");
+                self.stopProgress();
+
+                //
+                // userId:null,//
+                // 	deviceId:null,//设备号
+                // userInfo.username=gPlayerName;
+                // userInfo.password=packet.content.split("#")[1];
+                //更新用户信息
+                // userInfo.userId=packet.content.split("#")[0];
+                // userInfo.source=packet.content.split("#")[1];
+                // userInfo.operationType=1;//登录方式记录为
+                // self.setMainMenuScenedata(packet.content);
+                // cc.log("get MainMenuScene passed");
+                // self.stopProgress();
+                break;
+            }
+
             case  MessageType.Type_Matching_Success://人人人对战信息Matching|"playerList":["http://7xpfdl.com1.z0.glb.clouddn.com/M1 E__1480588002710__166279_3596","http://ohfw64y24.bkt.clouddn.com/54"]|###
             {
                 cc.log("gMainMenuScene 人人机对战信息");
@@ -1502,11 +1646,16 @@ var MainMenuScene =SceneBase.extend(
                 userInfo.matchMode = MatchType.Type_Friend_Match;
 
                 if(null==inviteInfo.inviteeName){//邀请第三方平台
-                    var content = "点击链接同意比赛";
-                    var url = "index.html?" + "&tittle=room&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
+                    var tittle = "趋势突击邀请战";
+                    var content = "点击打开链接同意邀请的比赛";
+                    var url = window.location.origin+window.location.pathname + "?&tittle=room&source=" + userInfo.inviteType +"&inviterUid=" + inviteInfo.inviterUid + "&inviteCode=" + inviteInfo.inviteCode + "&head=趋势突击&subtitle=" + content + "subtitleEnd";
                     cc.log("url");
                     // window.location.href = url;
-                    if(sys.isMobile!=false){
+                    if(isWeChat){
+                        alert("请利用微信分享功能");
+                        weChatShare(url,tittle,content);
+
+                    }else if(sys.isMobile!=false){
                         window.location.href = url;
                     }else{
                         window.open(url);
@@ -1538,6 +1687,7 @@ var MainMenuScene =SceneBase.extend(
                 cc.log("MessageType.Type_Player_In_Home=="+message+"=====");
                 var playerInHome = message.playerInHome;
                 userInfo.inviteFlag = true;
+                gSocketConn.getFriendList("RoomCode");
                 self.openFriendLayer();
                 self.friendLayer.refreshInviteFriend(playerInHome);
                 // if()

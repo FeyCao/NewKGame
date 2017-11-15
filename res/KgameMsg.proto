@@ -35,6 +35,7 @@
 	Type_Entry_Game_In_Home=33;//房主开始游戏
 	Type_Player_In_Home=34;//房间内成员变更
 	Type_Wechat_Login=35;//微信登录
+        Type_WikiSDK_Config=36;//微信获得config
 }
 
 
@@ -64,8 +65,8 @@ message WechatLoginByCode{
 
 message WechatLoginByToken{
     required string openId=1;
-	required string accessToken=2;
-	required string refreshToken=3;
+    required string accessToken=2;
+    required string refreshToken=3;
 
 }
 
@@ -380,6 +381,13 @@ message WechatLogin{
 	optional WechatLoginByToken wechatLoginByToken=3;
 }
 
+message WikiConfig{
+   required string url=1;
+   optional string nonceStr=2;
+   optional string signature=3;
+   optional string timestamp=4;
+}
+
 
 
 message Message{
@@ -411,4 +419,5 @@ message Message{
    optional string changeCode=26;
    repeated PlayerInHome playerInHome=27;//好友站房间信息
    optional WechatLogin wechatLogin=28;
+   optional WikiConfig wikiConfig=29;
 }

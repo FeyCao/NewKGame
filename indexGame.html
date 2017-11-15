@@ -109,9 +109,12 @@
         */
        codeWeChatData.getItem = function(jsonName)
        {
+           var beginTime = new Date().getTime();
            var baseData = window.localStorage.getItem(jsonName); //从本地读取数据
            // var WechatLogin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLogin");
            baseData = JSON.parse(baseData);//WechatLogin.decode(baseData); //将string转换成protobuf
+           var endTime = new Date().getTime();
+           alert('weChat微信token获取时间：'+(endTime-beginTime));
            return baseData;
 
        };

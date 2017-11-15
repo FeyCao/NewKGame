@@ -447,16 +447,14 @@ var FriendViewLayer = cc.Layer.extend({
         this.leftDownBg.setPosition(cc.p(925,topPosY));
         this.backgroundSprite.addChild(this.leftDownBg,2);
 
-        if(userInfo.source!="DHJK"){
-
-            // this.btnBegin.setVisible(false);
+        if(userInfo.source=="DHJK"||isWeChat==true){
+            this.leftDownBg.setVisible(true);
+            this.btnInviteQQ.setVisible(true);
+            this.btnInviteWechat.setVisible(true);// this.btnBegin.setVisible(false);
+        }else{
             this.leftDownBg.setVisible(false);
             this.btnInviteQQ.setVisible(false);
             this.btnInviteWechat.setVisible(false);
-        }else{
-            this.leftDownBg.setVisible(true);
-            this.btnInviteQQ.setVisible(true);
-            this.btnInviteWechat.setVisible(true);
         }
         // this.btnBegin.setVisible(false);
         // this.leftDownBg.setVisible(false);
@@ -1075,16 +1073,14 @@ var FriendViewLayer = cc.Layer.extend({
             this.infoBg.setVisible(true);
             this.infoLabel.setVisible(true);
         }
-        if(userInfo.source!="DHJK"){
-
-            // this.btnBegin.setVisible(false);
+        if(userInfo.source=="DHJK"||isWeChat==true){
+            this.leftDownBg.setVisible(true);
+            this.btnInviteQQ.setVisible(true);
+            this.btnInviteWechat.setVisible(true);// this.btnBegin.setVisible(false);
+        }else{
             this.leftDownBg.setVisible(false);
             this.btnInviteQQ.setVisible(false);
             this.btnInviteWechat.setVisible(false);
-        }else{
-            this.leftDownBg.setVisible(true);
-            this.btnInviteQQ.setVisible(true);
-            this.btnInviteWechat.setVisible(true);
         }
     },
     refreshInviteFriend:function(players) {

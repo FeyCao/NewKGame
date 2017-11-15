@@ -213,6 +213,25 @@ protoSocketConn.prototype.weChatLoginByToken=function(accessToken,refreshToken,o
 
 }
 
+protoSocketConn.prototype.getWikiConfig=function(url)//获取微信签名
+{
+
+    cc.log("send getWikiConfig msg=||"+url);//http://kgt.kiiik.com/KGame/index.html?
+
+    var messageWikiConfig = new WikiConfig();
+    messageWikiConfig.setUrl(url);
+    // messageWikiConfig.setUrl('http://kgame.kiiik.com/KGame/index.html?');
+    var  message = new Message();
+    message.setMessageType(MessageType.Type_WikiSDK_Config);
+    message.setWikiConfig(messageWikiConfig);
+    var arrayBuf =  message.toArrayBuffer();
+    arrayBuf.valueOf();
+    ws.send(arrayBuf);
+    console.info("获取微信签名发送的数据：");
+    console.info(message);
+
+}
+
 // protoSocketConn.prototype.QuickLogin=function(source)
 // {
 //

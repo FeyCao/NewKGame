@@ -444,6 +444,869 @@ var barInfoLayer = cc.Layer.extend({
 
 
 });
+
+function weChatShare(url,title,desc){//链接 标题 描述
+    url = url||window.location.href;
+    title = title||'趋势突击';
+    desc = desc||'趋势突击是由东航金融自主开发的一款有趣的期市模拟操作游戏，功能包括练习场、人机战、多人战、好友战、战绩、排名等，游戏中采用的数据均是真实的期(股)市数据，玩家可以通过本游戏锻炼自己对K线走势的感觉，从而在真实的期市中开拓一片自己的疆土。';
+    wx.onMenuShareAppMessage({
+        title: title,
+        desc: desc,
+        link: url,
+        imgUrl: 'https://ohfw64y24.bkt.clouddn.com/TRYH8L%600%60%5BZRQPESJ0NMLIX.png',
+        trigger: function (res) {
+            // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+            // alert('用户点击发送给朋友');
+        },
+        success: function (res) {
+            // WeixinApi.hideToolbar();
+            // alert('已分享');
+        },
+        cancel: function (res) {
+            if(cc.game.config["showFPS"]==true){
+                alert('已取消'+url);
+            }
+        },
+        fail: function (res) {
+            alert('fail:'+JSON.stringify(res));
+        }
+    });
+    // 2.2 监听“分享到朋友圈”按钮点击、自定义分享内容及分享结果接口
+    wx.onMenuShareTimeline({
+        title: title,
+        desc: desc,
+        link: url,
+        imgUrl: 'https://ohfw64y24.bkt.clouddn.com/TRYH8L%600%60%5BZRQPESJ0NMLIX.png',
+        trigger: function (res) {
+            // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+            // alert('用户点击分享到朋友圈');
+        },
+        success: function (res) {
+            // alert('已分享');
+        },
+        cancel: function (res) {
+            if(cc.game.config["showFPS"]==true){
+                alert('已取消'+url);
+            }
+        },
+        fail: function (res) {
+            alert(JSON.stringify(res));
+        }
+    });
+
+    // 2.3 监听“分享到QQ”按钮点击、自定义分享内容及分享结果接口
+    wx.onMenuShareQQ({
+        title: title,
+        desc: desc,
+        link: url,
+        imgUrl: 'https://ohfw64y24.bkt.clouddn.com/TRYH8L%600%60%5BZRQPESJ0NMLIX.png',
+        trigger: function (res) {
+            // alert('用户点击分享到QQ');
+        },
+        complete: function (res) {
+            alert(JSON.stringify(res));
+        },
+        success: function (res) {
+            // alert('已分享');
+        },
+        cancel: function (res) {
+            if(cc.game.config["showFPS"]==true){
+                alert('已取消'+url);
+            }
+        },
+        fail: function (res) {
+            alert(JSON.stringify(res));
+        }
+    });
+}
+
+/*
+ * 注意：
+ * 1. 所有的JS接口只能在公众号绑定的域名下调用，公众号开发者需要先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。
+ * 2. 如果发现在 Android 不能分享自定义内容，请到官网下载最新的包覆盖安装，Android 自定义分享接口需升级至 6.0.2.58 版本及以上。
+ * 3. 完整 JS-SDK 文档地址：http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html
+ *
+ * 如有问题请通过以下渠道反馈：
+ * 邮箱地址：weixin-open@qq.com
+ * 邮件主题：【微信JS-SDK反馈】具体问题
+ * 邮件内容说明：用简明的语言描述问题所在，并交代清楚遇到该问题的场景，可附上截屏图片，微信团队会尽快处理你的反馈。
+ */
+
+// wx.config({
+//     debug: false,
+//     appId: 'wxf8b4f85f3a794e77',
+//     timestamp: 1510102080,
+//     nonceStr: 'G6ipVdUsb4d0iOiW',
+//     signature: 'b3d0fd6693d28511054f27751fdcc1b4c0fb9bc6',
+//     jsApiList: [
+//         'checkJsApi',
+//         'onMenuShareTimeline',
+//         'onMenuShareAppMessage',
+//         'onMenuShareQQ',
+//         'onMenuShareWeibo',
+//         'onMenuShareQZone',
+//         'hideMenuItems',
+//         'showMenuItems',
+//         'hideAllNonBaseMenuItem',
+//         'showAllNonBaseMenuItem',
+//         'translateVoice',
+//         'startRecord',
+//         'stopRecord',
+//         'onVoiceRecordEnd',
+//         'playVoice',
+//         'onVoicePlayEnd',
+//         'pauseVoice',
+//         'stopVoice',
+//         'uploadVoice',
+//         'downloadVoice',
+//         'chooseImage',
+//         'previewImage',
+//         'uploadImage',
+//         'downloadImage',
+//         'getNetworkType',
+//         'openLocation',
+//         'getLocation',
+//         'hideOptionMenu',
+//         'showOptionMenu',
+//         'closeWindow',
+//         'scanQRCode',
+//         'chooseWXPay',
+//         'openProductSpecificView',
+//         'addCard',
+//         'chooseCard',
+//         'openCard'
+//     ]
+// });
+
+/*// wx.ready(function () {
+//     // 1 判断当前版本是否支持指定 JS 接口，支持批量判断
+//     document.querySelector('#checkJsApi').onclick = function () {
+//         wx.checkJsApi({
+//             jsApiList: [
+//                 'getNetworkType',
+//                 'previewImage'
+//             ],
+//             success: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//     };
+//
+//
+//     wx.onMenuShareAppMessage({
+//         title: '互联网之子',
+//         desc: '在长大的过程中，我才慢慢发现，我身边的所有事，别人跟我说的所有事，那些所谓本来如此，注定如此的事，它们其实没有非得如此，事情是可以改变的。更重要的是，有些事既然错了，那就该做出改变。',
+//         link: 'http://movie.douban.com/subject/25785114/',
+//         imgUrl: 'http://demo.open.weixin.qq.com/jssdk/images/p2166127561.jpg',
+//         trigger: function (res) {
+//             // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+//             alert('用户点击发送给朋友');
+//         },
+//         success: function (res) {
+//             alert('已分享');
+//         },
+//         cancel: function (res) {
+//             alert('已取消');
+//         },
+//         fail: function (res) {
+//             alert(JSON.stringify(res));
+//         }
+//     });
+//     // 2. 分享接口
+//     // 2.1 监听“分享给朋友”，按钮点击、自定义分享内容及分享结果接口
+//     document.querySelector('#onMenuShareAppMessage').onclick = function () {
+//         wx.onMenuShareAppMessage({
+//             title: '互联网之子',
+//             desc: '在长大的过程中，我才慢慢发现，我身边的所有事，别人跟我说的所有事，那些所谓本来如此，注定如此的事，它们其实没有非得如此，事情是可以改变的。更重要的是，有些事既然错了，那就该做出改变。',
+//             link: 'http://movie.douban.com/subject/25785114/',
+//             imgUrl: 'http://demo.open.weixin.qq.com/jssdk/images/p2166127561.jpg',
+//             trigger: function (res) {
+//                 // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+//                 alert('用户点击发送给朋友');
+//             },
+//             success: function (res) {
+//                 alert('已分享');
+//             },
+//             cancel: function (res) {
+//                 alert('已取消');
+//             },
+//             fail: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//         alert('已注册获取“发送给朋友”状态事件');
+//     };
+//
+//     // 2.2 监听“分享到朋友圈”按钮点击、自定义分享内容及分享结果接口
+//     document.querySelector('#onMenuShareTimeline').onclick = function () {
+//         wx.onMenuShareTimeline({
+//             title: '互联网之子',
+//             link: 'http://movie.douban.com/subject/25785114/',
+//             imgUrl: 'http://demo.open.weixin.qq.com/jssdk/images/p2166127561.jpg',
+//             trigger: function (res) {
+//                 // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+//                 alert('用户点击分享到朋友圈');
+//             },
+//             success: function (res) {
+//                 alert('已分享');
+//             },
+//             cancel: function (res) {
+//                 alert('已取消');
+//             },
+//             fail: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//         alert('已注册获取“分享到朋友圈”状态事件');
+//     };
+//
+//     // 2.3 监听“分享到QQ”按钮点击、自定义分享内容及分享结果接口
+//     document.querySelector('#onMenuShareQQ').onclick = function () {
+//         wx.onMenuShareQQ({
+//             title: '互联网之子',
+//             desc: '在长大的过程中，我才慢慢发现，我身边的所有事，别人跟我说的所有事，那些所谓本来如此，注定如此的事，它们其实没有非得如此，事情是可以改变的。更重要的是，有些事既然错了，那就该做出改变。',
+//             link: 'http://movie.douban.com/subject/25785114/',
+//             imgUrl: 'http://img3.douban.com/view/movie_poster_cover/spst/public/p2166127561.jpg',
+//             trigger: function (res) {
+//                 alert('用户点击分享到QQ');
+//             },
+//             complete: function (res) {
+//                 alert(JSON.stringify(res));
+//             },
+//             success: function (res) {
+//                 alert('已分享');
+//             },
+//             cancel: function (res) {
+//                 alert('已取消');
+//             },
+//             fail: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//         alert('已注册获取“分享到 QQ”状态事件');
+//     };
+//
+//     // 2.4 监听“分享到微博”按钮点击、自定义分享内容及分享结果接口
+//     document.querySelector('#onMenuShareWeibo').onclick = function () {
+//         wx.onMenuShareWeibo({
+//             title: '互联网之子',
+//             desc: '在长大的过程中，我才慢慢发现，我身边的所有事，别人跟我说的所有事，那些所谓本来如此，注定如此的事，它们其实没有非得如此，事情是可以改变的。更重要的是，有些事既然错了，那就该做出改变。',
+//             link: 'http://movie.douban.com/subject/25785114/',
+//             imgUrl: 'http://img3.douban.com/view/movie_poster_cover/spst/public/p2166127561.jpg',
+//             trigger: function (res) {
+//                 alert('用户点击分享到微博');
+//             },
+//             complete: function (res) {
+//                 alert(JSON.stringify(res));
+//             },
+//             success: function (res) {
+//                 alert('已分享');
+//             },
+//             cancel: function (res) {
+//                 alert('已取消');
+//             },
+//             fail: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//         alert('已注册获取“分享到微博”状态事件');
+//     };
+//
+//     // 2.5 监听“分享到QZone”按钮点击、自定义分享内容及分享接口
+//     document.querySelector('#onMenuShareQZone').onclick = function () {
+//         wx.onMenuShareQZone({
+//             title: '互联网之子',
+//             desc: '在长大的过程中，我才慢慢发现，我身边的所有事，别人跟我说的所有事，那些所谓本来如此，注定如此的事，它们其实没有非得如此，事情是可以改变的。更重要的是，有些事既然错了，那就该做出改变。',
+//             link: 'http://movie.douban.com/subject/25785114/',
+//             imgUrl: 'http://img3.douban.com/view/movie_poster_cover/spst/public/p2166127561.jpg',
+//             trigger: function (res) {
+//                 alert('用户点击分享到QZone');
+//             },
+//             complete: function (res) {
+//                 alert(JSON.stringify(res));
+//             },
+//             success: function (res) {
+//                 alert('已分享');
+//             },
+//             cancel: function (res) {
+//                 alert('已取消');
+//             },
+//             fail: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//         alert('已注册获取“分享到QZone”状态事件');
+//     };
+//
+//
+//
+//
+//     // 6 设备信息接口
+//     // 6.1 获取当前网络状态
+//     document.querySelector('#getNetworkType').onclick = function () {
+//         wx.getNetworkType({
+//             success: function (res) {
+//                 alert(res.networkType);
+//             },
+//             fail: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//     };
+//
+//     // 7 地理位置接口
+//     // 7.1 查看地理位置
+//     document.querySelector('#openLocation').onclick = function () {
+//         wx.openLocation({
+//             latitude: 23.099994,
+//             longitude: 113.324520,
+//             name: 'TIT 创意园',
+//             address: '广州市海珠区新港中路 397 号',
+//             scale: 14,
+//             infoUrl: 'http://weixin.qq.com'
+//         });
+//     };
+//
+//     // 7.2 获取当前地理位置
+//     document.querySelector('#getLocation').onclick = function () {
+//         wx.getLocation({
+//             success: function (res) {
+//                 alert(JSON.stringify(res));
+//             },
+//             cancel: function (res) {
+//                 alert('用户拒绝授权获取地理位置');
+//             }
+//         });
+//     };
+//
+//     // 8 界面操作接口
+//     // 8.1 隐藏右上角菜单
+//     document.querySelector('#hideOptionMenu').onclick = function () {
+//         wx.hideOptionMenu();
+//     };
+//
+//     // 8.2 显示右上角菜单
+//     document.querySelector('#showOptionMenu').onclick = function () {
+//         wx.showOptionMenu();
+//     };
+//
+//     // 8.3 批量隐藏菜单项
+//     document.querySelector('#hideMenuItems').onclick = function () {
+//         wx.hideMenuItems({
+//             menuList: [
+//                 'menuItem:readMode', // 阅读模式
+//                 'menuItem:share:timeline', // 分享到朋友圈
+//                 'menuItem:copyUrl' // 复制链接
+//             ],
+//             success: function (res) {
+//                 alert('已隐藏“阅读模式”，“分享到朋友圈”，“复制链接”等按钮');
+//             },
+//             fail: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//     };
+//
+//     // 8.4 批量显示菜单项
+//     document.querySelector('#showMenuItems').onclick = function () {
+//         wx.showMenuItems({
+//             menuList: [
+//                 'menuItem:readMode', // 阅读模式
+//                 'menuItem:share:timeline', // 分享到朋友圈
+//                 'menuItem:copyUrl' // 复制链接
+//             ],
+//             success: function (res) {
+//                 alert('已显示“阅读模式”，“分享到朋友圈”，“复制链接”等按钮');
+//             },
+//             fail: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//     };
+//
+//     // 8.5 隐藏所有非基本菜单项
+//     document.querySelector('#hideAllNonBaseMenuItem').onclick = function () {
+//         wx.hideAllNonBaseMenuItem({
+//             success: function () {
+//                 alert('已隐藏所有非基本菜单项');
+//             }
+//         });
+//     };
+//
+//     // 8.6 显示所有被隐藏的非基本菜单项
+//     document.querySelector('#showAllNonBaseMenuItem').onclick = function () {
+//         wx.showAllNonBaseMenuItem({
+//             success: function () {
+//                 alert('已显示所有非基本菜单项');
+//             }
+//         });
+//     };
+//
+//     // 8.7 关闭当前窗口
+//     document.querySelector('#closeWindow').onclick = function () {
+//         wx.closeWindow();
+//     };
+//
+//     // 9 微信原生接口
+//     // 9.1.1 扫描二维码并返回结果
+//     document.querySelector('#scanQRCode0').onclick = function () {
+//         wx.scanQRCode();
+//     };
+//     // 9.1.2 扫描二维码并返回结果
+//     document.querySelector('#scanQRCode1').onclick = function () {
+//         wx.scanQRCode({
+//             needResult: 1,
+//             desc: 'scanQRCode desc',
+//             success: function (res) {
+//                 alert(JSON.stringify(res));
+//             }
+//         });
+//     };
+//
+//     // 10 微信支付接口
+//     // 10.1 发起一个支付请求
+//     document.querySelector('#chooseWXPay').onclick = function () {
+//         // 注意：此 Demo 使用 2.7 版本支付接口实现，建议使用此接口时参考微信支付相关最新文档。
+//         wx.chooseWXPay({
+//             timestamp: 1414723227,
+//             nonceStr: 'noncestr',
+//             package: 'addition=action_id%3dgaby1234%26limit_pay%3d&bank_type=WX&body=innertest&fee_type=1&input_charset=GBK&notify_url=http%3A%2F%2F120.204.206.246%2Fcgi-bin%2Fmmsupport-bin%2Fnotifypay&out_trade_no=1414723227818375338&partner=1900000109&spbill_create_ip=127.0.0.1&total_fee=1&sign=432B647FE95C7BF73BCD177CEECBEF8D',
+//             signType: 'SHA1', // 注意：新版支付接口使用 MD5 加密
+//             paySign: 'bd5b1933cda6e9548862944836a9b52e8c9a2b69'
+//         });
+//     };
+//
+//     // 11.3  跳转微信商品页
+//     document.querySelector('#openProductSpecificView').onclick = function () {
+//         wx.openProductSpecificView({
+//             productId: 'pDF3iY_m2M7EQ5EKKKWd95kAxfNw',
+//             extInfo: '123'
+//         });
+//     };
+//
+//     // 12 微信卡券接口
+//     // 12.1 添加卡券
+//     document.querySelector('#addCard').onclick = function () {
+//         wx.addCard({
+//             cardList: [
+//                 {
+//                     cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
+//                     cardExt: '{"code": "", "openid": "", "timestamp": "1418301401", "signature":"f6628bf94d8e56d56bfa6598e798d5bad54892e5"}'
+//                 },
+//                 {
+//                     cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
+//                     cardExt: '{"code": "", "openid": "", "timestamp": "1418301401", "signature":"f6628bf94d8e56d56bfa6598e798d5bad54892e5"}'
+//                 }
+//             ],
+//             success: function (res) {
+//                 alert('已添加卡券：' + JSON.stringify(res.cardList));
+//             },
+//             cancel: function (res) {
+//                 alert(JSON.stringify(res))
+//             }
+//         });
+//     };
+//
+//     var codes = [];
+//     // 12.2 选择卡券
+//     document.querySelector('#chooseCard').onclick = function () {
+//         wx.chooseCard({
+//             cardSign: '1fdb2640c60e41f8823e9f762e70c531d161ae76',
+//             timestamp: 1437997723,
+//             nonceStr: 'k0hGdSXKZEj3Min5',
+//             success: function (res) {
+//                 res.cardList = JSON.parse(res.cardList);
+//                 encrypt_code = res.cardList[0]['encrypt_code'];
+//                 alert('已选择卡券：' + JSON.stringify(res.cardList));
+//                 decryptCode(encrypt_code, function (code) {
+//                     codes.push(code);
+//                 });
+//             },
+//             cancel: function (res) {
+//                 alert(JSON.stringify(res))
+//             }
+//         });
+//     };
+//
+//     // 12.3 查看卡券
+//     document.querySelector('#openCard').onclick = function () {
+//         if (codes.length < 1) {
+//             alert('请先使用 chooseCard 接口选择卡券。');
+//             return false;
+//         }
+//         var cardList = [];
+//         for (var i = 0; i < codes.length; i++) {
+//             cardList.push({
+//                 cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
+//                 code: codes[i]
+//             });
+//         }
+//         wx.openCard({
+//             cardList: cardList,
+//             cancel: function (res) {
+//                 alert(JSON.stringify(res))
+//             }
+//         });
+//     };
+//
+//     var shareData = {
+//         title: '微信JS-SDK Demo',
+//         desc: '微信JS-SDK,帮助第三方为用户提供更优质的移动web服务',
+//         link: 'http://demo.open.weixin.qq.com/jssdk/',
+//         imgUrl: 'http://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRt8Qia4lv7k3M9J1SKqKCImxJCt7j9rHYicKDI45jRPBxdzdyREWnk0ia0N5TMnMfth7SdxtzMvVgXg/0'
+//     };
+//     wx.onMenuShareAppMessage(shareData);
+//     wx.onMenuShareTimeline(shareData);
+//
+//     function decryptCode(code, callback) {
+//         $.getJSON('/jssdk/decrypt_code.php?code=' + encodeURI(code), function (res) {
+//             if (res.errcode == 0) {
+//                 codes.push(res.code);
+//             }
+//         });
+//     }
+// });*/
+
+
+/**!
+ * 微信内置浏览器的Javascript API，功能包括：
+ *
+ * 1、分享到微信朋友圈
+ * 2、分享给微信好友
+ * 3、分享到腾讯微博
+ * 4、隐藏/显示右上角的菜单入口
+ * 5、隐藏/显示底部浏览器工具栏
+ * 6、获取当前的网络状态
+ * 7、调起微信客户端的图片播放组件
+ * 8、关闭公众平台Web页面
+ *
+ * @author zhaoxianlie(http://www.baidufe.com)
+ */
+var WeixinApi = (function () {
+    "use strict";
+})();
+/*// var WeixinApi = (function () {
+//
+//     "use strict";
+//
+//     **
+//      * 分享到微信朋友圈
+//      * @param       {Object}    data       待分享的信息
+//      * @p-config    {String}    appId      公众平台的appId（服务号可用）
+//      * @p-config    {String}    imageUrl   图片地址
+//      * @p-config    {String}    link       链接地址
+//      * @p-config    {String}    desc       描述
+//      * @p-config    {String}    title      分享的标题
+//      *
+//      * @param       {Object}    callbacks  相关回调方法
+//      * @p-config    {Boolean}   async                   ready方法是否需要异步执行，默认false
+//      * @p-config    {Function}  ready(argv)             就绪状态
+//      * @p-config    {Function}  dataLoaded(data)        数据加载完成后调用，async为true时有用，也可以为空
+//      * @p-config    {Function}  cancel(resp)    取消
+//      * @p-config    {Function}  fail(resp)      失败
+//      * @p-config    {Function}  confirm(resp)   成功
+//      * @p-config    {Function}  all(resp)       无论成功失败都会执行的回调
+//      *
+//     function weixinShareTimeline(data, callbacks) {
+//         callbacks = callbacks || {};
+//         var shareTimeline = function (theData) {
+//             WeixinJSBridge.invoke('shareTimeline', {
+//                 "appid":theData.appId ? theData.appId : '',
+//                 "img_url":theData.imgUrl,
+//                 "link":theData.link,
+//                 "desc":theData.title,
+//                 "title":theData.desc, // 注意这里要分享出去的内容是desc
+//                 "img_width":"120",
+//                 "img_height":"120"
+//             }, function (resp) {
+//                 switch (resp.err_msg) {
+//                     // share_timeline:cancel 用户取消
+//                     case 'share_timeline:cancel':
+//                         callbacks.cancel && callbacks.cancel(resp);
+//                         break;
+//                     // share_timeline:fail　发送失败
+//                     case 'share_timeline:fail':
+//                         callbacks.fail && callbacks.fail(resp);
+//                         break;
+//                     // share_timeline:confirm 发送成功
+//                     case 'share_timeline:confirm':
+//                     case 'share_timeline:ok':
+//                         callbacks.confirm && callbacks.confirm(resp);
+//                         break;
+//                 }
+//                 // 无论成功失败都会执行的回调
+//                 callbacks.all && callbacks.all(resp);
+//             });
+//         };
+//         WeixinJSBridge.on('menu:share:timeline', function (argv) {
+//             if (callbacks.async && callbacks.ready) {
+//                 window["_wx_loadedCb_"] = callbacks.dataLoaded || new Function();
+//                 if(window["_wx_loadedCb_"].toString().indexOf("_wx_loadedCb_") > 0) {
+//                     window["_wx_loadedCb_"] = new Function();
+//                 }
+//                 callbacks.dataLoaded = function (newData) {
+//                     window["_wx_loadedCb_"](newData);
+//                     shareTimeline(newData);
+//                 };
+//                 // 然后就绪
+//                 callbacks.ready && callbacks.ready(argv);
+//             } else {
+//                 // 就绪状态
+//                 callbacks.ready && callbacks.ready(argv);
+//                 shareTimeline(data);
+//             }
+//         });
+//     }
+//
+//     /**
+//      * 发送给微信上的好友
+//      * @param       {Object}    data       待分享的信息
+//      * @p-config    {String}    appId      公众平台的appId（服务号可用）
+//      * @p-config    {String}    imageUrl   图片地址
+//      * @p-config    {String}    link       链接地址
+//      * @p-config    {String}    desc       描述
+//      * @p-config    {String}    title      分享的标题
+//      *
+//      * @param       {Object}    callbacks  相关回调方法
+//      * @p-config    {Boolean}   async                   ready方法是否需要异步执行，默认false
+//      * @p-config    {Function}  ready(argv)             就绪状态
+//      * @p-config    {Function}  dataLoaded(data)        数据加载完成后调用，async为true时有用，也可以为空
+//      * @p-config    {Function}  cancel(resp)    取消
+//      * @p-config    {Function}  fail(resp)      失败
+//      * @p-config    {Function}  confirm(resp)   成功
+//      * @p-config    {Function}  all(resp)       无论成功失败都会执行的回调
+//
+//     function weixinSendAppMessage(data, callbacks) {
+//         callbacks = callbacks || {};
+//         var sendAppMessage = function (theData) {
+//             WeixinJSBridge.invoke('sendAppMessage', {
+//                 "appid":theData.appId ? theData.appId : '',
+//                 "img_url":theData.imgUrl,
+//                 "link":theData.link,
+//                 "desc":theData.desc,
+//                 "title":theData.title,
+//                 "img_width":"120",
+//                 "img_height":"120"
+//             }, function (resp) {
+//                 switch (resp.err_msg) {
+//                     // send_app_msg:cancel 用户取消
+//                     case 'send_app_msg:cancel':
+//                         callbacks.cancel && callbacks.cancel(resp);
+//                         break;
+//                     // send_app_msg:fail　发送失败
+//                     case 'send_app_msg:fail':
+//                         callbacks.fail && callbacks.fail(resp);
+//                         break;
+//                     // send_app_msg:confirm 发送成功
+//                     case 'send_app_msg:confirm':
+//                     case 'send_app_msg:ok':
+//                         callbacks.confirm && callbacks.confirm(resp);
+//                         break;
+//                 }
+//                 // 无论成功失败都会执行的回调
+//                 callbacks.all && callbacks.all(resp);
+//             });
+//         };
+//         WeixinJSBridge.on('menu:share:appmessage', function (argv) {
+//             if (callbacks.async && callbacks.ready) {
+//                 window["_wx_loadedCb_"] = callbacks.dataLoaded || new Function();
+//                 if(window["_wx_loadedCb_"].toString().indexOf("_wx_loadedCb_") > 0) {
+//                     window["_wx_loadedCb_"] = new Function();
+//                 }
+//                 callbacks.dataLoaded = function (newData) {
+//                     window["_wx_loadedCb_"](newData);
+//                     sendAppMessage(newData);
+//                 };
+//                 // 然后就绪
+//                 callbacks.ready && callbacks.ready(argv);
+//             } else {
+//                 // 就绪状态
+//                 callbacks.ready && callbacks.ready(argv);
+//                 sendAppMessage(data);
+//             }
+//         });
+//     }
+//
+//     /**
+//      * 分享到腾讯微博
+//      * @param       {Object}    data       待分享的信息
+//      * @p-config    {String}    link       链接地址
+//      * @p-config    {String}    desc       描述
+//      *
+//      * @param       {Object}    callbacks  相关回调方法
+//      * @p-config    {Boolean}   async                   ready方法是否需要异步执行，默认false
+//      * @p-config    {Function}  ready(argv)             就绪状态
+//      * @p-config    {Function}  dataLoaded(data)        数据加载完成后调用，async为true时有用，也可以为空
+//      * @p-config    {Function}  cancel(resp)    取消
+//      * @p-config    {Function}  fail(resp)      失败
+//      * @p-config    {Function}  confirm(resp)   成功
+//      * @p-config    {Function}  all(resp)       无论成功失败都会执行的回调
+//
+//     function weixinShareWeibo(data, callbacks) {
+//         callbacks = callbacks || {};
+//         var shareWeibo = function (theData) {
+//             WeixinJSBridge.invoke('shareWeibo', {
+//                 "content":theData.desc,
+//                 "url":theData.link
+//             }, function (resp) {
+//                 switch (resp.err_msg) {
+//                     // share_weibo:cancel 用户取消
+//                     case 'share_weibo:cancel':
+//                         callbacks.cancel && callbacks.cancel(resp);
+//                         break;
+//                     // share_weibo:fail　发送失败
+//                     case 'share_weibo:fail':
+//                         callbacks.fail && callbacks.fail(resp);
+//                         break;
+//                     // share_weibo:confirm 发送成功
+//                     case 'share_weibo:confirm':
+//                     case 'share_weibo:ok':
+//                         callbacks.confirm && callbacks.confirm(resp);
+//                         break;
+//                 }
+//                 // 无论成功失败都会执行的回调
+//                 callbacks.all && callbacks.all(resp);
+//             });
+//         };
+//         WeixinJSBridge.on('menu:share:weibo', function (argv) {
+//             if (callbacks.async && callbacks.ready) {
+//                 window["_wx_loadedCb_"] = callbacks.dataLoaded || new Function();
+//                 if(window["_wx_loadedCb_"].toString().indexOf("_wx_loadedCb_") > 0) {
+//                     window["_wx_loadedCb_"] = new Function();
+//                 }
+//                 callbacks.dataLoaded = function (newData) {
+//                     window["_wx_loadedCb_"](newData);
+//                     shareWeibo(newData);
+//                 };
+//                 // 然后就绪
+//                 callbacks.ready && callbacks.ready(argv);
+//             } else {
+//                 // 就绪状态
+//                 callbacks.ready && callbacks.ready(argv);
+//                 shareWeibo(data);
+//             }
+//         });
+//     }
+//
+//     /**
+//      * 调起微信Native的图片播放组件。
+//      * 这里必须对参数进行强检测，如果参数不合法，直接会导致微信客户端crash
+//      *
+//      * @param {String} curSrc 当前播放的图片地址
+//      * @param {Array} srcList 图片地址列表
+//
+//     function imagePreview(curSrc,srcList) {
+//         if(!curSrc || !srcList || srcList.length == 0) {
+//             return;
+//         }
+//         WeixinJSBridge.invoke('imagePreview', {
+//             'current' : curSrc,
+//             'urls' : srcList
+//         });
+//     }
+//
+//     /**
+//      * 显示网页右上角的按钮
+//
+//     function showOptionMenu() {
+//         WeixinJSBridge.call('showOptionMenu');
+//     }
+//
+//
+//     /**
+//      * 隐藏网页右上角的按钮
+//
+//     function hideOptionMenu() {
+//         WeixinJSBridge.call('hideOptionMenu');
+//     }
+//
+//     /**
+//      * 显示底部工具栏
+//
+//     function showToolbar() {
+//         cc.log("function showToolbar()");
+//         WeixinJSBridge.call('showToolbar');
+//     }
+//
+//     /**
+//      * 隐藏底部工具栏
+//
+//     function hideToolbar() {
+//         WeixinJSBridge.call('hideToolbar');
+//     }
+//
+//
+//      * 返回如下几种类型：
+//      *
+//      * network_type:wifi     wifi网络
+//      * network_type:edge     非wifi,包含3G/2G
+//      * network_type:fail     网络断开连接
+//      * network_type:wwan     2g或者3g
+//      *
+//      * 使用方法：
+//      * WeixinApi.getNetworkType(function(networkType){
+//      *
+//      * });
+//      *
+//      * @param callback
+//
+//     function getNetworkType(callback) {
+//         if (callback && typeof callback == 'function') {
+//             WeixinJSBridge.invoke('getNetworkType', {}, function (e) {
+//                 // 在这里拿到e.err_msg，这里面就包含了所有的网络类型
+//                 callback(e.err_msg);
+//             });
+//         }
+//     }
+//
+//
+//      * 关闭当前微信公众平台页面
+//
+//     function closeWindow() {
+//         WeixinJSBridge.call("closeWindow");
+//     }
+//
+//
+//      * 当页面加载完毕后执行，使用方法：
+//      * WeixinApi.ready(function(Api){
+//      *     // 从这里只用Api即是WeixinApi
+//      * });
+//      * @param readyCallback
+//
+//     function wxJsBridgeReady(readyCallback) {
+//         if (readyCallback && typeof readyCallback == 'function') {
+//             var Api = this;
+//             var wxReadyFunc = function () {
+//                 readyCallback(Api);
+//             };
+//             if (typeof window.WeixinJSBridge == "undefined"){
+//                 if (document.addEventListener) {
+//                     document.addEventListener('WeixinJSBridgeReady', wxReadyFunc, false);
+//                 } else if (document.attachEvent) {
+//                     document.attachEvent('WeixinJSBridgeReady', wxReadyFunc);
+//                     document.attachEvent('onWeixinJSBridgeReady', wxReadyFunc);
+//                 }
+//             }else{
+//                 wxReadyFunc();
+//             }
+//         }
+//     }
+//
+//     return {
+//         version         :"1.8",
+//         ready           :wxJsBridgeReady,
+//         shareToTimeline :weixinShareTimeline,
+//         shareToWeibo    :weixinShareWeibo,
+//         shareToFriend   :weixinSendAppMessage,
+//         showOptionMenu  :showOptionMenu,
+//         hideOptionMenu  :hideOptionMenu,
+//         showToolbar     :showToolbar,
+//         hideToolbar     :hideToolbar,
+//         getNetworkType  :getNetworkType,
+//         imagePreview    :imagePreview,
+//         closeWindow     :closeWindow
+//     };
+// })();*/
 // var Singleton = (function () {
 //     var instantiated;
 //     function init() {

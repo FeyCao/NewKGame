@@ -9,6 +9,7 @@ var Singleton = (function () {
             publicMethod: function () {
                 cc.log('hello world sys=='+sys.os);
                 cc.log("sys.OS_WINDOWS=="+sys.OS_WINDOWS+"sys.isMobile=="+sys.isMobile+"sys.isNative=="+sys.isNative);
+                cc.log(window.location);
             },
             publicProperty: 'test'
         };
@@ -312,6 +313,7 @@ var WechatLogin =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLogi
 var WechatLoginType =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLoginType");
 var WechatLoginByCode =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLoginByCode");
 var WechatLoginByToken =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WechatLoginByToken");
+var WikiConfig =  ProtoBuf.loadProtoFile(res.PROTOBUFF_KGAME).build("WikiConfig");
 
 var treatyList =[
     {"name":"A:豆一","where":"大商所","start":"2003","end ":"2016","code":"A","status":"-1"},

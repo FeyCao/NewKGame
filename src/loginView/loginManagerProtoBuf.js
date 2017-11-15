@@ -67,7 +67,8 @@ LoginManagerProtoBuf.prototype.ConnectServer=function()
 {
     cc.log("LoginManagerProtoBuf.prototype.ConnectServer");
     if(cc.game.config["testFlag"]==true){
-        alert('链接后台ConnectServer');
+        // alert('链接后台ConnectServer');
+        cc.log('链接后台ConnectServer');
     }
 
     if(gSocketConn==null)
@@ -103,7 +104,8 @@ LoginManagerProtoBuf.prototype.ConnectedCallBack=function()
 {
     cc.log("LoginManagerProtoBuf.prototype.ConnectedCallBack");
     if(cc.game.config["testFlag"]==true){
-        alert('链接后台连接成功ConnectServer');
+        // alert('链接后台连接成功ConnectServer');
+        cc.log('链接后台连接成功ConnectServer');
     }
 
     var self=LoginManagerProtoBuf.instance;
